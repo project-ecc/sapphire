@@ -1,0 +1,356 @@
+import { ipcRenderer } from 'electron';
+import { APP_READY, INITIAL_SETUP, PARTIAL_INITIAL_SETUP, SETUP_DONE, IMPORT_WALLET, STEP_INITIAL_SETUP, SET_LANGUAGE, STEP_FORWARD, IMPORTING_WALLET, IMPORTED_WALLET, IMPORT_CANCELLED, IMPORT_STARTED, PRIVATE_KEY, PASSWORD, PASSWORD_CONFIRMATION, STEP_OVER, PAYMENT_CHAIN_SYNC, ENCRYPTING, BLOCK_INDEX_PAYMENT, BLOCK_INDEX_PAYMENT_PERCENTAGE, HOVERED_SIDEBAR, UNHOVERED_SIDEBAR, SELECTED_SIDEBAR, SIDEBAR_HIDDEN, STAKING, UNLOCKING, PASSWORD_UNLOCK, AMOUNT_SEND, ADDRESS_SEND, NAME_SEND, SENDING_ECC, TRANSACTIONS_DATA, TRANSACTIONS_PAGE,TRANSACTIONS_LAST_PAGE, TRANSACTIONS_REQUESTING, NEW_ADDRESS_NAME, ADDRESS_CREATE_ANS, SELECTED_ADDRESS, CREATING_ADDRESS, NEW_ADDRESS_ACCOUNT, NEW_CONTACT_NAME, NEW_CONTACT_ADDRESS, HOVERED_ADDRESS, USER_ADDRESSES, CONTACTS, SETTINGS, TRAY, START_AT_LOGIN, MINIMIZE_TO_TRAY, MINIMIZE_ON_CLOSE, EXPORT_PRIVATE_KEYS, PANEL_EXPORT_PRIVATE_KEYS, LOCATION_TO_EXPORT, FILTER_OWN_ADDRESSES, BACKUP_OPERATION_COMPLETED } from "./types";
+
+import Wallet from '../utils/wallet';
+const wallet = new Wallet();
+
+export const getSetup = () => dispatch => {
+	ipcRenderer.send('app:ready');
+
+	ipcRenderer.on('import_wallet', (e) => {
+		dispatch({ type: IMPORT_WALLET });
+	});
+} 
+
+export const setStepInitialSetup = (step) => {
+	return{
+		type: STEP_INITIAL_SETUP,
+		payload: {step: step}
+	};
+};
+
+export const setSetupDone = (val) => {
+	return{
+		type: SETUP_DONE,
+		payload: val
+	};
+};
+
+export const setLang = () => {
+	return{
+		type: SET_LANGUAGE
+	};
+}
+
+export const stepForward = () => {
+	return {
+		type: STEP_FORWARD
+	}
+}
+
+export const importingWallet = () => {
+	return {
+		type: IMPORTING_WALLET
+	}
+}
+
+export const importedWallet = () => {
+	return {
+		type: IMPORTED_WALLET
+	}
+}
+
+export const importCancelled = () => {
+	return {
+		type: IMPORT_CANCELLED
+	}
+}
+
+export const importStarted = () => {
+	return {
+		type: IMPORT_STARTED
+	}
+}
+
+export const stepOver = () => {
+	return {
+		type: STEP_OVER
+	}
+}
+
+export const privateKey = (key) => {
+	return {
+		type: PRIVATE_KEY,
+		payload: {key: key}
+	}
+}
+
+export const password = (password) => {
+	return {
+		type: PASSWORD,
+		payload: {password: password}
+	}
+}
+
+export const passwordConfirmation = (passwordConfirmation) => {
+	return {
+		type: PASSWORD_CONFIRMATION,
+		payload: {passwordConfirmation: passwordConfirmation}
+	}
+}
+
+export const updatePaymentChainSync = (percentage) => {
+	return	{
+		type: PAYMENT_CHAIN_SYNC,
+		payload: percentage	
+	}
+}
+
+export const updateBlockIndexPaymentPercentage = (percentage) => {
+	return	{
+		type: BLOCK_INDEX_PAYMENT_PERCENTAGE,
+		payload: percentage	
+	}
+}
+
+export const updateBlockIndexPayment = (value) => {
+	return	{
+		type: BLOCK_INDEX_PAYMENT,
+		payload: value	
+	}
+}
+
+export const isEncrypting = (val) => {
+	return {
+		type: ENCRYPTING,
+		payload: val
+	}
+}
+
+export const hoveredSideBar = (val) => {
+	return{
+		type: HOVERED_SIDEBAR,
+		payload: val
+	}
+}
+
+export const unhoveredSideBar = (val) => {
+	return{
+		type: UNHOVERED_SIDEBAR,
+		payload: val
+	}
+}
+
+export const selectedSideBar = (val) => {
+	return{
+		type: SELECTED_SIDEBAR,
+		payload: val
+	}
+}
+
+export const setSidebarHidden = (val) => {
+	return{
+		type: SIDEBAR_HIDDEN,
+		payload: val
+	}
+}
+
+export const setStaking = (val) => {
+	return{
+		type: STAKING,
+		payload: val
+	}
+}
+
+export const setUnlocking = (val) => {
+	return{
+		type: UNLOCKING,
+		payload: val
+	}
+}
+
+export const setPassword = (val) => {
+	return{
+		type: PASSWORD_UNLOCK,
+		payload: val
+	}
+}
+
+export const setAddressSend = (val) => {
+	return{
+		type: ADDRESS_SEND,
+		payload: val
+	}
+}
+
+export const setUsernameSend = (val) => {
+	return{
+		type: NAME_SEND,
+		payload: val
+	}
+}
+
+export const setAmountSend = (val) => {
+	return{
+		type: AMOUNT_SEND,
+		payload: val
+	}
+}
+
+export const setSendingECC = (val) => {
+	return{
+		type: SENDING_ECC,
+		payload: val
+	}
+}
+
+export const setTransactionsPage = (val) => {
+	return{
+		type: TRANSACTIONS_PAGE,
+		payload: val
+	}
+}
+
+export const setTransactionsData = (data, type) => {
+	return{
+		type: TRANSACTIONS_DATA,
+		payload: {data: data, type: type}
+	}
+}
+
+export const setTransactionsRequesting = (val) => {
+	return{
+		type: TRANSACTIONS_REQUESTING,
+		payload: val
+	}
+}
+
+export const setNewAddressName = (val) => {
+	return{
+		type: NEW_ADDRESS_NAME,
+		payload: val
+	}
+}
+
+export const setNewAddressAccount = (val) => {
+	return{
+		type: NEW_ADDRESS_ACCOUNT,
+		payload: val
+	}
+}
+
+export const setUserAddresses = (val) => {
+	return{
+		type: USER_ADDRESSES,
+		payload: val
+	}
+}
+
+export const setCreateAddressAns = (val) => {
+	return{
+		type: ADDRESS_CREATE_ANS,
+		payload: val
+	}
+}
+
+export const setSelectedAddress = (val) => {
+	return{
+		type: SELECTED_ADDRESS,
+		payload: val
+	}
+}
+
+export const setCreatingAddress = (val) =>{
+	return{
+		type: CREATING_ADDRESS,
+		payload: val
+	}
+}
+
+export const setNewContactName = (val) => {
+	return{
+		type: NEW_CONTACT_NAME,
+		payload: val
+	}
+}
+
+export const setNewContactAddress = (val) => {
+	return{
+		type: NEW_CONTACT_ADDRESS,
+		payload: val
+	}
+}
+
+export const setHoveredAddress = (val) => {
+	return{
+		type: HOVERED_ADDRESS,
+		payload: val
+	}
+}
+
+export const setContacts = (val) => {
+	return{
+		type: CONTACTS,
+		payload: val
+	}
+}
+
+export const setSettings = (val) => {
+	return{
+		type: SETTINGS,
+		payload: val
+	}
+}
+
+export const setTray = (val) => {
+	return{
+		type: TRAY,
+		payload: val
+	}
+}
+
+export const setStartAtLogin = (val) => {
+	return{
+		type: START_AT_LOGIN,
+		payload: val
+	}
+}
+
+export const setMinimizeToTray = (val) => {
+	return{
+		type: MINIMIZE_TO_TRAY,
+		payload: val
+	}
+}
+
+export const setMinimizeOnClose = (val) => {
+	return{
+		type: MINIMIZE_ON_CLOSE,
+		payload: val
+	}
+}
+
+export const setExportingPrivateKeys = (val) => {
+	return{
+		type: EXPORT_PRIVATE_KEYS,
+		payload: val
+	}
+}
+
+export const setPanelExportingPrivateKeys = (val) => {
+	return{
+		type: PANEL_EXPORT_PRIVATE_KEYS,
+		payload: val
+	}
+}
+
+export const setLocationToExport = (val) => {
+	return{
+		type: LOCATION_TO_EXPORT,
+		payload: val
+	}
+}
+
+export const setFilterOwnAddresses = (val) => {
+	return{
+		type: FILTER_OWN_ADDRESSES,
+		payload: val
+	}
+}
+
+export const setBackupOperationCompleted = (val) => {
+	return{
+		type: BACKUP_OPERATION_COMPLETED,
+		payload: val
+	}
+}

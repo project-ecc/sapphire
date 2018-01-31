@@ -1,0 +1,12 @@
+.configuration {
+  padding-top: 5px;
+  position: relative;
+}
+
+.configuration .panel-body {
+  height: 90vh;
+}
+
+.configuration .config-row {
+  padding-top: 25px;
+}

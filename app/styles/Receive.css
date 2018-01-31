@@ -1,0 +1,66 @@
+.receive .greenBtn{
+	margin: 0 !important;
+	background-color: #008B45 !important;
+}
+
+.receive .inpuText{
+	font-size: 0.9em !important;
+}
+
+.receive .inpuText::-webkit-input-placeholder{
+	font-size: 0.9em !important;
+}
+
+.receive .title{
+	font-size: 1.1em;
+	font-weight: 700;
+}
+
+.addresses_table{
+	height: 380px;
+	overflow-y: auto;
+}
+
+.addresses_table .title{
+	font-size: 1.1em;
+	font-weight: 700;
+}
+
+.addresses_table .desc1{
+	font-size: 1em;
+}
+
+.addresses_table .desc2{
+	font-size: 0.9em !important;
+	color: #bdbdbd !important;
+}
+
+.addresses_table .desc_p{
+	font-size: 1em;
+	color: #ffc107;
+}
+
+.addresses_table .desc_c{
+	font-size: 1em;
+	color: #4caf50;
+}
+
+.addresses_table .header{
+	font-weight: 300;
+	margin-bottom: 0px;
+}
+
+.addresses_table .stripped{
+	background-color: #fafafa;
+}
+
+.addresses_table .trans_row{
+	margin-left: 0px !important;
+	margin-right: 0px !important;
+	cursor: pointer;
+}
+
+.addresses_table .trans_col{
+	padding: 10px !important;
+	padding-right: 0px !important;
+}

@@ -1,0 +1,23 @@
+#unlockPanel{
+	width: 535px;
+	height: 265px;
+	z-index: 100;
+	position: fixed;
+	top:30%;
+	background-color: #14182f;
+	left: 50%;
+    margin-left: -267px;
+    box-shadow: 0px 0px 13px -2px black;
+    border-radius: 4px;
+}
+
+.buttonUnlock{
+	position: absolute;
+    height: 36px;
+    width: 125px;
+    border-radius: 14px;
+    font-size: 12px;
+    line-height: 37px;
+    font-weight: bold;
+    cursor: pointer;
+}

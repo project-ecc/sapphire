@@ -1,0 +1,27 @@
+.panel {
+}
+
+.download-link-container {
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.download-link {
+  background-color: #008b45;
+  text-decoration: none !important;
+  color: #fff;
+  padding: 10px;
+}
+
+.download-link:hover {
+  color: #fff;
+  background-color: #009c45;
+}
+
+.download-link:active {
+  background-color: #007a45;
+}
+
+.download-link:focus {
+  color: #fff;
+}

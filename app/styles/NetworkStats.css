@@ -1,0 +1,43 @@
+.networkStatsChainTitle{
+	font-size: 26px;
+	font-weight: 300;
+	transition: font-size 0.3s;
+}
+#headerNetworkText{
+ transition: font-size 0.3s;
+}
+.percentageSyncedNetworkVal{
+	font: 200 60px "Muli";
+}
+
+.percentageSyncedNetwork{
+	font: 200 30px "Muli";
+}
+
+.syncedTextNetwork{
+	font: 700 36px "Muli";
+}
+
+.enableNetwork{
+	font: 600 45px "Muli";
+}
+
+
+@media screen and (max-width: 1250px) {
+	.networkStatsChainTitle{
+		font-size: 23px;
+		font-weight: 300;
+	}
+
+	#headerNetworkText{
+		font-size: 60px !important;
+	}
+
+	.networkStatsImage{
+		height: 25px !important;
+	}
+
+	.networkStatsCounter{
+		font-size: 21px !important;
+	}
+}

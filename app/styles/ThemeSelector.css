@@ -1,0 +1,43 @@
+
+.divSquare{
+  width:15px; 
+  height:15px; 
+  float: left
+}
+.theme{
+  width: 30px;
+  height: 30px;
+  transform: rotate(45deg);
+  margin: 0 auto;
+}
+
+.themeName{
+  padding-top: 22px;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.content{
+  text-align: center;
+}
+
+.themeSelector{
+  display: inline-block;
+  margin: 0 40px;
+  cursor: pointer;
+}
+
+#darkTheme, #lightTheme{
+  opacity: 0.6;
+}
+
+#darkTheme:hover, #lightTheme:hover{
+  opacity: 1;
+}
+
+span{
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  left: 0px;
+}

@@ -1,0 +1,31 @@
+{
+  "productName": "Lynx",
+  "appId": "com.github.greg-griffith.lynx",
+  "files": [
+    "./app/dist/",
+    "./app/node_modules/",
+    "./app/app.html",
+    "./app/main.prod.js",
+    "./app/main.prod.js.map",
+    "./package.json"
+  ],
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "Greg-Griffith",
+      "repo": "Lynx",
+      "vPrefixedTagName": "true",
+      "protocol": "https"
+    }
+  ],
+  "linux": {
+    "target": [
+      "deb",
+      "AppImage"
+    ]
+  },
+  "directories": {
+    "buildResources": "resources",
+    "output": "build/releases/lin64"
+  }
+}

@@ -1,0 +1,51 @@
+#importButton{
+    border: 1px solid #1c2340;
+    width: max-content;
+    padding: 6px 55px;
+    font-size: 17px;
+    font-weight: 400;
+    text-align: center;
+    margin: 0 auto;
+    cursor: pointer;
+    border-radius: 25px;
+}
+
+.subTitle{
+    font-size: 22px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    width: 500px;
+    margin: 0 auto;
+}
+
+#importing{
+	visibility: hidden;
+	width: 100%;
+	transform: scale(0.5);
+	font-size: 20px;
+	position: absolute;
+	top: 40%;
+}
+
+#imported{
+	visibility: hidden;
+	width: 100%;
+	transform: scale(0.5);
+	font-size: 20px;
+	position: absolute;
+	top: 40%;
+}
+
+.imported{
+	visibility: visible;
+	width: 100%;
+	transform: scale(1);
+	font-size: 20px;
+	position: absolute;
+	top: 40%;
+}
+
+.checkmark {
+  width: 45px;
+  margin: 0 auto;
+}

@@ -1,0 +1,12 @@
+.about a,
+.about a:hover,
+.about a:focus {
+  color: #8DA557;
+  text-decoration: none !important;
+  font-size: 0.9em;
+}
+
+.about .title {
+  font-size: 1.1em;
+  font-weight: 700;
+}

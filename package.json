@@ -1,0 +1,234 @@
+{
+  "name": "Lynx-Gui",
+  "productName": "Lynx",
+  "version": "0.1.5",
+  "description": "Electron application providing the graphical user interface for the ECC Wallet",
+  "scripts": {
+    "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js",
+    "test-all": "npm run lint && npm run flow && npm run test && npm run build && npm run test-e2e",
+    "test-watch": "npm test -- --watch",
+    "test-e2e": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js e2e",
+    "lint": "eslint --cache --format=node_modules/eslint-formatter-pretty .",
+    "lint-fix": "npm run lint -- --fix",
+    "lint-styles": "stylelint app/*.css app/components/*.css --syntax scss",
+    "lint-styles-fix": "stylefmt -r app/*.css app/components/*.css",
+    "hot-updates-server": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack-dev-server/bin/webpack-dev-server --config webpack.config.renderer.dev.js",
+    "build": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
+    "build-dll": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.dev.dll.js --progress --profile --colors",
+    "build-main": "cross-env NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.main.prod.js --progress --profile --colors",
+    "build-renderer": "cross-env NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.prod.js --progress --profile --colors",
+    "start": "cross-env NODE_ENV=production electron ./app/",
+    "prestart": "npm run build",
+    "flow": "flow check",
+    "flow-typed": "rimraf flow-typed/npm && flow-typed install --overwrite || true",
+    "start-hot-renderer": "cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./app/main.dev",
+    "postinstall": "npm rebuild --runtime=electron --target=1.6.6 --disturl=https://atom.io/download/atom-shell --build-from-source",
+    "setup": "concurrently \"npm run flow-typed\" \"npm run build\" \"npm run build-dll\" \"install-app-deps\" \"node node_modules/fbjs-scripts/node/check-dev-engines.js package.json\"",
+    "dev": "cross-env START_HOT=1 npm run hot-updates-server",
+    "package-aa-win-32": "npm run build && build --win -c ./os/win32.json -p always",
+    "package-aa-win-64": "npm run build && build --win --x64 -c ./os/win64.json -p always",
+    "package-aa-all": "npm run package-aa-win-32 && npm run package-aa-win-64",
+    "package-win": "npm run build && build --win --x64 -c ./os/win64.json",
+    "package-win-32": "npm run build && build --win --ia32 -c ./os/win32.json",
+    "package-mac": "npm run build && build --mac -c ./os/mac.json",
+    "package-linux": "npm run build && build --linux -c ./os/lin64.json",
+    "package-linux-32": "npm run build && build --linux --ia32 -c ./os/lin32.json",
+    "package-all": "npm run package-win && npm run package-win-32 && npm run package-linux && npm run package-linux-32"
+  },
+  "browserslist": "electron 1.6",
+  "build": {
+    "productName": "Ecc-GUI",
+    "appId": "com.github.greg-griffith.lynx",
+    "files": [
+      "dist/",
+      "node_modules/",
+      "app.html",
+      "main.prod.js",
+      "main.prod.js.map",
+      "package.json"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Greg-Griffith",
+        "repo": "Lynx",
+        "vPrefixedTagName": "true",
+        "protocol": "https"
+      }
+    ],
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "perMachine": true
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "AppImage"
+      ]
+    },
+    "directories": {
+      "buildResources": "resources"
+    }
+  },
+  "repository": "git+https://github.com/greg-griffith/lynx.git",
+  "author": "Greg Griffith <griffith@cryptounited.com> (https://github.com/greg-griffith)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/greg-griffith/lynx/issues"
+  },
+  "keywords": [
+    "electron"
+  ],
+  "homepage": "https://github.com/greg-griffith/lynx",
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/internals/mocks/fileMock.js",
+      "\\.(css|less|sass|scss)$": "identity-obj-proxy"
+    },
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "app/node_modules"
+    ],
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "setupFiles": [
+      "./internals/scripts/CheckBuiltsExist.js"
+    ]
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-eslint": "^7.2.3",
+    "babel-jest": "^20.0.3",
+    "babel-loader": "^7.1.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-dev-expression": "^0.2.1",
+    "babel-plugin-dynamic-import-webpack": "^1.0.1",
+    "babel-plugin-flow-runtime": "^0.11.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-es2015-classes": "^6.24.1",
+    "babel-preset-env": "^1.5.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-react-hmre": "^1.1.1",
+    "babel-preset-react-optimize": "^1.0.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.24.1",
+    "babili-webpack-plugin": "0.1.1",
+    "chalk": "^2.0.1",
+    "concurrently": "^3.5.0",
+    "cross-env": "^5.0.0",
+    "cross-spawn": "^5.1.0",
+    "css-loader": "^0.28.3",
+    "electron": "1.6.10",
+    "electron-builder": "^19.8.0",
+    "electron-devtools-installer": "^2.2.0",
+    "enzyme": "^2.9.1",
+    "enzyme-to-json": "^1.5.1",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-formatter-pretty": "^1.1.0",
+    "eslint-import-resolver-webpack": "^0.8.3",
+    "eslint-plugin-compat": "^1.0.4",
+    "eslint-plugin-flowtype": "^2.33.0",
+    "eslint-plugin-flowtype-errors": "^3.3.0",
+    "eslint-plugin-import": "^2.6.0",
+    "eslint-plugin-jest": "^20.0.3",
+    "eslint-plugin-jsx-a11y": "5.0.3",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-react": "^7.1.0",
+    "express": "^4.15.3",
+    "extract-text-webpack-plugin": "^2.1.2",
+    "fbjs-scripts": "^0.8.0",
+    "file-loader": "^0.11.1",
+    "flow-bin": "^0.48.0",
+    "flow-runtime": "^0.13.0",
+    "flow-typed": "^2.1.2",
+    "html-webpack-plugin": "^2.29.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^20.0.4",
+    "jsdom": "^11.0.0",
+    "minimist": "^1.2.0",
+    "node-sass": "^4.5.3",
+    "react-addons-test-utils": "^15.0.6",
+    "react-test-renderer": "^15.6.1",
+    "redux-logger": "^3.0.6",
+    "request": "*",
+    "rimraf": "^2.6.1",
+    "sass-loader": "^6.0.6",
+    "sinon": "^2.3.5",
+    "spectron": "^3.7.0",
+    "style-loader": "^0.18.1",
+    "stylefmt": "^6.0.0",
+    "stylelint": "^7.12.0",
+    "stylelint-config-standard": "^16.0.0",
+    "url-loader": "^0.5.8",
+    "webpack": "^3.0.0",
+    "webpack-bundle-analyzer": "^2.8.2",
+    "webpack-dev-server": "^2.5.0",
+    "webpack-merge": "^4.1.0"
+  },
+  "dependencies": {
+    "auto-launch": "^5.0.5",
+    "bitcoin-core": "git://github.com/Greg-Griffith/bitcoin-core.git",
+    "bootstrap": "^4.0.0-alpha.6",
+    "bootstrap-material-design": "^0.5.10",
+    "child_process": "^1.0.2",
+    "connect-with-transition-group": "^0.2.0",
+    "devtron": "^1.4.0",
+    "electron-debug": "^1.2.0",
+    "electron-dl": "^1.10.0",
+    "electron-settings": "^3.1.1",
+    "events": "^1.1.1",
+    "font-awesome": "^4.7.0",
+    "glob": "^7.1.2",
+    "gsap": "^1.20.3",
+    "history": "^4.6.3",
+    "jquery": "^3.2.1",
+    "jspdf": "^1.3.5",
+    "lowdb": "^0.16.2",
+    "path": "^0.12.7",
+    "project-version": "^1.0.0",
+    "ps-list": "^4.0.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-hot-loader": "3.0.0-beta.6",
+    "react-loading": "^0.1.4",
+    "react-redux": "^5.0.5",
+    "react-router": "^4.1.1",
+    "react-router-dom": "^4.1.1",
+    "react-router-redux": "^5.0.0-alpha.6",
+    "react-toggle": "^4.0.2",
+    "react-transition-group": "^1.2.1",
+    "redux": "^3.7.1",
+    "redux-thunk": "^2.2.0",
+    "source-map-support": "^0.4.15"
+  },
+  "devEngines": {
+    "node": ">=6.x",
+    "npm": ">=3.x",
+    "yarn": ">=0.21.3"
+  },
+  "dev-main": "index.js",
+  "main": "./app/main.prod.js"
+}

@@ -1,0 +1,199 @@
+.backup  {
+  position: relative;
+  height: 100vh;
+}
+
+.backup .backup_inner  {
+  padding-top: 80px;
+  text-align: center;
+}
+
+.backup .circle  {
+  height: 50px;
+  width: 50px;
+  position: absolute;
+  border-radius: 25px;
+  background-color: #1C1C1C;
+  line-height: 42.5px;
+  color: #FFFFFF;
+  font-size: 1.5em;
+  font-weight: bold;
+  text-align: center;
+  z-index: 10;
+  top: 25px;
+  border: 3px solid #1C1C1C;
+}
+
+.backup .circle_center {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.backup .circle_left {
+  left: 0;
+}
+
+.backup .circle_right {
+  right: 0;
+}
+
+.backup .circle_active {
+  border: 5px solid #008B45;
+}
+
+.backup .line {
+  height: 10px;
+  position: absolute;
+  background-color: #0A273F;
+  top: 45px;
+  left: 30px;
+  right: 30px;
+  z-index: 5;
+}
+
+.backup .page {
+  margin-top: 15px;
+}
+
+.backup .title {
+  font-size: 3em;
+}
+
+.backup .desc {
+  font-size: 1em;
+  width: 80%;
+  margin-left: 10%;
+}
+
+.backup .desc_green {
+  color: red;
+  font-weight: bold;
+}
+
+.backup .desc_pass {
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+
+.backup .input {
+  font-size: 1.2em !important;
+  width: 80%;
+  border: 3px solid #0A273F;
+  margin-top: 20px;
+  padding: 10px;
+  text-align: center;
+}
+
+.backup .input::-webkit-input-placeholder {
+  font-size: 1.2em !important;
+  text-align: center;
+}
+
+.backup .nextButton {
+  padding: 10px 20px 10px 20px;
+  background-color: #008b45;
+  color: #fff;
+  font-size: 1.5em;
+  text-align: center;
+  font-weight: 700;
+  width: 250px;
+  border-radius: 15px;
+  margin: 0 auto;
+  margin-top: 25px;
+  cursor: pointer;
+  border: 2px solid #008b45;
+  transition: background-color 0.1s linear;
+}
+
+.backup .nextButton:hover {
+  background-color: #00ac45;
+}
+
+.backup .nextButton:active {
+  background-color: #009b45;
+}
+
+.backup .changePassButton {
+  padding: 10px 20px 10px 20px;
+  background-color: #008b45;
+  color: #fff;
+  font-size: 1.5em;
+  text-align: center;
+  font-weight: 700;
+  width: 250px;
+  border-radius: 15px;
+  margin: 0 auto;
+  margin-top: 25px;
+  cursor: pointer;
+  border: 2px solid #008b45;
+  transition: background-color 0.1s linear;
+}
+
+.backup .changePassButton:hover {
+  background-color: #00ac45;
+}
+
+.backup .changePassButton:active {
+  background-color: #009b45;
+}
+
+.backup .left {
+  display: inline-block;
+  width: 150px;
+  margin-right: 25px;
+}
+
+.backup .right {
+  display: inline-block;
+  width: 150px;
+  margin-left: 25px;
+}
+
+.backup .tip {
+  position: absolute;
+  width: 100%;
+  bottom: 20px;
+  background-color: #fff;
+  text-align: center;
+  padding: 5px;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+}
+
+.backup .tip_title {
+  margin-bottom: 2.5px;
+  font-size: 1em;
+  font-weight: 700;
+}
+
+.backup .tip_desc {
+  font-size: 0.9em;
+}
+
+.backup .-space-top {
+  margin-top: 50px;
+}
+
+.passwordInput {
+  margin: 10px 5px 0;
+}
+
+.backup .-backupButton {
+  margin-bottom: 25px;
+}
+
+.backup .-passButtonDisabled {
+  background-color: #ccc;
+  border: 2px solid #ccc;
+  padding: 10px 20px 10px 20px;
+  color: #fff;
+  font-size: 1.5em;
+  text-align: center;
+  font-weight: 700;
+  width: 250px;
+  border-radius: 15px;
+  margin: 0 auto;
+  margin-top: 25px;
+  cursor: pointer;
+  transition: background-color 0.1s linear;
+}
