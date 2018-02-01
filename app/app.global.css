@@ -28,6 +28,11 @@ html,
 body {
   font-family: Muli, sans-serif;
   background-color: #181e35;
+   background-image: -webkit-radial-gradient(top, circle cover, #2c2b3c 0%, #181e35 80%);
+   background-image: -moz-radial-gradient(top, circle cover, #2c2b3c 0%, #181e35 80%);
+   background-image: -o-radial-gradient(top, circle cover, #2c2b3c 0%, #181e35 80%);
+   background-image: radial-gradient(top, circle cover, #2c2b3c 0%, #181e35 80%);
+   height: 100%;
   color: #b4b7c8;
   font-size: 17px;
   overflow: hidden;
