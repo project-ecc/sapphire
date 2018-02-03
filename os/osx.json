@@ -1,0 +1,39 @@
+{
+  "productName": "Lynx",
+  "appId": "com.github.project-ecc.lynx",
+  "files": [
+    "./app/dist/",
+    "./app/node_modules/",
+    "./app/app.html",
+    "./app/main.prod.js",
+    "./app/main.prod.js.map",
+    "./package.json"
+  ],
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "project-ecc",
+      "repo": "Lynx",
+      "vPrefixedTagName": "true",
+      "protocol": "https"
+    }
+  ],
+  "dmg": {
+    "contents": [
+      {
+        "x": 130,
+        "y": 220
+      },
+      {
+        "x": 410,
+        "y": 220,
+        "type": "link",
+        "path": "/Applications"
+      }
+    ]
+  },
+  "directories": {
+    "buildResources": "resources",
+    "output": "build/releases/osx"
+  }
+}
