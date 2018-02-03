@@ -5,8 +5,7 @@ import {TweenMax} from "gsap";
 import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
 import Wallet from '../../utils/wallet';
-
-const wallet = new Wallet();
+const tools = require('../../utils/tools')
 
 class SendConfirmation extends React.Component {
  constructor() {
@@ -17,6 +16,7 @@ class SendConfirmation extends React.Component {
     this.showWrongPassword = this.showWrongPassword.bind(this);
     this.sendECC = this.sendECC.bind(this);
     this.getNameOrAddressHtml = this.getNameOrAddressHtml.bind(this);
+    this.wallet = new Wallet();
   }
   
  componentWillAppear (callback) {
@@ -55,17 +55,53 @@ class SendConfirmation extends React.Component {
 
   sendECC(){
     var self = this;
-     wallet.walletpassphrase(this.props.passwordVal, 3000000).then((data) => {
+    var wasStaking = this.props.staking;
+    this.unlockWallet(false, 5, () => {
+      var batch = [];
+      console.log(self.props.amount)
+      var obj = {
+        method: 'sendToAddress', parameters: [self.props.address, self.props.amount]
+      }
+      batch.push(obj)
+
+      this.wallet.command(batch).then((data) => {
+        console.log("data: ", data)
+        if(wasStaking){
+            self.unlockWallet(true, 31556926, () => {
+            self.props.setPassword("");
+            this.props.setSendingECC(false);
+           });
+        }
+        else{ 
+          self.props.setStaking(false);
+          self.props.setPassword("");
+          this.props.setSendingECC(false);
+        }
+      }).catch((err) => {
+        this.props.setPassword("");
+        console.log("err unlocking wallet: ", err);
+      });
+    })
+    
+  }
+
+  unlockWallet(flag, time, callback){
+    var self = this;
+    var batch = [];
+    var obj = {
+      method: 'walletpassphrase', parameters: [this.props.passwordVal, time, flag]
+    }
+    batch.push(obj)
+
+    this.wallet.command(batch).then((data) => {
       console.log("data: ", data)
+      data = data[0];
       if (data !== null && data.code === -14) {
         self.showWrongPassword();
       } else if (data !== null && data.code === 'ECONNREFUSED') {
-        console.log("daemong ain't working mate :(")
+          console.log("daemong ain't working mate :(")
       } else if (data === null) {
-        self.props.setUnlocking(false);
-        setTimeout(() => {
-          self.props.setStaking(true);
-        }, 300)
+          callback();
       } else {
         console.log("error unlocking wallet: ", data)
       }
@@ -90,7 +126,7 @@ class SendConfirmation extends React.Component {
   }
 
   handleConfirm(){
-    this.unlockWallet();
+    this.sendECC();
   }
 
   handleCancel(){
@@ -109,7 +145,7 @@ class SendConfirmation extends React.Component {
     }else{
       return(
         <div>
-        <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "left", margin: "0 auto", paddingTop: "10px"}}>Address: {this.props.address} </p>
+        <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "left", margin: "0 auto", paddingTop: "10px"}}>Address: <span style={{position:"relative", fontSize:"14px"}}>{this.props.address}</span> </p>
         </div>
       )
     }
@@ -122,7 +158,7 @@ class SendConfirmation extends React.Component {
      return (
       <div ref="second" id="unlockPanel" style={{height: "350px", top: "22%"}}>
         <p style={{fontSize: "18px", color:"#b4b7c8", paddingTop: "20px"}}>Confirm transaction</p>
-        <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "left", margin: "0 auto", paddingTop: "25px"}}>Amount: {this.props.amount} <span className="ecc">ECC</span></p>
+        <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "left", margin: "0 auto", paddingTop: "25px"}}>Amount: {tools.formatNumber(Number(this.props.amount))} <span className="ecc">ECC</span></p>
         {this.getNameOrAddressHtml()}
         <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px"}}>Please type your password</p>
         <input className="privateKey" type="password" style={{width: "400px", position: "relative", top: "20px", color:"#b4b7c8", margin: "0 0", marginBottom: "30px"}} value={this.props.passwordVal} onChange={this.handleChange} autoFocus></input>
@@ -140,23 +176,14 @@ class SendConfirmation extends React.Component {
     } 
 };
 
- function formatNumber(number) {
-    return number.toFixed(2).replace(/./g, function(c, i, a) {
-        return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
-    });
-  }
-
 const mapStateToProps = state => {
-  var amount = state.application.amountSend;
-  console.log(amount)
-  amount = formatNumber(amount);
-
   return{
     lang: state.startup.lang,
     passwordVal: state.application.password,
-    amount: amount,
+    amount: state.application.amountSend,
     address: state.application.addressSend,
-    username: state.application.userNameToSend
+    username: state.application.userNameToSend,
+    staking: state.chains.staking
   };
 };
 

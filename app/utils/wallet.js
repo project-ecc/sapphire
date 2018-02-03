@@ -31,6 +31,16 @@ export default class Wallet {
     });
   }
 
+  getRawTransaction(id) {
+    return new Promise((resolve, reject) => {
+      client.getRawTransaction(id, 1).then((data) => {
+        return resolve(data);
+      }).catch((err) => {
+        return reject(err);
+      });
+    });
+  }
+
   getAddressesByAccount(account) {
     return new Promise((resolve, reject) => {
       client.getAddressesByAccount(account).then((addresses) => {
@@ -64,7 +74,6 @@ export default class Wallet {
   getInfo() {
     return new Promise((resolve, reject) => {
       client.getInfo().then((data) => {
-        console.log(data)
         return resolve(data);
       }).catch((err) => {
         return reject(err);

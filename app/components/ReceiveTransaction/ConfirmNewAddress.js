@@ -75,7 +75,9 @@ class ConfirmNewAddress extends React.Component {
   	let style= {
   		fontSize: "16px",
   		width: "90%",
-  		margin: "0 auto"
+  		margin: "0 auto",
+      textAlign: "justify",
+      fontWeight: "500"
   	}
   	if(this.props.ansAddress){
   		return(

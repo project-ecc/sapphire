@@ -62,8 +62,9 @@ class AddressBook extends Component {
   rowClicked(friend) {
     if(!this.props.sendPanel) return;
     clipboard.writeText(friend.address);
-    TweenMax.fromTo('#addressCopied', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
-    TweenMax.to('#addressCopied', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
+    $('#message').text("Address copied below")
+    TweenMax.fromTo('#message', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
+    TweenMax.to('#message', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
     TweenMax.set('#addressSend', {autoAlpha: 0});
     this.props.setAddressSend(friend.address);
     if(friend.name == "")

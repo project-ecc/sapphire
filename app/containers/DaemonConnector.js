@@ -3,6 +3,9 @@ const wallet = new Wallet();
 import { ipcRenderer } from 'electron';
 import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, BLOCK_INDEX_PAYMENT_PERCENTAGE, WALLET_INFO, TRANSACTIONS_DATA, USER_ADDRESSES } from '../actions/types';
 const event = require('../utils/eventhandler');
+const tools = require('../utils/tools')
+const sqlite3 = require('sqlite3');
+import transactionsInfo from '../utils/transactionsInfo';
 
 //this class acts as a bridge between wallet.js (daemon) and the redux store
 class DaemonConnector {
@@ -32,12 +35,19 @@ class DaemonConnector {
     this.getAddress = this.getAddress.bind(this);
     this.getReceivedByAddress = this.getReceivedByAddress.bind(this);
     this.getAddressesAmounts = this.getAddressesAmounts.bind(this);
-    this.formatNumber = this.formatNumber.bind(this);
     this.mainCicle = this.mainCicle.bind(this);
     this.subscribeToEvents = this.subscribeToEvents.bind(this);
+    this.getTrasactionsToDB = this.getTrasactionsToDB.bind(this);
+    this.needToReloadTransactions = this.needToReloadTransactions.bind(this);
+    this.updateProcessedAddresses = this.updateProcessedAddresses.bind(this);
+    this.setupTransactionsDB = this.setupTransactionsDB.bind(this);
     this.getTransactions();
     this.getAddresses();
     this.subscribeToEvents();
+    this.currentAddresses = [];
+    this.processedAddresses = transactionsInfo.get('addresses').value();
+    this.verifiedAddresses = false;
+    this.db = undefined;
 	}
 
   subscribeToEvents(){
@@ -53,6 +63,100 @@ class DaemonConnector {
       this.unsubscribe();
       this.unsubscribeFromSetupEvents();
     }
+  }
+
+  needToReloadTransactions(){
+    this.currentAddresses = this.store.getState().application.userAddresses;
+    for(var i = 0; i < this.currentAddresses.length; i++){
+      if(this.processedAddresses == undefined || !this.processedAddresses.includes(this.currentAddresses[i].address)){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  updateProcessedAddresses(){
+    var flag = false;
+    for(var i = 0; i < this.currentAddresses.length; i++){
+      var currentAddress = this.currentAddresses[i].address;
+      var aux = transactionsInfo.get('addresses').find(currentAddress).value();
+      if(!aux){
+        transactionsInfo.get('addresses').push(currentAddress).write();
+        flag = true;
+      }
+    }
+    if(flag){
+      transactionsInfo.get('done').push(false ).write();
+      transactionsInfo.get('processedUpTo').push("").write();
+      transactionsInfo.get('processedFrom').push("").write();
+    }
+    this.verifiedAddresses = true;
+  }
+
+  setupTransactionsDB(){
+    this.db = new sqlite3.Database('transactions');
+    var self = this;
+    this.db.serialize(function() {
+      self.db.run("CREATE TABLE IF NOT EXISTS transactions (transaction_id VAARCHAR(64) PRIMARY KEY, date INTEGER, amount DECIMAL(11,8), category, address, fee DECIMAL(2,8));CREATE UNIQUE INDEX idx_transfer ON transactions (transaction_id);");
+    });
+  }
+
+  async getTrasactionsToDB(){
+    if(!this.verifiedAddresses || this.needToReloadTransactions())
+      this.updateProcessedAddresses();
+
+    if(this.db == undefined)
+      this.setupTransactionsDB();
+    else if(!this.db.open)
+      this.db = new sqlite3.Database('transactions');
+    
+    var self = this;
+
+    var from = transactionsInfo.get('processedFrom').value();
+    var upTo = transactionsInfo.get('processedUpTo').value();
+
+    var txId = "";
+    var time = 0;
+    var amount = 0;
+    var category = "";
+    var address = "";
+    var fee = 0;
+
+    var transactions = await this.wallet.getTransactions("*", 1000, 0);
+    var statement = "BEGIN TRANSACTION;";
+    for (var i = 0; i < transactions.length; i++) {
+      txId = transactions[i].txid;
+      time = transactions[i].time;
+      amount = transactions[i].amount;
+      category = transactions[i].category;
+      address = transactions[i].address;
+      fee = transactions[i].fee == undefined ? 0 : transactions[i].fee;
+
+      if(category == "generate" && amount > 0){
+        statement += `INSERT OR REPLACE INTO transactions VALUES('${txId}', ${time}, ${amount}, '${category}', '${address}', ${fee});`;
+      }
+      if(category == "receive"){
+        var data = await self.processRawTransaction(txId);
+      }
+    }
+    statement += "COMMIT;";
+    this.db.exec(statement, (err)=>{
+      if(err)
+        console.log(err);
+      console.log("here")
+      self.db.close();
+    });
+  }
+
+  processRawTransaction(transactionId){
+    return new Promise((resolve, reject) => {
+      this.wallet.getRawTransaction(transactionId).then((data) => {
+        console.log(data);
+        resolve(data);
+      }).catch((err) => {
+        reject(null);
+      });
+    });
   }
 
   unsubscribeFromSetupEvents(){
@@ -80,12 +184,6 @@ class DaemonConnector {
     this.unsubscribeFromSetupEvents();
   }
 
- formatNumber(number) {
-    return number.toFixed(2).replace(/./g, function(c, i, a) {
-        return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
-    });
-  }
-
   mainCicle(){
     if(this.step == 1){
       this.getWalletInfo();
@@ -111,7 +209,7 @@ class DaemonConnector {
           this.loadingBlockIndexPayment = false;
           self.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: false})
         }
-			self.store.dispatch({type: WALLET_INFO, payload: {balance: this.formatNumber(data.balance), staking: data.unlocked_until > 0, connections: data.connections, block: data.blocks, headers: data.headers, connections: data.connections}});
+			self.store.dispatch({type: WALLET_INFO, payload: {balance: data.balance, staking: data.unlocked_until > 0, connections: data.connections, block: data.blocks, headers: data.headers, connections: data.connections}});
       self.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data.blocks == 0 || data.headers == 0 ? 0 : ((data.blocks * 100) / data.headers).toFixed(2)})
       if(this.partialSetup){
         this.store.dispatch({type: PARTIAL_INITIAL_SETUP })
@@ -154,13 +252,14 @@ class DaemonConnector {
         toReturn.push({
           account: keys[i],
           address: addresses[i][j],
-          amount: this.formatNumber(amounts[counter]),
+          amount: tools.formatNumber(amounts[counter]),
           ans: false
         })
         counter++;
       }
     }
     this.store.dispatch({type: USER_ADDRESSES, payload: toReturn})
+    this.getTrasactionsToDB();
   }
 
   getAccounts(){

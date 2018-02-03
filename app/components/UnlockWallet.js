@@ -53,8 +53,15 @@ class UnlockWallet extends React.Component {
 
   unlockWallet(){
     var self = this;
-     wallet.walletpassphrase(this.props.passwordVal, 3000000).then((data) => {
+    var batch = [];
+    var obj = {
+      method: 'walletpassphrase', parameters: [this.props.passwordVal, 31556926, true]
+    }
+    batch.push(obj)
+
+    wallet.command(batch).then((data) => {
       console.log("data: ", data)
+      data = data[0];
       if (data !== null && data.code === -14) {
         self.showWrongPassword();
       } else if (data !== null && data.code === 'ECONNREFUSED') {

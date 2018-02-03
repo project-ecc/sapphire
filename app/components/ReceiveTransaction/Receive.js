@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ConfirmNewAddress from './ConfirmNewAddress';
-import low from '../../utils/low';
 import { traduction } from '../../lang/lang';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
@@ -159,7 +158,6 @@ class Receive extends Component {
           <div id="addressName">
               <p id="addressNamePlaceHolder" style={{position:"absolute", top: "5px", color: "#555d77", fontSize: "15px", fontWeight: "600", left: "2px"}}>Name</p>
               <input className="privateKey" type="text" style={{textAlign: "left", margin: "0 0", width:"100%", display: "inline-block", position: "relative", color:"#555d77", fontWeight:"600", fontSize:"15px"}} value={this.props.newAddressName} onChange={this.handleChangeNameAddress} autoFocus></input>
-              <p style={{display: "inline-block", position: "absolute", right: "0px", top:"2px", cursor: "pointer", color: "#a4a3e6", fontSize: "20px", visibility: this.props.ansAddress ? "visible" : "hidden"}}>+</p>
             </div>
             <div id="addressAccount" style={{position: "relative",  marginTop: "10px"}}>
               <p id="addressAccountPlaceHolder" style={{position:"absolute", top: "5px", color: "#555d77", fontSize: "15px", fontWeight: "600", left: "2px"}}>Account (optional)</p>

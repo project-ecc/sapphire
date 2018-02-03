@@ -6,7 +6,9 @@ import path from 'path';
 import webpack from 'webpack';
 
 export default {
-  externals: Object.keys({}),
+  externals: {
+    sqlite3: 'sqlite3',
+  },
 
   module: {
     rules: [{

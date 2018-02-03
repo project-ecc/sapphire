@@ -31,27 +31,24 @@ class DaemonManager {
 	}
 
 	updateOrCreateConfig(){
+
 		const directory = this.os === "win32" ? `${homedir}/appdata/roaming/eccoin` : `${homedir}/.eccoin`;
 		const filePath = this.os === "win32" ? `${homedir}/appdata/roaming/eccoin/eccoin.conf` : `${homedir}/.eccoin/eccoin.conf`;
-
-   		if(fs.existsSync(filePath)){
-			fs.readFileSync(filePath, 'utf8', (err, data) => {
+   		if(fs.existsSync(filePath)){	
+			fs.readFile(filePath, 'utf8', (err, data) => {
 	          if (err) {
 	             console.log("readFile error: ", err);
 	             return;
 	          }
-
 	          if (/staking=[0-9]/g.test(data)) {
 	            if (/staking=1/g.test(data)) {
 	              return
 	            } else {
 	              	const result = data.replace(/staking=[0-9]/g, 'staking=1');
 
-		            console.log(result);
-
 		            fs.writeFileSync(filePath, result, 'utf8', (err) => {
 		              if (err) {
-		                console.log("writeFileSync error: ", err);
+		                console.log("writeFileSync error: ", err); 
 		                return;
 		              }
 		              else{
@@ -75,7 +72,7 @@ class DaemonManager {
 	      	console.log("doesn exist, gonna create it")
 	      	const toWrite = "maxconnections=100" + os.EOL + "rpcuser=yourusername" + os.EOL + "rpcpassword=yourpassword" + os.EOL + "addnode=www.cryptounited.io" + os.EOL + "rpcport=19119" + os.EOL + "rpcconnect=127.0.0.1" + os.EOL + "staking=1" + os.EOL + "zapwallettxes=0";
 
-            fs.writeFileSync(filePath, toWrite, 'utf8', (err) => {
+            fs.writeFile(filePath, toWrite, 'utf8', (err) => {
               if (err) {
                 return console.log("writeFile error: ", err);
               }

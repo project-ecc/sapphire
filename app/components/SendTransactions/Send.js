@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactLoading from 'react-loading';
 import AddressBook from './AddressBook';
 import SendConfirmation from './SendConfirmation';
 import Wallet from '../../utils/wallet';
@@ -7,16 +6,16 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
 import TransitionGroup from 'react-transition-group/TransitionGroup';
-const wallet = new Wallet();
+import $ from 'jquery';
 
 class Send extends Component {
   constructor(props) {
     super(props);
-    this._handleSendToAddress = this._handleSendToAddress.bind(this);
     this.handleClear = this.handleClear.bind(this);
     this.confirmSend = this.confirmSend.bind(this);
     this.handleChangeAmount = this.handleChangeAmount.bind(this);
     this.handleChangeAddress = this.handleChangeAddress.bind(this);
+    this.wallet = new Wallet();
   }
 
   componentDidMount(){
@@ -24,30 +23,6 @@ class Send extends Component {
       TweenMax.set('#addressSend', {autoAlpha: 0});
     if(this.props.amount)
       TweenMax.set('#amountSend', {autoAlpha: 0});
-  }
-
-  _handleSendToAddress() {
-    const self = this;
-    if (this.state.eccAddress !== '') {
-      wallet.validate(this.state.eccAddress).then((isAddressValid) => {
-        if (!isAddressValid.isvalid) {
-          event.emit('animate', lang.addressInvalidError);
-        } else {
-          if (this.state.amount > 0) {
-            $('.loading').hide();
-            $('.btn_confirm').removeClass('disable');
-            self.setState({ dialog: true, passPhraseError: '', passPhrase: '' });
-          } else {
-            event.emit('animate', lang.amountLessOrEqualTo0);
-          }
-        }
-      }).catch((err) => {
-        console.log(err);
-        event.emit('animate', lang.addressValidadeError);
-      });
-    } else {
-      event.emit('animate', lang.invalidFields);
-    }
   }
 
   handleClear() {
@@ -58,17 +33,48 @@ class Send extends Component {
     TweenMax.set('#addressSend', {autoAlpha: 1});
   }
 
-  confirmSend() {
-    if(this.props.amount == ""){
+  highlightAmountError(duration){
       TweenMax.to('#inputAmountSend', 0.3, {css:{borderBottom: "2px solid #d09128"}});
-      TweenMax.to('#inputAmountSend', 0.3, {css:{borderBottom: "2px solid #1c2340"}, delay: 1});
+      TweenMax.to('#inputAmountSend', 0.3, {css:{borderBottom: "2px solid #1c2340"}, delay: duration});
+  }
+
+  highlightAddressError(duration){
+      TweenMax.to('#inputAddressSend', 0.3, {css:{borderBottom: "2px solid #d09128"}});
+      TweenMax.to('#inputAddressSend', 0.3, {css:{borderBottom: "2px solid #1c2340"}, delay: duration});
+  }
+
+  animateMessage(text){
+      $('#message').text(text)
+      TweenMax.fromTo('#message', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
+      TweenMax.to('#message', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
+  }
+
+  confirmSend() {
+    var self = this;
+    if(this.props.amount == "" || Number(this.props.amount) == 0){
+      this.highlightAmountError(1);
     }
     if(this.props.address == ""){
-      TweenMax.to('#inputAddressSend', 0.3, {css:{borderBottom: "2px solid #d09128"}});
-      TweenMax.to('#inputAddressSend', 0.3, {css:{borderBottom: "2px solid #1c2340"}, delay: 1});
+      this.highlightAddressError(1);
     }
-    if(this.props.address != "" && this.props.amount != "")
-      this.props.setSendingECC(true);
+    if(this.props.address != "" && this.props.amount != "" && Number(this.props.amount) > 0){
+      if(this.props.amount > this.props.balance){
+        this.animateMessage("Not enough balance");
+        this.highlightAmountError(3);
+      }
+      else{
+        this.wallet.validate(this.props.address).then((isAddressValid) => {
+        if (!isAddressValid.isvalid) {
+          self.animateMessage("Invalid address");
+          self.highlightAddressError(3);
+        } else {
+          self.props.setSendingECC(true);
+        }
+        }).catch((err) => {
+          console.log(err);
+        });
+      }
+    }
   }
 
   handleChangeAddress(event){
@@ -90,7 +96,7 @@ class Send extends Component {
     else 
       TweenMax.set('#amountSend', {autoAlpha: 0});
 
-    this.props.setAmountSend(Number(amount));
+    this.props.setAmountSend(amount);
   }
 
   render() {
@@ -98,7 +104,7 @@ class Send extends Component {
     return (
       <div className="sendPanel" style={{height: "100%", width: "100%", paddingLeft: "40px", paddingRight: "40px"}}>
         <AddressBook sendPanel={true}/>
-          <p id="addressCopied" style={{position: "relative", textAlign: "center", color: "#d09128", fontSize: "15px", visibility: "hidden", top: "65px"}}>Address copied below</p>
+          <p id="message" style={{position: "relative", textAlign: "center", color: "#d09128", fontSize: "15px", visibility: "hidden", top: "65px"}}>Address copied below</p>
           <div style={{width: "632px", margin: "0 auto"}}>
             <p id="addressSend" style={{position:"relative",top: "85px", width: "80%", textAlign: "left", color: "#555d77", fontSize: "15px", fontWeight: "600", left: "2px"}}>ANS Name / Address</p>
             <input id="inputAddressSend" value={this.props.address} onChange={this.handleChangeAddress} style={{fontWeight: "600", position:"relative", top: "60px", width: "80%", textAlign: "left", color: "#555d77", fontSize: "15px"}} className="privateKey" type="text"></input>
@@ -124,7 +130,8 @@ const mapStateToProps = state => {
     address: state.application.addressSend,
     name: state.application.userNameToSend,
     amount: state.application.amountSend,
-    sending: state.application.sendingEcc
+    sending: state.application.sendingEcc,
+    balance: state.chains.balance
   };
 };
 

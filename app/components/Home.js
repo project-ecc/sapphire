@@ -12,6 +12,7 @@ import ToggleButton from 'react-toggle';
 import * as actions from '../actions';
 import UnlockWallet from './UnlockWallet';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
+const tools = require('../utils/tools')
 
 class Home extends Component {
   constructor(props) {
@@ -68,7 +69,7 @@ class Home extends Component {
                   onChange={() => {
                     this.processStakingClicked();
                   }} />
-                  </div>
+                </div>
               </div>
               <div className="col-sm-4"  style={{padding: "0 0"}}>
                 <p className="normalWeight" id="balance" style={{fontSize: "20px"}}>Balance</p>
@@ -140,7 +141,7 @@ const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
     staking: state.chains.staking,
-    balance: state.chains.balance,
+    balance: tools.formatNumber(state.chains.balance),
     allEarnings: true,
     fileStorageEarnings: false,
     stakingEarnings: false,

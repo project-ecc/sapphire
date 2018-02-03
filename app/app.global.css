@@ -3,7 +3,6 @@
 @import "~bootstrap-material-design/dist/css/bootstrap-material-design.css";
 @import "~bootstrap-material-design/dist/css/ripples.min.css";
 @import url("https://fonts.googleapis.com/css?family=Muli:200,300,400,600,700,800,900");
-@import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 @import "./styles/Sidebar.css";
 @import "./styles/About.css";
 @import "./styles/Security.css";
@@ -28,11 +27,11 @@ html,
 body {
   font-family: Muli, sans-serif;
   background-color: #181e35;
-   background-image: -webkit-radial-gradient(top, circle cover, #2c2b3c 0%, #181e35 80%);
-   background-image: -moz-radial-gradient(top, circle cover, #2c2b3c 0%, #181e35 80%);
-   background-image: -o-radial-gradient(top, circle cover, #2c2b3c 0%, #181e35 80%);
-   background-image: radial-gradient(top, circle cover, #2c2b3c 0%, #181e35 80%);
-   height: 100%;
+  /*background-image: -webkit-radial-gradient(top, circle cover, #24232f 0%, #181e35 80%);
+  background-image: -moz-radial-gradient(top, circle cover, #24232f 0%, #181e35 80%);
+  background-image: -o-radial-gradient(top, circle cover, #24232f 0%, #181e35 80%);
+  background-image: radial-gradient(top, circle cover, #24232f 0%, #181e35 80%);
+  height: 100%;*/
   color: #b4b7c8;
   font-size: 17px;
   overflow: hidden;

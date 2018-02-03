@@ -205,7 +205,7 @@ ipcMain.on('maximize', (e, args) => {
 
 //done with initial setup tell DaemonManager to start
 ipcMain.on('initialSetup', (e, args) => {
-	//settings.set('settings.initialSetup', true);
+	settings.set('settings.initialSetup', true);
 	daemonManager.startDaemonChecker();
 })
 ipcMain.on('close', (e, args) => {
