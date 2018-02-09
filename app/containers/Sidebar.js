@@ -15,13 +15,17 @@ class Sidebar extends Component {
     window.addEventListener('resize', this.resize)
   }
 
+  checkPopupActive(){
+    return !this.props.unlocking && !this.props.sendingEcc && !this.props.creatingAddress && !this.props.exportingPrivateKeys && !this.props.importingPrivateKey && !this.props.changingPassword;
+  }
+
   resize(){
     if($( window ).width() >= 1024){
       $('.sidebar').css('left', '0px');
       $('.my_wrapper').css('padding-left', '224px');
       this.props.setSidebarHidden(false);
       $('.miniButton').css('left', '-10px');
-      if(!this.props.unlocking && !this.props.sendingEcc && !this.props.creatingAddress && !this.props.exportingPrivateKeys){
+      if(this.checkPopupActive()){
         TweenMax.to($('.mancha'), 0.3, { autoAlpha:0, ease: Linear.easeNone});
         TweenMax.set($('.mancha'), { zIndex:11});
       }
@@ -30,7 +34,7 @@ class Sidebar extends Component {
       $('.sidebar').css('left', '-224px');
       $('.my_wrapper').css('padding-left', '0px');
       this.props.setSidebarHidden(true);
-      if(!this.props.unlocking && !this.props.sendingEcc && !this.props.creatingAddress && !this.props.exportingPrivateKeys){
+      if(this.checkPopupActive()){
         TweenMax.to($('.mancha'), 0.3, { autoAlpha:0, ease: Linear.easeNone});
         TweenMax.set($('.mancha'), { zIndex:11});
       }
@@ -68,7 +72,7 @@ class Sidebar extends Component {
         });
       $('.miniButton').on('click', function(){
         var offset = $('.sidebar').offset().left;
-        if(offset < 0 && !self.props.unlocking && !self.props.sendingEcc && !self.props.creatingAddress){
+        if(offset < 0 && this.checkPopupActive()){
           if(self.props.settings)
             self.props.setSettings(false);
           $('.sidebar').css('left', '0px');
@@ -76,7 +80,7 @@ class Sidebar extends Component {
           TweenMax.set($('.mancha'), {css: {display: "block"}})
           TweenMax.fromTo($('.mancha'), 0.3, {autoAlpha:0}, { autoAlpha:1, ease: Linear.easeNone});
         }
-        else if(!self.props.unlocking && !self.props.sendingEcc && !self.props.creatingAddress){
+        else if(this.checkPopupActive()){
           $('.sidebar').css('left', '-224px');
           $('.my_wrapper').css('padding-left', '0px');
           TweenMax.to($('.mancha'), 0.3, { autoAlpha:0, ease: Linear.easeNone});
@@ -127,8 +131,8 @@ class Sidebar extends Component {
     let send = require('../../resources/images/send-blue.png');
     let addresses = require('../../resources/images/addresses-blue.png');
     let transactions = require('../../resources/images/transactions-blue.png');
-    let fileStorage = require('../../resources/images/fileStorage-blue.png');
-    let messaging = require('../../resources/images/messaging-blue.png');
+    let fileStorage = require('../../resources/images/fileStorage-default.png');
+    let messaging = require('../../resources/images/messaging-default.png');
     let contacts = require('../../resources/images/contacts-blue.png');
 
     if(this.props.walletHovered || this.props.walletSelected && !this.props.settings){
@@ -229,7 +233,9 @@ const mapStateToProps = state => {
     connections: state.chains.connections,
     paymentChainSync: state.chains.paymentChainSync,
     settings: state.application.settings,
-    exportingPrivateKeys: state.application.exportingPrivateKeys
+    exportingPrivateKeys: state.application.exportingPrivateKeys,
+    importingPrivateKey: state.application.importingPrivateKey,
+    changingPassword: state.application.changingPassword
   };
 };
 

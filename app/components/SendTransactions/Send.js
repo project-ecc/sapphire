@@ -7,6 +7,7 @@ import * as actions from '../../actions';
 import {TweenMax} from "gsap";
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import $ from 'jquery';
+const tools = require('../../utils/tools')
 
 class Send extends Component {
   constructor(props) {
@@ -33,40 +34,24 @@ class Send extends Component {
     TweenMax.set('#addressSend', {autoAlpha: 1});
   }
 
-  highlightAmountError(duration){
-      TweenMax.to('#inputAmountSend', 0.3, {css:{borderBottom: "2px solid #d09128"}});
-      TweenMax.to('#inputAmountSend', 0.3, {css:{borderBottom: "2px solid #1c2340"}, delay: duration});
-  }
-
-  highlightAddressError(duration){
-      TweenMax.to('#inputAddressSend', 0.3, {css:{borderBottom: "2px solid #d09128"}});
-      TweenMax.to('#inputAddressSend', 0.3, {css:{borderBottom: "2px solid #1c2340"}, delay: duration});
-  }
-
-  animateMessage(text){
-      $('#message').text(text)
-      TweenMax.fromTo('#message', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
-      TweenMax.to('#message', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
-  }
-
   confirmSend() {
     var self = this;
     if(this.props.amount == "" || Number(this.props.amount) == 0){
-      this.highlightAmountError(1);
+      tools.highlightInput('#inputAmountSend', 1)
     }
     if(this.props.address == ""){
-      this.highlightAddressError(1);
+      tools.highlightInput('#inputAddressSend', 1)
     }
     if(this.props.address != "" && this.props.amount != "" && Number(this.props.amount) > 0){
       if(this.props.amount > this.props.balance){
-        this.animateMessage("Not enough balance");
-        this.highlightAmountError(3);
+        tools.showTemporaryMessage('#message', "Not enough balance");
+        tools.highlightInput('#inputAmountSend', 2.1)
       }
       else{
         this.wallet.validate(this.props.address).then((isAddressValid) => {
         if (!isAddressValid.isvalid) {
-          self.animateMessage("Invalid address");
-          self.highlightAddressError(3);
+          tools.showTemporaryMessage('#message', "Invalid address");
+          tools.highlightInput('#inputAddressSend', 2.1)
         } else {
           self.props.setSendingECC(true);
         }
@@ -116,8 +101,8 @@ class Send extends Component {
             Send
             </div>
           </div>
-          <TransitionGroup>
-             { this.props.sending ? <SendConfirmation/> : null}
+          <TransitionGroup component={"article"}>
+             { this.props.sending ? <SendConfirmation showMessage={this.animateMessage}/> : null}
           </TransitionGroup>
       </div>
     );

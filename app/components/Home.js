@@ -19,6 +19,7 @@ class Home extends Component {
     super(props);
     this.processStakingClicked = this.processStakingClicked.bind(this);
     this.lockWallet = this.lockWallet.bind(this);
+    this.getEarnings = this.getEarnings.bind(this);
   }
 
   componentDidMount() {
@@ -34,6 +35,31 @@ class Home extends Component {
   }
 
   lockWallet(){
+    tools.updateConfig(0);
+    var self = this;
+    var batch = [];
+    var obj = {
+      method: 'reloadconfig', parameters: ["staking"],
+      method: 'walletlock', parameters: []
+    }
+    batch.push(obj)
+
+    wallet.command(batch).then((data) => {
+      console.log("data: ", data)
+      data = data[0];
+     if (data !== null && data.code === 'ECONNREFUSED') {
+        console.log("daemong ain't working mate :(")
+      } else if (data === null) {
+        self.props.setStaking(false);
+      } else {
+        console.log("error unlocking wallet: ", data)
+      }
+    }).catch((err) => {
+      console.log("err unlocking wallet: ", err);
+    });
+  }
+
+  lockWallet(){
     var self = this;
     wallet.walletlock().then((data) => {
         if (data === null) {
@@ -46,15 +72,89 @@ class Home extends Component {
       });
   }
 
+  earningsFilterClicked(filter){
+    this.props.setFilterEarningsTime(filter);    
+  }
+
+  earningsTypeFilterClicked(filter){
+    this.props.setFilterEarningsType(filter);    
+  }
+
+  expensesFilterClicked(filter){
+    this.props.setFilterExpensesTime(filter);    
+  }
+
+  expensesTypeFilterClicked(filter){
+    this.props.setFilterExpensesType(filter);    
+  }
+
+  getEarnings(){
+    //filter all
+    if(this.props.allTimeEarningsSelected && this.props.allEarningsSelected)
+      return this.props.fileStorageAllTimeEarnings + this.props.stakingAllTimeEarnings;
+    else if(this.props.monthEarningsSelected && this.props.allEarningsSelected)
+      return this.props.fileStorageMonthEarnings + this.props.stakingMonthEarnings;
+    else if(this.props.weekEarningsSelected && this.props.allEarningsSelected)
+      return this.props.fileStorageWeekEarnings + this.props.stakingWeekEarnings;
+    //filter file storage
+    else if(this.props.fileStorageEarningsSelected && this.props.allTimeEarningsSelected)
+      return this.props.fileStorageAllTimeEarnings;
+    else if(this.props.fileStorageEarningsSelected && this.props.monthEarningsSelected)
+      return this.props.fileStorageMonthEarnings;
+    else if(this.props.fileStorageEarningsSelected && this.props.weekEarningsSelected)
+      return this.props.fileStorageWeekEarnings;
+    //filter staking
+    else if(this.props.stakingEarningsSelected && this.props.allTimeEarningsSelected)
+      return this.props.stakingAllTimeEarnings;
+    else if(this.props.stakingEarningsSelected && this.props.monthEarningsSelected)
+      return this.props.stakingMonthEarnings;
+    else if(this.props.stakingEarningsSelected && this.props.weekEarningsSelected)
+      return this.props.stakingWeekEarnings;
+  }
+
+  getExpenses(){
+    //filter all
+    if(this.props.allTimeExpensesSelected && this.props.allExpensesSelected)
+      return this.props.fileStorageAllTimeExpenses + this.props.messagingAllTimeExpenses + this.props.ansAllTimeExpenses;
+    else if(this.props.monthExpensesSelected && this.props.allExpensesSelected)
+      return this.props.fileStorageMonthExpenses + this.props.messagingMonthExpenses + this.props.ansMonthExpenses;
+    else if(this.props.weekExpensesSelected && this.props.allExpensesSelected)
+      return this.props.fileStorageWeekExpenses + this.props.messagingWeekExpenses + this.ansWeekExpenses;
+    //filter file storage
+    else if(this.props.fileStorageExpensesSelected && this.props.allTimeExpensesSelected)
+      return this.props.fileStorageAllTimeExpenses;
+    else if(this.props.fileStorageExpensesSelected && this.props.monthExpensesSelected)
+      return this.props.fileStorageMonthExpenses;
+    else if(this.props.fileStorageExpensesSelected && this.props.weekExpensesSelected)
+      return this.props.fileStorageWeekExpenses;
+    //filter messaging
+    else if(this.props.messagingExpensesSelected && this.props.allTimeExpensesSelected)
+      return this.props.messagingAllTimeExpenses;
+    else if(this.props.messagingExpensesSelected && this.props.monthExpensesSelected)
+      return this.props.messagingMonthExpenses;
+    else if(this.props.messagingExpensesSelected && this.props.weekExpensesSelected)
+      return this.props.messagingWeekExpenses;
+    //filter ans
+    else if(this.props.ansExpensesSelected && this.props.allTimeExpensesSelected)
+      return this.props.ansAllTimeExpenses;
+    else if(this.props.ansExpensesSelected && this.props.monthExpensesSelected)
+      return this.props.ansMonthExpenses;
+    else if(this.props.ansExpensesSelected && this.props.weekExpensesSelected)
+      return this.props.ansWeekExpenses;
+  }
+
   render() {
-    let fileStorage = require('../../resources/images/fileStorage-blue.png');
-    if(this.props.fileStorageEarnings)
-      fileStorage = require('../../resources/images/fileStorage-orange.png');
-    let messaging = require('../../resources/images/messaging-blue.png');
-    if(this.props.fileStorageEarnings)
-      fileStorage = require('../../resources/images/messaging-orange.png');
-    const stakingEarningsColor = this.props.stakingEarnings ? "#aeacf3" : "#85899e";
-    const allEarningsColor = this.props.allEarnings ? "#aeacf3" : "#85899e";
+    let fileStorageEarnings = require('../../resources/images/fileStorage-default.png');
+    if(this.props.fileStorageEarningsSelected)
+      fileStorageEarnings = require('../../resources/images/fileStorage-blue.png');
+
+    let fileStorageExpenses = require('../../resources/images/fileStorage-default.png');
+    if(this.props.fileStorageExpensesSelected)
+      fileStorageExpenses = require('../../resources/images/fileStorage-blue.png');
+
+    let messaging = require('../../resources/images/messaging-default.png');
+    if(this.props.messagingExpensesSelected)
+      messaging = require('../../resources/images/messaging-blue.png');
 
     return (
         <div id ="homeSections">
@@ -91,16 +191,16 @@ class Home extends Component {
                   <div id="earningsFirst">
                     <p className="normalWeight" style={{fontSize: "20px"}}>Earnings</p>
                   </div> 
-                    <img style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={fileStorage}/>
-                    <p style = {{color: stakingEarningsColor}} className="earningsFilters"> Staking </p>
-                    <p style = {{color: allEarningsColor}} className="earningsFilters"> All</p>
+                    <img onClick={this.earningsTypeFilterClicked.bind(this, "fileStorage")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={fileStorageEarnings}/>
+                    <p onClick={this.earningsTypeFilterClicked.bind(this, "staking")} style = {{color: this.props.stakingEarningsSelected ? "#aeacf3" : "#85899e"}} className="earningsFilters"> Staking </p>
+                    <p onClick={this.earningsTypeFilterClicked.bind(this, "all")} style = {{color: this.props.allEarningsSelected ? "#aeacf3" : "#85899e"}} className="earningsFilters"> All</p>
                 </div>
               </div>    
               <div className="col-sm-4 text-center"  style={{padding: "0 0"}}>
-                  <p className="normalWeight" style={{fontSize: "20px", position: "relative", top: "60px"}}>0 <span className="ecc">ecc</span></p>
-                    <p style = {{color: stakingEarningsColor}} className="earningsFiltersDate"> 7 days </p>
-                    <p style = {{color: stakingEarningsColor}} className="earningsFiltersDate"> Last Month </p>
-                    <p style = {{color: allEarningsColor}} className="earningsFiltersDate"> All</p>
+                  <p className="normalWeight" style={{fontSize: "20px", position: "relative", top: "60px"}}>{tools.formatNumber(this.getEarnings())} <span className="ecc">ecc</span></p>
+                    <p onClick={this.earningsFilterClicked.bind(this, "week")} style = {{color: this.props.weekEarningsSelected ? "#aeacf3" : "#85899e"}} className="earningsFiltersDate">Last Week</p>
+                    <p onClick={this.earningsFilterClicked.bind(this, "month")} style = {{color: this.props.monthEarningsSelected ? "#aeacf3" : "#85899e"}} className="earningsFiltersDate">Last Month</p>
+                    <p onClick={this.earningsFilterClicked.bind(this, "allTime")} style = {{color: this.props.allTimeEarningsSelected ? "#aeacf3" : "#85899e"}} className="earningsFiltersDate"> All</p>
               </div>        
             </div>
           </div>
@@ -112,24 +212,24 @@ class Home extends Component {
                   <div id="earningsFirst">
                     <p className="normalWeight" style={{fontSize: "20px"}}>Expenses</p>
                   </div> 
-                    <img style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={messaging}/>
-                    <img style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={fileStorage}/>
-                    <p style = {{color: stakingEarningsColor}} className="earningsFilters"> ANS </p>
-                    <p style = {{color: allEarningsColor}} className="earningsFilters"> All</p>
+                    <img onClick={this.expensesTypeFilterClicked.bind(this, "messaging")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={messaging}/>
+                    <img onClick={this.expensesTypeFilterClicked.bind(this, "fileStorage")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={fileStorageExpenses}/>
+                    <p onClick={this.expensesTypeFilterClicked.bind(this, "ans")} style = {{color: this.props.ansExpensesSelected ? "#aeacf3" : "#85899e"}} className="earningsFilters"> ANS </p>
+                    <p onClick={this.expensesTypeFilterClicked.bind(this, "all")} style = {{color: this.props.allExpensesSelected ? "#aeacf3" : "#85899e"}} className="earningsFilters"> All</p>
                 </div>
               </div>    
               <div className="col-sm-4 text-center"  style={{padding: "0 0"}}>
                   <p className="normalWeight" style={{fontSize: "20px", position: "relative", top: "60px"}}>0 <span className="ecc">ecc</span></p>
-                    <p style = {{color: stakingEarningsColor}} className="earningsFiltersDate"> 7 days </p>
-                    <p style = {{color: stakingEarningsColor}} className="earningsFiltersDate"> Last Month </p>
-                    <p style = {{color: allEarningsColor}} className="earningsFiltersDate"> All</p>
+                    <p onClick={this.expensesFilterClicked.bind(this, "week")} style = {{color: this.props.weekExpensesSelected ? "#aeacf3" : "#85899e"}} className="earningsFiltersDate">Last Week</p>
+                    <p onClick={this.expensesFilterClicked.bind(this, "month")} style = {{color: this.props.monthExpensesSelected ? "#aeacf3" : "#85899e"}} className="earningsFiltersDate">Last Month</p>
+                    <p onClick={this.expensesFilterClicked.bind(this, "allTime")} style = {{color: this.props.allTimeExpensesSelected ? "#aeacf3" : "#85899e"}} className="earningsFiltersDate"> All</p>
               </div>  
               <div className="col-sm-4  text-center"  style={{padding: "0 0"}}>
                   <p className="normalWeight" style={{fontSize: "16px", paddingTop: "15px"}}>Next Payments</p>
               </div>           
             </div>
           </div>
-          <TransitionGroup>
+          <TransitionGroup component={"article"}>
              { this.props.unlocking ? <UnlockWallet/> : null}
           </TransitionGroup>
         </div>
@@ -140,14 +240,48 @@ class Home extends Component {
 const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
-    staking: state.chains.staking,
+    staking: state.chains.isStaking,
     balance: tools.formatNumber(state.chains.balance),
-    allEarnings: true,
-    fileStorageEarnings: false,
-    stakingEarnings: false,
-    sevenDaysEarnings: false,
-    monthEarnings: false,
-    allTimeEarnings: true,
+
+    //Earnings stuff
+    allEarningsSelected: state.earningsExpenses.allEarningsSelected,
+    fileStorageEarningsSelected: state.earningsExpenses.fileStorageEarningsSelected,
+    stakingEarningsSelected: state.earningsExpenses.stakingEarningsSelected,
+
+    weekEarningsSelected: state.earningsExpenses.weekEarningsSelected,
+    monthEarningsSelected: state.earningsExpenses.monthEarningsSelected,
+    allTimeEarningsSelected: state.earningsExpenses.allTimeEarningsSelected,
+
+    stakingAllTimeEarnings: state.application.totalStakingRewards,
+    stakingWeekEarnings: state.application.lastWeekStakingRewards,
+    stakingMonthEarnings: state.application.lastMonthStakingRewards,
+
+    fileStorageAllTimeEarnings: state.application.totalFileStorageRewards,
+    fileStorageWeekEarnings: state.application.lastWeekFileStorageRewards,
+    fileStorageMonthEarnings: state.application.lastMonthFileStorageRewards,
+
+    //Expenses stuff
+    allExpensesSelected: state.earningsExpenses.allExpensesSelected,
+    fileStorageExpensesSelected: state.earningsExpenses.fileStorageExpensesSelected,
+    messagingExpensesSelected: state.earningsExpenses.messagingExpensesSelected,
+    ansExpensesSelected: state.earningsExpenses.ansExpensesSelected,
+
+    weekExpensesSelected: state.earningsExpenses.weekExpensesSelected,
+    monthExpensesSelected: state.earningsExpenses.monthExpensesSelected,
+    allTimeExpensesSelected: state.earningsExpenses.allTimeExpensesSelected,
+
+    messagingAllTimeExpenses: state.application.totalmessagingExpenses,
+    messagingWeekExpenses: state.application.lastWeekmessagingExpenses,
+    messagingMonthExpenses: state.application.lastMonthStakingExpenses,
+
+    fileStorageAllTimeExpenses: state.application.totalFileStorageExpenses,
+    fileStorageWeekExpenses: state.application.lastWeekFileStorageExpenses,
+    fileStorageMonthExpenses: state.application.lastMonthFileStorageExpenses,
+
+    ansAllTimeExpenses: state.application.totalAnsExpenses,
+    ansWeekExpenses: state.application.lastWeekAnsExpenses,
+    ansMonthExpenses: state.application.lastMonthAnsExpenses,
+
     unlocking: state.application.unlocking
   };
 };

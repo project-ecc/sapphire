@@ -9,6 +9,8 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import ExportPrivateKeys from '../components/SettingsPage/ExportPrivateKeys';
+import ImportPrivateKey from '../components/InitialSetupPage/ImportPrivateKey';
+import ChangePassword from '../components/SettingsPage/ChangePassword';
 
 const settings = require('electron-settings');
 
@@ -40,7 +42,6 @@ class App extends Component<Props> {
     let minimizeToTray = false;
     let minimizeOnClose = false;
     const ds = settings.get('settings.display');
-
     //TODO can't really be undefined
     if(ds == undefined) return;
 
@@ -71,8 +72,14 @@ class App extends Component<Props> {
           <TransitionGroup component={"section"}>
             {this.props.settings ? <Settings/> : null}
           </TransitionGroup>
-          <TransitionGroup>
+          <TransitionGroup  component={"article"}> 
            { this.props.exportingPrivateKeys ? <ExportPrivateKeys/> : null}
+          </TransitionGroup>
+          <TransitionGroup  component={"aside"}>
+           { this.props.importingPrivateKey ? <ImportPrivateKey notInitialSetup = {true}/> : null}
+          </TransitionGroup>
+          <TransitionGroup  component={"aside"}>
+           { this.props.changingPassword ? <ChangePassword/> : null}
           </TransitionGroup>
         </div>
       </div>
@@ -85,6 +92,8 @@ class App extends Component<Props> {
     this.props.setSettings(!this.props.settings);
     this.props.setExportingPrivateKeys(false);
     this.props.setPanelExportingPrivateKeys(1);
+    this.props.setImportingPrivateKey(false);
+    this.props.setChangingPassword(false);
     TweenMax.to($('.mancha'), 0.2, { autoAlpha:0, ease: Linear.easeNone});
   }
 
@@ -100,8 +109,6 @@ class App extends Component<Props> {
     ipcRenderer.send('close');
   }
   render() {
-    console.log("loader ", this.props.loader)
-    console.log(this.props.setupDone, this.props.initialSetup, this.props.partialInitialSetup)
     const minimize = require('../../resources/images/minimize.png');
     const maximize = require('../../resources/images/maximize.png');
     const close = require('../../resources/images/close.png');
@@ -153,7 +160,9 @@ const mapStateToProps = state => {
     //had to add this for production, otherwise clicking on sidebar would not cause the tab to change (no idea why)
     pathname: state.router.location.pathname,
     settings: state.application.settings,
-    exportingPrivateKeys: state.application.exportingPrivateKeys
+    exportingPrivateKeys: state.application.exportingPrivateKeys,
+    importingPrivateKey: state.application.importingPrivateKey,
+    changingPassword: state.application.changingPassword
   };
 };
 

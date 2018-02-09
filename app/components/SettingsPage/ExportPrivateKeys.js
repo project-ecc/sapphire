@@ -8,6 +8,9 @@ import Wallet from '../../utils/wallet';
 import { ipcRenderer } from 'electron';
 var fs = require('fs');
 var jsPDF = require('jsPDF');
+import CloseButtonPopup from '../Others/CloseButtonPopup';
+import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
+const tools = require('../../utils/tools')
 
 class ExportPrivateKeys extends React.Component {
  constructor() {
@@ -37,24 +40,15 @@ class ExportPrivateKeys extends React.Component {
   }
   
   componentDidEnter(callback) {
-    const el = this.refs.second;
-    TweenMax.set($('.mancha'), {css: {display: "block"}})
-    TweenMax.fromTo($('.mancha'), 0.3, {autoAlpha:0}, { autoAlpha:1, ease: Linear.easeNone});
-    TweenMax.fromTo(el, 0.3, {css: {top: "-50%", opacity:0}}, {css: {top: "22%", opacity:1}, ease: Linear.easeOut, onComplete: callback});
+    tools.animatePopupIn(this.refs.second, callback, "22%");
   }
 
   componentWillLeave (callback) {
-    const el = this.refs.second;
-    TweenMax.to($('.mancha'), 0.3, { autoAlpha:0, ease: Linear.easeNone});
-    TweenMax.fromTo(el, 0.3, {css: {top: "22%", opacity:1}}, {css: {top: "-50%", opacity:0}, ease: Linear.easeIn, onComplete: callback});
+    tools.animatePopupOut(this.refs.second, callback)
   }
 
   showWrongPassword(){
-    TweenMax.to('#wrongPassword', 0.2, {autoAlpha: 1, scale: 1, onComplete: () => {
-      setTimeout(() => {
-        TweenMax.to('#wrongPassword', 0.2, {autoAlpha: 0, scale: 0.5});
-      }, 2000)
-    }});
+    tools.showTemporaryMessage('#wrongPassword');
   }
 
   
@@ -86,7 +80,7 @@ class ExportPrivateKeys extends React.Component {
       TweenMax.to('#passwordPanel', 0.3, {x: "-100%"})
       TweenMax.to('#setLocationPanel', 0.3, {x: "-100%"})
       this.props.setPanelExportingPrivateKeys(this.props.panelNumber+1);
-      $('#nextButton').text("Export");
+      $('#confirmButtonPopup').text("Export");
     }
     else if(this.props.panelNumber == 2){
       this.export();
@@ -268,7 +262,7 @@ class ExportPrivateKeys extends React.Component {
     const self = this;
     ipcRenderer.on('locationSelected', (event, arg) => {
       if(arg != undefined){
-        $('#nextButton').text("Export");
+        $('#confirmButtonPopup').text("Export");
         $('#selectedlocation').text(arg);
         if(self.tween !== undefined)
           self.tween.kill();
@@ -283,7 +277,7 @@ class ExportPrivateKeys extends React.Component {
   getLocationToExportPanel(){
     return(
       <div id="setLocationPanel" style={{position: "absolute", left:"100%", width: "100%", top: "52px"}}>
-        <p style={{fontSize: "17px", color:"#b4b7c8", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"15px", textAlign: "left"}}>
+        <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"25px", textAlign: "left"}}>
          The exported PDF has all your public and private keys. In this format:
         </p>
         <p style={{color:"#555d77", fontWeight: "600"}}>{`<Public Address>`}</p>
@@ -299,16 +293,12 @@ class ExportPrivateKeys extends React.Component {
     };
      return (
       <div ref="second" id="unlockPanel" style={{height: "300px", top: "22%", overflowX: "hidden"}}>
+        <CloseButtonPopup handleClose={this.handleCancel}/>
         <p style={{fontSize: "18px", color:"#b4b7c8", paddingTop: "20px"}}>Export Private Keys</p>
         {this.getPasswordPanel()}
         {this.getLocationToExportPanel()}
         {this.getExportingPanel()}
-        <div onClick={this.handleCancel} className="buttonUnlock" style={{background: "-webkit-linear-gradient(top, #7f7f7f 0%,#4d4d4d 100%)", color: "#d9daef", bottom: "10px", left:"100px"}}>
-          Cancel
-        </div>
-        <div id="nextButton" onClick={this.handlePanels} className="buttonUnlock" style={{background: "-webkit-linear-gradient(top, rgb(214, 167, 91) 0%, rgb(162, 109, 22) 100%)", color: "#d9daef", bottom: "10px", left:"300px"}}>
-          Next
-        </div>
+        <ConfirmButtonPopup handleConfirm={this.handlePanels} text="Next"/>
       </div>
       );
     } 

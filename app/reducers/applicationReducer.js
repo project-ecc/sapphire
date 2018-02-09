@@ -1,40 +1,120 @@
 import {
-		UNLOCKING,
-		PASSWORD_UNLOCK,
-		ADDRESS_SEND,
-		AMOUNT_SEND,
-		NAME_SEND,
-		SENDING_ECC,
-		TRANSACTIONS_PAGE,
-		TRANSACTIONS_REQUESTING,
-		NEW_ADDRESS_NAME,
-		USER_ADDRESSES,
-		ADDRESS_CREATE_ANS,
-		SELECTED_ADDRESS,
-		CREATING_ADDRESS,
-		NEW_ADDRESS_ACCOUNT,
-		NEW_CONTACT_NAME,
-		NEW_CONTACT_ADDRESS,
-		HOVERED_ADDRESS,
-		CONTACTS,
-		SETTINGS,
-		TRAY,
-		START_AT_LOGIN,
-		MINIMIZE_TO_TRAY,
-		MINIMIZE_ON_CLOSE,
-		EXPORT_PRIVATE_KEYS,
-		PANEL_EXPORT_PRIVATE_KEYS,
-		LOCATION_TO_EXPORT,
-		FILTER_OWN_ADDRESSES,
-		BACKUP_OPERATION_COMPLETED
+	UNLOCKING,
+	PASSWORD_UNLOCK,
+	ADDRESS_SEND,
+	AMOUNT_SEND,
+	NAME_SEND,
+	SENDING_ECC,
+	TRANSACTIONS_PAGE,
+	TRANSACTIONS_REQUESTING,
+	NEW_ADDRESS_NAME,
+	USER_ADDRESSES,
+	ADDRESS_CREATE_ANS,
+	SELECTED_ADDRESS,
+	CREATING_ADDRESS,
+	NEW_ADDRESS_ACCOUNT,
+	NEW_CONTACT_NAME,
+	NEW_CONTACT_ADDRESS,
+	HOVERED_ADDRESS,
+	CONTACTS,
+	SETTINGS,
+	TRAY,
+	START_AT_LOGIN,
+	MINIMIZE_TO_TRAY,
+	MINIMIZE_ON_CLOSE,
+	EXPORT_PRIVATE_KEYS,
+	PANEL_EXPORT_PRIVATE_KEYS,
+	LOCATION_TO_EXPORT,
+	FILTER_OWN_ADDRESSES,
+	BACKUP_OPERATION_COMPLETED,
+	INDEXING_TRANSACTIONS,
+	STAKING_REWARD,
+	STAKING_REWARD_UPDATE,
+	PENDING_TRANSACTION,
+	IMPORTING_PRIVATE_KEY,
+	CHANGING_PASSWORD
 } from '../actions/types';
 
 
-const INITIAL_STATE = {unlocking: false, password: "", userNameToSend: "", amountSend: "", addressSend: "", sendingEcc: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, newAddressName: "", newAddressAccount: "", friends: [], userAddresses: [], creatingAnsAddress: true, selectedAddress: undefined, creatingAddress: false, newContactName: "", newContactAddress:"", hoveredAddress: undefined, settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, exportingPrivateKeys: false, panelExportPrivateKey: 1, locationToExport: "", filterAllOwnAddresses: true, filterNormalOwnAddresses: false, filterAnsOwnAddresses: false, backupOperationCompleted: false}
+const INITIAL_STATE = {unlocking: false, password: "", userNameToSend: "", amountSend: "", addressSend: "", sendingEcc: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, newAddressName: "", newAddressAccount: "", friends: [], userAddresses: [], creatingAnsAddress: true, selectedAddress: undefined, creatingAddress: false, newContactName: "", newContactAddress:"", hoveredAddress: undefined, settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, exportingPrivateKeys: false, panelExportPrivateKey: 1, locationToExport: "", filterAllOwnAddresses: true, filterNormalOwnAddresses: false, filterAnsOwnAddresses: false, backupOperationCompleted: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, totalFileStorageRewards: 0, lastWeekFileStorageRewards: 0,lastMonthFileStorageRewards: 0, pendingTransactions: [], importingPrivateKey: false, changingPassword: false, wasStaking: false}
 
 export default(state = INITIAL_STATE, action) => {
     if(action.type == UNLOCKING){
 		return {...state, unlocking: action.payload}
+	}
+	else if(action.type == WAS_STAKING){
+		return {...state, wasStaking: true}
+	}
+	else if(action.type == IMPORTING_PRIVATE_KEY){
+		return {...state, importingPrivateKey: action.payload}
+	}
+	else if(action.type == CHANGING_PASSWORD){
+		return {...state, changingPassword: action.payload}
+	}
+	//update staking transactions (last week and last month)
+	else if(action.type == STAKING_REWARD_UPDATE){
+		var timeOneMonthAgo = GetDateOneMonthAgo();
+		var timeOneWeekAgo = GetDateOneWeekAgo();
+		var stakingRewards = state.stakingRewards;
+		var rewardsLastMonth = 0;
+		var rewardsLastWeek = 0;
+		stakingRewards.map((transaction) => {
+			if(transaction.time >= timeOneMonthAgo)
+				rewardsLastMonth += transaction.amount;
+			if(transaction.time >= timeOneWeekAgo)
+				rewardsLastWeek += transaction.amount;
+		})
+		return {...state, lastWeekStakingRewards: rewardsLastWeek, lastMonthStakingRewards: rewardsLastMonth};
+	}
+	else if(action.type == STAKING_REWARD){
+
+		var timeOneMonthAgo = GetDateOneMonthAgo();
+		var timeOneWeekAgo = GetDateOneWeekAgo();
+		//we get this the first time we load the transactions or when we load them from memory
+		if(action.payload instanceof Array){
+			var rewardsLastMonth = 0;
+			var rewardsLastWeek = 0;
+			var totalRewards = 0;
+			action.payload.map((transaction) => {
+				if(transaction.time >= timeOneMonthAgo)
+					rewardsLastMonth += transaction.amount;
+				if(transaction.time >= timeOneWeekAgo)
+					rewardsLastWeek += transaction.amount;
+				totalRewards += transaction.amount;
+			})
+
+			return {...state, stakingRewards: action.payload, totalStakingRewards: totalRewards, lastWeekStakingRewards: rewardsLastWeek, lastMonthStakingRewards: rewardsLastMonth};
+		}
+		//else its just one entry
+		else{
+			var transaction = action.payload;
+			var stakingRewards = state.stakingRewards;
+			stakingRewards.unshift(action.payload);
+			var rewardsLastMonth = state.lastMonthStakingRewards;
+			var rewardsLastWeek = state.lastWeekStakingRewards;
+			var totalRewards = state.totalStakingRewards;
+
+			if(transaction.time >= timeOneMonthAgo)
+				rewardsLastMonth += transaction.amount;
+			if(transaction.time >= timeOneWeekAgo)
+				rewardsLastWeek += transaction.amount;
+			totalRewards += transaction.amount;
+
+			return {...state, stakingRewards: stakingRewards, totalStakingRewards: totalRewards, lastWeekStakingRewards: rewardsLastWeek, lastMonthStakingRewards: rewardsLastMonth};
+		}
+	}
+	else if(action.type == PENDING_TRANSACTION){
+		var pendingTransactions = state.pendingTransactions;
+		if(action.payload instanceof Array){
+			pendingTransactions = action.payload;
+		}
+		else{
+			pendingTransactions.push(action.payload);
+		}
+		return {...state, pendingTransactions: pendingTransactions}
+	}
+	else if(action.type == INDEXING_TRANSACTIONS){
+		return {...state, indexingTransactions: action.payload}
 	}
 	else if(action.type == FILTER_OWN_ADDRESSES){
 
@@ -129,4 +209,20 @@ export default(state = INITIAL_STATE, action) => {
 		return {...state, settings: action.payload}
 	}
 	return state;
+}
+
+function GetDateOneMonthAgo(){
+	var d = new Date();
+	d.setMonth(d.getMonth() - 1);
+	d.setHours(0, 0, 0);
+	d.setMilliseconds(0);
+	return d/1000|0;
+}
+
+function GetDateOneWeekAgo(){
+	var d = new Date();
+	d.setDate(d.getDate() - 7);
+	d.setHours(0, 0, 0);
+	d.setMilliseconds(0);
+	return d/1000|0;
 }

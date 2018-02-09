@@ -5,8 +5,10 @@ import {TweenMax} from "gsap";
 import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
 import Wallet from '../utils/wallet';
-
+const tools = require('../utils/tools')
 const wallet = new Wallet();
+import CloseButtonPopup from './Others/CloseButtonPopup';
+import ConfirmButtonPopup from './Others/ConfirmButtonPopup';
 
 class UnlockWallet extends React.Component {
  constructor() {
@@ -31,30 +33,23 @@ class UnlockWallet extends React.Component {
   }
   
   componentDidEnter(callback) {
-    const el = this.refs.second;
-    TweenMax.set($('.mancha'), {css: {display: "block"}})
-    TweenMax.fromTo($('.mancha'), 0.3, {autoAlpha:0}, { autoAlpha:1, ease: Linear.easeNone});
-    TweenMax.fromTo(el, 0.3, {css: {top: "-50%", opacity:0}}, {css: {top: "30%", opacity:1}, ease: Linear.easeOut, onComplete: callback});
+    tools.animatePopupIn(this.refs.second, callback, "30%");
   }
 
   componentWillLeave (callback) {
-    const el = this.refs.second;
-    TweenMax.fromTo($('.mancha'), 0.3, {autoAlpha:1}, { autoAlpha:0, ease: Linear.easeNone});
-    TweenMax.fromTo(el, 0.3, {css: {top: "30%", opacity:1}}, {css: {top: "-50%", opacity:0}, ease: Linear.easeIn, onComplete: callback});
+    tools.animatePopupOut(this.refs.second, callback)
   }
 
   showWrongPassword(){
-    TweenMax.to('#wrongPassword', 0.2, {autoAlpha: 1, scale: 1, onComplete: () => {
-      setTimeout(() => {
-        TweenMax.to('#wrongPassword', 0.2, {autoAlpha: 0, scale: 0.5});
-      }, 2000)
-    }});
+    tools.showTemporaryMessage('#wrongPassword');
   }
 
   unlockWallet(){
+    tools.updateConfig(1);
     var self = this;
     var batch = [];
     var obj = {
+      method: 'reloadconfig', parameters: ["staking"],
       method: 'walletpassphrase', parameters: [this.props.passwordVal, 31556926, true]
     }
     batch.push(obj)
@@ -95,6 +90,11 @@ class UnlockWallet extends React.Component {
   }
 
   handleConfirm(){
+    if(this.props.passwordVal == ""){
+      this.showWrongPassword();
+      this.props.setPassword("");
+      return;
+    }
     this.unlockWallet();
   }
 
@@ -108,18 +108,14 @@ class UnlockWallet extends React.Component {
     };
      return (
       <div ref="second" id="unlockPanel">
+        <CloseButtonPopup handleClose={this.handleCancel}/>
         <p style={{fontSize: "18px", color:"#b4b7c8", paddingTop: "20px"}}>Unlock your wallet</p>
         <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "left", margin: "0 auto", paddingTop: "20px"}}>This process unlocks your wallet for staking. You will still be required to enter a password to send <span className="ecc">ECC</span>.</p>
         <input className="privateKey" type="password" style={{width: "400px", position: "relative", top: "20px", color:"#b4b7c8", margin: "0 0", marginBottom: "30px"}} value={this.props.passwordVal} onChange={this.handleChange} autoFocus></input>
         <div>
           <p id="wrongPassword" style= {{position: "absolute", width: "100%", color: "#d09128", visibility: "hidden"}}>Wrong password</p>
         </div>
-        <div onClick={this.handleCancel} className="buttonUnlock" style={{background: "-webkit-linear-gradient(top, #7f7f7f 0%,#4d4d4d 100%)", color: "#d9daef", bottom: "10px", left:"100px"}}>
-          Cancel
-        </div>
-        <div onClick={this.handleConfirm} className="buttonUnlock" style={{background: "-webkit-linear-gradient(top, rgb(214, 167, 91) 0%, rgb(162, 109, 22) 100%)", color: "#d9daef", bottom: "10px", left:"300px"}}>
-          Confirm
-        </div>
+        <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm"/>
       </div>
       );
     } 

@@ -151,7 +151,7 @@ class Receive extends Component {
     return (
       <div className="sendPanel" style={{height: "100%", width: "100%", paddingLeft: "40px", paddingRight: "40px", overflowX: "hidden"}}>
         <div style={{textAlign: "center", position: "relative", top: "25px", fontSize: "14px", fontWeight:"600"}}>
-        <p onClick={this.handleChangeAddressCreationToAns} style={{display: "inline-block", color: this.props.ansAddress ? "#aeacf3" : "#555d77", cursor: "pointer"}}>ANS</p><span style={{position: "relative", padding: "0px 20px", color:"#555d77"}}>/</span><p onClick={this.handleChangeAddressCreationToNormal} style={{display: "inline-block", cursor: "pointer", color: this.props.ansAddress ?"#555d77" : "#aeacf3"}}>Normal Address</p>
+        <p onClick={this.handleChangeAddressCreationToAns} style={{display: "inline-block", color: this.props.ansAddress ? "#aeacf3" : "#555d77", cursor: "pointer"}}>ANS</p><span style={{padding: "0px 20px", color:"#555d77"}}>/</span><p onClick={this.handleChangeAddressCreationToNormal} style={{display: "inline-block", cursor: "pointer", color: this.props.ansAddress ?"#555d77" : "#aeacf3"}}>Normal Address</p>
         </div>
         <div id="inputAddress" style={{width: "750px", margin: "0 auto", position: "relative", marginTop:"60px"}}>
           <div style={{display: "inline-block", width: "70%", position: "relative"}}>

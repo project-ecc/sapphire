@@ -8,6 +8,6 @@ const db = low(app.getPath('userData') + '/transactionsInfo.json', {
     storage
 });
 	
-db.defaults({addresses: [], done: false, processedUpTo: "", processedFrom: ""}).write();
+db.defaults({addresses: [], info: {done: false, processedUpTo: 0, processedFrom: 0}}).write();
 
 export default db;

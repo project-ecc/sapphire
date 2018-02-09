@@ -50,11 +50,28 @@ p{
   padding: 0 0;
 }
 
+.ecc{
+  color: #d09128;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */
     -webkit-appearance: none;
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+article{
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  left: 0px;
+}
+
+aside{
+  position: fixed;
+  z-index: 100;
+  text-align: center;
 }
 
 #topBar{
@@ -80,6 +97,25 @@ input::-webkit-inner-spin-button {
   font-size: 23px;
 }
 
+.closeButtonPopup{
+  border-radius: 50%; 
+  width: 30px; 
+  height: 30px; 
+  border: 2px solid #6a6c75; 
+  position: absolute; 
+  right: 15px; 
+  top: 15px; 
+  cursor: pointer;
+}
+
+.closeButtonPopup:hover{
+  background-color: #0f1223;
+}
+
+.closeButtonPopup span{
+  top: -1px;
+  position: relative;
+}
 .normalWeight{
   font-weight: normal;
 }

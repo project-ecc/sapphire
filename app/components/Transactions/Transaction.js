@@ -59,15 +59,15 @@ class Transaction extends Component {
   renderStatus(opt) {
     if (opt === 0) {
       return (
-        <span style={{position: "relative"}} className="desc_p">{lang.pending}</span>
+        <span className="desc_p">{lang.pending}</span>
       );
     } else if (opt > 0) {
       return (
-        <span style={{position: "relative"}} className="desc_c ecc">{lang.confirmed}</span>
+        <span className="desc_c ecc">{lang.confirmed}</span>
       );
     } else if (opt < 0) {
       return (
-        <span style={{position: "relative"}} className="desc_o">{lang.orphaned}</span>
+        <span className="desc_o">{lang.orphaned}</span>
       );
     }
   }
@@ -196,10 +196,6 @@ class Transaction extends Component {
               || (self.props.type == -1 && t.confirmations < 0)){
                 if(self.props.type == "generate" && t.amount == 0) return null;
                 counter++;
-                let cr = '';
-                if (index % 2 === 0) {
-                  cr = 'stripped';
-                }
                 const iTime = new Date(t.time * 1000);
 
                 let delta = Math.abs(today.getTime() - iTime.getTime()) / 1000;
@@ -254,33 +250,33 @@ class Transaction extends Component {
                 return (
                   <div className="row normalWeight" style={{cursor: "pointer", fontSize: "15px", color: "#9099b7", minHeight: "40px", backgroundColor: counter % 2 != 0 ? "transparent" : "#1b223d"}} key={`transaction_${index}_${t.txid}`} onClick={self.rowClicked.bind(self, index)}>
                     <div className="col-sm-6 transactionAddress" style={{paddingLeft: "4%", paddingTop: "9px"}}>
-                      <p style={{ margin: '0px' }}><span style={{position: "relative"}}>{category}</span><span style={{position: "relative"}} className="desc2 transactionAddress"> ({t.address})</span></p>
+                      <p style={{ margin: '0px' }}><span>{category}</span><span className="desc2 transactionAddress"> ({t.address})</span></p>
                     </div>
                     <div className="col-sm-2" style={{paddingTop: "9px"}}>
-                      <p style={{ margin: '0px' }}><span style={{position: "relative"}}>{t.amount} ecc</span></p>
+                      <p style={{ margin: '0px' }}><span>{t.amount} ecc</span></p>
                     </div>
                     <div className="col-sm-2" style={{paddingTop: "9px"}}>
                       <p style={{ margin: '0px' }}>{self.renderStatus(t.confirmations)}</p>
                     </div>
                     <div className="col-sm-2" style={{paddingTop: "9px"}}>
-                      <p style={{ margin: '0px' }}><span style={{position: "relative"}}>{time}</span></p>
+                      <p style={{ margin: '0px' }}><span>{time}</span></p>
                     </div>
                     <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{paddingLeft: "4%", width: "100%", paddingTop: "11px", paddingBottom: "11px", cursor:"default", zIndex:"2"}}>
                       <div className="col-sm-8">
-                        <p style={{ margin: '5px 0px 0px 0px' }}><span style={{position: "relative", color: "#555d77", fontWeight: "600"}} className="desc2">{lang.dateString}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span style={{position: "relative"}} className="desc3">{(new Date(t.time * 1000)).toString()}</span></p>
+                        <p style={{ margin: '5px 0px 0px 0px' }}><span style={{color: "#555d77", fontWeight: "600"}} className="desc2">{lang.dateString}</span></p>
+                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{(new Date(t.time * 1000)).toString()}</span></p>
                       </div>
                       <div className="col-sm-4">
-                        <p style={{ margin: '5px 0px 0px 0px' }}><span style={{position: "relative", color: "#555d77", fontWeight: "600"}} className="desc2">{lang.confirmations}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span style={{position: "relative"}} className="desc3">{t.confirmations}</span></p>
+                        <p style={{ margin: '5px 0px 0px 0px' }}><span style={{color: "#555d77", fontWeight: "600"}} className="desc2">{lang.confirmations}</span></p>
+                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{t.confirmations}</span></p>
                       </div>
                       <div className="col-sm-8">
-                        <p style={{ margin: '5px 0px 0px 0px' }}><span style={{position: "relative", color: "#555d77", fontWeight: "600"}} className="desc2">{lang.transactionId}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span style={{position: "relative"}} className="desc3 transactionId">{t.txid}</span></p>
+                        <p style={{ margin: '5px 0px 0px 0px' }}><span style={{color: "#555d77", fontWeight: "600"}} className="desc2">{lang.transactionId}</span></p>
+                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 transactionId">{t.txid}</span></p>
                       </div>
                       <div className="col-sm-4">
-                        <p style={{ margin: '5px 0px 0px 0px' }}><span style={{position: "relative", color: "#555d77", fontWeight: "600"}} className="desc2">{lang.transactionFee}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span style={{position: "relative"}} className="desc3">...</span></p>
+                        <p style={{ margin: '5px 0px 0px 0px' }}><span style={{color: "#555d77", fontWeight: "600"}} className="desc2">{lang.transactionFee}</span></p>
+                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">...</span></p>
                       </div>
                     </div>
                   </div>

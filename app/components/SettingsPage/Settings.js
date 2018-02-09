@@ -9,6 +9,9 @@ import { traduction, language } from '../../lang/lang';
 import { ipcRenderer } from 'electron';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import os from 'os';
+import Wallet from '../../utils/wallet';
+
+
 const remote = require('electron').remote;
 const dialog = remote.require('electron').dialog;
 const app = remote.app;
@@ -25,6 +28,10 @@ class Settings extends Component {
     this.onItemClick = this.onItemClick.bind(this);
     this.handleExportPrivateKeys = this.handleExportPrivateKeys.bind(this);
     this.onClickBackupLocation = this.onClickBackupLocation.bind(this);
+    this.backupWallet = this.backupWallet.bind(this);
+    this.handleImportPrivateKey = this.handleImportPrivateKey.bind(this);
+    this.handleChangePasswordClicked = this.handleChangePasswordClicked.bind(this);
+    this.wallet = new Wallet();
   }
 
   componentDidMount(){
@@ -121,6 +128,22 @@ class Settings extends Component {
     this.props.setExportingPrivateKeys(!this.props.exportingPrivateKeys)
   }
 
+  backupWallet(location){
+    var self = this;
+    this.wallet.command([{
+      method: 'backupwallet', parameters: [location]
+    }
+    ]).then((data) => {
+      if (data[0] === null) {
+        self.props.setBackupOperationCompleted(true);
+      } else {
+        console.log("error backing up wallet: ", data)
+      }
+    }).catch((err) => {
+      console.log("exception backing up wallet: ", err)
+    });
+  }
+
   onClickBackupLocation() {
     const self = this;
     dialog.showOpenDialog({
@@ -132,30 +155,17 @@ class Settings extends Component {
       const platform = os.platform();
       let walletpath;
 
-      if (platform.indexOf('win') > -1) {
-        walletpath = `${app.getPath('appData')}/eccoin/wallet.dat`;
-      } else {
-        walletpath = `${app.getPath('home')}/.eccoin/wallet.dat`;
-      }
-
-      fs.readFile(walletpath, (err, data) => {
-        if (err) {
-          console.log(err)
-          return;
-        }
-
-        fs.writeFile(`${folderPaths}/walletBackup.dat`, data, (err) => {
-          if (err) {
-            console.log(err)
-            return;
-          }
-          else{
-            self.props.setBackupOperationCompleted(true);
-          }
-        
-        });
-      });
+      var backupLocation = `${folderPaths}/walletBackup.dat`;
+      this.backupWallet(backupLocation);
     });
+  }
+
+  handleImportPrivateKey(){
+    this.props.setImportingPrivateKey(true);
+  }
+
+  handleChangePasswordClicked(){
+    this.props.setChangingPassword(true);
   }
 
   render() {
@@ -175,6 +185,31 @@ class Settings extends Component {
                 <p className="buttonTransaction" onClick={this.handleExportPrivateKeys} style={{padding: "6px 9px", fontSize:"15px", bottom:"auto"}}>Export Private Keys</p>
               </div>  
             </div>  
+            <p style={{color: "#b4b7c8", fontSize: "21px"}}>Wallet</p>
+            <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
+              <div className="col-sm-10 text-left">
+                <p style={{color: "#555d77", fontWeight:"600"}}>Password</p>
+              </div>
+              <div className="col-sm-2 text-center">
+              <p onClick={this.handleChangePasswordClicked} style={{cursor: "pointer"}}>Change</p>
+              </div>
+            </div>
+            <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
+              <div className="col-sm-10 text-left">
+                <p style={{color: "#555d77", fontWeight:"600"}}>RPC Credentials</p>
+              </div>
+              <div className="col-sm-2 text-center">
+              <p style={{cursor: "pointer"}}>Change</p>
+              </div>
+            </div>
+            <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
+              <div className="col-sm-10 text-left">
+                <p style={{color: "#555d77", fontWeight:"600"}}>Private Key</p>
+              </div>
+              <div className="col-sm-2 text-center">
+              <p onClick={this.handleImportPrivateKey} style={{cursor: "pointer"}}>Add</p>
+              </div>
+            </div>
             <p style={{color: "#b4b7c8", fontSize: "21px"}}>General</p>
             <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
               <div className="col-sm-10 text-left">

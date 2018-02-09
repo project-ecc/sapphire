@@ -71,11 +71,11 @@ class NetworkStats extends Component {
 
         </svg>
         <div>
-          <img style={{height: "21px",position: "relative"}} src={imageConnections}></img>
+          <img style={{height: "21px"}} src={imageConnections}></img>
           <span style={{position: "relative", left:"9px", fontSize:"20px", top:"3px", fontWeight: "400"}}>{connections}</span>
         </div>
-        <p style={{fontSize:"14px", color:"#555d77", marginTop:"15px"}}>Headers: <span style={{fontSize:"16px", position:"relative"}}>{headers}</span></p>
-        <p style={{fontSize:"14px", color:"#555d77", marginTop:"15px"}}>Block <span style={{fontSize:"16px", position:"relative"}}>{block}</span> of <span style={{fontSize:"16px", position:"relative"}}>{headers}</span></p>
+        <p style={{fontSize:"14px", color:"#555d77", marginTop:"15px"}}>Headers: <span style={{fontSize:"16px"}}>{headers}</span></p>
+        <p style={{fontSize:"14px", color:"#555d77", marginTop:"15px"}}>Block <span style={{fontSize:"16px"}}>{block}</span> of <span style={{fontSize:"16px"}}>{headers}</span></p>
       </div>
     )
   }

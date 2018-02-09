@@ -71,6 +71,7 @@ class Loader extends React.Component {
 	t.fromTo('#third', 2, {autoAlpha: 0, scale: 0.90}, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%',ease: Power4.easeNone, delay: 0.3}, 0)
 	t.fromTo('#forth', 2, {autoAlpha: 0, scale: 0.90}, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%', ease: Power4.easeNone, delay: 0.3}, 0)
 	t.fromTo('#logo1', 2, {autoAlpha: 1}, {autoAlpha: 0, delay: 0.3}, 0)
+	t.timeScale(2);
   }
 
   componentDidMount(){
@@ -186,7 +187,7 @@ class Loader extends React.Component {
 			</svg>
 			<div id="loaderText" style={{marginTop: "15px"}}>
 				<div id="blockIndexLoad">
-					<p id="loading" style={{fontSize: "45px", fontWeight: "bold", color: "#1f2642"}}>Loading {this.props.blockIndexPaymentPercentage}<span style={{position: "relative", fontSize: "35px"}}>%</span></p>
+					<p id="loading" style={{fontSize: "45px", fontWeight: "bold", color: "#1f2642"}}>Loading {this.props.blockIndexPaymentPercentage}<span style={{fontSize: "35px"}}>%</span></p>
 				</div>
 				<p style={{marginTop: "-50px", fontWeight:"300", visibility:"hidden"}} id="gettingReady"> Hello, we are getting a few things ready...</p>
 				<p style={{marginTop: "-33px", visibility:"hidden"}} id="updatingApp">We are updating your application...</p>

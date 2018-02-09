@@ -75,25 +75,25 @@ class InitialSetup extends Component {
             <p style={{fontWeight:"200"}} id="welcome">
              {this.props.lang.welcome}
            </p>
-           <TransitionGroup>
+           <TransitionGroup component={"article"}>
                { this.props.step == 1 ? <LanguageSelector/> : null}
             </TransitionGroup>
-            <TransitionGroup>
+            <TransitionGroup component={"article"}>
                { this.props.step == 2 ? <ThemeSelector/> : null}
             </TransitionGroup>
-            <TransitionGroup>
+            <TransitionGroup component={"article"}>
                { this.props.step == 3 && this.props.totalSteps == 4 ? <ImportWallet/> : null}
             </TransitionGroup>
-            <TransitionGroup>
-               { this.props.step == 4 && this.props.totalSteps == 4 && !this.props.importedWalletVal ? <ImportPrivateKey/> : null}
+            <TransitionGroup component={"article"}>
+               { this.props.step == 4 && this.props.totalSteps == 4 && !this.props.importedWalletVal ? <ImportPrivateKey notInitialSetup = {false}/> : null}
             </TransitionGroup>
-            <TransitionGroup>
+            <TransitionGroup component={"article"}>
                { (this.props.step == 4 && this.props.importedWalletVal) || (this.props.step == 3 && this.props.totalSteps == 2) ? <EncryptWallet checkEncrypted = {this.props.importedWalletVal || this.props.totalSteps == 2}/> : null}
             </TransitionGroup>
-            <TransitionGroup>
+            <TransitionGroup component={"article"}>
                { this.props.step == 5 && !this.props.importedWalletVal ? <EncryptWallet checkEncrypted = {this.props.importedWalletVal}/> : null}
             </TransitionGroup>
-            <TransitionGroup>
+            <TransitionGroup component={"article"}>
                { this.props.step == 6 || (this.props.step == 5 && this.props.importedWalletVal) || (this.props.step == 4 && this.props.totalSteps == 2) ? <SetupDone/> : null}
             </TransitionGroup>
           </div>

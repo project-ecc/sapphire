@@ -20,7 +20,7 @@ class SetupDone extends React.Component {
       <div>
         <p style={{marginTop: "30px", fontSize: "21px", fontWeight:"300"}}>Setup done!</p>
         <p style={{marginTop: "30px", fontSize: "21px", fontWeight:"300"}}>Your wallet is now going to sync to the blockchain. <br></br>This process takes some time, please be patient.</p>
-        <p style={{marginTop: "50px", fontSize: "21px", fontWeight:"300"}}>Thank you for chosing <span style={{position: "relative", color: "orange"}}>ECC</span>!</p>
+        <p style={{marginTop: "50px", fontSize: "21px", fontWeight:"300"}}>Thank you for chosing <span className="ecc">ECC</span>!</p>
       </div>
     )
   }
@@ -29,7 +29,7 @@ class SetupDone extends React.Component {
     return(
       <div>
         <p style={{marginTop: "30px", fontSize: "21px", fontWeight:"300", marginTop:"55px"}}>Setup done!</p>
-        <p style={{marginTop: "50px", fontSize: "21px", fontWeight:"300"}}>Thank you for chosing <span style={{position: "relative", color: "orange"}}>ECC</span>!</p>
+        <p style={{marginTop: "50px", fontSize: "21px", fontWeight:"300"}}>Thank you for chosing <span className="ecc">ECC</span>!</p>
       </div>
     )
   }

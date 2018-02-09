@@ -37,11 +37,6 @@
   overflow: hidden;
 }
 
-.ecc{
-  color: #d09128;
-  position: relative; 
-}
-
 *, *:before, *:after {
   box-sizing: border-box;
 }

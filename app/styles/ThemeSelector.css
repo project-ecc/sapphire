@@ -34,10 +34,3 @@
 #darkTheme:hover, #lightTheme:hover{
   opacity: 1;
 }
-
-span{
-  position: absolute;
-  text-align: center;
-  width: 100%;
-  left: 0px;
-}
