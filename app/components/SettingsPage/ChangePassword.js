@@ -4,8 +4,9 @@ import * as actions from '../../actions';
 import {TweenMax, TimelineMax} from "gsap";
 import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
-import Wallet from '../../utils/wallet';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
+import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
+import Input from '../Others/input';
 const tools = require('../../utils/tools')
 
 class ChangePassword extends React.Component {
@@ -13,7 +14,7 @@ class ChangePassword extends React.Component {
     super();
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
-    this.wallet = new Wallet();
+    this.changePassword = this.changePassword.bind(this);
   }
   
  componentWillAppear (callback) {
@@ -29,6 +30,7 @@ class ChangePassword extends React.Component {
   }
   
   componentDidEnter(callback) {
+    tools.readRpcCredentials();
     tools.animatePopupIn(this.refs.pointer, callback, "22%");
   }
 
@@ -40,6 +42,11 @@ class ChangePassword extends React.Component {
     tools.showTemporaryMessage('#wrongPassword');
   }
 
+  componentWillUnmount(){
+    this.props.setPassword("");
+    this.props.passwordConfirmation("");
+    this.props.setNewPassword("");
+  }
   
   componentDidLeave(callback) {
   }  
@@ -48,14 +55,71 @@ class ChangePassword extends React.Component {
 
   }
 
-  handlePasswordChange(event, type) {
-    if(type == 1)
-      this.props.setPassword(event.target.value);
-    else if(type == 2)
-      this.props.passwordConfirmation(event.target.value)
+  handlePasswordChange(event) {
+    let pw = event.target.value;
+    if(pw.length == 0){
+      TweenMax.set('#enterPassword', {autoAlpha: 1});
+    }
+    else 
+      TweenMax.set('#enterPassword', {autoAlpha: 0});
+    
+    this.props.setPassword(pw);
+  }
+
+  handlePasswordConfirmationChange(event){
+    let pw = event.target.value;
+    if(pw.length == 0){
+      TweenMax.set('#enterPasswordRepeat', {autoAlpha: 1});
+    }
+    else 
+      TweenMax.set('#enterPasswordRepeat', {autoAlpha: 0});
+
+    this.props.passwordConfirmation(pw)
+  }
+
+  handleNewPasswordChange(event){
+    let pw = event.target.value;
+    if(pw.length == 0){
+      TweenMax.set('#enterPasswordConfirmation', {autoAlpha: 1});
+    }
+    else 
+      TweenMax.set('#enterPasswordConfirmation', {autoAlpha: 0});
+
+    this.props.setNewPassword(pw)
+  }
+
+  changePassword(){
+    var self = this;
+    var wasStaking = this.props.isStaking;
+    this.props.wallet.walletChangePassphrase(this.props.passwordVal, this.props.newPassword).then((data)=>{
+      if(data == null){
+        if(wasStaking){
+
+        }
+        tools.showTemporaryMessage('#wrongPassword', "Operation Successfull!");
+        setTimeout(()=>{
+          self.props.setChangingPassword(false)
+        }, 2000)
+      }
+      else if(data.code && data.code == -14){
+        tools.showTemporaryMessage('#wrongPassword', "Wrong Password");
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
   }
 
   handleConfirm(){
+    if(this.props.passwordVal == "" || this.props.passwordValConfirmation == "" || this.props.newPassword == ""){
+      tools.showTemporaryMessage('#wrongPassword', 'Please fill all fields');
+    }
+    else if(this.props.passwordVal != this.props.passwordValConfirmation){
+      tools.showTemporaryMessage('#wrongPassword', "Passwords don't match");
+    }
+    else{
+      this.changePassword();
+    }
   }
 
   handleCancel(){
@@ -67,13 +131,38 @@ class ChangePassword extends React.Component {
       fill: this.props.bgColor
     };
      return (
-      <div ref="pointer" id="unlockPanel" style={{height: "300px", top: "22%", overflowX: "hidden"}}>
+      <div ref="pointer" id="unlockPanel" style={{height: "305px", top: "22%", overflowX: "hidden"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
-        <p style={{fontSize: "18px", color:"#b4b7c8", paddingTop: "20px"}}>Change Password</p>
-        <div style={{position:"relative", width:"300px", margin:"0 auto"}}>
-          <p id="enterPasswordRepeat" style={{position:"absolute",top: "2px", width: "300px", textAlign: "center", color: "#555d77", fontSize: "15px", fontWeight: "600", zIndex:"-1"}}>Current Password</p>
-          <input className="privateKey passwordInput" style={{marginBottom: "10px", color: "#555d77", fontSize: "15px", fontWeight: "600"}} type="text" value={this.props.passwordVal} onChange={this.handleConfirmationPassword}></input>
-        </div>
+        <p className="popupTitle">Change Password</p>
+        <Input 
+          divStyle={{marginTop: "45px", width: "300px"}}
+          placeholder= "Current Password"
+          placeholderId="enterPassword"
+          value={this.props.passwordVal}
+          handleChange={this.handlePasswordChange.bind(this)}
+          type="password"
+          inputStyle={{width: "300px"}}
+        />
+        <Input 
+          divStyle={{marginTop: "20px", width: "300px"}}
+          placeholder= "Repeat Password"
+          placeholderId="enterPasswordRepeat"
+          value={this.props.passwordValConfirmation}
+          handleChange={this.handlePasswordConfirmationChange.bind(this)}
+          type="password"
+          inputStyle={{width: "300px"}}
+        />
+        <Input 
+          divStyle={{marginTop: "20px", width: "300px"}}
+          placeholder= "New Password"
+          placeholderId="enterPasswordConfirmation"
+          value={this.props.newPassword}
+          handleChange={this.handleNewPasswordChange.bind(this)}
+          type="password"
+          inputStyle={{width: "300px"}}
+        />
+        <p id="wrongPassword" className="wrongPassword" style= {{paddingTop:"10px"}}>Wrong password</p>
+        <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm"/>
       </div>
       );
     } 
@@ -84,8 +173,10 @@ const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
     passwordVal: state.application.password,
-    passwordValConfirmation: state.application.passwordConfirmation,
-    newPassword: state.application.newPassword
+    passwordValConfirmation: state.setup.confirmationPassword,
+    newPassword: state.application.newPassword,
+    isStaking: state.chains.isStaking,
+    wallet: state.application.wallet
   };
 };
 

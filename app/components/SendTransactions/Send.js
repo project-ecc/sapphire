@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import AddressBook from './AddressBook';
 import SendConfirmation from './SendConfirmation';
-import Wallet from '../../utils/wallet';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import $ from 'jquery';
+import Input from '../Others/input';
 const tools = require('../../utils/tools')
 
 class Send extends Component {
@@ -16,7 +16,6 @@ class Send extends Component {
     this.confirmSend = this.confirmSend.bind(this);
     this.handleChangeAmount = this.handleChangeAmount.bind(this);
     this.handleChangeAddress = this.handleChangeAddress.bind(this);
-    this.wallet = new Wallet();
   }
 
   componentDidMount(){
@@ -48,7 +47,7 @@ class Send extends Component {
         tools.highlightInput('#inputAmountSend', 2.1)
       }
       else{
-        this.wallet.validate(this.props.address).then((isAddressValid) => {
+        this.props.wallet.validate(this.props.address).then((isAddressValid) => {
         if (!isAddressValid.isvalid) {
           tools.showTemporaryMessage('#message', "Invalid address");
           tools.highlightInput('#inputAddressSend', 2.1)
@@ -87,18 +86,35 @@ class Send extends Component {
   render() {
     let clearButton = require('../../../resources/images/clearButton-orange.png');
     return (
-      <div className="sendPanel" style={{height: "100%", width: "100%", paddingLeft: "40px", paddingRight: "40px"}}>
+      <div className="panel">
         <AddressBook sendPanel={true}/>
-          <p id="message" style={{position: "relative", textAlign: "center", color: "#d09128", fontSize: "15px", visibility: "hidden", top: "65px"}}>Address copied below</p>
+          <p id="message">Address copied below</p>
           <div style={{width: "632px", margin: "0 auto"}}>
-            <p id="addressSend" style={{position:"relative",top: "85px", width: "80%", textAlign: "left", color: "#555d77", fontSize: "15px", fontWeight: "600", left: "2px"}}>ANS Name / Address</p>
-            <input id="inputAddressSend" value={this.props.address} onChange={this.handleChangeAddress} style={{fontWeight: "600", position:"relative", top: "60px", width: "80%", textAlign: "left", color: "#555d77", fontSize: "15px"}} className="privateKey" type="text"></input>
-            <img style={{position: "relative", top: "67px", left: "50%", marginLeft: "-38%", cursor: "pointer"}} onClick={this.handleClear} src={clearButton}/>
-
-            <p id="amountSend" style={{position:"relative",top: "60px", width: "80%", textAlign: "left", color: "#555d77", fontSize: "15px", fontWeight: "600", left: "2px"}}>Amount</p>
-            <input id="inputAmountSend" value={this.props.amount} onChange={this.handleChangeAmount} style={{fontWeight: "600", position:"relative",top: "30px", width: "80%", textAlign: "left", color: "#555d77", fontSize: "15px"}} className="privateKey" type="number"></input>
-            <div onClick={this.confirmSend} className="buttonUnlock" style={{fontWeight: "600", background: "-webkit-linear-gradient(top, rgb(214, 167, 91) 0%, rgb(162, 109, 22) 100%)", color: "#d9daef", display: "inline-block", textAlign: "center", position: "relative", top: "27px", left:"20px"}}>
-            Send
+            <Input 
+              divStyle={{display: "inline"}}
+              placeholder= "ANS Name / Address"
+              placeholderId="addressSend"
+              placeHolderClassName="sendPlaceholder"
+              value={this.props.address}
+              handleChange={this.handleChangeAddress.bind(this)}
+              type="text"
+              inputStyle={{top: "60px", width: "80%", textAlign: "left", marginBottom: "50px"}}
+              inputId="inputAddressSend"
+            />
+            <img id="clearButton" onClick={this.handleClear} src={clearButton}/>
+            <Input 
+              divStyle={{display: "inline"}}
+              placeholder= "Amount"
+              placeholderId="amountSend"
+              placeHolderClassName="sendPlaceholder sendPlaceholderAmount"
+              value={this.props.amount}
+              handleChange={this.handleChangeAmount.bind(this)}
+              type="text"
+              inputStyle={{top: "30px", width: "80%", textAlign: "left"}}
+              inputId="inputAmountSend"
+            />
+            <div onClick={this.confirmSend} className="buttonUnlock sendButton">
+              Send
             </div>
           </div>
           <TransitionGroup component={"article"}>
@@ -116,7 +132,8 @@ const mapStateToProps = state => {
     name: state.application.userNameToSend,
     amount: state.application.amountSend,
     sending: state.application.sendingEcc,
-    balance: state.chains.balance
+    balance: state.chains.balance,
+    wallet: state.application.wallet
   };
 };
 

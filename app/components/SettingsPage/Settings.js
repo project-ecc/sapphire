@@ -4,19 +4,19 @@ import connectWithTransitionGroup from 'connect-with-transition-group';
 import * as actions from '../../actions';
 import { connect } from 'react-redux';
 import $ from 'jquery';
-import ToggleButton from 'react-toggle';
-import { traduction, language } from '../../lang/lang';
 import { ipcRenderer } from 'electron';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import os from 'os';
-import Wallet from '../../utils/wallet';
-
-
+import SettingsToggle from './SettingsToggle';
+import SettingsSidebarItem from './SettingsSidebarItem';
+import LanguageSelector from '../Others/LanguageSelector';
+import ThemeSelector from '../Others/ThemeSelector';
 const remote = require('electron').remote;
 const dialog = remote.require('electron').dialog;
 const app = remote.app;
 const settings = require('electron-settings');
 const homedir = require('os').homedir();
+var open = require("open");
 
 class Settings extends Component {
   constructor(props) {
@@ -31,7 +31,7 @@ class Settings extends Component {
     this.backupWallet = this.backupWallet.bind(this);
     this.handleImportPrivateKey = this.handleImportPrivateKey.bind(this);
     this.handleChangePasswordClicked = this.handleChangePasswordClicked.bind(this);
-    this.wallet = new Wallet();
+    this.handleSidebarClicked = this.handleSidebarClicked.bind(this);
   }
 
   componentDidMount(){
@@ -39,7 +39,6 @@ class Settings extends Component {
   }
 
   handleResize(){
-    $('#settingsContainer').css("height", $(window).height()-135);
   }
 
   componentWillUnmount(){
@@ -50,28 +49,33 @@ class Settings extends Component {
     callback();
   }
   
-  componentDidAppear(e) {
-    console.log("componentDidAppear")
+  componentDidAppear() {
+    const el = this.refs.second;
+    TweenMax.fromTo(el, 0.2, {autoAlpha: 0, scale: 2.5}, {autoAlpha: 1, scale: 1, ease: Linear.easeNone});
   }
   
    componentWillEnter (callback) {
     const el = this.refs.second;
-    TweenMax.fromTo(el, 0.2, {y: document.body.clientHeight}, {y: 0,ease: Linear.easeNone, onComplete: callback});
+    TweenMax.fromTo(el, 0.2, {autoAlpha: 0, scale: 2.5}, {autoAlpha: 1, scale: 1, ease: Linear.easeNone, onComplete: callback});
   }
   
   componentDidEnter(callback) {
+    callback();
   }
 
   componentWillLeave (callback) {
-    const el = this.refs.second;
-    TweenMax.fromTo(el, 0.2, {y: 0}, {y: document.body.clientHeight, ease: Linear.easeNone, onComplete: callback});
+    console.log("componentWillLeave")
   }
   
   componentDidLeave(callback) {
+    console.log("componentWillLeave")
   }
 
-  componentWillReceiveProps(props){
-    console.log(props)
+  handleUpdateApplication(){
+    if(!this.props.updateAvailable){
+      return;
+    }
+    this.props.setUpdateApplication(true);
   }
 
   handleDropDownClicked(){
@@ -130,14 +134,16 @@ class Settings extends Component {
 
   backupWallet(location){
     var self = this;
-    this.wallet.command([{
+    this.props.wallet.command([{
       method: 'backupwallet', parameters: [location]
     }
     ]).then((data) => {
+      //Work on error handling
       if (data[0] === null) {
-        self.props.setBackupOperationCompleted(true);
+        this.props.setBackupOperationInProgress(false);
       } else {
         console.log("error backing up wallet: ", data)
+        this.props.setBackupOperationInProgress(false);
       }
     }).catch((err) => {
       console.log("exception backing up wallet: ", err)
@@ -145,14 +151,14 @@ class Settings extends Component {
   }
 
   onClickBackupLocation() {
-    const self = this;
+    if(this.props.backingUpWallet) return;
+    this.props.setBackupOperationInProgress(true);
     dialog.showOpenDialog({
       properties: ['openDirectory']
     }, (folderPaths) => {
       if (folderPaths === undefined) {
         return;
       }
-      const platform = os.platform();
       let walletpath;
 
       var backupLocation = `${folderPaths}/walletBackup.dat`;
@@ -168,152 +174,142 @@ class Settings extends Component {
     this.props.setChangingPassword(true);
   }
 
+  handleSidebarClicked(option){
+    this.props.setSettingsOptionSelected(option);
+  }
+
+  getGeneralSettings(){
+    return(
+      <div className="container">
+        <SettingsToggle 
+          text= "Start ECC on system login"
+          handleChange = {this.handleStartAtLogin}
+          checked = {this.props.startAtLogin}
+        />
+        <SettingsToggle 
+          text= "Hide tray icon"
+          handleChange = {this.setTrayIcon}
+          checked = {this.props.hideTrayIcon}
+        />
+        <SettingsToggle 
+          text= "Minimize to tray instead of the task bar"
+          handleChange = {this.handleMinimizeToTray}
+          checked = {this.props.minimizeToTray}
+        />
+        <SettingsToggle 
+          text= "Minimize on close"
+          handleChange = {this.handleMinimizeOnClose}
+          checked = {this.props.minimizeOnClose}
+        />
+        <div className="row settingsToggle">
+          <div className="col-sm-6 text-left removePadding">
+            <p>Application version</p>
+            <p id="applicationVersion">v0.1.4g & v1.1.2d</p>
+          </div>
+          <div className="col-sm-6 text-right removePadding">
+            <p onClick={this.handleUpdateApplication.bind(this)} id={this.props.updateAvailable ? "updateAvailable" : "updateUnavailable"}>{this.props.updateAvailable ? "Install Update" : "No update available"}</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  getWalletSettings(){
+    return(
+      <div>
+      <p id="walletBackup">Backup</p>
+        <p id="walletBackupExplanation">You should backup your wallet whenever you generate a new address. There are two ways to backup a wallet. One is by backing up a file named wallet.dat, which contains your private keys and gives you access to your addresses. The second and the safest method is by printing the private keys and storing them in a safe. Do not store the private keys in digital form, export them using the function below, print them and delete the file. If anyone gains access to your private keys they can access your ECC.</p>
+        <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
+          <div className="col-sm-6 text-center">
+            <p className="buttonTransaction settingsButtonBackup" onClick={this.onClickBackupLocation}>Backup wallet.dat</p>
+          </div>  
+          <div className="col-sm-6 text-center">
+            <p className="buttonTransaction settingsButtonBackup" onClick={this.handleExportPrivateKeys}>Export Private Keys</p>
+          </div>  
+        </div> 
+        <div className="container">
+          <div className="row settingsToggle">
+            <div className="col-sm-10 text-left removePadding">
+              <p className="walletBackupOptions">Password</p>
+            </div>
+            <div className="col-sm-2 text-right removePadding">
+            <p onClick={this.handleChangePasswordClicked} style={{cursor: "pointer"}}>Change</p>
+            </div>
+          </div>
+          <div className="row settingsToggle" >
+            <div className="col-sm-10 text-left removePadding">
+              <p className="walletBackupOptions">Private Key</p>
+            </div>
+            <div className="col-sm-2 text-right removePadding">
+            <p onClick={this.handleImportPrivateKey} style={{cursor: "pointer"}}>Import</p>
+            </div>
+          </div>
+        </div> 
+      </div>
+    )
+  }
+
+  goToTranslationPlatform(){
+    open("https://poeditor.com/join/project/p7WYAsLDSj");
+  }
+
+  getLanguageSettings(){
+    return(
+      <div className="container removePadding">
+        <div id="languageRectangle">
+          <p id="languageHelp">Help translate Sapphire</p>
+          <p id="languageHelpDesc">If your language is not available and you’d like to help us add it to Sapphire please visit our <span onClick={this.goToTranslationPlatform}>translation platform.</span></p>
+        </div>
+        <div className="row" id="settingsLanguageSelector">
+          <div className="col-sm-4 text-left">
+            <p >Language</p>
+          </div>
+          <div className="col-sm-8 text-right">
+            <LanguageSelector />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  getAppearanceSettings(){
+    return(
+      <div>
+        <p id="walletBackup">Theme</p>
+        <ThemeSelector />
+      </div>
+    )
+  }
+
+  getSettings(){
+    switch(this.props.settingsOptionSelected){
+      case "General": return this.getGeneralSettings();
+      case "Wallet": return this.getWalletSettings();
+      case "Language": return this.getLanguageSettings();
+      case "Appearance": return this.getAppearanceSettings();
+    }
+  }
+
   render() {
     return (
-      <div ref="second" id="settings" className="sendPanel" style={{position: "absolute", backgroundColor: "#181e35", top:"40px", height: "100%", width: "100%", paddingLeft: "40px", paddingRight: this.props.sidebarHidden ? "0px" : "224px", overflow:"hidden", zIndex: "10"}}>
-        <p style={{fontSize: "55px", color: "#1f2642", fontWeight: "bold", maxWidth: "775px", margin: "0 auto"}}>Settings</p>
-        <div id="settingsContainer" style={{height: $(window).height()-135, overflowX:"hidden", overflowY:"auto", width:"100%"}}>
-          <div style={{maxWidth: "725px", margin: "0 auto", marginTop:"20px"}}>
-            <p style={{color: "#555d77", fontSize: "18px", fontWeight: "600", lineHeight:"25px", marginTop: "10px", textAlign:"right", position:"relative", top:"-26px"}}>No update available</p>
-            <p style={{color: "#b4b7c8", fontSize: "21px"}}>Backup</p>
-            <p style={{color: "#555d77", fontSize: "18px", fontWeight: "600", lineHeight:"25px", marginTop: "10px", textAlign:"justify"}}>You should backup your wallet whenever you generate a new address. There are two ways to backup a wallet. One is by backing up a file named wallet.dat, which contains your private keys and gives you access to your addresses. The second and the safest method is by printing the private keys and storing them in a safe. Do not store the private keys in digital form, export them using the function below, print them and delete the file. If anyone gains access to your private keys they can access your ECC.</p>
-            <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
-              <div className="col-sm-6 text-center">
-                <p className="buttonTransaction" onClick={this.onClickBackupLocation} style={{padding: "6px 9px", fontSize:"15px", bottom:"auto"}}>Backup wallet.dat</p>
-              </div>  
-              <div className="col-sm-6 text-center">
-                <p className="buttonTransaction" onClick={this.handleExportPrivateKeys} style={{padding: "6px 9px", fontSize:"15px", bottom:"auto"}}>Export Private Keys</p>
-              </div>  
-            </div>  
-            <p style={{color: "#b4b7c8", fontSize: "21px"}}>Wallet</p>
-            <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
-              <div className="col-sm-10 text-left">
-                <p style={{color: "#555d77", fontWeight:"600"}}>Password</p>
-              </div>
-              <div className="col-sm-2 text-center">
-              <p onClick={this.handleChangePasswordClicked} style={{cursor: "pointer"}}>Change</p>
-              </div>
+      <div ref="second" id="settings" style={{position: "absolute", top:"40px", height: "100%", width: "100%"}}>
+        <div id="brigher">
+        </div>
+        <div id="darker">
+        </div>
+        <div id="mainSettingsColorFix">
+          <div id="settingsContainer">
+            <div id="sidebarSettings">
+              <p id="sidebarTitle">APP SETTINGS</p>
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "General")} selected={this.props.settingsOptionSelected == "General" ? true : false} text="General" />
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Wallet")} selected={this.props.settingsOptionSelected == "Wallet" ? true : false} text="Wallet" />
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Notifications")} selected={this.props.settingsOptionSelected == "Notifications" ? true : false} text="Notifications" />
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Appearance")} selected={this.props.settingsOptionSelected == "Appearance" ? true : false} text="Appearance" />
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Language")} selected={this.props.settingsOptionSelected == "Language" ? true : false} text="Language" />
             </div>
-            <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
-              <div className="col-sm-10 text-left">
-                <p style={{color: "#555d77", fontWeight:"600"}}>RPC Credentials</p>
-              </div>
-              <div className="col-sm-2 text-center">
-              <p style={{cursor: "pointer"}}>Change</p>
-              </div>
+            <div className="subSettings">
+              {this.getSettings()}
             </div>
-            <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
-              <div className="col-sm-10 text-left">
-                <p style={{color: "#555d77", fontWeight:"600"}}>Private Key</p>
-              </div>
-              <div className="col-sm-2 text-center">
-              <p onClick={this.handleImportPrivateKey} style={{cursor: "pointer"}}>Add</p>
-              </div>
-            </div>
-            <p style={{color: "#b4b7c8", fontSize: "21px"}}>General</p>
-            <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
-              <div className="col-sm-10 text-left">
-                <p style={{color: "#555d77", fontWeight:"600"}}>Start ECC on System Login</p>
-              </div>
-              <div className="col-sm-2 text-center">
-              <ToggleButton checked={this.props.startAtLogin}  onChange={() => {this.handleStartAtLogin(); }} />
-              </div>
-            </div>
-            <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
-              <div className="col-sm-10 text-left">
-                <p style={{color: "#555d77", fontWeight:"600"}}>Hide tray icon</p>
-              </div>
-              <div className="col-sm-2 text-center">
-              <ToggleButton checked={this.props.hideTrayIcon}  onChange={() => {this.setTrayIcon(); }} />
-              </div>
-            </div>
-            <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
-              <div className="col-sm-10 text-left">
-                <p style={{color: "#555d77", fontWeight:"600"}}>Minimize to tray instad of the task bar</p>
-              </div>
-              <div className="col-sm-2 text-center">
-              <ToggleButton checked={this.props.minimizeToTray}  onChange={() => {this.handleMinimizeToTray(); }} />
-              </div>
-            </div>
-            <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
-              <div className="col-sm-10 text-left">
-                <p style={{color: "#555d77", fontWeight:"600"}}>Minimize on close</p>
-              </div>
-              <div className="col-sm-2 text-center">
-              <ToggleButton checked={this.props.minimizeOnClose}  onChange={() => {this.handleMinimizeOnClose(); }} />
-              </div>
-            </div>
-            <p style={{color: "#b4b7c8", fontSize: "21px"}}>Language</p>
-            <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
-              <div className="col-sm-6 text-left">
-                <p style={{color: "#555d77", fontWeight:"600"}}>Select language</p>
-              </div>
-              <div className="col-sm-6 text-center">
-                <div style={{position:"relative"}}>
-                  <div className="dropdownLanguageSelector" style={{position:"absolute", right: "0px"}} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
-                    <div className="selectLanguageSelector">
-                      <p>{language()}</p>
-                      <i className="fa fa-chevron-down"></i>
-                    </div>
-                    <input type="hidden" name="gender"></input>
-                    <ul className="dropdown-menuLanguageSelector">
-                        <li onClick={this.onItemClick} data-id="bg">български (Bulgarian)</li>
-                        <li onClick={this.onItemClick} data-id="zh_cn">简体中文—中国 (Chinese - CN)</li>
-                        <li onClick={this.onItemClick} data-id="zh_hk">繁體中文-中華人民共和國香港特別行政區 (Chinese - HK)</li>
-                        <li onClick={this.onItemClick} data-id="nl">Nederlands (Dutch)</li>
-                        <li onClick={this.onItemClick} data-id="en">English</li>
-                        <li onClick={this.onItemClick} data-id="fr">Français (French)</li>
-                        <li onClick={this.onItemClick} data-id="de">Deutsch (German)</li>
-                        <li onClick={this.onItemClick} data-id="el">ελληνικά (Greek)</li>
-                        <li onClick={this.onItemClick} data-id="ko">한국어(Korean)</li>
-                        <li onClick={this.onItemClick} data-id="pl">Polski (Polish)</li>
-                        <li onClick={this.onItemClick} data-id="pt">Português (Portuguese)</li>
-                        <li onClick={this.onItemClick} data-id="ru">Русский язык (Russian)</li>
-                        <li onClick={this.onItemClick} data-id="sl">Slovenčina (Slovenian)</li>
-                        <li onClick={this.onItemClick} data-id="es">Español (Spanish)</li>
-                        <li onClick={this.onItemClick} data-id="tr">Türkçe (Turkish)</li>
-                        <li onClick={this.onItemClick} data-id="vn">Tiếng việt (Vietnamese)</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <p style={{color: "#b4b7c8", fontSize: "21px"}}>Theme</p>
-             <div id="themes" style={{position:"relative", marginTop:"30px", left:"-32px"}}>
-              <div className="themeSelector" id="darkTheme">
-               <div className="themes">
-                 <div className="theme">
-                  <div className="divSquare" style={{backgroundColor: "#d09128"}}></div>
-                  <div className="divSquare" style={{backgroundColor: "#21242a"}}></div>
-                  <div className="divSquare" style={{backgroundColor: "#333840"}}></div>
-                  <div className="divSquare" style={{backgroundColor: "#1e2544"}}></div>
-                 </div> 
-               </div>
-                 <p className="themeName">Dark</p>
-               </div>
-               <div className="themeSelector">
-               <div className="themes">
-                 <div className="theme">
-                  <div className="divSquare" style={{backgroundColor: "#d09128"}}></div>
-                  <div className="divSquare" style={{backgroundColor: "#14182f"}}></div>
-                  <div className="divSquare" style={{backgroundColor: "#c4c4d3"}}></div>
-                  <div className="divSquare" style={{backgroundColor: "#1e2544"}}></div>
-                 </div> 
-               </div>
-                 <p className="themeName">Default</p>
-               </div>
-               <div className="themeSelector" id="lightTheme">
-               <div className="themes">
-                 <div className="theme">
-                  <div className="divSquare" style={{backgroundColor: "#bbbbbb"}}></div>
-                  <div className="divSquare" style={{backgroundColor: "#17152a"}}></div>
-                  <div className="divSquare" style={{backgroundColor: "#de9b2b"}}></div>
-                  <div className="divSquare" style={{backgroundColor: "#ffffff"}}></div>
-                 </div> 
-               </div>
-                 <p className="themeName">Light</p>
-               </div>
-             </div>
           </div>
         </div>
       </div>
@@ -330,7 +326,10 @@ const mapStateToProps = state => {
     minimizeToTray: state.application.minimizeToTray,
     minimizeOnClose: state.application.minimizeOnClose,
     startAtLogin: state.application.startAtLogin,
-    backupCompleted: state.application.backupOperationCompleted
+    wallet: state.application.wallet,
+    updateAvailable: state.startup.guiUpdate || state.startup.daemonUpdate,
+    backingUpWallet: state.application.backingUpWallet,
+    settingsOptionSelected: state.application.settingsOptionSelected
   };
 };
 

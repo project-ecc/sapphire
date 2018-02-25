@@ -4,12 +4,12 @@ import * as actions from '../../actions';
 import {TweenMax, TimelineMax} from "gsap";
 import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
-import Wallet from '../../utils/wallet';
 import { ipcRenderer } from 'electron';
 var fs = require('fs');
 var jsPDF = require('jsPDF');
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
+import Input from '../Others/input';
 const tools = require('../../utils/tools')
 
 class ExportPrivateKeys extends React.Component {
@@ -22,9 +22,8 @@ class ExportPrivateKeys extends React.Component {
     this.handlePanels = this.handlePanels.bind(this);
     this.handleExportClick = this.handleExportClick.bind(this);
     this.generatePDF = this.generatePDF.bind(this);
-    this.lockWallet = this.lockWallet.bind(this);
     this.tween = undefined;
-    this.wallet = new Wallet();
+    this.toPrint = [];
   }
   
  componentWillAppear (callback) {
@@ -67,20 +66,13 @@ class ExportPrivateKeys extends React.Component {
     this.props.setPassword(event.target.value);
   }
 
-  handleConfirm(){
-    this.unlockWallet();
-  }
-
   handleCancel(){
     this.props.setExportingPrivateKeys(false)
   }
 
   handlePanels(){
     if(this.props.panelNumber == 1){
-      TweenMax.to('#passwordPanel', 0.3, {x: "-100%"})
-      TweenMax.to('#setLocationPanel', 0.3, {x: "-100%"})
-      this.props.setPanelExportingPrivateKeys(this.props.panelNumber+1);
-      $('#confirmButtonPopup').text("Export");
+      this.handleConfirm();
     }
     else if(this.props.panelNumber == 2){
       this.export();
@@ -116,9 +108,9 @@ class ExportPrivateKeys extends React.Component {
     return(
       <div id="passwordPanel" style={{position: "absolute", width: "100%", top: "70px"}}>
         <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px"}}>Please type your password</p>
-        <input className="privateKey" type="password" style={{width: "400px", position: "relative", top: "20px", color:"#b4b7c8", margin: "0 0", marginBottom: "30px"}} value={this.props.passwordVal} onChange={this.handleChange} autoFocus></input>
+        <input className="inputCustom" type="password" style={{width: "400px", top: "20px", marginBottom: "30px"}} value={this.props.passwordVal} onChange={this.handleChange} autoFocus></input>
         <div>
-          <p id="wrongPassword" style= {{position: "absolute", width: "100%", color: "#d09128", visibility: "hidden"}}>Wrong password</p>
+          <p id="wrongPassword" className="wrongPassword">Wrong password</p>
         </div>
       </div>
     )
@@ -133,75 +125,102 @@ class ExportPrivateKeys extends React.Component {
     )
   }
 
-  async export(){
+  handleConfirm(){
+    var self = this;
+    var wasStaking = this.props.staking;
+    this.unlockWallet(false, 5, async () => {
+      TweenMax.to('#passwordPanel', 0.3, {x: "-100%"})
+      TweenMax.to('#setLocationPanel', 0.3, {x: "-100%"})
+      this.props.setPanelExportingPrivateKeys(this.props.panelNumber+1);
+      $('#exportPrivKeyButton').text("Export");
+      await this.getDataToExport();
+
+      if(wasStaking){
+          self.unlockWallet(true, 31556926, () => {
+         });
+      }
+      else{ 
+        self.props.setStaking(false);
+      }
+      self.props.setPassword("");
+    })
+  }
+
+  async getDataToExport(){
     var accounts = await this.getAccounts();
     var addresses = await this.getAddressesOfAccounts(accounts);
-
     var batch = [];
-    var obj = {
-      method: 'walletpassphrase', parameters: ["24041991Cm$$ecc", 100]
+    for(var i = 0; i < addresses[0].length; i++){
+      batch.push({
+        method: 'dumpprivkey', parameters: [addresses[0][i]]
+      });
     }
-
-    batch.push(obj)
-
-    for(var i = 0; i < addresses.length; i++){
-      var obj = {
-        method: 'dumpprivkey', parameters: [addresses[i]]
-      }
-      batch.push(obj);
-    }
-
     var privKeys = await this.getPrivateKeys(batch);
-    var toPrint = [];
+    
     var counter = 1;
     var aux = [];
-    for(var i = 0; i < addresses.length; i++){
-      aux.push(addresses[i]); 
+    for(var i = 0; i < addresses[0].length; i++){
+
+      aux.push(addresses[0][i]); 
       aux.push(privKeys[i]);
       aux.push("");
       counter++;
-      if(counter == 24 || i == addresses.length - 1 ){
-        toPrint.push([]);
+      if(counter == 24 || i == addresses[0].length - 1 ){
+        this.toPrint.push([]);
         for(var j = 0; j < aux.length; j++)
-          toPrint[toPrint.length-1].push(aux[j]);
+          this.toPrint[this.toPrint.length-1].push(aux[j]);
         aux.length = 0;
         counter=1;
       }
     }
-    this.lockWallet();
-    this.generatePDF(toPrint);
   }
 
-  lockWallet(){
+  unlockWallet(flag, time, callback){
     var self = this;
-    this.wallet.walletlock().then((data) => {
-        if (data === null) {
-          self.props.setStaking(false);
-        } else {
-          console.log("error unlocking: ", data)
-        }
-      }).catch((err) => {
-        console.log("exception unlocking: ", err)
-      });
+    var batch = [];
+    var obj = {
+      method: 'walletpassphrase', parameters: [this.props.passwordVal, time, flag]
+    }
+    batch.push(obj)
+
+    this.props.wallet.command(batch).then((data) => {
+      data = data[0];
+      if (data !== null && data.code === -14) {
+        self.showWrongPassword();
+      } else if (data !== null && data.code === 'ECONNREFUSED') {
+          console.log("daemong ain't working mate :(")
+      } else if (data === null) {
+          callback();
+      } else {
+        console.log("error unlocking wallet: ", data)
+      }
+    }).catch((err) => {
+      console.log("err unlocking wallet: ", err);
+    });
   }
 
-  generatePDF(toPrint){
+  export(){
+    this.generatePDF();
+  }
+
+  generatePDF(){
     var doc = new jsPDF()
     doc.setFontSize(10);
-    doc.text(toPrint[0], 10, 10)
-    for(var i = 1; i < toPrint.length; i++){
+    doc.text(this.toPrint[0], 10, 10)
+    for(var i = 1; i < this.toPrint.length; i++){
       doc.addPage();
-      doc.text(toPrint[i], 10, 10)
+      doc.text(this.toPrint[i], 10, 10)
     }
     doc.save('printMe.pdf');
+    this.toPrint = [];
     this.props.setExportingPrivateKeys(false)
     this.props.setBackupOperationCompleted(true);
   }
 
   getPrivateKeys(batch){
     return new Promise((resolve, reject) => {
-      this.wallet.command(batch).then((data) => {
-          resolve(data.splice(1));
+      this.props.wallet.command(batch).then((data) => {
+          resolve(data);
       }).catch((err) => {
           reject(null);
       });
@@ -210,7 +229,7 @@ class ExportPrivateKeys extends React.Component {
 
   getAccounts(){
     return new Promise((resolve, reject) => {
-      this.wallet.listAccounts().then((data) => {
+      this.props.wallet.listAccounts().then((data) => {
           resolve(data);
       }).catch((err) => {
           reject(null);
@@ -248,7 +267,7 @@ class ExportPrivateKeys extends React.Component {
 
   getAddress(account){
     return new Promise((resolve, reject) => {
-      this.wallet.getAddressesByAccount(account).then((address) => {
+      this.props.wallet.getAddressesByAccount(account).then((address) => {
            resolve(address);
       }).catch((err) => {
           console.log("error getting address of account ", err)
@@ -262,7 +281,7 @@ class ExportPrivateKeys extends React.Component {
     const self = this;
     ipcRenderer.on('locationSelected', (event, arg) => {
       if(arg != undefined){
-        $('#confirmButtonPopup').text("Export");
+        $('#exportPrivKeyButton').text("Export");
         $('#selectedlocation').text(arg);
         if(self.tween !== undefined)
           self.tween.kill();
@@ -294,11 +313,11 @@ class ExportPrivateKeys extends React.Component {
      return (
       <div ref="second" id="unlockPanel" style={{height: "300px", top: "22%", overflowX: "hidden"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
-        <p style={{fontSize: "18px", color:"#b4b7c8", paddingTop: "20px"}}>Export Private Keys</p>
+        <p className="popupTitle">Export Private Keys</p>
         {this.getPasswordPanel()}
         {this.getLocationToExportPanel()}
         {this.getExportingPanel()}
-        <ConfirmButtonPopup handleConfirm={this.handlePanels} text="Next"/>
+        <ConfirmButtonPopup buttonId="exportPrivKeyButton" handleConfirm={this.handlePanels} text="Next"/>
       </div>
       );
     } 
@@ -311,7 +330,9 @@ const mapStateToProps = state => {
     passwordVal: state.application.password,
     panelNumber: state.application.panelExportPrivateKey,
     locationToExport: state.application.locationToExport,
-    sideBarHidden: state.sideBar.sidebarHidden
+    sideBarHidden: state.sideBar.sidebarHidden,
+    wallet: state.application.wallet,
+    staking: state.chains.staking,
   };
 };
 

@@ -35,6 +35,8 @@ let guiManager = null;
 let maximized = false;
 let ds = undefined;
 let mainWindow = null;
+let guiUpdate = false;
+let daemonUpdate = false;
 
 function sendStatusToWindow(text) {
   mainWindow.webContents.send('message', text);
@@ -165,6 +167,7 @@ function setupTrayIcon(){
 
 ipcMain.on('app:ready', (e, args) => {
 	console.log("ELECTRON GOT READY MESSAGE")
+	guiManager = new GUIManager();
 	daemonManager = new DaemonManager();
 });
 
@@ -180,7 +183,6 @@ ipcMain.on('minimize', (e, args) => {
       mainWindow.hide();
       return;
     }
-
 	mainWindow.minimize();
 });
 
@@ -208,6 +210,7 @@ ipcMain.on('initialSetup', (e, args) => {
 	settings.set('settings.initialSetup', true);
 	daemonManager.startDaemonChecker();
 })
+
 ipcMain.on('close', (e, args) => {
     //daemonManager.stopDaemon();
 	if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
@@ -225,31 +228,47 @@ app.on('before-quit', () => {
 	//daemonManager.stopDaemon();
 });
 
-ipcMain.on('daemonReady', (e, args) => {
-	console.log("ELECTRON GOT daemon message ready")
-});
-
 function sendMessage(type, argument = undefined) {
 	console.log("sending message: ", type)
   mainWindow.webContents.send(type, argument);
 }
 
-event.on('wallet', (exists) => {
+event.on('wallet', (exists, daemonCredentials) => {
 	var initialSetup = settings.has('settings.initialSetup');
-	console.log("setup: ", initialSetup)
+
 	if(initialSetup && exists){
-		sendMessage("setup_done");
+		sendMessage("setup_done", daemonCredentials);
 	}
 	else if(initialSetup && !exists){
-		sendMessage("import_wallet");
+		sendMessage("import_wallet", daemonCredentials);
 	}
 	else if(!initialSetup && exists){
-		sendMessage("partial_initial_setup");
+		sendMessage("partial_initial_setup", daemonCredentials);
 	}
 	else if(!initialSetup && !exists){
-		sendMessage("initial_setup");
+		sendMessage("initial_setup", daemonCredentials);
 	}
 });
+
+event.on('daemonUpdate', () => {
+	console.log("electron got daemon update message, sending to GUI")
+	daemonUpdate = true;
+	sendMessage('daemonUpdate');
+})
+
+event.on('guiUpdate', () => {
+	console.log("electron got gui update message, sending to GUI")
+	guiUpdate = true;
+	sendMessage('guiUpdate');
+})
+
+event.on('updatedDaemon', () => {
+	sendMessage("daemonUpdated");	
+	daemonUpdate = false;
+	if(guiUpdate){
+		event.emit('updateGui');
+	}
+})
 
 event.on('daemonStarted', () => {
 	sendMessage("importedWallet");	
@@ -257,6 +276,21 @@ event.on('daemonStarted', () => {
 
 ipcMain.on('importWallet', (e, args) => {
 	openFile();
+});
+
+ipcMain.on('update', (e, args) => {
+	console.log("electron got update signal, sending to daemon")
+	console.log(guiUpdate)
+	console.log(daemonUpdate)
+	if(guiUpdate && daemonUpdate){
+		event.emit('updateDaemon', false);
+	}
+	else if(guiUpdate){
+		event.emit('updateGui');
+	}
+	else {
+		event.emit('updateDaemon');
+	}
 });
 
 

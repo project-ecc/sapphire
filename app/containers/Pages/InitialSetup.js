@@ -39,7 +39,7 @@ class InitialSetup extends Component {
 
   handleForward() {
     if(this.props.importing || !this.props.stepOverVal || this.props.encrypting) return;
-    else if(this.props.step == 6 || (this.props.step == 5 && this.props.importedWalletVal) || (this.props.step == 4 && this.props.totalSteps == 2)){
+    else if(this.props.step == 6 || (this.props.step == 5 && this.props.importedWalletVal) || (this.props.step == 4 && this.props.totalSteps == 2) || (this.props.step == 4 && this.props.totalSteps == 0)){
       console.log("Done with setup!") 
       ipcRenderer.send('initialSetup');
       this.props.setSetupDone();
@@ -76,25 +76,25 @@ class InitialSetup extends Component {
              {this.props.lang.welcome}
            </p>
            <TransitionGroup component={"article"}>
-               { this.props.step == 1 ? <LanguageSelector/> : null}
+               { this.props.step == 1 && this.props.totalSteps != 0 ? <LanguageSelector/> : null}
             </TransitionGroup>
             <TransitionGroup component={"article"}>
-               { this.props.step == 2 ? <ThemeSelector/> : null}
+               { this.props.step == 2 && this.props.totalSteps != 0? <ThemeSelector/> : null}
             </TransitionGroup>
             <TransitionGroup component={"article"}>
-               { this.props.step == 3 && this.props.totalSteps == 4 ? <ImportWallet/> : null}
+               { (this.props.step == 3 && this.props.totalSteps == 4) || (this.props.step == 1 && this.props.totalSteps == 0) ? <ImportWallet/> : null}
             </TransitionGroup>
             <TransitionGroup component={"article"}>
-               { this.props.step == 4 && this.props.totalSteps == 4 && !this.props.importedWalletVal ? <ImportPrivateKey notInitialSetup = {false}/> : null}
+               { (this.props.step == 4 && this.props.importedWalletVal) || (this.props.step == 2 && (this.props.totalSteps == 2 || this.props.totalSteps == 0))  ? <EncryptWallet checkEncrypted = {this.props.importedWalletVal || this.props.totalSteps == 2}/> : null}
             </TransitionGroup>
             <TransitionGroup component={"article"}>
-               { (this.props.step == 4 && this.props.importedWalletVal) || (this.props.step == 3 && this.props.totalSteps == 2) ? <EncryptWallet checkEncrypted = {this.props.importedWalletVal || this.props.totalSteps == 2}/> : null}
+               { (this.props.step == 4 && this.props.totalSteps == 4 && !this.props.importedWalletVal) || (this.props.step == 3 && this.props.totalSteps == 0) ? <ImportPrivateKey notInitialSetup = {false}/> : null}
             </TransitionGroup>
             <TransitionGroup component={"article"}>
                { this.props.step == 5 && !this.props.importedWalletVal ? <EncryptWallet checkEncrypted = {this.props.importedWalletVal}/> : null}
             </TransitionGroup>
             <TransitionGroup component={"article"}>
-               { this.props.step == 6 || (this.props.step == 5 && this.props.importedWalletVal) || (this.props.step == 4 && this.props.totalSteps == 2) ? <SetupDone/> : null}
+               { this.props.step == 6 || (this.props.step == 5 && this.props.importedWalletVal) || (this.props.step == 4 && this.props.totalSteps == 2) || (this.props.step == 4 && this.props.totalSteps == 0) ? <SetupDone/> : null}
             </TransitionGroup>
           </div>
           <div id="buttons">

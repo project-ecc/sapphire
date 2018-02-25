@@ -1,14 +1,13 @@
 import $ from 'jquery';
 import React, { Component } from 'react';
-import Wallet from '../../utils/wallet';
 import { traduction } from '../../lang/lang';
 const homedir = require('os').homedir();
 import * as actions from '../../actions';
 import connectWithTransitionGroup from 'connect-with-transition-group';
 import { connect } from 'react-redux';
 const lang = traduction();
-const wallet = new Wallet();
 const settings = require('electron-settings');
+const Tools = require('../../utils/tools')
 
 class Transaction extends Component {
   constructor(props) {
@@ -46,7 +45,7 @@ class Transaction extends Component {
   getAllTransactions(page) {
     const self = this;
 
-    wallet.getTransactions(null, 100, 100 * page).then((data) => {
+    this.props.wallet.getTransactions(null, 100, 100 * page).then((data) => {
         self.props.setTransactionsData(data, this.props.type)
         self.props.setTransactionsPage(page);
         self.updateTable();
@@ -77,7 +76,6 @@ class Transaction extends Component {
     $('#rows').css("height", $('#transactionAddresses').height()-204)
     let numberOfChildren = this.props.data.length;
     let totalSize = numberOfChildren * 40; //40px height of each row
-    console.log(numberOfChildren)
     let sizeOfContainer = $('#transactionAddresses').height()-204;
     if(sizeOfContainer < totalSize){
       $('#rows').css("overflow-y", "auto");
@@ -112,7 +110,12 @@ class Transaction extends Component {
     return aux;
   }
 
-  componentWillReceiveProps(){
+  shouldComponentUpdate(state){
+    console.log(state)
+    if(this.props.page == state.page && this.props.page > 0) return false;
+    return true;
+  }
+  componentWillReceiveProps(){     
     this.updateTable();
     $(".extraInfoTransaction").hide();
   }
@@ -147,7 +150,9 @@ class Transaction extends Component {
       case "0" : return "Pending";
       case "all": return "All";
       case "send" : return "Sent";
-      case "generate": return "Earned";
+      case "generate": 
+        this.props.setEarningsChecked(new Date().getTime())
+        return "Earned";
       case "receive": return "Received";
     }
   }
@@ -197,38 +202,7 @@ class Transaction extends Component {
                 if(self.props.type == "generate" && t.amount == 0) return null;
                 counter++;
                 const iTime = new Date(t.time * 1000);
-
-                let delta = Math.abs(today.getTime() - iTime.getTime()) / 1000;
-                const days = Math.floor(delta / 86400);
-                delta -= days * 86400;
-                const hours = Math.floor(delta / 3600) % 24;
-                delta -= hours * 3600;
-                const minutes = Math.floor(delta / 60) % 60;
-
-
-                let time = '';
-                if (settings.get('settings.lang') === 'fr') {
-                  time = `${lang.translationExclusiveForFrench} `;
-                }
-                if (days > 0) {
-                  time += `${days} `;
-                  if (days === 1) {
-                    time += lang.transactionsDay;
-                  } else {
-                    time += lang.transactionsDays;
-                  }
-                } else if (hours > 0) {
-                  time += `${hours} `;
-                  if (hours === 1) {
-                    time += lang.transactionsHour;
-                  } else {
-                    time += lang.transactionsHours;
-                  }
-                } else if (minutes === 1) {
-                  time += `${minutes} ${lang.transactionsMinute}`;
-                } else {
-                  time += `${minutes} ${lang.transactionsMinutes}`;
-                }
+                let time = Tools.calculateTimeSince(lang, today, iTime);
 
                 let category = t.category;
                 if (category === 'generate') {
@@ -306,7 +280,8 @@ const mapStateToProps = state => {
     page: state.application.transactionsPage,
     data: state.chains.transactionsData,
     type: state.chains.transactionsType,
-    requesting: state.application.transactionsRequesting  
+    requesting: state.application.transactionsRequesting,
+    wallet: state.application.wallet
   };
 };
 

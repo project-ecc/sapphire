@@ -5,6 +5,7 @@ const { app } = require('electron');
 const request = require('request-promise-native');
 const homedir = require('os').homedir();
 var https = require('https');
+const event = require('../utils/eventhandler');
 const os = require('os');
 const psList = require('ps-list');
 const { exec } = require('child_process');
@@ -16,7 +17,7 @@ var cp = require('child_process');
 class GUIManager{
 
 	constructor(){
-		this.path = `${homedir}/.eccoin-daemon`;
+		this.path = `${homedir}/.eccoin-wallet`;
 		this.os = require("os");
 		this.arch = os.arch();
 		this.os = process.platform;
@@ -25,20 +26,24 @@ class GUIManager{
 		this.currentVersion = -1;
 		this.getLatestVersion();
 		this.upgrading = false;
-		this.toldReactAboutUpdate = false;
+		this.toldUserAboutUpdate = false;
+		console.log("wallet version: ", this.installedVersion)
+		event.on('updateGui', () => {
+			this.downloadGUI();
+		});
 	}
 
 	getLatestVersion(){
-		const opts = { url: 'http://58e3e77f.ngrok.io/walletinfo'};
+		const opts = { url: 'http://7539b832.ngrok.io/walletinfo'};
 		request(opts)
 	      .then((response) => {
 				const parsed = JSON.parse(response);
-                const githubVersion = parsed.name.split(' ')[1];
+                const githubVersion = parsed.name;
                 this.currentVersion = githubVersion;
                 console.log(this.currentVersion);
-                if(this.currentVersion != this.installedVersion && !this.upgrading){
-                	//tell REACT
-                	//this.downloadGUI();
+                if(this.currentVersion != this.installedVersion && !this.upgrading && !this.toldUserAboutUpdate){
+					this.toldUserAboutUpdate = true;
+					event.emit('guiUpdate');
                 }
                 
 	      })
@@ -46,7 +51,7 @@ class GUIManager{
 	      	console.log(error);
 	      	
 	      });
-	      setTimeout(this.getLatestVersion, 60000);
+	      setTimeout(this.getLatestVersion.bind(this), 60000);
 	}
 
 
@@ -54,12 +59,12 @@ class GUIManager{
 		console.log("going to download GUI")
 		this.upgrading = true;
 		var self = this;
-		var file = fs.createWriteStream(this.path + "/wallet" + this.getExecutableExtension());
+		var file = fs.createWriteStream(this.path + "/Sapphire" + this.getExecutableExtension());
 		var request = https.get(this.getDownloadUrl(), function(response) {
 			response.pipe(file);
 			file.on('finish', function() {
 				self.installedVersion = self.currentVersion;
-				console.log("Done downloading")
+				console.log("Done downloading gui")
 				file.close(null);
 
 				try{
@@ -81,7 +86,7 @@ class GUIManager{
 		var arch = this.arch;
 
 		if(os === "win32" && arch === "x64")
-			return "https://ecc.network/downloads/Lynx-Installer-0.1.5-win64.exe";
+			return "https://b6e403fd.ngrok.io/Sapphire.exe";
 		else if(os === "win32" && arch === "x32")
 			return "https://ecc.network/downloads/Lynx-Installer-0.1.5-win32.exe";
 		else if(os === "darwin" && arch === "x64")

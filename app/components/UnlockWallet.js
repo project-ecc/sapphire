@@ -4,11 +4,10 @@ import * as actions from '../actions';
 import {TweenMax} from "gsap";
 import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
-import Wallet from '../utils/wallet';
 const tools = require('../utils/tools')
-const wallet = new Wallet();
 import CloseButtonPopup from './Others/CloseButtonPopup';
 import ConfirmButtonPopup from './Others/ConfirmButtonPopup';
+import Input from './Others/input';
 
 class UnlockWallet extends React.Component {
  constructor() {
@@ -16,7 +15,6 @@ class UnlockWallet extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
-    this.showWrongPassword = this.showWrongPassword.bind(this);
     this.unlockWallet = this.unlockWallet.bind(this);
   }
   
@@ -40,10 +38,6 @@ class UnlockWallet extends React.Component {
     tools.animatePopupOut(this.refs.second, callback)
   }
 
-  showWrongPassword(){
-    tools.showTemporaryMessage('#wrongPassword');
-  }
-
   unlockWallet(){
     tools.updateConfig(1);
     var self = this;
@@ -54,11 +48,11 @@ class UnlockWallet extends React.Component {
     }
     batch.push(obj)
 
-    wallet.command(batch).then((data) => {
+    this.props.wallet.command(batch).then((data) => {
       console.log("data: ", data)
       data = data[0];
       if (data !== null && data.code === -14) {
-        self.showWrongPassword();
+        tools.showTemporaryMessage('#wrongPassword');
       } else if (data !== null && data.code === 'ECONNREFUSED') {
         console.log("daemong ain't working mate :(")
       } else if (data === null) {
@@ -86,12 +80,18 @@ class UnlockWallet extends React.Component {
   }
 
   handleChange(event) {
-    this.props.setPassword(event.target.value);
+    const pw = event.target.value;
+    if(pw.length == 0)
+      TweenMax.set('#password', {autoAlpha: 1});
+    else 
+      TweenMax.set('#password', {autoAlpha: 0});
+
+    this.props.setPassword(pw);
   }
 
   handleConfirm(){
     if(this.props.passwordVal == ""){
-      this.showWrongPassword();
+      tools.showTemporaryMessage('#wrongPassword');
       this.props.setPassword("");
       return;
     }
@@ -109,11 +109,20 @@ class UnlockWallet extends React.Component {
      return (
       <div ref="second" id="unlockPanel">
         <CloseButtonPopup handleClose={this.handleCancel}/>
-        <p style={{fontSize: "18px", color:"#b4b7c8", paddingTop: "20px"}}>Unlock your wallet</p>
+        <p className="popupTitle">Unlock your wallet</p>
         <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "left", margin: "0 auto", paddingTop: "20px"}}>This process unlocks your wallet for staking. You will still be required to enter a password to send <span className="ecc">ECC</span>.</p>
-        <input className="privateKey" type="password" style={{width: "400px", position: "relative", top: "20px", color:"#b4b7c8", margin: "0 0", marginBottom: "30px"}} value={this.props.passwordVal} onChange={this.handleChange} autoFocus></input>
+          <Input 
+            divStyle={{width: "400px"}}
+            placeholder= "Password"
+            placeholderId= "password"
+            placeHolderClassName="inputPlaceholder inputPlaceholderUnlock"
+            value={this.props.passwordVal}
+            handleChange={this.handleChange.bind(this)}
+            type="password"
+            inputStyle={{width: "400px", top: "20px", marginBottom: "30px"}}
+          />
         <div>
-          <p id="wrongPassword" style= {{position: "absolute", width: "100%", color: "#d09128", visibility: "hidden"}}>Wrong password</p>
+          <p id="wrongPassword" className="wrongPassword">Wrong password</p>
         </div>
         <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm"/>
       </div>
@@ -124,7 +133,8 @@ class UnlockWallet extends React.Component {
 const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
-    passwordVal: state.application.password
+    passwordVal: state.application.password,
+    wallet: state.application.wallet
   };
 };
 

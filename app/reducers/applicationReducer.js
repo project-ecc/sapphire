@@ -26,21 +26,87 @@ import {
 	PANEL_EXPORT_PRIVATE_KEYS,
 	LOCATION_TO_EXPORT,
 	FILTER_OWN_ADDRESSES,
-	BACKUP_OPERATION_COMPLETED,
+	BACKUP_OPERATION_IN_PROGRESS,
 	INDEXING_TRANSACTIONS,
 	STAKING_REWARD,
 	STAKING_REWARD_UPDATE,
 	PENDING_TRANSACTION,
 	IMPORTING_PRIVATE_KEY,
-	CHANGING_PASSWORD
+	CHANGING_PASSWORD,
+	NEW_PASSWORD,
+	WAS_STAKING,
+	DAEMON_CREDENTIALS,
+	CHECKING_DAEMON_STATUS_PRIVKEY,
+	ECC_POST,
+	POSTS_PER_CONTAINER,
+	ECC_POSTS_PAGE,
+	COIN_MARKET_CAP,
+	SHOWING_NEWS,
+	NEWS_SWITCHING_PAGE,
+	UPDATE_APPLICATION,
+	SELECTED_PANEL,
+	SETTINGS_OPTION_SELECTED
 } from '../actions/types';
 
+import Wallet from '../utils/wallet';
+import notificationsInfo from '../utils/notificationsInfo';
 
-const INITIAL_STATE = {unlocking: false, password: "", userNameToSend: "", amountSend: "", addressSend: "", sendingEcc: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, newAddressName: "", newAddressAccount: "", friends: [], userAddresses: [], creatingAnsAddress: true, selectedAddress: undefined, creatingAddress: false, newContactName: "", newContactAddress:"", hoveredAddress: undefined, settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, exportingPrivateKeys: false, panelExportPrivateKey: 1, locationToExport: "", filterAllOwnAddresses: true, filterNormalOwnAddresses: false, filterAnsOwnAddresses: false, backupOperationCompleted: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, totalFileStorageRewards: 0, lastWeekFileStorageRewards: 0,lastMonthFileStorageRewards: 0, pendingTransactions: [], importingPrivateKey: false, changingPassword: false, wasStaking: false}
+const INITIAL_STATE = {wallet: new Wallet(), unlocking: false, password: "", userNameToSend: "", amountSend: "", addressSend: "", sendingEcc: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, newAddressName: "", newAddressAccount: "", friends: [], userAddresses: [], creatingAnsAddress: true, selectedAddress: undefined, creatingAddress: false, newContactName: "", newContactAddress:"", hoveredAddress: undefined, settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, exportingPrivateKeys: false, panelExportPrivateKey: 1, locationToExport: "", filterAllOwnAddresses: true, filterNormalOwnAddresses: false, filterAnsOwnAddresses: false, backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, totalFileStorageRewards: 0, lastWeekFileStorageRewards: 0,lastMonthFileStorageRewards: 0, pendingTransactions: [], importingPrivateKey: false, changingPassword: false, wasStaking: false, newPassword: "", daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], postsPerContainerEccNews: 0, eccPostsArrays: [], eccPostsPage: 1, coinMarketCapStats: {}, showingNews: false, eccNewsSwitchingPage: false, updateApplication:false, selectedPanel: "overview", settingsOptionSelected: "General"}
 
 export default(state = INITIAL_STATE, action) => {
     if(action.type == UNLOCKING){
 		return {...state, unlocking: action.payload}
+	}
+	else if(action.type == SETTINGS_OPTION_SELECTED){
+		return {...state, settingsOptionSelected: action.payload}
+	}
+	else if(action.type == SELECTED_PANEL){
+		return {...state, selectedPanel: action.payload}
+	}
+	else if(action.type == UPDATE_APPLICATION){
+		return {...state, updateApplication: action.payload}
+	}
+	else if(action.type == SHOWING_NEWS){
+		return {...state, showingNews: action.payload}
+	}
+	else if(action.type == COIN_MARKET_CAP){
+		return {...state, coinMarketCapStats: action.payload}
+	}
+	else if(action.type == ECC_POSTS_PAGE){
+		return {...state, eccPostsPage: action.payload}
+	}
+	else if(action.type == POSTS_PER_CONTAINER){
+		let arrays = [], 
+		size = action.payload,
+		counter = 0,
+		arrayConter = 0,
+		currentPosts = state.eccPosts;
+
+		arrays.push([]);
+		currentPosts.map((value, index) => {
+			if(counter == size){
+				counter = 0;
+				arrayConter++;
+				arrays.push([]);
+			}
+			arrays[arrayConter].push(value);
+			counter++;
+		});
+
+		return {...state, postsPerContainerEccNews: action.payload, eccPostsArrays: arrays}
+	}
+	else if(action.type == ECC_POST){
+		return {...state, eccPosts: action.payload}
+	}
+	else if(action.type == CHECKING_DAEMON_STATUS_PRIVKEY){
+		return {...state, checkingDaemonStatusPrivateKey: action.payload}
+	}
+	else if(action.type == DAEMON_CREDENTIALS){
+		var wallet = new Wallet(action.payload.username, action.payload.password);
+		return {...state, wallet: wallet}
+	}
+	else if(action.type == NEW_PASSWORD){
+		return {...state, newPassword: action.payload}
 	}
 	else if(action.type == WAS_STAKING){
 		return {...state, wasStaking: true}
@@ -131,8 +197,8 @@ export default(state = INITIAL_STATE, action) => {
 		
 		return {...state, filterAllOwnAddresses: filterAllOwnAddresses, filterNormalOwnAddresses: filterNormalOwnAddresses, filterAnsOwnAddresses: filterAnsOwnAddresses}
 	}
-	else if(action.type == BACKUP_OPERATION_COMPLETED){
-		return {...state, backupOperationCompleted: action.payload}
+	else if(action.type == BACKUP_OPERATION_IN_PROGRESS){
+		return {...state, backingUpWallet: action.payload}
 	}
 	else if(action.type == LOCATION_TO_EXPORT){
 		return {...state, locationToExport: action.payload}
@@ -225,4 +291,8 @@ function GetDateOneWeekAgo(){
 	d.setHours(0, 0, 0);
 	d.setMilliseconds(0);
 	return d/1000|0;
+}
+
+function UpdateNotificationInfo(lastCheckedNews, lastCheckedEarnings){
+	notificationsInfo.set('info', {lastCheckedNews: lastCheckedNews, lastCheckedEarnings: lastCheckedEarnings, lastCheckedChat: {}}).write();
 }

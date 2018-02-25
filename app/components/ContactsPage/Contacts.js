@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import React, { Component } from 'react';
-import Wallet from '../../utils/wallet';
 import { traduction } from '../../lang/lang';
 const homedir = require('os').homedir();
 import * as actions from '../../actions';
@@ -8,6 +7,7 @@ import connectWithTransitionGroup from 'connect-with-transition-group';
 import { connect } from 'react-redux';
 import AddressBook from '../SendTransactions/AddressBook';
 import low from '../../utils/low';
+import Input from '../Others/input';
 
 class Contacts extends Component {
   constructor(props) {
@@ -17,7 +17,6 @@ class Contacts extends Component {
     this.addContact = this.addContact.bind(this);
     this.addNormalAddress = this.addNormalAddress.bind(this);
     this.resetFields = this.resetFields.bind(this);
-    this.wallet = new Wallet();
   }
 
   componentDidMount(){
@@ -81,7 +80,7 @@ class Contacts extends Component {
   addNormalAddress() {
     const self = this;
 
-    this.wallet.validate(this.props.newContactAddress).then((isAddressValid) => {
+    this.props.wallet.validate(this.props.newContactAddress).then((isAddressValid) => {
       console.log(isAddressValid)
         if (isAddressValid.isvalid) {
           const tt = low.get('friends').find({ address: self.props.newContactAddress }).value();
@@ -123,25 +122,39 @@ class Contacts extends Component {
 
   render() {
     return (
-      <div className="sendPanel" style={{height: "100%", width: "100%", paddingLeft: "40px", paddingRight: "40px", overflowX: "hidden"}}>
+      <div className="panel">
         <AddressBook sendPanel={false}/>
         <div style={{position: "relative", top: "60px"}}>
-          <p id="addressExists" style={{position: "absolute", width:"100%", textAlign: "center", color: "#d09128", fontSize: "15px", visibility: "hidden"}}>Contact already exists</p>
-          <p id="addressAdded" style={{position: "absolute", width:"100%", textAlign: "center", color: "#d09128", fontSize: "15px", visibility: "hidden"}}>Contact added successfully</p>
-          <p id="addressInvalid" style={{position: "absolute", width:"100%", textAlign: "center", color: "#d09128", fontSize: "15px", visibility: "hidden"}}>Invalid Address</p>
+          <p id="addressExists" className="contactsMessage">Contact already exists</p>
+          <p id="addressAdded" className="contactsMessage">Contact added successfully</p>
+          <p id="addressInvalid" className="contactsMessage">Invalid Address</p>
         </div>
         <div id="inputAddress" style={{width: "750px", margin: "0 auto", position: "relative", marginTop:"80px"}}>
           <div style={{display: "inline-block", width: "70%", position: "relative"}}>
-          <div id="addressName">
-              <p id="addressNamePlaceHolder" style={{position:"absolute", top: "5px", color: "#555d77", fontSize: "15px", fontWeight: "600", left: "2px"}}>Name</p>
-              <input id="newContactName" className="privateKey" type="text" style={{textAlign: "left", margin: "0 0", width:"100%", display: "inline-block", position: "relative", color: "#555d77", fontWeight: "600", fontSize: "15px"}} value={this.props.newContactName} onChange={this.handleChangeNewContactName} autoFocus></input>
-            </div>
-            <div id="addressAccount" style={{position: "relative",  marginTop: "10px"}}>
-              <p id="addressAccountPlaceHolder" style={{position:"absolute", top: "5px", color: "#555d77", fontSize: "15px", fontWeight: "600", left: "2px"}}>Address</p>
-              <input id="newContactAddress" className="privateKey" type="text" style={{textAlign: "left", margin: "0 0", width:"100%", display: "inline-block", position: "relative", color: "#555d77", fontWeight: "600", fontSize: "15px"}} value={this.props.newContactAddress} onChange={this.handleChangeNewContactAddress}></input>
-            </div>
+            <Input 
+              divStyle={{}}
+              placeholder= "Name"
+              placeholderId="addressNamePlaceHolder"
+              placeHolderClassName="inputPlaceholder inputPlaceholderReceive"
+              value={this.props.newContactName}
+              handleChange={this.handleChangeNewContactName.bind(this)}
+              type="text"
+              inputStyle={{textAlign: "left", margin: "0 0", width:"100%"}}
+              inputId="inputAddressSend"
+            />
+            <Input 
+              divStyle={{position: "relative",  marginTop: "10px"}}
+              placeholder= "Address"
+              placeholderId="addressAccountPlaceHolder"
+              placeHolderClassName="inputPlaceholder inputPlaceholderReceive"
+              value={this.props.newContactAddress}
+              handleChange={this.handleChangeNewContactAddress.bind(this)}
+              type="text"
+              inputStyle={{textAlign: "left", margin: "0 0", width:"100%"}}
+              inputId="inputAddressSend"
+            />
           </div>
-            <div onClick={this.addContact} className="buttonUnlock" style={{marginLeft: "20px", display: "inline-block", background: "-webkit-linear-gradient(top, rgb(214, 167, 91) 0%, rgb(162, 109, 22) 100%)", color: "#d9daef", width: "auto", padding: "0px 20px", top:"29px"}}>
+            <div onClick={this.addContact} className="buttonUnlock addContactButton">
              Add Contact
             </div>
             <p id="ansExplanation" style={{display: "inline-block", color: "#555d77", fontSize: "14px", fontWeight: "600", position: "relative", top:"15px", width:"660px"}}>Type the name of an <span className="ecc">ANS contact</span> and click to add him or fill the Address input (+ optional Name) to add a regular address.</p>
@@ -155,7 +168,8 @@ const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
     newContactName: state.application.newContactName,
-    newContactAddress: state.application.newContactAddress
+    newContactAddress: state.application.newContactAddress,
+    wallet: state.application.wallet
   };
 };
 

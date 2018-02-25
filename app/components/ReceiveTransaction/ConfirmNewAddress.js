@@ -4,8 +4,10 @@ import * as actions from '../../actions';
 import {TweenMax} from "gsap";
 import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
-import Wallet from '../../utils/wallet';
+import CloseButtonPopup from '../Others/CloseButtonPopup';
+import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 const event = require('../../utils/eventhandler');
+const tools = require('../../utils/tools');
 
 class ConfirmNewAddress extends React.Component {
  constructor() {
@@ -14,7 +16,6 @@ class ConfirmNewAddress extends React.Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.createNormalAddress = this.createNormalAddress.bind(this);
     this.getConfirmationText = this.getConfirmationText.bind(this);
-    this.wallet = new Wallet();
   }
   
  componentWillAppear (callback) {
@@ -30,20 +31,15 @@ class ConfirmNewAddress extends React.Component {
   }
   
   componentDidEnter(callback) {
-    const el = this.refs.second;
-    TweenMax.set($('.mancha'), {css: {display: "block"}})
-    TweenMax.fromTo($('.mancha'), 0.3, {autoAlpha:0}, { autoAlpha:1, ease: Linear.easeNone});
-    TweenMax.fromTo(el, 0.3, {css: {top: "-50%", opacity:0}}, {css: {top: "22%", opacity:1}, ease: Linear.easeOut, onComplete: callback});
+    tools.animatePopupIn(this.refs.second, callback, "22%");
   }
 
   componentWillLeave (callback) {
-    const el = this.refs.second;
-    TweenMax.fromTo($('.mancha'), 0.3, {autoAlpha:1}, { autoAlpha:0, ease: Linear.easeNone});
-    TweenMax.fromTo(el, 0.3, {css: {top: "22%", opacity:1}}, {css: {top: "-50%", opacity:0}, ease: Linear.easeIn, onComplete: callback});
+    tools.animatePopupOut(this.refs.second, callback)
   }
 
   createNormalAddress(){
-    this.wallet.createNewAddress(this.props.account).then((newAddress) => {
+    this.props.wallet.createNewAddress(this.props.account).then((newAddress) => {
     	console.log(newAddress)
       	event.emit('newAddress');
       	this.props.setCreatingAddress(false);
@@ -72,26 +68,19 @@ class ConfirmNewAddress extends React.Component {
   }
 
   getConfirmationText(){
-  	let style= {
-  		fontSize: "16px",
-  		width: "90%",
-  		margin: "0 auto",
-      textAlign: "justify",
-      fontWeight: "500"
-  	}
   	if(this.props.ansAddress){
   		return(
-  			<p style={style}>Press confirm to create an <span className="ecc">ANS address</span> named "{this.props.username}"</p>
+  			<p className="confirmationText">Press confirm to create an <span className="ecc">ANS address</span> named "{this.props.username}"</p>
   		)
   	}
   	else if(!this.props.ansAddress && this.props.account == ""){
   		return(
-  			<p style={style}>Press confirm to create a <span className="ecc">normal address</span> under an unnamed account</p>	
+  			<p className="confirmationText">Press confirm to create a <span className="ecc">normal address</span> under an unnamed account</p>	
   		)
   	}
 	else if(!this.props.ansAddress && this.props.account != ""){
   		return(
-  			<p style={style}>Press confirm to create a <span className="ecc">normal address</span> under an account named "{this.props.account}". Note that this address is not recognized by name in the network, create an <span className="ecc">ANS address</span> for that functionality.</p>	
+  			<p className="confirmationText">Press confirm to create a <span className="ecc">normal address</span> under an account named "{this.props.account}". Note that this address is not recognized by name in the network, create an <span className="ecc">ANS address</span> for that functionality.</p>	
   		)
   	}
   }
@@ -101,17 +90,11 @@ class ConfirmNewAddress extends React.Component {
       fill: this.props.bgColor
     };
      return (
-      <div ref="second" id="unlockPanel" style={{top: "22%", height: "auto"}}>
-        <p style={{fontSize: "18px", color:"#b4b7c8", paddingTop: "20px", paddingBottom:"30px"}}>Confirm New Address</p>
+      <div ref="second" id="unlockPanel" style={{top: "22%", height: "auto", textAlign: "center"}}>
+        <CloseButtonPopup handleClose={this.handleCancel}/>
+        <p className="popupTitle">Confirm New Address</p>
        	{this.getConfirmationText()}
-       	<div style={{marginTop: "30px", height: "36px", marginBottom: "10px"}}>
-	        <div onClick={this.handleCancel} className="buttonUnlock" style={{background: "-webkit-linear-gradient(top, #7f7f7f 0%,#4d4d4d 100%)", color: "#d9daef", left:"100px"}}>
-	          Cancel
-	        </div>
-	        <div onClick={this.handleConfirm} className="buttonUnlock" style={{background: "-webkit-linear-gradient(top, rgb(214, 167, 91) 0%, rgb(162, 109, 22) 100%)", color: "#d9daef", left:"300px"}}>
-	          Confirm
-	        </div>
-        </div>
+        <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm"/>
       </div>
       );
     } 
@@ -123,7 +106,8 @@ const mapStateToProps = state => {
     lang: state.startup.lang,
     username: state.application.newAddressName,
     ansAddress: state.application.creatingAnsAddress,
-    account: state.application.newAddressAccount
+    account: state.application.newAddressAccount,
+    wallet: state.application.wallet
   };
 };
 

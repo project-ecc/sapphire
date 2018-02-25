@@ -1,0 +1,160 @@
+#eccNews{
+	font-size: 70px;
+	color: #1f2642;
+	font-weight: 800;
+	margin-top: 15px;
+	margin-bottom: 20px;
+}
+
+.newsItemTitle{
+	font-size: 19px;
+	font-weight: 500;
+	color: #b4b7c8;
+	padding-bottom: 10px;
+}
+
+#panelHolder{
+	position: relative;
+	margin-right: 40px;
+}
+
+.newsItemBody{
+	font-size: 16px;
+	color: #555d77;
+	font-weight: 700;
+	padding-bottom: 15px;
+	text-align: justify;
+	line-height: 20px;
+}
+
+.newsItemTime{
+	font-size: 14px;
+	color: #d09128;
+	padding-bottom: 15px;
+	display: inline-block;
+}
+
+.newsPost{
+	border-bottom: 1px solid #222a4c;
+	margin-bottom: 20px;
+}
+
+.postsContainer{
+	overflow-y: hidden;
+	margin-left: 30px;
+	position: absolute;
+	width: 100%;
+}
+
+.arrowNews {
+  height: 9px; 
+  width: 9px;
+  border: 1px solid #6f7a97;
+  border-width: 3px 3px 0 0;
+  display: inline-block;
+  position: absolute;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.arrowRightNews {
+  transform: rotate(45deg);
+  right: 40%;
+}
+
+.arrowLeftNews {
+  transform: rotate(225deg);
+  left: 40%;
+}
+
+.arrowActive{
+
+}
+
+.arrowInactive{
+	border: 1px solid #2a3042;
+	border-width: 3px 3px 0 0;
+	cursor: default;
+}
+
+#arrows{
+	margin-left: 30px;
+	position: absolute;
+}
+
+.mediumIcon{
+	position: absolute;
+	width: 23px;
+    margin-left: 20px;
+    padding-top: 3px;
+    cursor: pointer;
+}
+
+.playIcon{
+    position: absolute;
+    width: 21px;
+    margin-left: 20px;
+    padding-top: 4px;
+    opacity: 0.7;
+}
+
+#stats{
+	width: 800px;
+	position: fixed;
+	bottom:0px;
+	height: 78px;
+	left: 50%;
+	margin-left: -270px;
+	transition: all 0.3s;
+}
+
+.statsItem{
+	height: 100%;
+	position:relative;
+	font-size: 16px;
+	text-align: center;
+	display: inline-block;
+}
+
+.mask {
+	position: absolute;
+	top: 12px;
+	left:1px;
+	height:50%;
+	width: 100%;
+	border-right: 1px solid #fff;
+	opacity: 0.23;
+}
+
+.statsItem p:first-child{
+	color: #555d77;
+	font-weight: 700;
+	padding-bottom: 12px;
+}
+
+.statsItem p:nth-child(2){
+	color: #b4b7c8;
+	font-weight: 600;
+}
+
+#rank{
+	width: 130px;
+}
+
+#marketCap{
+	width: 250px;
+}
+
+#price{
+	width: 200px;
+}
+
+#volume{
+	width: 220px;
+}
+
+@media screen and (max-width: 1024px) {
+	#stats{
+		margin-left: -400px;
+	}
+}

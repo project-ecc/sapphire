@@ -3,14 +3,18 @@ import Client from 'bitcoin-core';
 const homedir = require('os').homedir();
 const { exec, spawn } = require('child_process');
 
-const client = new Client({
-  host: '127.0.0.1',
-  port: 19119,
-  username: 'yourusername',
-  password: 'yourpassword'
-});
+var client = undefined;
 
 export default class Wallet {
+
+  constructor(username = "yourusername", password = "yourpassword"){
+    client = new Client({
+      host: '127.0.0.1',
+      port: 19119,
+      username: username,
+      password: password
+    });
+  }
   help() {
     return new Promise((resolve, reject) => {
       client.help().then((data) => {
@@ -90,7 +94,7 @@ export default class Wallet {
       client.listTransactions(a, count, skip).then((transactions) => {
         return resolve(transactions);
       }).catch((err) => {
-        return reject(err);
+        return reject(null);
       });
     });
   }
@@ -197,7 +201,7 @@ export default class Wallet {
   }
 
   walletstart(cb) {
-    const path = `${homedir}/.eccoin-daemon/Eccoind`;
+    const path = `${homedir}/.eccoin-wallet/Eccoind`;
     if (process.platform === 'linux') {
       runExec(`chmod +x ${path} && ${path}`, 1000).then(() => {
         return cb(true);

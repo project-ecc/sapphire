@@ -24,8 +24,6 @@
   height: 100%;
 }
 
-#homeSections{
-}
 
 .homeSection{
   background-color: #1c2340;
@@ -41,6 +39,11 @@
   box-sizing: border-box;
 }
 
+.inputPlaceholderUnlock{
+  z-index: 0;
+  text-align: center;
+  top: 20px;
+}
 
 
 /***  Generic toggle  ***/

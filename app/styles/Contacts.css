@@ -1,0 +1,16 @@
+.addContactButton{
+	margin-left: 20px;
+	display: inline-block;
+	width: auto;
+	padding: 0px 20px;
+	top: 29px;
+}
+
+.contactsMessage{
+	position: absolute;
+	width:100%;
+	text-align: center;
+	color: #d09128;
+	font-size: 15px;
+	visibility: hidden;
+}

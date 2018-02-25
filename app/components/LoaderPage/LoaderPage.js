@@ -13,55 +13,58 @@ class Loader extends React.Component {
     super();
     this.animateLogo = this.animateLogo.bind(this);
     this.showLoadingBlockIndex = this.showLoadingBlockIndex.bind(this);
+    this.showComponent = this.showComponent.bind(this);
   }
 
   componentWillAppear (callback) {
     callback();
-    console.log("componentWillAppear")
   }
   
-  componentDidAppear(e) {
-  	const self = this;
+  showComponent(){
+	const self = this;
   	setTimeout(() => {
 	    const el = self.refs.second;
-	    TweenMax.fromTo(el, 1, {opacity: 0}, {opacity:1,ease: Linear.easeNone, onComplete: self.animateLogo});
+	    TweenMax.fromTo(el, 1, {autoAlpha: 0}, {autoAlpha:1, ease: Linear.easeNone, onComplete: self.animateLogo});
+	    if(self.props.updatingApplication){
+	    	$("#gettingReady").text("We are updating your application...")
+	    }
       	if(self.props.loadingBlockIndexPayment)
   			self.showLoadingBlockIndex();
   	
-  	}, 500)
+  	}, self.props.updatingApplication ? 0 : 500)
+  }
+
+  componentDidAppear(e) {
+  	this.showComponent();
   }
   
   componentWillEnter (callback) {
-  	callback();
-  	console.log("componentWillEnter")
-  }
-  
-  componentDidEnter(callback) {
-	callback();
-	console.log("componentDidEnter")
+  	this.showComponent();
   }
 
   componentWillLeave (callback) {
-  	console.log("componentWillLeave")
     const el = this.refs.second;
     TweenMax.fromTo(el, 0.3, {opacity: 1}, {opacity: 0, ease: Linear.easeNone, onComplete: callback});
   }
 
   shouldComponentUpdate(nextProps){
-  	console.log("previous: ", this.props.loadingBlockIndexPayment)
-  	console.log("next: ", nextProps.loadingBlockIndexPayment)
-  	if(!this.props.loadingBlockIndexPayment && nextProps.loadingBlockIndexPayment){
+  	if(!this.props.loading && nextProps.loading){
   		this.showLoadingBlockIndex();
   		return false;
   	}
   	return true;
   }
 
- animateLogo(){
+  showMessage(message){
+  	$('#gettingReady').text(message);
+	TweenMax.to(['#blockIndexLoad'], 0.2, {autoAlpha: 0, scale: 0.5});
+    TweenMax.fromTo('#message', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
+  }
+
+  animateLogo(){
 	CSSPlugin.useSVGTransformAttr = false;
 	TweenMax.to(['#logoLoader'], 0.5, {autoAlpha: 1});
-	console.log(this.props.loadingBlockIndexPayment)
-	if(!this.props.loadingBlockIndexPayment)
+	if(!this.props.loading)
 		TweenMax.to(['#gettingReady'], 0.5, {autoAlpha: 1});
 
 	var t = new TimelineMax({repeat:-1, yoyo:true});
@@ -81,7 +84,7 @@ class Loader extends React.Component {
   }
 
   showLoadingBlockIndex(){
-	TweenMax.to(['#gettingReady', '#updatingApp'], 0.2, {autoAlpha: 0, scale: 0.5});
+	TweenMax.to('#gettingReady', 0.2, {autoAlpha: 0, scale: 0.5});
     TweenMax.to('#blockIndexLoad', 0.2, {autoAlpha: 1, scale: 1});
   }
 
@@ -187,10 +190,9 @@ class Loader extends React.Component {
 			</svg>
 			<div id="loaderText" style={{marginTop: "15px"}}>
 				<div id="blockIndexLoad">
-					<p id="loading" style={{fontSize: "45px", fontWeight: "bold", color: "#1f2642"}}>Loading {this.props.blockIndexPaymentPercentage}<span style={{fontSize: "35px"}}>%</span></p>
+					<p id="loading" style={{fontSize: "45px", fontWeight: "bold", color: "#1f2642"}}>Loading</p>
 				</div>
-				<p style={{marginTop: "-50px", fontWeight:"300", visibility:"hidden"}} id="gettingReady"> Hello, we are getting a few things ready...</p>
-				<p style={{marginTop: "-33px", visibility:"hidden"}} id="updatingApp">We are updating your application...</p>
+				<p ref="mainMessage" style={{marginTop: "-50px", fontWeight:"300", visibility:"hidden"}} id="gettingReady"> Hello, we are getting a few things ready...</p>
 			</div>
       </div>
     );
@@ -199,10 +201,9 @@ class Loader extends React.Component {
 
 const mapStateToProps = state => {
   return{
-   	blockIndexPayment: state.chains.blockIndexPayment,
     lang: state.startup.lang,
-    loadingBlockIndexPayment: state.chains.loadingBlockIndexPayment,
-    blockIndexPaymentPercentage: state.chains.blockIndexPaymentPercentage
+    loading: state.startup.loading,
+    updatingApplication: state.startup.updatingApp
   };
 };
 

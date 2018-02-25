@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import $ from 'jquery';
 const homedir = require('os').homedir();
@@ -22,7 +21,7 @@ class Sidebar extends Component {
   resize(){
     if($( window ).width() >= 1024){
       $('.sidebar').css('left', '0px');
-      $('.my_wrapper').css('padding-left', '224px');
+      $('.mainSubPanel').css('padding-left', '224px');
       this.props.setSidebarHidden(false);
       $('.miniButton').css('left', '-10px');
       if(this.checkPopupActive()){
@@ -32,7 +31,7 @@ class Sidebar extends Component {
     }
     else if($( window ).width() <= 1023){
       $('.sidebar').css('left', '-224px');
-      $('.my_wrapper').css('padding-left', '0px');
+      $('.mainSubPanel').css('padding-left', '0px');
       this.props.setSidebarHidden(true);
       if(this.checkPopupActive()){
         TweenMax.to($('.mancha'), 0.3, { autoAlpha:0, ease: Linear.easeNone});
@@ -49,7 +48,7 @@ class Sidebar extends Component {
       if($( window ).width() <= 1023){
           setTimeout(() => {
             $('.sidebar').css('left', '-224px');
-            $('.my_wrapper').css('padding-left', '0px');
+            $('.mainSubPanel').css('padding-left', '0px');
             self.props.setSidebarHidden(true);
             $('.miniButton').css('left', '10px');
           }, 500)
@@ -72,7 +71,7 @@ class Sidebar extends Component {
         });
       $('.miniButton').on('click', function(){
         var offset = $('.sidebar').offset().left;
-        if(offset < 0 && this.checkPopupActive()){
+        if(offset < 0 && self.checkPopupActive()){
           if(self.props.settings)
             self.props.setSettings(false);
           $('.sidebar').css('left', '0px');
@@ -80,9 +79,9 @@ class Sidebar extends Component {
           TweenMax.set($('.mancha'), {css: {display: "block"}})
           TweenMax.fromTo($('.mancha'), 0.3, {autoAlpha:0}, { autoAlpha:1, ease: Linear.easeNone});
         }
-        else if(this.checkPopupActive()){
+        else if(self.checkPopupActive()){
           $('.sidebar').css('left', '-224px');
-          $('.my_wrapper').css('padding-left', '0px');
+          $('.mainSubPanel').css('padding-left', '0px');
           TweenMax.to($('.mancha'), 0.3, { autoAlpha:0, ease: Linear.easeNone});
           TweenMax.set($('.mancha'), { zIndex:8, delay: 0.3});
         }
@@ -107,9 +106,10 @@ class Sidebar extends Component {
     if(this.props.settings)
       this.props.setSettings(false);
     this.props.selectedSideBar(page);
+    this.props.setSelectedPanel(page);
     if($( window ).width() <= 1023){
       $('.sidebar').css('left', '-224px');
-      $('.my_wrapper').css('padding-left', '0px');
+      $('.mainSubPanel').css('padding-left', '0px');
       TweenMax.to($('.mancha'), 0.3, { autoAlpha:0, ease: Linear.easeNone});
     }
   }
@@ -135,35 +135,35 @@ class Sidebar extends Component {
     let messaging = require('../../resources/images/messaging-default.png');
     let contacts = require('../../resources/images/contacts-blue.png');
 
-    if(this.props.walletHovered || this.props.walletSelected && !this.props.settings){
+    if(this.props.walletHovered || this.props.walletSelected && !this.props.settings && !this.props.eccNews){
       wallet = require('../../resources/images/wallet-orange.png');
       walletStyle = {color: "#d09128"};
     }
-    if(this.props.overviewHovered || this.props.overviewSelected && !this.props.settings){
+    if(this.props.overviewHovered || this.props.overviewSelected && !this.props.settings && !this.props.eccNews){
       overview = require('../../resources/images/overview-orange.png');
       overviewStyle = {color: "#d09128"};
     }    
-    if(this.props.sendHovered || this.props.sendSelected && !this.props.settings){
+    if(this.props.sendHovered || this.props.sendSelected && !this.props.settings && !this.props.eccNews){
       send = require('../../resources/images/send-orange.png');
       sendStyle = {color: "#d09128"};
     }
-    if(this.props.addressesHovered || this.props.addressesSelected && !this.props.settings){
+    if(this.props.addressesHovered || this.props.addressesSelected && !this.props.settings && !this.props.eccNews){
       addresses = require('../../resources/images/addresses-orange.png');
       addressesStyle = {color: "#d09128"};
     }
-    if(this.props.transactionsHovered || this.props.transactionsSelected && !this.props.settings){
+    if(this.props.transactionsHovered || this.props.transactionsSelected && !this.props.settings && !this.props.eccNews){
       transactions = require('../../resources/images/transactions-orange.png');
       transactionsStyle = {color: "#d09128"};
     }
-    if(this.props.fileStorageHovered || this.props.fileStorageSelected && !this.props.settings){
+    if(this.props.fileStorageHovered || this.props.fileStorageSelected && !this.props.settings && !this.props.eccNews){
       fileStorage = require('../../resources/images/fileStorage-orange.png');
       fileStorageStyle = {color: "#d09128"};
     }
-    if(this.props.messagingHovered || this.props.messagingSelected && !this.props.settings){
+    if(this.props.messagingHovered || this.props.messagingSelected && !this.props.settings && !this.props.eccNews){
       messaging = require('../../resources/images/messaging-orange.png');
       messagingStyle = {color: "#d09128"};
     }
-    if(this.props.contactsHovered || this.props.contactsSelected && !this.props.settings){
+    if(this.props.contactsHovered || this.props.contactsSelected && !this.props.settings && !this.props.eccNews){
       contacts = require('../../resources/images/contacts-orange.png');
       contactsStyle = {color: "#d09128"};
     }
@@ -177,10 +177,10 @@ class Sidebar extends Component {
         <ul className="sidebar-menu">
           <li className="have-children"><a style={walletStyle} href="#" onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="wallet" className="mainOption"><div className="arrowMenu"></div><img src={wallet}/><span></span>Wallet</a> 
             <ul>
-              <li><img className="sidebarImage" src={overview}/> <Link to="/" onClick={this.handleClicked} style={overviewStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="overview"> Overview</Link></li>
-              <li><img className="sidebarImage" src={send}/> <Link to="/send" onClick={this.handleClicked} style={sendStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="send">Send</Link></li>
-              <li><img className="sidebarImage" src={addresses}/> <Link to="/receive" onClick={this.handleClicked} style={addressesStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="addresses"><img className="sidebarImage" src={addresses}/> Addresses</Link></li>
-              <li><img className="sidebarImage" src={transactions}/>  <Link to="/transaction" onClick={this.handleClicked} style={transactionsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="transactions">Transactions</Link></li>
+              <li><img className="sidebarImage" src={overview}/> <a onClick={this.handleClicked} style={overviewStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="overview"> Overview</a></li>
+              <li><img className="sidebarImage" src={send}/> <a onClick={this.handleClicked} style={sendStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="send">Send</a></li>
+              <li><img className="sidebarImage" src={addresses}/> <a onClick={this.handleClicked} style={addressesStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="addresses"><img className="sidebarImage" src={addresses}/> Addresses</a></li>
+              <li><img className="sidebarImage" src={transactions}/>  <a onClick={this.handleClicked} style={transactionsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="transactions">Transactions</a></li>
             </ul>
           </li>
           <li className="have-children"><a onClick={this.handleClicked} style={fileStorageStyle} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="fileStorage" className="mainOption"><div className="arrowMenu"></div><img src={fileStorage}/><span></span>File Storage</a>
@@ -192,16 +192,16 @@ class Sidebar extends Component {
             </ul>
           </li>
           <li><a onClick={this.handleClicked} style={messagingStyle} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="messaging" className="mainOption"><img src={messaging}/><span></span>Messaging</a></li>
-          <li><Link to="/contacts" onClick={this.handleClicked} style={contactsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="contacts"><img style={{marginRight: "20px", position: "relative", top:"-2px"}} src={contacts}/>Contacts</Link></li>
+          <li><a onClick={this.handleClicked} style={contactsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="contacts"><img style={{marginRight: "20px", position: "relative", top:"-2px"}} src={contacts}/>Contacts</a></li>
         </ul>
         <div className="connections sidebar-section-container">
-        <Link to="/networkStats"  onClick={this.handleClicked} style={{textDecoration: "none"}}>
+        <a onClick={this.handleClicked} data-id="network" style={{textDecoration: "none", cursor:"pointer"}}>
           <p style={{fontSize: "13px", color: "#b4b7c8", fontWeight: "600"}}>{`${this.props.lang.nabBarNetworkInfoSyncing} ${progressBar}%`}</p>
           <div className="progress">
             <div className="bar" style={{ width: `${progressBar}%`, backgroundColor: '#d09128' }}></div>
           </div>
           <p style={{fontSize: "13px", color: "#b4b7c8", fontWeight: "600"}}>{`${this.props.lang.nabBarNetworkInfoActiveConnections}: ${this.props.connections}`}</p>
-          </Link>
+          </a>
         </div>
       </div>
     );
@@ -235,7 +235,8 @@ const mapStateToProps = state => {
     settings: state.application.settings,
     exportingPrivateKeys: state.application.exportingPrivateKeys,
     importingPrivateKey: state.application.importingPrivateKey,
-    changingPassword: state.application.changingPassword
+    changingPassword: state.application.changingPassword,
+    eccNews: state.application.showingNews
   };
 };
 

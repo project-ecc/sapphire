@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import $ from 'jquery';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
+import Input from '../Others/input';
+import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 const lang = traduction();
 const { clipboard } = require('electron');
 
@@ -34,7 +36,7 @@ class Receive extends Component {
     if(!this.props.ansAddress){
       TweenMax.to('#addressAccount', 0.2, {top: -38})
       TweenMax.to('#addressName', 0.2, {autoAlpha: 0})
-      TweenMax.to('#tableOwnAddresses', 0.2, {top: 0})
+      TweenMax.to('.tableCustom', 0.2, {top: 0})
       TweenMax.to('#imageAns', 0.2, {top: 6})
     }
   }
@@ -59,11 +61,11 @@ class Receive extends Component {
   }
 
   updateTable(addresses){
-    $('#rows').css("height", $('#tableOwnAddresses').height()-128)
+    $('#rows').css("height", $('.tableCustom').height()-128)
     let numberOfChildren = addresses.length;
     let totalSize = numberOfChildren * 40; //40px height of each row
-    let sizeOfContainer = $('#tableOwnAddresses').height()-128;
-    let sizeOfContainerWidth = $('#tableOwnAddresses').width();
+    let sizeOfContainer = $('.tableCustom').height()-128;
+    let sizeOfContainerWidth = $('.tableCustom').width();
     $('.rowDynamic').css("width", sizeOfContainerWidth);
     if(sizeOfContainer < totalSize){
       $('#rows').css("overflow-y", "auto");
@@ -96,7 +98,7 @@ class Receive extends Component {
     TweenMax.to('#addressAccount', 0.2, {top: 0})
     TweenMax.fromTo('#ansExplanation', 0.2, {top: -15}, {top: 15, autoAlpha: 1})
     TweenMax.to('#addressName', 0.2, {autoAlpha: 1})
-    TweenMax.to('#tableOwnAddresses', 0.2, {top: 50})
+    TweenMax.to('.tableCustom', 0.2, {top: 50})
     TweenMax.to('#imageAns', 0.2, {top: 55})
   }
 
@@ -106,7 +108,7 @@ class Receive extends Component {
     TweenMax.to('#addressAccount', 0.2, {top: -38})
     TweenMax.fromTo('#ansExplanation', 0.2, {top: 15}, {top: -15, autoAlpha: 0})
     TweenMax.to('#addressName', 0.2, {autoAlpha: 0})
-    TweenMax.to('#tableOwnAddresses', 0.2, {top: 0})
+    TweenMax.to('.tableCustom', 0.2, {top: 0})
     TweenMax.to('#imageAns', 0.2, {top: 6})
   }
 
@@ -131,6 +133,7 @@ class Receive extends Component {
   }
 
   goToBackupPage(){
+    this.props.setSettingsOptionSelected("Wallet");
     this.props.setSettings(true);
   }
 
@@ -149,56 +152,70 @@ class Receive extends Component {
     var self = this;
     let counter = 0;
     return (
-      <div className="sendPanel" style={{height: "100%", width: "100%", paddingLeft: "40px", paddingRight: "40px", overflowX: "hidden"}}>
-        <div style={{textAlign: "center", position: "relative", top: "25px", fontSize: "14px", fontWeight:"600"}}>
-        <p onClick={this.handleChangeAddressCreationToAns} style={{display: "inline-block", color: this.props.ansAddress ? "#aeacf3" : "#555d77", cursor: "pointer"}}>ANS</p><span style={{padding: "0px 20px", color:"#555d77"}}>/</span><p onClick={this.handleChangeAddressCreationToNormal} style={{display: "inline-block", cursor: "pointer", color: this.props.ansAddress ?"#555d77" : "#aeacf3"}}>Normal Address</p>
+      <div className="panel">
+        <div id="headerReceive">
+          <p className="typeSelectorReceive" onClick={this.handleChangeAddressCreationToAns} style={{color: this.props.ansAddress ? "#aeacf3" : "#555d77"}}>ANS</p>
+          <span>/</span>
+          <p className="typeSelectorReceive" onClick={this.handleChangeAddressCreationToNormal} style={{color: this.props.ansAddress ?"#555d77" : "#aeacf3"}}>Normal Address</p>
         </div>
-        <div id="inputAddress" style={{width: "750px", margin: "0 auto", position: "relative", marginTop:"60px"}}>
+        <div id="inputAddress">
           <div style={{display: "inline-block", width: "70%", position: "relative"}}>
-          <div id="addressName">
-              <p id="addressNamePlaceHolder" style={{position:"absolute", top: "5px", color: "#555d77", fontSize: "15px", fontWeight: "600", left: "2px"}}>Name</p>
-              <input className="privateKey" type="text" style={{textAlign: "left", margin: "0 0", width:"100%", display: "inline-block", position: "relative", color:"#555d77", fontWeight:"600", fontSize:"15px"}} value={this.props.newAddressName} onChange={this.handleChangeNameAddress} autoFocus></input>
-            </div>
-            <div id="addressAccount" style={{position: "relative",  marginTop: "10px"}}>
-              <p id="addressAccountPlaceHolder" style={{position:"absolute", top: "5px", color: "#555d77", fontSize: "15px", fontWeight: "600", left: "2px"}}>Account (optional)</p>
-              <input className="privateKey" type="text" style={{textAlign: "left", margin: "0 0", width:"100%", display: "inline-block", position: "relative", color:"#555d77", fontWeight:"600", fontSize:"15px"}} value={this.props.newAddressAccount} onChange={this.handleChangeAccountAddress}></input>
-            </div>
+            <Input 
+              divId="addressName"
+              divStyle={{display: "inline"}}
+              placeholder= "Name"
+              placeHolderClassName="inputPlaceholder inputPlaceholderReceive"
+              placeholderId="addressNamePlaceHolder"
+              value={this.props.newAddressName}
+              handleChange={this.handleChangeNameAddress.bind(this)}
+              type="text"
+              inputStyle={{textAlign: "left", width:"100%", display: "inline-block"}}
+            />
+            <Input 
+              divId="addressAccount"
+              divStyle={{position: "relative",  marginTop: "10px"}}
+              placeholder= "Account (optional)"
+              placeHolderClassName="inputPlaceholder inputPlaceholderReceive"
+              placeholderId="addressAccountPlaceHolder"
+              value={this.props.newAddressAccount}
+              handleChange={this.handleChangeAccountAddress.bind(this)}
+              type="text"
+              inputStyle={{textAlign: "left", width:"100%", display: "inline-block"}}
+            />
           </div>
-            <div onClick={this.handleCreateNewAddress} className="buttonUnlock" style={{marginLeft: "20px", display: "inline-block", background: "-webkit-linear-gradient(top, rgb(214, 167, 91) 0%, rgb(162, 109, 22) 100%)", color: "#d9daef", width: "auto", padding: "0px 20px"}}>
-             {this.props.ansAddress ? "Create ANS Address" : "Create Normal Address"}
-            </div>
-            <p id="ansExplanation" style={{display: "inline-block", color: "#555d77", fontSize: "14px", fontWeight: "600", position: "relative", top:"15px", visibility: this.props.ansAddress ? "visible" : "hidden"}}>ANS addresses are recognized by name in the network and have a cost of 0.00000005 <span className="ecc">ecc</span> per month</p>
-          </div>
+           <ConfirmButtonPopup handleConfirm={this.handleCreateNewAddress} style={{marginLeft: "20px", display: "inline-block", width: "auto", padding: "0px 20px"}} text={this.props.ansAddress ? "Create ANS Address" : "Create Normal Address"}/>
+            <p id="ansExplanation" style={{visibility: this.props.ansAddress ? "visible" : "hidden"}}>ANS addresses are recognized by name in the network and have a cost of 0.00000005 <span className="ecc">ecc</span> per month</p>
+         </div>
 
-         <div id="tableOwnAddresses" style={{height:"60%", backgroundColor: "#1c2340", position: "relative", top: "50px", boxShadow: "0 4px 11px -6px black"}}>
-          <div style={{width: "100%", height:"67px", boxShadow: "0 2px 4px -3px rgba(0, 0, 0, 0.74)"}}>
-            <p className="tableHeader" style={{paddingTop: "4px", paddingLeft: "5%", color: "#b4b7c8"}}>Your Addresses</p>
-            <p style={{paddingTop: "1px", paddingLeft: "5%", color: "#555d77", fontSize: "14px", fontWeight: "600"}}>All your normal and ANS addresses</p>
-            <div style={{position: "absolute", width: "100%", top: "36px", right:"4%", textAlign: "right"}}>
-              <p onClick={this.filterClicked.bind(this, "ans")} style={{paddingTop: "1px", color: this.props.filterAns ? "#a4a3e6" : "#555d77", fontSize: "14px", fontWeight: "600", display:"inline-block", cursor:"pointer"}}>ANS Addresses</p>
-              <p onClick={this.filterClicked.bind(this, "normal")} style={{paddingTop: "1px", marginLeft: "30px", color: this.props.filterNormal ? "#a4a3e6" : "#555d77", fontSize: "14px", fontWeight: "600", display:"inline-block", cursor:"pointer"}}>Normal Addreses</p>
-              <p onClick={this.filterClicked.bind(this, "all")} style={{paddingTop: "1px", marginLeft: "30px", color: this.props.filterAll ? "#a4a3e6" : "#555d77", fontSize: "14px", fontWeight: "600", display:"inline-block", cursor:"pointer"}}>All</p>
+         <div className="tableCustom">
+          <div className="tableHeaderBig">
+            <p className="tableHeader">Your Addresses</p>
+            <p className="headerDescription">All your normal and ANS addresses</p>
+            <div id="tableFiltersReceive">
+              <p className="tableFilterReceive" onClick={this.filterClicked.bind(this, "ans")} style={{ color: this.props.filterAns ? "#a4a3e6" : "#555d77"}}>ANS Addresses</p>
+              <p className="tableFilterReceive fixMarginReceive" onClick={this.filterClicked.bind(this, "normal")} style={{color: this.props.filterNormal ? "#a4a3e6" : "#555d77"}}>Normal Addreses</p>
+              <p className="tableFilterReceive fixMarginReceive" onClick={this.filterClicked.bind(this, "all")} style={{color: this.props.filterAll ? "#a4a3e6" : "#555d77"}}>All</p>
             </div>
           </div>
-          <div className="container" style={{width: "100%", marginTop: "5px", padding: "0 0"}}>
-              <div className="row rowDynamic" style={{height: "55px", margin: "0 0", width:"100%"}}>
-                <div className="col-sm-3 headerAddresses" style={{position:"relative", fontSize: "14px", color: "#555d77", paddingLeft: "5%", paddingTop: "16px", fontWeight: "600"}}>{this.props.filterAll ? "ACCOUNT" : this.props.filterNormal ? "ACCOUNT" : "NAME"}</div>
-                <div id="addressHeader" className="col-sm-6 headerAddresses" style={{position:"relative", fontSize: "14px", color: "#555d77", paddingTop: "16px", fontWeight: "600"}}>{this.props.filterAll ? "ADDRESS / NAME" : "ADDRESS"}</div>
-                <div id="addressHeader" className="col-sm-3 headerAddresses" style={{position:"relative", fontSize: "14px", color: "#555d77", paddingTop: "16px", fontWeight: "600"}}>AMOUNT</div>
+          <div className="container tableContainer">
+              <div className="row rowDynamic">
+                <div className="col-sm-3 headerAddresses headerAddressFix">{this.props.filterAll ? "ACCOUNT" : this.props.filterNormal ? "ACCOUNT" : "NAME"}</div>
+                <div id="addressHeader" className="col-sm-6 headerAddresses">{this.props.filterAll ? "ADDRESS / NAME" : "ADDRESS"}</div>
+                <div id="addressHeader" className="col-sm-3 headerAddresses">AMOUNT</div>
               </div>
-            <div id="rows" className="container" style={{width: "100%", padding: "0 0"}}>
+            <div id="rows" className="container">
             {this.props.userAddresses.map((address, index) => {
               if(this.props.filterAll || this.props.filterNormal && !address.ans || this.props.filterAns && address.ans){
                 counter++;
                 return (
-                  <div className="row rowDynamic normalWeight" style={{cursor: "pointer", fontSize: "15px", color: "#9099b7", margin: "0 0", width:"100%", height: "40px", backgroundColor: self.props.selectedAddress && address.address == self.props.selectedAddress.address ? "#212136" : counter % 2 != 0 ? "transparent" : "#1b223d"}} key={`address_${index}`}>
-                    <div className="col-sm-3" style={{paddingLeft: "5%", paddingTop: "9px"}} onClick={self.rowClicked.bind(self, address)}>
+                  <div className="row rowDynamic normalWeight tableRowCustom" style={{backgroundColor: self.props.selectedAddress && address.address == self.props.selectedAddress.address ? "#212136" : counter % 2 != 0 ? "transparent" : "#1b223d"}} key={`address_${index}`}>
+                    <div className="col-sm-3 tableColumn tableColumnFixReceive" onClick={self.rowClicked.bind(self, address)}>
                       {address.account}
                     </div>
-                    <div className="col-sm-6" style={{paddingTop: "9px"}} onClick={self.rowClicked.bind(self, address)}>
+                    <div className="col-sm-6 tableColumn" onClick={self.rowClicked.bind(self, address)}>
                       {address.address}
                     </div>
-                    <div className="col-sm-3" style={{paddingTop: "9px"}} onClick={self.rowClicked.bind(self, address)}>
+                    <div className="col-sm-3 tableColumn" onClick={self.rowClicked.bind(self, address)}>
                       {address.amount}
                     </div>
                   </div>
@@ -209,12 +226,12 @@ class Receive extends Component {
             </div>
           </div>
         </div>
-        <div id="imageAns" style={{position: "relative", top: "55px"}}>
+        <div id="imageAns">
           <img src={ansAddresImage} />
-          <p style={{fontSize:"14px", color: "#555d77", display: "inline-block", marginLeft: "10px", fontWeight: "600", position: "relative", top: "2px"}}>ANS Address</p>
+          <p className="ansLabel">ANS Address</p>
           <div>
-          <p id="addressCreatedSuccessfully" style={{fontSize: "15px", color: "#d09128", display: "inline-block", position: "absolute", top: "2px", width:"100%", textAlign: "center", fontWeight: "600", visibility: "hidden"}}> Address Created Successfully!<br></br><span style={{cursor: "pointer", textDecoration: "underline"}} className="ecc" onClick={this.goToBackupPage.bind(this)}>Click here to backup your wallet</span></p>
-          <p style={{fontSize:"13px", color: "#a4a3e6", display: "inline-block", marginLeft: "10px", position: "absolute", top: "2px", right: "0px", cursor: "pointer", fontWeight: "600"}}> {this.props.selectedAddress && this.props.selectedAddress.ans ? "Disable ANS subscription" : this.props.selectedAddress ? "Upgrade to ANS Address" : ""}</p>
+            <p id="addressCreatedSuccessfully"> Address Created Successfully!<br></br><span className="ecc" onClick={this.goToBackupPage.bind(this)}>Click here to backup your wallet</span></p>
+            <p id="upgradeAns"> {this.props.selectedAddress && this.props.selectedAddress.ans ? "Disable ANS subscription" : this.props.selectedAddress ? "Upgrade to ANS Address" : ""}</p>
           </div>
         </div>
         <TransitionGroup>

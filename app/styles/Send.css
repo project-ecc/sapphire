@@ -1,97 +1,102 @@
-.send .send{
-	padding-top: 20px;
-}
-
-.send .greenBtn{
-	margin: 0 !important;
-	background-color: #008B45 !important;
-	width: 200px;
-}
-
-.send .inpuText{
-	font-size: 0.9em !important;
-}
-
-.send .inpuText::-webkit-input-placeholder{
-	font-size: 0.9em !important;
-}
-
-.friends_table{
-	margin-top:25px;
-	height: 250px;
-	overflow-y: auto;
-}
-
-.friends_table .title{
-	font-size: 1.1em;
-	font-weight: 700;
-}
-
-.friends_table .desc1{
-	font-size: 1em;
-}
-
-.friends_table .desc2{
-	font-size: 0.9em !important;
-	color: #bdbdbd !important;
-}
-
-.friends_table .desc_p{
-	font-size: 1em;
-	color: #ffc107;
-}
-
-.friends_table .desc_c{
-	font-size: 1em;
-	color: #4caf50;
-}
-
-.friends_table .header{
-	font-weight: 300;
-	margin-bottom: 0px;
-}
-
-.friends_table .stripped{
-	background-color: #fafafa;
-}
-
-.friends_table .trans_row{
-	margin-left: 0px !important;
-	margin-right: 0px !important;
-	cursor: pointer;
-}
-
-.friends_table .trans_col{
-	padding: 10px !important;
-}
-
-.friends_table .delete_icon{
-	float: right;
-	font-weight: 700;
-}
-
-.send .dialog{
-	width: 600px !important;
-}
-
-.send .dialog .header{
-	position: relative;
-}
-
-.send .loading{
-	position: absolute;
-	top: -25px;
-	right: 10px;
-	z-index: 1000;
-	display: none;
-}
-
-.disable{
-	opacity: 0.6;
-	pointer-events: none;
-}
-
 #rows{
 	overflow-y: scroll;
 	overflow-x: hidden;
+}
+
+.sendPlaceholder{
+	position:relative;
+	top: 85px;
+	width: 80%;
+	text-align: left;
+	color: #555d77;
+	font-size: 15px;
+	font-weight: 600;
+	left: 2px;
+}
+.sendPlaceholderAmount{
+	top: 60px;
+}
+
+.sendButton{
+	display: inline-block;
+	text-align: center;
+	position: relative;
+	top: 27px;
+	left: 20px;
+}
+
+#message{
+	position: relative;
+	text-align: center;
+	color: #d09128;
+	font-size: 15px;
+	visibility: hidden;
+	top: 65px;
+}
+
+#clearButton{
+	position: relative;
+	top: 67px;
+	left: 50%;
+	margin-left: -38%;
+	cursor: pointer;
+	z-index: 2;
+}
+
+.tableColumContactFix{
+	padding-left: 10%;
+}
+
+.deleteContactIcon{
+	cursor: pointer;
+	width: 20px;
+}
+
+.rowContact{
+	font-size: 15px;
+	color: #9099b7;
+	height: 40px;
+}
+
+.inputSend{
+	width: 400px;
+	top: 20px;
+	margin-bottom: 30px;
+}
+
+#pleaseTypePassword{
+	font-size: 16px;
+	color: #b4b7c8;
+	width: 400px;
+	text-align: center;
+	margin: 0 auto;
+	padding-top: 25px;
+}
+
+.labelSend{
+	font-size: 16px;
+	color: #b4b7c8;
+	width: 400px;
+	text-align: left;
+	margin: 0 auto;
+	padding-top: 10px;
+}
+
+.labelAddressSend{
+	color: #555d77;
+	font-size: 14px;
+	width: 400px;
+	text-align: left;
+	margin: 0 auto;
+	padding-top: 10px;
+	font-weight: 600;
+}
+
+.labelAmountSend{
+	font-size: 16px;
+	color: #b4b7c8;
+	width: 400px;
+	text-align: left;
+	margin: 0 auto;
+	padding-top: 25px;
 }

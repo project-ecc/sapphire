@@ -3,15 +3,52 @@ const fs = require('fs');
 const os = require('os');
 import {TweenMax} from "gsap";
 import $ from 'jquery';
+var fsPath = require('fs-path');
+const settings = require('electron-settings');
 
 module.exports = {
   formatNumber: function (number) {
     return number.toLocaleString(undefined, {minimumFractionDigits:0, maximumFractionDigits: 8})
   },
 
+  calculateTimeSince: function(lang, today, iTime){
+    let delta = Math.abs(today.getTime() - iTime.getTime()) / 1000;
+    const days = Math.floor(delta / 86400);
+    delta -= days * 86400;
+    const hours = Math.floor(delta / 3600) % 24;
+    delta -= hours * 3600;
+    const minutes = Math.floor(delta / 60) % 60;
+
+
+    let time = '';
+    if (settings.get('settings.lang') === 'fr') {
+      time = `${lang.translationExclusiveForFrench} `;
+    }
+    if (days > 0) {
+      time += `${days} `;
+      if (days === 1) {
+        time += lang.transactionsDay;
+      } else {
+        time += lang.transactionsDays;
+      }
+    } else if (hours > 0) {
+      time += `${hours} `;
+      if (hours === 1) {
+        time += lang.transactionsHour;
+      } else {
+        time += lang.transactionsHours;
+      }
+    } else if (minutes === 1) {
+      time += `${minutes} ${lang.transactionsMinute}`;
+    } else {
+      time += `${minutes} ${lang.transactionsMinutes}`;
+    }
+    return time;
+  },
+
   //Animations
 
-  showTemporaryMessage: function (element, text) {
+  showTemporaryMessage: function (element, text, time=2000) {
     if(text){
       $(element).text(text)
     }
@@ -19,7 +56,7 @@ module.exports = {
     TweenMax.to(element, 0.2, {autoAlpha: 1, scale: 1, onComplete: () => {
       setTimeout(() => {
         TweenMax.to(element, 0.2, {autoAlpha: 0, scale: 0.5});
-      }, 2000)
+      }, time)
     }});
   },
 
@@ -76,6 +113,111 @@ module.exports = {
         }
       });
     }
+  },
+
+  generateId: function(length){
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < length; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+  },
+
+  updateOrCreateConfig(username, password){
+    const directory = process.platform === "win32" ? `${homedir}/appdata/roaming/eccoin` : `${homedir}/.eccoin`;
+    const filePath = process.platform === "win32" ? `${homedir}/appdata/roaming/eccoin/eccoin.conf` : `${homedir}/.eccoin/eccoin.conf`;
+    return new Promise((resolve, reject) => {
+      fs.exists(filePath, (exists) => {
+        if(!exists){
+           //create
+           const toWrite = "maxconnections=100" + os.EOL + "rpcuser=" + username + os.EOL + "rpcpassword=" + password + os.EOL + "addnode=www.cryptounited.io" + os.EOL + "rpcport=19119" + os.EOL + "rpcconnect=127.0.0.1" + os.EOL + "staking=0" + os.EOL + "zapwallettxes=0";
+           fsPath.writeFile(filePath, toWrite, 'utf8', (err) => {
+                if (err) {
+                  console.log(err)
+                  resolve(false);
+                  return;
+                }
+                resolve(true);
+            });
+        }
+        else{
+          fs.readFile(filePath, 'utf8', (err, data) => {
+            if (err) {
+               console.log("readFile error: ", err);
+               resolve(false);
+               return;
+            }
+            var patt = /(rpcuser=(.*))/g
+            var myArray = patt.exec(data);
+            var result = data;;
+            if(myArray && myArray.length > 2)
+            {
+              result = result.replace('rpcuser='+myArray[2], 'rpcuser='+username);
+            }
+            else{
+              result += `${os.EOL}rpcuser=${username}`;
+            }
+
+            patt = /(rpcpassword=(.*))/g
+            myArray = patt.exec(data);
+            if(myArray && myArray.length > 2)
+            {
+              result = result.replace('rpcpassword='+myArray[2], 'rpcpassword='+password);
+            }
+            else{
+              result += `${os.EOL}rpcpassword=${password}`;
+            }
+
+            fs.writeFile(filePath, result, 'utf8', (err) => {
+              if(!err)
+                resolve(true);
+              else resolve(false);
+            });
+          });
+        }
+      });
+    });
+  },
+
+  readRpcCredentials(){
+    const directory = process.platform === "win32" ? `${homedir}/appdata/roaming/eccoin` : `${homedir}/.eccoin`;
+    const filePath = process.platform === "win32" ? `${homedir}/appdata/roaming/eccoin/eccoin.conf` : `${homedir}/.eccoin/eccoin.conf`;
+    var toReturn = null;
+    return new Promise((resolve, reject) => {
+      fs.exists(filePath, (exists) => {
+        if(!exists){
+           resolve(toReturn);
+           return;
+        }
+        fs.readFile(filePath, 'utf8', (err, data) => {
+          if (err) {
+            console.log("readFile error: ", err);
+            resolve(toReturn);
+            return;
+          }
+          toReturn = {
+            username: "",
+            password: ""
+          }
+          var patt = /(rpcuser=(.*))/g
+          var myArray = patt.exec(data);
+          if(myArray && myArray.length > 2)
+          {
+            toReturn.username = myArray[2];
+          }
+
+          patt = /(rpcpassword=(.*))/g
+          myArray = patt.exec(data);
+          if(myArray && myArray.length > 2)
+          {
+            toReturn.password = myArray[2];
+          }
+          resolve(toReturn);
+        });
+      })
+    });
   }
 };
 

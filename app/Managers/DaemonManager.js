@@ -8,7 +8,7 @@ const os = require('os');
 var https = require('https');
 var psList = require('ps-list');
 import Wallet from '../utils/wallet';
-
+import Tools from '../utils/tools';
 /*
 *	Handles daemon updates and the daemon'state
 */
@@ -27,6 +27,8 @@ class DaemonManager {
 		this.running = false;
 		this.initialSetup();
 		this.wallet = new Wallet();
+		this.toldUserAboutUpdate = false;
+		this.shouldRestart = undefined;
 	}
 
     async initialSetup(){
@@ -45,8 +47,32 @@ class DaemonManager {
 				console.log("stopped daemon")
 			})
 		})
+		event.on('updateDaemon', (shouldRestart) => {
+			this.shouldRestart = shouldRestart;
+			this.updateDaemon();
+		});
+		/*var daemonCredentials = await Tools.readRpcCredentials();
+    	//exists -> try to stop it
+    	this.installedVersion = await this.checkIfDaemonExists();
+	    if(this.installedVersion != -1 && daemonCredentials){
+	    	this.wallet = new Wallet(daemonCredentials.username, daemonCredentials.password)
+	    	await this.stopDaemon();
+	    }
+		if(!daemonCredentials || daemonCredentials.username == "yourusername" || daemonCredentials.password == "yourpassword"){
+			daemonCredentials = {
+				username: Tools.generateId(5),
+				password: Tools.generateId(5)
+			}
+			var result = await Tools.updateOrCreateConfig(daemonCredentials.username, daemonCredentials.password)
+			this.wallet = new Wallet(daemonCredentials.username, daemonCredentials.password)
+		}*/
+		
 		console.log("going to check daemon version")
-	    this.installedVersion = await this.checkIfDaemonExists();
+		this.installedVersion = await this.checkIfDaemonExists();
+		//on startup daemon should not be running unless it was to update the application
+    	//if(this.installedVersion != -1 ){
+	    //	await this.stopDaemon();
+	    //}
 	    this.walletDat = await this.checkIfWalletExists();
      	do{
      		console.log("getting latest version")
@@ -72,6 +98,7 @@ class DaemonManager {
 	startDaemonChecker(){
 		this.checkIfDaemonIsRunning();
 		this.intervalID = setInterval(this.checkIfDaemonIsRunning.bind(this), 60000);
+		this.intervalIDCheckUpdates = setInterval(this.getLatestVersion.bind(this), 6000000);
 	}
 
 	checkIfDaemonIsRunning(){
@@ -102,26 +129,48 @@ class DaemonManager {
 	    });
 	}
 
-	async stopDaemon(callback){
-		this.wallet.walletstop()
-	      .then(() => {
-	        console.log("stopped daemon")
-	      })
-	      .catch(err => {
-	        console.log("failed to stop daemon:", err);
-	      });
+	async stopDaemon(){
+		var self = this;
+		return new Promise(function(resolve, reject){
+			self.wallet.walletstop()
+		      .then(() => {
+		      	console.log("stopped daemon")
+		      	resolve(true);
+		      })
+		      .catch(err => {
+		        console.log("failed to stop daemon:", err);
+		        resolve(false);
+		      });
+	  	});
 	}
 
 	checkForUpdates(){
-		if(this.installedVersion != this.currentVersion && !this.downloading){
+		if(this.installedVersion != -1 && this.installedVersion != this.currentVersion && !this.toldUserAboutUpdate){
 			console.log("installed: ", this.installedVersion);
 			console.log("current: ", this.currentVersion);
-			//TODO on auto updates otherwise send notification that there is a new version
-			this.downloadDaemon();
+			this.toldUserAboutUpdate = true;
+			event.emit('daemonUpdate');
 		}
-		setTimeout(() => {
-			this.getLatestVersion();
-		}, 10000);
+	}
+
+	async updateDaemon(){
+		console.log("daemon manager got update call")
+		var r = await this.stopDaemon();
+		console.log("R: ", r)
+		if(r){
+			var self = this;
+			setTimeout( async ()=> {
+				var downloaded = false;
+				do{
+					downloaded = await self.downloadDaemon();	
+				}while(!downloaded)
+				event.emit("updatedDaemon"); 
+				if(self.shouldRestart)
+					self.startDaemon();
+				this.toldUserAboutUpdate = false;
+			}, 7000)
+		}
+		else console.log("DAEMON DIDNT STOP BITCH")
 	}
 
 
@@ -134,7 +183,7 @@ class DaemonManager {
 				return -1;
 			}
 			console.log("daemon exists, version: ", data)
-			return data;
+			return data.split(' ')[1];
 		}
 		else{
 			console.log("daemon does not exist")
@@ -158,12 +207,14 @@ class DaemonManager {
 	};
 
 	async getLatestVersion(){
-		const opts = { url: 'http://f2bd5944.ngrok.io/daemoninfo'};
+		const opts = { url: 'http://7539b832.ngrok.io/daemoninfo'};
+		var self = this;
 		request(opts)
 	      .then((response) => {
 				const parsed = JSON.parse(response);
                 const githubVersion = parsed.name.split(' ')[1];
-                this.currentVersion = githubVersion;
+                self.currentVersion = githubVersion;
+                self.checkForUpdates();
 	      })
 	      .catch(error => {
 	      	console.log(error);

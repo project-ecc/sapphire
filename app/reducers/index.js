@@ -6,6 +6,7 @@ import chainsReducer from './chainsReducer';
 import sideBarReducer from './sideBarReducer';
 import applicationReducer from './applicationReducer';
 import earningsExpensesReducer from './earningsExpensesReducer';
+import notificationsReducer from './notificationsReducer';
 
 const rootReducer = combineReducers({
 	startup: startupReducer,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
 	sideBar: sideBarReducer,
 	application: applicationReducer,
 	earningsExpenses: earningsExpensesReducer,
+	notifications: notificationsReducer,
     router
 });
 

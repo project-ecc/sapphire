@@ -1,16 +1,15 @@
 .sidebar {
   width: 224px;
   position: fixed;
-  top: 0;
   left: 0;
   background-color: #1c2340;
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
-  top: 40px;
   font-weight: normal;
   transition: left 0.3s;
   z-index: 3;
+  margin-top: 40px;
 }
 
 .sidebarlist {

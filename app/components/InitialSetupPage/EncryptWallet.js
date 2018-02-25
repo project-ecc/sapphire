@@ -4,12 +4,10 @@ import { traduction, language } from '../../lang/lang';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
 import connectWithTransitionGroup from 'connect-with-transition-group';
-import Wallet from '../../utils/wallet';
 
 class EncryptWallet extends React.Component {
  constructor() {
     super();
-    this.wallet = new Wallet();
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleConfirmationPassword = this.handleConfirmationPassword.bind(this);
     this.checkIfEncrypted = this.checkIfEncrypted.bind(this);
@@ -38,7 +36,7 @@ class EncryptWallet extends React.Component {
   }
   
   checkIfEncrypted(){
-    this.wallet.help().then((data) => {
+    this.props.wallet.help().then((data) => {
       if (data.indexOf('walletlock') > -1) {
         this.showWalletEncrypted();
         } else {
@@ -84,6 +82,14 @@ class EncryptWallet extends React.Component {
   }
 
   componentWillMount(){
+    if(!this.props.notInitialSetup){
+      this.props.wallet.walletstart((result) => {
+        if (result) {
+          console.log("started daemon")
+        }
+      });
+    }
+
     if(this.props.checkEncrypted){
       var self = this;
       setTimeout(() => {
@@ -122,7 +128,7 @@ class EncryptWallet extends React.Component {
       return;
     }
     this.showEncryptingWallet();
-    this.wallet.encryptWallet(this.props.passwordValue).then((data) =>{
+    this.props.wallet.encryptWallet(this.props.passwordValue).then((data) =>{
       if (data.code === -1 || data.code === -28) {
         console.log("failed to encrypt: ", data)
         var self = this;
@@ -131,10 +137,15 @@ class EncryptWallet extends React.Component {
         }, 1000);
       } 
       else {
+        this.props.password("");
         this.showWalletEncrypted();
         var self = this;
         setTimeout(function(){
             self.startWallet();
+            //making sure >_>
+            setTimeout(function(){
+              self.startWallet();
+            }, 5000)
         }, 5000)
         console.log("encrypted! ", data)
       }
@@ -144,7 +155,7 @@ class EncryptWallet extends React.Component {
   }
 
   startWallet(){
-    this.wallet.walletstart((result) => {
+    this.props.wallet.walletstart((result) => {
       if (result) {
         console.log("started daemon")
       }
@@ -175,13 +186,13 @@ class EncryptWallet extends React.Component {
           Encrypt your wallet
           </p>
 
-          <div style={{position:"relative", width:"300px", margin:"0 auto"}}>
-            <p id="enterPassword" style={{position:"absolute",top: "2px", width: "300px", textAlign: "center", color: "#555d77", fontSize: "15px", fontWeight: "600", zIndex:"-1"}}>Enter Password</p>
-            <input className="privateKey passwordInput" style={{color: "#555d77", fontSize: "15px", fontWeight: "600"}} type="text" value={this.props.passwordValue} onChange={this.handlePasswordChange}></input>
+          <div className="inputDivPassword">
+            <p id="enterPassword">Enter Password</p>
+            <input className="inputCustom inputCustomPassword" type="text" value={this.props.passwordValue} onChange={this.handlePasswordChange}></input>
           </div>
-          <div style={{position:"relative", width:"300px", margin:"0 auto"}}>
-            <p id="enterPasswordRepeat" style={{position:"absolute",top: "2px", width: "300px", textAlign: "center", color: "#555d77", fontSize: "15px", fontWeight: "600", zIndex:"-1"}}>Repeat Password</p>
-            <input className="privateKey passwordInput" style={{marginBottom: "10px", color: "#555d77", fontSize: "15px", fontWeight: "600"}} type="text" value={this.props.passwordConfirmationValue} onChange={this.handleConfirmationPassword}></input>
+          <div className="inputDivPassword">
+            <p id="enterPasswordRepeat" >Repeat Password</p>
+            <input className="inputCustom inputCustomPassword" type="text" value={this.props.passwordConfirmationValue} onChange={this.handleConfirmationPassword}></input>
           </div>
           <p id="passwordError" style={{fontSize: "15px", fontWeight: "bold", color: "#d09128", visibility: "hidden"}}>{this.props.passwordValue != this.props.passwordConfirmationValue ? "passwords do not match" : "password can't be empty"}</p>
            <div style={{marginTop: "25px"}} onClick={this.encryptWallet} id="importButton">
@@ -205,7 +216,8 @@ const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
     passwordValue: state.setup.password,
-    passwordConfirmationValue: state.setup.confirmationPassword
+    passwordConfirmationValue: state.setup.confirmationPassword,
+    wallet: state.application.wallet
   };
 };
 

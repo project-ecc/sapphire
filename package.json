@@ -172,12 +172,11 @@
     "react-addons-test-utils": "^15.0.6",
     "react-test-renderer": "^15.6.1",
     "redux-logger": "^3.0.6",
-    "request": "*",
+    "request": "^2.83.0",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.6",
     "sinon": "^2.3.5",
     "spectron": "^3.7.0",
-    "sqlite3": "^3.1.13",
     "style-loader": "^0.18.1",
     "stylefmt": "^6.0.0",
     "stylelint": "^7.12.0",
@@ -200,7 +199,9 @@
     "electron-dl": "^1.10.0",
     "electron-settings": "^3.1.1",
     "events": "^1.1.1",
+    "feedme": "^1.1.2",
     "font-awesome": "^4.7.0",
+    "fs-path": "0.0.23",
     "glob": "^7.1.2",
     "gsap": "^1.20.3",
     "history": "^4.6.3",
@@ -225,7 +226,8 @@
     "redux": "^3.7.1",
     "redux-thunk": "^2.2.0",
     "rss-to-json": "^1.0.4",
-    "source-map-support": "^0.4.15"
+    "source-map-support": "^0.4.15",
+    "sqlite3": "^3.1.13"
   },
   "devEngines": {
     "node": ">=6.x",

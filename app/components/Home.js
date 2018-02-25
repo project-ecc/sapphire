@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import Wallet from '../utils/wallet';
 import { exchanges } from '../utils/exchange';
 import { traduction } from '../lang/lang';
 import glob from 'glob';
 const event = require('../utils/eventhandler');
 const homedir = require('os').homedir();
 const lang = traduction();
-const wallet = new Wallet();
 import { connect } from 'react-redux';
 import ToggleButton from 'react-toggle';
 import * as actions from '../actions';
@@ -44,7 +42,7 @@ class Home extends Component {
     }
     batch.push(obj)
 
-    wallet.command(batch).then((data) => {
+    this.props.wallet.command(batch).then((data) => {
       console.log("data: ", data)
       data = data[0];
      if (data !== null && data.code === 'ECONNREFUSED') {
@@ -61,7 +59,7 @@ class Home extends Component {
 
   lockWallet(){
     var self = this;
-    wallet.walletlock().then((data) => {
+    this.props.wallet.walletlock().then((data) => {
         if (data === null) {
           self.props.setStaking(false);
         } else {
@@ -282,7 +280,8 @@ const mapStateToProps = state => {
     ansWeekExpenses: state.application.lastWeekAnsExpenses,
     ansMonthExpenses: state.application.lastMonthAnsExpenses,
 
-    unlocking: state.application.unlocking
+    unlocking: state.application.unlocking,
+    wallet: state.application.wallet
   };
 };
 
