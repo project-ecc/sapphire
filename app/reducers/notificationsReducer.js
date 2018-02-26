@@ -2,7 +2,8 @@ import {
 	NOTIFICATIONS_POPUP,
 	NEWS_CHECKED,
 	EARNINGS_CHECKED,
-	NEWS_NOTIFICATION
+	NEWS_NOTIFICATION,
+	STAKING_NOTIFICATION
 } from '../actions/types';
 
 import notificationsInfo from '../utils/notificationsInfo';
@@ -11,12 +12,13 @@ import notificationsInfo from '../utils/notificationsInfo';
 
 const INITIAL_STATE = {popupEnabled: false, lastCheckedNews: notificationsInfo.get('info').value().lastCheckedNews, lastCheckedEarnings: notificationsInfo.get('info').value().lastCheckedEarnings, entries: {
 	total: 0,
+	differentKinds: 0,
+	last: "",
     messaging: {messages: [], date: GetOldDate()}, 
 	news: {total: 0, date: GetOldDate()}, 
-	earnings: {total: 0, earnings: [], date: GetOldDate()}, 
-	payments: {total: 0, payments: []}, 
-	warnings: [], 
-	update: false
+	stakingEarnings: {total: 0, count: 0, date: GetOldDate()}, 
+	ansPayments: {total: 0, payments: []}, 
+	warnings: []
 	}
 }
 
@@ -25,22 +27,54 @@ export default(state = INITIAL_STATE, action) => {
 		return {...state, popupEnabled: action.payload}
 	}
 	else if(action.type == EARNINGS_CHECKED){
+		let entries = Object.assign({}, state.entries);
+		entries["total"] = entries["total"] - entries["stakingEarnings"].count;
+		entries["stakingEarnings"].count = 0;
+		entries["stakingEarnings"].total = 0;
+		entries["differentKinds"] -= 1;
+		if(entries["last"] == "earnings"){
+			entries["last"] = "news";
+		}
 		UpdateNotificationInfo(state.lastCheckedNews, action.payload);
-		return {...state, lastCheckedEarnings: action.payload}
+		return {...state, lastCheckedEarnings: action.payload, entries: entries}
 	}
 	else if(action.type == NEWS_CHECKED){
 		let entries = Object.assign({}, state.entries);
+		let differentKinds = entries["differentKinds"];
 		entries["total"] = entries["total"] - entries["news"].total;
-		entries["news"].count = 0;
+		entries["news"].total = 0;
+		entries["differentKinds"] -= 1;
+
 		UpdateNotificationInfo(action.payload, state.lastCheckedEarnings, entries: entries);
 		return {...state, lastCheckedNews: action.payload, entries: entries}
 	}
 	else if(action.type == NEWS_NOTIFICATION){
 		let entries = Object.assign({}, state.entries);
-		entries["total"] = entries["news"].total+=1;
-		entries["news"].count = entries["news"].count+=1;
+		if(entries["news"].total == 0){
+			entries["differentKinds"] += 1;
+			if(entries["last"] == "")
+				entries["last"] = "news";
+		}
+		entries["total"] = entries["total"] += 1;
+		entries["news"].total = entries["news"].total += 1;
 		if(action.payload > entries["news"].date){
 			entries["news"].date = action.payload;
+		}
+		return {...state, entries: entries}
+	}
+	else if(action.type == STAKING_NOTIFICATION){
+		let entries = Object.assign({}, state.entries);
+		let differentKinds = entries["differentKinds"];
+		if(entries["stakingEarnings"].count == 0){
+			entries["differentKinds"] += 1;
+			if(entries["last"] == "" || entries["last"] == "news")
+				entries["last"] = "earnings";
+		}
+		entries["total"] = entries["total"] + 1;
+		entries["stakingEarnings"].count = entries["stakingEarnings"].count+=1;
+		entries["stakingEarnings"].total = entries["stakingEarnings"].total+=action.payload.earnings;
+		if(action.payload.date > entries["stakingEarnings"].date){
+			entries["stakingEarnings"].date = action.payload.date;
 		}
 		return {...state, entries: entries}
 	}

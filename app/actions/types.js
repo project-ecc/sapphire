@@ -92,3 +92,4 @@ export const NOTIFICATIONS_POPUP = "notifications_popup";
 export const NEWS_CHECKED = "news_checked";
 export const EARNINGS_CHECKED = "earnings_checked";
 export const NEWS_NOTIFICATION = "news_notification";
+export const STAKING_NOTIFICATION = "staking_notification";

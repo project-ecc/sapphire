@@ -1,6 +1,6 @@
 import Wallet from '../utils/wallet';
 import { ipcRenderer } from 'electron';
-import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION } from '../actions/types';
+import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION } from '../actions/types';
 const event = require('../utils/eventhandler');
 const tools = require('../utils/tools')
 const sqlite3 = require('sqlite3');
@@ -521,7 +521,7 @@ class DaemonConnector {
     this.openDb();
     var self = this;
     var statement = "BEGIN TRANSACTION;";
-
+    var lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
     for (var i = 0; i < entries.length; i++) {
       var entry = entries[i];
       statement += `INSERT INTO transactions VALUES('${entry.txId}', ${entry.time}, ${entry.amount}, '${entry.category}', '${entry.address}', ${entry.fee}, '${entry.confirmations}');`;
@@ -532,6 +532,9 @@ class DaemonConnector {
       //update with 1 new staking reward since previous ones have already been loaded on startup
       if(this.transactionsIndexed){
         this.store.dispatch({type: STAKING_REWARD, payload: entries[i]})
+      }
+      if(entry.time > lastCheckedEarnings){
+        self.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: entry.amount, date: entry.time}})
       }
     }
 
@@ -627,6 +630,17 @@ class DaemonConnector {
       if (err) {
         console.log("ERROR GETTING TRANSACTIONS: ", err);
       }
+      var lastCheckedEarnings = self.store.getState().notifications.lastCheckedEarnings;
+      console.log(lastCheckedEarnings)
+      rows.map((transaction) => {
+        var time = transaction.time*1000;
+        var amount = transaction.amount;
+        console.log(time)
+        if(time > lastCheckedEarnings){ 
+          self.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}}) 
+        }
+
+      })
       self.store.dispatch({type: STAKING_REWARD, payload: rows})
     });
 

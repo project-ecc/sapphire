@@ -45,16 +45,14 @@
 	font-size: 16px;
 }
 
-#notificationNews{
+.notificationItem{
 	padding-top: 20px;
 	padding-bottom: 10px;
 	cursor: pointer;
 }
 
-#notificationNews:hover{
+.notificationItem:hover{
 	background-color: #101325;
-	border-bottom-left-radius: 16px;
-	border-bottom-right-radius: 16px;
 }
 
 #mediumPosts{
@@ -62,7 +60,7 @@
     font-size: 14px;
 }
 
-#notificationNews img{
+.notificationItem img{
 	display: inline-block;
 	padding-left: 20px;
 	padding-right: 20px;
@@ -88,8 +86,79 @@
     margin-top: 10px;
     font-size: 15px;
 }
+#notificationCounter p{
+	position: relative;
+	top: 1px;
+	font-size: 14px;
+}
 
 #notificationsHeaderContent{
 	margin: 0 auto;
 	width: max-content;
+}
+
+.newsItemBorder{
+	border-bottom: 1px solid #1c2340;
+}
+
+.newsItemRoundCorners:hover{
+	border-bottom-left-radius: 16px;
+	border-bottom-right-radius: 16px;
+}
+
+#notificationsBody{
+}
+
+.applicationUpdate img{
+	display: inline-block;
+	width: 17px;
+	position: absolute;
+	bottom: 9px;
+    left: 21px;
+}	
+
+.applicationUpdate{
+	font-size: 15px;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    margin-top: 30px;
+    padding-top: 8px;
+    padding-bottom: 6px;
+    background-color: #121529;
+   	border-bottom-left-radius: 16px;
+	border-bottom-right-radius: 16px;
+	cursor: pointer;
+}
+
+.applicationUpdate:hover{
+	background-color: #101325;
+	border-bottom-left-radius: 16px;
+	border-bottom-right-radius: 16px;
+}
+
+.applicationUpdateOnlyNotif{
+	padding-top: 20px;
+	padding-bottom: 20px;
+	cursor: pointer;
+}
+
+.applicationUpdateOnlyNotif img{
+	display: inline-block;
+	padding-left: 20px;
+	padding-right: 20px;
+	width: 56px;
+	position: relative;
+	top: -2px
+}
+
+.applicationUpdateOnlyNotif p{
+	display: inline-block;
+	font-size: 16px;
+}
+
+.applicationUpdateOnlyNotif:hover{
+	background-color: #101325;
+	border-bottom-left-radius: 16px;
+	border-bottom-right-radius: 16px;
 }
