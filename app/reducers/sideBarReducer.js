@@ -76,127 +76,17 @@ export default(state = INITIAL_STATE, action) => {
 	        messagingSelected: false,
 	        contactsSelected: false
 		};
+		const parent = action.payload.parent;
+		const child = action.payload.child;
 
-		switch(action.payload){
-
-			case 'wallet': 
-
-			const overviewSelected = true;
-			if(state.sendSelected || state.addressesSelected || state.transactionsSelected)
-				overviewSelected = false;
-
-			return {...state, 	        
-		        sendSelected: false,
-		        addressesSelected: false,
-		        transactionsSelected: false,
-		        fileStorageSelected: false,
-		        customerSelected: false,
-		        viewFilesSelected: false,
-		        gallerySelected: false,
-		        providerSelected: false,
-		        messagingSelected: false,
-		        contactsSelected: false, 
-		        walletSelected: true, 
-	        	overviewSelected: overviewSelected
-	    	};
-			case 'overview': return {...state, 		        
-				sendSelected: false,
-		        addressesSelected: false,
-		        transactionsSelected: false,
-		        fileStorageSelected: false,
-		        customerSelected: false,
-		        viewFilesSelected: false,
-		        gallerySelected: false,
-		        providerSelected: false,
-		        messagingSelected: false,
-		        contactsSelected: false,
-		        walletSelected: true, 
-		        overviewSelected: true
-		     };
-			case 'send': return {...state, 		        
-				sendSelected: true,
-		        addressesSelected: false,
-		        transactionsSelected: false,
-		        fileStorageSelected: false,
-		        customerSelected: false,
-		        viewFilesSelected: false,
-		        gallerySelected: false,
-		        providerSelected: false,
-		        messagingSelected: false,
-		        contactsSelected: false,
-		        walletSelected: true, 
-		        overviewSelected: false
-		    };
-			case 'addresses': return {...state, 
-			    sendSelected: false,
-		        transactionsSelected: false,
-		        fileStorageSelected: false,
-		        customerSelected: false,
-		        viewFilesSelected: false,
-		        gallerySelected: false,
-		        providerSelected: false,
-		        messagingSelected: false,
-		        contactsSelected: false,
-		        walletSelected: true, 
-		        addressesSelected: true,
-		        overviewSelected: false
-		    };
-			case 'transactions': return {...state, 		       
-				sendSelected: false,
-		        addressesSelected: false,
-		        fileStorageSelected: false,
-		        customerSelected: false,
-		        viewFilesSelected: false,
-		        gallerySelected: false,
-		        providerSelected: false,
-		        messagingSelected: false,
-		        contactsSelected: false,
-		        walletSelected: true, 
-		        transactionsSelected: true,
-		        overviewSelected: false
-		    };
-			case 'fileStorage': return {...state, 		        
-				sendSelected: false,
-		        addressesSelected: false,
-		        transactionsSelected: false,
-		        customerSelected: false,
-		        viewFilesSelected: false,
-		        gallerySelected: false,
-		        providerSelected: false,
-		        messagingSelected: false,
-		        contactsSelected: false,
-		        fileStorageSelected: true,
-		        walletSelected: false, 
-		    };
-			case 'messaging': return {...state, 		        
-				sendSelected: false,
-		        addressesSelected: false,
-		        transactionsSelected: false,
-		        fileStorageSelected: false,
-		        customerSelected: false,
-		        viewFilesSelected: false,
-		        gallerySelected: false,
-		        providerSelected: false,
-		        contactsSelected: false,
-		        messagingSelected: true,
-		        walletSelected: false,
-		        overviewSelected: false
-		    };
-			case 'contacts': return {...state, 		        
-				sendSelected: false,
-		        addressesSelected: false,
-		        transactionsSelected: false,
-		        fileStorageSelected: false,
-		        customerSelected: false,
-		        viewFilesSelected: false,
-		        gallerySelected: false,
-		        providerSelected: false,
-		        messagingSelected: false,
-		        contactsSelected: true,
-		        walletSelected: false,
-		        overviewSelected: false
-		    };
+		if(parent && child){
+			reset[parent] = true;
+			reset[child] = true;
 		}
+		else if(child){
+			reset[child] = true;
+		}
+		return {...state, ...reset}
 	}
 	return state;
 }

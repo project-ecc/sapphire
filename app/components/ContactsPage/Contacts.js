@@ -7,7 +7,7 @@ import connectWithTransitionGroup from 'connect-with-transition-group';
 import { connect } from 'react-redux';
 import AddressBook from '../SendTransactions/AddressBook';
 import low from '../../utils/low';
-import Input from '../Others/input';
+import Input from '../Others/Input';
 
 class Contacts extends Component {
   constructor(props) {

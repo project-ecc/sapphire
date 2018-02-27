@@ -8,7 +8,6 @@ const lang = traduction();
 import { connect } from 'react-redux';
 import ToggleButton from 'react-toggle';
 import * as actions from '../actions';
-import UnlockWallet from './UnlockWallet';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 const tools = require('../utils/tools')
 
@@ -227,9 +226,6 @@ class Home extends Component {
               </div>           
             </div>
           </div>
-          <TransitionGroup component={"article"}>
-             { this.props.unlocking ? <UnlockWallet/> : null}
-          </TransitionGroup>
         </div>
     );
   }
@@ -280,7 +276,6 @@ const mapStateToProps = state => {
     ansWeekExpenses: state.application.lastWeekAnsExpenses,
     ansMonthExpenses: state.application.lastMonthAnsExpenses,
 
-    unlocking: state.application.unlocking,
     wallet: state.application.wallet
   };
 };

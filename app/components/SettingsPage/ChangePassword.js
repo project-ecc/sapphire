@@ -6,8 +6,8 @@ import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
-import Input from '../Others/input';
-const tools = require('../../utils/tools')
+import Input from '../Others/Input';
+const Tools = require('../../utils/tools')
 
 class ChangePassword extends React.Component {
  constructor() {
@@ -30,16 +30,16 @@ class ChangePassword extends React.Component {
   }
   
   componentDidEnter(callback) {
-    tools.readRpcCredentials();
-    tools.animatePopupIn(this.refs.pointer, callback, "22%");
+    Tools.readRpcCredentials();
+    Tools.animatePopupIn(this.refs.pointer, callback, "22%");
   }
 
   componentWillLeave (callback) {
-    tools.animatePopupOut(this.refs.pointer, callback)
+    Tools.animatePopupOut(this.refs.pointer, callback)
   }
 
   showWrongPassword(){
-    tools.showTemporaryMessage('#wrongPassword');
+    Tools.showTemporaryMessage('#wrongPassword');
   }
 
   componentWillUnmount(){
@@ -96,13 +96,13 @@ class ChangePassword extends React.Component {
         if(wasStaking){
 
         }
-        tools.showTemporaryMessage('#wrongPassword', "Operation Successfull!");
+        Tools.showTemporaryMessage('#wrongPassword', "Operation Successfull!");
         setTimeout(()=>{
           self.props.setChangingPassword(false)
         }, 2000)
       }
       else if(data.code && data.code == -14){
-        tools.showTemporaryMessage('#wrongPassword', "Wrong Password");
+        Tools.showTemporaryMessage('#wrongPassword', "Wrong Password");
       }
     })
     .catch((err) => {
@@ -112,10 +112,10 @@ class ChangePassword extends React.Component {
 
   handleConfirm(){
     if(this.props.passwordVal == "" || this.props.passwordValConfirmation == "" || this.props.newPassword == ""){
-      tools.showTemporaryMessage('#wrongPassword', 'Please fill all fields');
+      Tools.showTemporaryMessage('#wrongPassword', 'Please fill all fields');
     }
     else if(this.props.passwordVal != this.props.passwordValConfirmation){
-      tools.showTemporaryMessage('#wrongPassword', "Passwords don't match");
+      Tools.showTemporaryMessage('#wrongPassword', "Passwords don't match");
     }
     else{
       this.changePassword();

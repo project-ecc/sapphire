@@ -635,7 +635,6 @@ class DaemonConnector {
       rows.map((transaction) => {
         var time = transaction.time*1000;
         var amount = transaction.amount;
-        console.log(time)
         if(time > lastCheckedEarnings){ 
           self.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}}) 
         }

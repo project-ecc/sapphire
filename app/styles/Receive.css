@@ -1,6 +1,6 @@
 .inputPlaceholderReceive{
 	z-index: 0;
-	text-align: left;
+	text-align: left !important;
 }
 
 #ansExplanation{

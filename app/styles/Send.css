@@ -20,7 +20,7 @@
 .sendButton{
 	display: inline-block;
 	text-align: center;
-	position: relative;
+	position: relative !important;
 	top: 27px;
 	left: 20px;
 }

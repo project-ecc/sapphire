@@ -9,7 +9,7 @@ var fs = require('fs');
 var jsPDF = require('jsPDF');
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
-import Input from '../Others/input';
+import Input from '../Others/Input';
 const tools = require('../../utils/tools')
 
 class ExportPrivateKeys extends React.Component {

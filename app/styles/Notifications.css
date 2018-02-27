@@ -162,3 +162,39 @@
 	border-bottom-left-radius: 16px;
 	border-bottom-right-radius: 16px;
 }
+
+#payAns{
+	visibility: hidden;
+    position: absolute;
+    width: 100%;
+    height: 74px;
+    background-color: rgba(20, 24, 47, 0.9);
+    top: 1px;
+}
+
+.resetCursor{
+	cursor: default;
+}
+
+.resetCursor:hover{
+	background-color: #14182f;
+}
+
+#payAns p{
+    position: absolute;
+    top: 25px;
+    margin: 0 auto;
+    text-align: center;
+    left: 50%;
+    transform: translate(-50%,0);
+    border: 1px solid #d09128;
+    padding: 2px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    background-color: #121529;
+    cursor: pointer;
+}
+
+#payAns p:hover{
+	background-color: #1c2340;
+}

@@ -10,21 +10,24 @@ class Sidebar extends Component {
     this.toggleHover = this.toggleHover.bind(this);
     this.toggleUnhover = this.toggleUnhover.bind(this);
     this.handleClicked = this.handleClicked.bind(this);
+    this.checkPopupActive = this.checkPopupActive.bind(this);
     this.resize = this.resize.bind(this);
     window.addEventListener('resize', this.resize)
   }
 
   checkPopupActive(){
-    return !this.props.unlocking && !this.props.sendingEcc && !this.props.creatingAddress && !this.props.exportingPrivateKeys && !this.props.importingPrivateKey && !this.props.changingPassword;
+    console.log("this.props.changingPassword: ", this.props.changingPassword)
+    return this.props.unlocking || this.props.sendingEcc || this.props.creatingAddress || this.props.exportingPrivateKeys || this.props.importingPrivateKey || this.props.changingPassword;
   }
 
   resize(){
+    console.log("resize")
     if($( window ).width() >= 1024){
       $('.sidebar').css('left', '0px');
       $('.mainSubPanel').css('padding-left', '224px');
       this.props.setSidebarHidden(false);
       $('.miniButton').css('left', '-10px');
-      if(this.checkPopupActive()){
+      if(!this.checkPopupActive()){
         TweenMax.to($('.mancha'), 0.3, { autoAlpha:0, ease: Linear.easeNone});
         TweenMax.set($('.mancha'), { zIndex:11});
       }
@@ -33,7 +36,7 @@ class Sidebar extends Component {
       $('.sidebar').css('left', '-224px');
       $('.mainSubPanel').css('padding-left', '0px');
       this.props.setSidebarHidden(true);
-      if(this.checkPopupActive()){
+      if(!this.checkPopupActive()){
         TweenMax.to($('.mancha'), 0.3, { autoAlpha:0, ease: Linear.easeNone});
         TweenMax.set($('.mancha'), { zIndex:11});
       }
@@ -54,7 +57,7 @@ class Sidebar extends Component {
           }, 500)
       }
       $(".sidebar-menu > li.have-children a.mainOption").on("click", function(i){
-          i.preventDefault();
+          i.stopPropagation();
         if( ! $(this).parent().hasClass("active") ){
           $(".sidebar-menu li ul").slideUp();
           $(this).next().slideToggle();
@@ -71,25 +74,38 @@ class Sidebar extends Component {
         });
       $('.miniButton').on('click', function(){
         var offset = $('.sidebar').offset().left;
-        if(offset < 0 && self.checkPopupActive()){
-          if(self.props.settings)
-            self.props.setSettings(false);
+        if(offset < 0 && !self.checkPopupActive()){
           $('.sidebar').css('left', '0px');
-          TweenMax.set($('.mancha'), { zIndex:3});
-          TweenMax.set($('.mancha'), {css: {display: "block"}})
-          TweenMax.fromTo($('.mancha'), 0.3, {autoAlpha:0}, { autoAlpha:1, ease: Linear.easeNone});
+          //TweenMax.set($('.mancha'), { zIndex:3});
+          //TweenMax.set($('.mancha'), {css: {display: "block"}})
+          //TweenMax.fromTo($('.mancha'), 0.3, {autoAlpha:0}, { autoAlpha:1, ease: Linear.easeNone});
         }
-        else if(self.checkPopupActive()){
+        else if(!self.checkPopupActive()){
           $('.sidebar').css('left', '-224px');
           $('.mainSubPanel').css('padding-left', '0px');
-          TweenMax.to($('.mancha'), 0.3, { autoAlpha:0, ease: Linear.easeNone});
-          TweenMax.set($('.mancha'), { zIndex:8, delay: 0.3});
+          //TweenMax.to($('.mancha'), 0.3, { autoAlpha:0, ease: Linear.easeNone});
+          //TweenMax.set($('.mancha'), { zIndex:8, delay: 0.3});
         }
       })
+    });
+    this.subscribeToEvent();
+  }
+
+  subscribeToEvent(){
+    var self = this;
+    $(window).on("click", function() {
+      console.log("click")
+      var offset = $('.sidebar').offset().left;
+      console.log(offset)
+      if($( window ).width() <= 1023 && offset == 0){
+        $('.sidebar').css('left', '-224px');
+      }
     });
   }
 
   componentWillUnmount() {
+    window.removeEventListener('resize', this.resize)
+    $('.miniButton').css('left', '-10px');
   }
 
   toggleHover(e){
@@ -102,10 +118,11 @@ class Sidebar extends Component {
 
   handleClicked(e){
     const page = e.currentTarget.dataset.id;
+    const parent = e.currentTarget.dataset.parent;
     if(page == "wallet" || page == "fileStorage") return;
     if(this.props.settings)
       this.props.setSettings(false);
-    this.props.selectedSideBar(page);
+    this.props.selectedSideBar(this.getParent(page), page);
     this.props.setSelectedPanel(page);
     if($( window ).width() <= 1023){
       $('.sidebar').css('left', '-224px');
@@ -114,6 +131,14 @@ class Sidebar extends Component {
     }
   }
 
+  getParent(page){
+    if(page == "overview" || page == "send" || page == "addresses" || page == "transactions"){
+      return "wallet";
+    }
+    else if(page == "contacts"){
+      return undefined;
+    }
+  }
 
   render() {
     let progressBar = this.props.paymentChainSync;
@@ -135,35 +160,35 @@ class Sidebar extends Component {
     let messaging = require('../../resources/images/messaging-default.png');
     let contacts = require('../../resources/images/contacts-blue.png');
 
-    if(this.props.walletHovered || this.props.walletSelected && !this.props.settings && !this.props.eccNews){
+    if(this.props.walletHovered || this.props.walletSelected){
       wallet = require('../../resources/images/wallet-orange.png');
       walletStyle = {color: "#d09128"};
     }
-    if(this.props.overviewHovered || this.props.overviewSelected && !this.props.settings && !this.props.eccNews){
+    if(this.props.overviewHovered || this.props.overviewSelected){
       overview = require('../../resources/images/overview-orange.png');
       overviewStyle = {color: "#d09128"};
     }    
-    if(this.props.sendHovered || this.props.sendSelected && !this.props.settings && !this.props.eccNews){
+    if(this.props.sendHovered || this.props.sendSelected){
       send = require('../../resources/images/send-orange.png');
       sendStyle = {color: "#d09128"};
     }
-    if(this.props.addressesHovered || this.props.addressesSelected && !this.props.settings && !this.props.eccNews){
+    if(this.props.addressesHovered || this.props.addressesSelected){
       addresses = require('../../resources/images/addresses-orange.png');
       addressesStyle = {color: "#d09128"};
     }
-    if(this.props.transactionsHovered || this.props.transactionsSelected && !this.props.settings && !this.props.eccNews){
+    if(this.props.transactionsHovered || this.props.transactionsSelected){
       transactions = require('../../resources/images/transactions-orange.png');
       transactionsStyle = {color: "#d09128"};
     }
-    if(this.props.fileStorageHovered || this.props.fileStorageSelected && !this.props.settings && !this.props.eccNews){
+    if(this.props.fileStorageHovered || this.props.fileStorageSelected){
       fileStorage = require('../../resources/images/fileStorage-orange.png');
       fileStorageStyle = {color: "#d09128"};
     }
-    if(this.props.messagingHovered || this.props.messagingSelected && !this.props.settings && !this.props.eccNews){
+    if(this.props.messagingHovered || this.props.messagingSelected){
       messaging = require('../../resources/images/messaging-orange.png');
       messagingStyle = {color: "#d09128"};
     }
-    if(this.props.contactsHovered || this.props.contactsSelected && !this.props.settings && !this.props.eccNews){
+    if(this.props.contactsHovered || this.props.contactsSelected){
       contacts = require('../../resources/images/contacts-orange.png');
       contactsStyle = {color: "#d09128"};
     }
@@ -209,6 +234,7 @@ class Sidebar extends Component {
 }
 
 const mapStateToProps = state => {
+  console.log("changingPassword: ", state.application.changingPassword)
   return{
     lang: state.startup.lang,
     walletHovered: state.sideBar.walletHovered,

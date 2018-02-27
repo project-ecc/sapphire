@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import ConfirmNewAddress from './ConfirmNewAddress';
 import { traduction } from '../../lang/lang';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import $ from 'jquery';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
-import Input from '../Others/input';
+import Input from '../Others/Input';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 const lang = traduction();
 const { clipboard } = require('electron');
@@ -234,9 +233,6 @@ class Receive extends Component {
             <p id="upgradeAns"> {this.props.selectedAddress && this.props.selectedAddress.ans ? "Disable ANS subscription" : this.props.selectedAddress ? "Upgrade to ANS Address" : ""}</p>
           </div>
         </div>
-        <TransitionGroup>
-            { this.props.creatingAddress ? <ConfirmNewAddress/> : null}
-        </TransitionGroup>
       </div>
     );
   }
@@ -249,7 +245,6 @@ const mapStateToProps = state => {
     userAddresses: state.application.userAddresses,
     ansAddress: state.application.creatingAnsAddress,
     selectedAddress: state.application.selectedAddress,
-    creatingAddress: state.application.creatingAddress,
     newAddressAccount: state.application.newAddressAccount,
     filterAll: state.application.filterAllOwnAddresses,
     filterNormal: state.application.filterNormalOwnAddresses,

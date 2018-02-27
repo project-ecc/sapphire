@@ -4,10 +4,10 @@ import * as actions from '../actions';
 import {TweenMax} from "gsap";
 import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
-const tools = require('../utils/tools')
+const Tools = require('../utils/tools')
 import CloseButtonPopup from './Others/CloseButtonPopup';
 import ConfirmButtonPopup from './Others/ConfirmButtonPopup';
-import Input from './Others/input';
+import Input from './Others/Input';
 
 class UnlockWallet extends React.Component {
  constructor() {
@@ -31,15 +31,15 @@ class UnlockWallet extends React.Component {
   }
   
   componentDidEnter(callback) {
-    tools.animatePopupIn(this.refs.second, callback, "30%");
+    Tools.animatePopupIn(this.refs.second, callback, "22%");
   }
 
   componentWillLeave (callback) {
-    tools.animatePopupOut(this.refs.second, callback)
+    Tools.animatePopupOut(this.refs.second, callback)
   }
 
   unlockWallet(){
-    tools.updateConfig(1);
+    Tools.updateConfig(1);
     var self = this;
     var batch = [];
     var obj = {
@@ -52,7 +52,7 @@ class UnlockWallet extends React.Component {
       console.log("data: ", data)
       data = data[0];
       if (data !== null && data.code === -14) {
-        tools.showTemporaryMessage('#wrongPassword');
+        Tools.showTemporaryMessage('#wrongPassword');
       } else if (data !== null && data.code === 'ECONNREFUSED') {
         console.log("daemong ain't working mate :(")
       } else if (data === null) {
@@ -91,7 +91,7 @@ class UnlockWallet extends React.Component {
 
   handleConfirm(){
     if(this.props.passwordVal == ""){
-      tools.showTemporaryMessage('#wrongPassword');
+      Tools.showTemporaryMessage('#wrongPassword');
       this.props.setPassword("");
       return;
     }

@@ -4,7 +4,7 @@ import * as actions from '../../actions';
 import {TweenMax} from "gsap";
 import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
-const tools = require('../../utils/tools')
+const Tools = require('../../utils/tools')
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 
@@ -32,15 +32,15 @@ class SendConfirmation extends React.Component {
   }
   
   componentDidEnter(callback) {
-    tools.animatePopupIn(this.refs.second, callback, "22%");
+    Tools.animatePopupIn(this.refs.second, callback, "22%");
   }
 
   componentWillLeave (callback) {
-    tools.animatePopupOut(this.refs.second, callback)
+    Tools.animatePopupOut(this.refs.second, callback)
   }
 
   showWrongPassword(){
-    tools.showTemporaryMessage('#wrongPassword');
+    Tools.showTemporaryMessage('#wrongPassword');
   }
 
   sendECC(){
@@ -66,7 +66,11 @@ class SendConfirmation extends React.Component {
         self.props.setUsernameSend("");
         self.props.setAmountSend("");
         self.props.setAddressSend("");
-        self.props.showMessage("Sent successfully!")
+        $('#message').text('Sent successfully!')
+        Tools.showTemporaryMessage('#message');
+        setTimeout(() => {
+          $('#message').text('Address copied below')
+        }, 2500)
       }).catch((err) => {
         this.props.setPassword("");
         console.log("err sending ecc: ", err);
@@ -152,7 +156,7 @@ class SendConfirmation extends React.Component {
       <div ref="second" id="unlockPanel" style={{height: this.props.username != "" && this.props.username != undefined ? "350px" : "318px", top: "22%"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">Confirm transaction</p>
-        <p className="labelAmountSend">Amount: {tools.formatNumber(Number(this.props.amount))} <span className="ecc">ECC</span></p>
+        <p className="labelAmountSend">Amount: {Tools.formatNumber(Number(this.props.amount))} <span className="ecc">ECC</span></p>
         {this.getNameOrAddressHtml()}
         <p id="pleaseTypePassword">Please type your password</p>
         <input className="inputCustom inputSend" type="password" value={this.props.passwordVal} onChange={this.handleChange} autoFocus></input>

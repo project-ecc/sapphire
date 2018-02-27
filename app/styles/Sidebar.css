@@ -10,6 +10,7 @@
   transition: left 0.3s;
   z-index: 3;
   margin-top: 40px;
+  box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.2)
 }
 
 .sidebarlist {

@@ -17,7 +17,7 @@ const INITIAL_STATE = {popupEnabled: false, lastCheckedNews: notificationsInfo.g
     messaging: {messages: [], date: GetOldDate()}, 
 	news: {total: 0, date: GetOldDate()}, 
 	stakingEarnings: {total: 0, count: 0, date: GetOldDate()}, 
-	ansPayments: {total: 0, payments: []}, 
+	ansPayments: {total: 0.00001, firstDueDate: new Date().setDate(31), payments: [{cost:0.00001, dueDate: new Date().setDate(31)}]},
 	warnings: []
 	}
 }

@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import AddressBook from './AddressBook';
-import SendConfirmation from './SendConfirmation';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import $ from 'jquery';
-import Input from '../Others/input';
+import Input from '../Others/Input';
 const tools = require('../../utils/tools')
 
 class Send extends Component {
@@ -117,9 +116,6 @@ class Send extends Component {
               Send
             </div>
           </div>
-          <TransitionGroup component={"article"}>
-             { this.props.sending ? <SendConfirmation showMessage={this.animateMessage}/> : null}
-          </TransitionGroup>
       </div>
     );
   }
@@ -131,7 +127,6 @@ const mapStateToProps = state => {
     address: state.application.addressSend,
     name: state.application.userNameToSend,
     amount: state.application.amountSend,
-    sending: state.application.sendingEcc,
     balance: state.chains.balance,
     wallet: state.application.wallet
   };

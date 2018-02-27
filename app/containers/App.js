@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 import InitialSetup from './Pages/InitialSetup';
 import Settings from '../components/SettingsPage/Settings';
 import { ipcRenderer } from 'electron';
-import Loading from '../Components/LoaderPage/LoaderPage';
+import Loading from '../components/LoaderPage/LoaderPage';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
@@ -12,10 +12,12 @@ import ExportPrivateKeys from '../components/SettingsPage/ExportPrivateKeys';
 import ImportPrivateKey from '../components/InitialSetupPage/ImportPrivateKey';
 import ChangePassword from '../components/SettingsPage/ChangePassword';
 import UpdateApplication from '../components/SettingsPage/UpdateApplication';
+import SendConfirmation from '../components/SendTransactions/SendConfirmation';
+import ConfirmNewAddress from '../components/ReceiveTransaction/ConfirmNewAddress';
 import { Link } from 'react-router-dom';
 const settings = require('electron-settings');
-import NotificationPopup from '../Components/NotificationPopup';
-
+import NotificationPopup from '../components/NotificationPopup';
+import UnlockWallet from '../components/UnlockWallet';
 import GenericPanel from './GenericPanel';
 
 class App extends Component<Props> {
@@ -66,26 +68,38 @@ class App extends Component<Props> {
     this.props.setTray(tray);
   }
 
-  getMainApp(){
-    //had to add the ExportPrivateKeys component here because for some reason it just wasn't working properly as a child of the settings component (position wise in the window)
+  getPopup(){
     return(
       <div>
-        <div className="mancha">
-        </div>
-        <TransitionGroup component={"section"}>
-          {<GenericPanel/>}
-        </TransitionGroup>
-        <TransitionGroup  component={"article"}> 
+        <TransitionGroup component={"article"}> 
          { this.props.exportingPrivateKeys ? <ExportPrivateKeys/> : null}
         </TransitionGroup>
-        <TransitionGroup  component={"aside"}>
+        <TransitionGroup component={"aside"}>
          { this.props.importingPrivateKey ? <ImportPrivateKey notInitialSetup = {true}/> : null}
         </TransitionGroup>
-        <TransitionGroup  component={"aside"}>
+        <TransitionGroup component={"aside"}>
          { this.props.changingPassword ? <ChangePassword/> : null}
         </TransitionGroup>
         <TransitionGroup  component={"aside"}>
          { this.props.updateApplication ? <UpdateApplication/> : null}
+        </TransitionGroup>
+        <TransitionGroup component={"article"}>
+           { this.props.unlocking ? <UnlockWallet/> : null}
+        </TransitionGroup>
+        <TransitionGroup component={"article"}>
+           { this.props.sending ? <SendConfirmation/> : null}
+        </TransitionGroup>
+        <TransitionGroup component={"article"}>
+            { this.props.creatingAddress ? <ConfirmNewAddress/> : null}
+        </TransitionGroup>
+      </div>
+    )
+  }
+  getMainApp(){
+    return(
+      <div>
+        <TransitionGroup component={"section"}>
+          {<GenericPanel/>}
         </TransitionGroup>
       </div>
     )
@@ -99,23 +113,38 @@ class App extends Component<Props> {
     this.props.setSelectedPanel("news");
     this.props.selectedSideBar(undefined);
     this.props.setShowingNews(settingsSelected ? true : !this.props.news);
-    if(this.props.settings)
+    if(this.props.settings){
       this.props.setSettings(false);
+      this.props.setExportingPrivateKeys(false);
+      this.props.setPanelExportingPrivateKeys(1);
+      this.props.setImportingPrivateKey(false);
+      this.props.setChangingPassword(false);
+      this.props.setUpdateApplication(false);
+      TweenMax.to($('.mancha'), 0.2, { autoAlpha:0, ease: Linear.easeNone});
+    }
   }
 
   notification(){
+    if(!this.props.notificationPopup){
+      this.props.setExportingPrivateKeys(false);
+      this.props.setPanelExportingPrivateKeys(1);
+      this.props.setImportingPrivateKey(false);
+      this.props.setChangingPassword(false);
+      this.props.setUpdateApplication(false);
+      TweenMax.to($('.mancha'), 0.2, { autoAlpha:0, ease: Linear.easeNone});
+    }
     this.props.setNotifications(!this.props.notificationPopup);
+
   }
   
   settings(){
     if(this.props.checkingDaemonStatusPrivateKey) return;
-    if(!this.props.settings)
-      this.props.selectedSideBar(undefined);
     this.props.setSettings(!this.props.settings);
     this.props.setExportingPrivateKeys(false);
     this.props.setPanelExportingPrivateKeys(1);
     this.props.setImportingPrivateKey(false);
     this.props.setChangingPassword(false);
+    this.props.setUpdateApplication(false);
     TweenMax.to($('.mancha'), 0.2, { autoAlpha:0, ease: Linear.easeNone});
   }
 
@@ -209,6 +238,8 @@ class App extends Component<Props> {
             </div>
           </div>
         </div>
+        <div className="mancha">
+        </div>
         <div>
         {this.props.setupDone && !this.props.loader && !this.props.updatingApplication && !this.props.settings ? this.getMainApp()  : null}
         <TransitionGroup>
@@ -217,6 +248,7 @@ class App extends Component<Props> {
         {this.getSettings()}
         {this.getLoader()}
         {this.getNotificationsPopup()}
+        {this.getPopup()}
         </div>
       </div>
     );
@@ -239,7 +271,10 @@ const mapStateToProps = state => {
     news: state.application.selectedPanel == "news" ? true : false,
     updateApplication: state.application.updateApplication,
     updatingApplication: state.startup.updatingApp,
-    notificationPopup: state.notifications.popupEnabled
+    notificationPopup: state.notifications.popupEnabled,
+    unlocking: state.application.unlocking,
+    sending: state.application.sendingEcc,
+    creatingAddress: state.application.creatingAddress
   };
 };
 

@@ -21,6 +21,8 @@ class NotificationPopup extends React.Component {
     super();
     this.getNotificationsBody = this.getNotificationsBody.bind(this);
     this.getNewsNotifications = this.getNewsNotifications.bind(this);
+    this.handleHoverAnsPayments = this.handleHoverAnsPayments.bind(this);
+    this.handleHoverOutAnsPayments = this.handleHoverOutAnsPayments.bind(this);
   }
   
  componentWillAppear (callback) {
@@ -101,10 +103,49 @@ class NotificationPopup extends React.Component {
         <div id="notificationsBody">
           {this.getNewsNotifications()}
           {this.getStakingNotifications()}
+          {this.getAnsIncomingPayments()}
           {this.getUpdateNotification()}
         </div>
       )
     }
+  }
+
+  handleHoverAnsPayments(){
+    TweenMax.fromTo('#payAns', 0.3, {autoAlpha:0, scale:0.5}, {autoAlpha: 1, scale:1})
+  }
+
+  handleHoverOutAnsPayments(){
+    TweenMax.fromTo('#payAns', 0.3, {autoAlpha:1, scale: 1}, {autoAlpha: 0, scale:0.5})
+  }
+
+  getAnsIncomingPayments(){
+    if(this.props.notifications["ansPayments"]["payments"].count == 0){
+      return null;
+    }
+    let earnings = require('../../resources/images/overview-blue.png');
+    var ansPaymentsObject = this.props.notifications["ansPayments"];
+    var totalAnsPayments = ansPaymentsObject["payments"].count;
+    var date = ansPaymentsObject["firstDueDate"];
+    console.log(date)
+    var body = <p id="mediumPosts">ANS Payment - {Tools.formatNumber(ansPaymentsObject["payments"][0]["cost"])} <span className="ecc">ECC</span></p>
+    const today = new Date();
+    let time = Tools.calculateTimeSince(this.props.lang, today, new Date(date));
+    if(totalAnsPayments > 1)
+     body = <p id="mediumPosts">{totalAnsPayments} ANS Payments - {Tools.formatNumber(ansPaymentsObject["payments"][0]["cost"])} <span className="ecc">ECC</span></p>
+    return(
+      <div style={{position: "relative"}} onMouseEnter={this.handleHoverAnsPayments} onMouseLeave={this.handleHoverOutAnsPayments}>
+        <NotificationItem 
+          id="ansPaymentsNotification"
+          handleMouseIn={this.props.handleHoverPayments}
+          image = {earnings}
+          body = {body}
+          time = "in 4 days" 
+          class = {this.props.last == "incomingStakingPayments" && !this.props.updateAvailable ? "notificationItem newsItemRoundCorners resetCursor" : "notificationItem newsItemBorder resetCursor" }/>
+          <div id="payAns">
+            <p>{totalAnsPayments > 1 ? "Extend ANS subscriptions" : "Extend ANS subscription"}</p>
+          </div>
+        </div>
+    )
   }
 
   getUpdateNotification(){

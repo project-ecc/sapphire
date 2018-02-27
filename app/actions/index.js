@@ -129,10 +129,12 @@ export const unhoveredSideBar = (val) => {
 	}
 }
 
-export const selectedSideBar = (val) => {
+export const selectedSideBar = (parent, child) => {
+	const p = parent ? parent + "Selected" : undefined;
+	const c = child ? child + "Selected" : undefined;
 	return{
 		type: SELECTED_SIDEBAR,
-		payload: val
+		payload: {parent: p, child:  c}
 	}
 }
 

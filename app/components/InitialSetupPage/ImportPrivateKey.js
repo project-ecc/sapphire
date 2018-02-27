@@ -7,7 +7,7 @@ import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 const tools = require('../../utils/tools')
-import Input from '../Others/input';
+import Input from '../Others/Input';
 
 class ImportPrivateKey extends React.Component {
  constructor() {
