@@ -96,9 +96,6 @@ class AddressBook extends Component {
     this.props.setContacts(friendList);
   }
 
-  componentWillReceiveProps(){
-  }
-
   render() {
     const self = this;
     let bin = require('../../../resources/images/delete-contact.ico');

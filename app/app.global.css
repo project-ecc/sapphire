@@ -64,6 +64,11 @@ input::-webkit-inner-spin-button {
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 
+#settings{
+  top: 40px; 
+  width: 100%;
+}
+
 article{
   position: absolute;
   text-align: center;
@@ -75,6 +80,10 @@ aside{
   position: fixed;
   z-index: 100;
   text-align: center;
+}
+
+.changePassword{
+  height: 305px;
 }
 
 .genericPanel{
@@ -91,6 +100,10 @@ aside{
   transition: padding-left 0.3s;
   z-index: 0;
   padding-top: 40px;
+}
+
+#exportPrivKey{
+  height: 300px;
 }
 
 
@@ -192,7 +205,6 @@ aside{
   text-align: center; 
   color: #555d77; 
   font-size: 15px; 
-  z-index: -1;
 }
 
 .inputCustom{

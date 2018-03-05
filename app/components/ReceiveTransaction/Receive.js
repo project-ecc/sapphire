@@ -192,7 +192,7 @@ class Receive extends Component {
             <p className="headerDescription">All your normal and ANS addresses</p>
             <div id="tableFiltersReceive">
               <p className="tableFilterReceive" onClick={this.filterClicked.bind(this, "ans")} style={{ color: this.props.filterAns ? "#a4a3e6" : "#555d77"}}>ANS Addresses</p>
-              <p className="tableFilterReceive fixMarginReceive" onClick={this.filterClicked.bind(this, "normal")} style={{color: this.props.filterNormal ? "#a4a3e6" : "#555d77"}}>Normal Addreses</p>
+              <p className="tableFilterReceive fixMarginReceive" onClick={this.filterClicked.bind(this, "normal")} style={{color: this.props.filterNormal ? "#a4a3e6" : "#555d77"}}>Normal Addresses</p>
               <p className="tableFilterReceive fixMarginReceive" onClick={this.filterClicked.bind(this, "all")} style={{color: this.props.filterAll ? "#a4a3e6" : "#555d77"}}>All</p>
             </div>
           </div>

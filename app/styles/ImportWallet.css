@@ -24,7 +24,7 @@
 	transform: scale(0.5);
 	font-size: 20px;
 	position: absolute;
-	top: 40%;
+	top: 100%;
 }
 
 #imported{
@@ -33,16 +33,7 @@
 	transform: scale(0.5);
 	font-size: 20px;
 	position: absolute;
-	top: 40%;
-}
-
-.imported{
-	visibility: visible;
-	width: 100%;
-	transform: scale(1);
-	font-size: 20px;
-	position: absolute;
-	top: 40%;
+	top: 100%;
 }
 
 .checkmark {

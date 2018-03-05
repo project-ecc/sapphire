@@ -3,14 +3,17 @@ import {
 	NEWS_CHECKED,
 	EARNINGS_CHECKED,
 	NEWS_NOTIFICATION,
-	STAKING_NOTIFICATION
+	STAKING_NOTIFICATION,
+	OPERATIVE_SYSTEM_NOTIFICATIONS, 
+	NEWS_NOTIFICATIONS, 
+	STAKING_NOTIFICATIONS
 } from '../actions/types';
 
 import notificationsInfo from '../utils/notificationsInfo';
 
 //I might end up splitting notifications, so that there is a tab specific to messaging, unsure... too many clicks to get to something is also no good.
 
-const INITIAL_STATE = {popupEnabled: false, lastCheckedNews: notificationsInfo.get('info').value().lastCheckedNews, lastCheckedEarnings: notificationsInfo.get('info').value().lastCheckedEarnings, entries: {
+const INITIAL_STATE = {popupEnabled: false, lastCheckedNews: notificationsInfo.get('info').value().lastCheckedNews, lastCheckedEarnings: notificationsInfo.get('info').value().lastCheckedEarnings, operativeSystemNotificationsEnabled: false, newsNotificationsEnabled: false, stakingNotificationsEnabled: false, entries: {
 	total: 0,
 	differentKinds: 0,
 	last: "",
@@ -25,6 +28,15 @@ const INITIAL_STATE = {popupEnabled: false, lastCheckedNews: notificationsInfo.g
 export default(state = INITIAL_STATE, action) => {
 	if(action.type == NOTIFICATIONS_POPUP){
 		return {...state, popupEnabled: action.payload}
+	}
+	else if(action.type == OPERATIVE_SYSTEM_NOTIFICATIONS){
+		return {...state, operativeSystemNotificationsEnabled: action.payload}
+	}
+	else if(action.type == NEWS_NOTIFICATIONS){
+		return {...state, newsNotificationsEnabled: action.payload}
+	}
+	else if(action.type == STAKING_NOTIFICATIONS){
+		return {...state, stakingNotificationsEnabled: action.payload}
 	}
 	else if(action.type == EARNINGS_CHECKED){
 		let entries = Object.assign({}, state.entries);

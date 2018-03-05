@@ -35,7 +35,7 @@ export default(state = INITIAL_STATE, action) => {
 		return {...state, importing: false}
 	}
 	else if(action.type == IMPORT_STARTED){
-		return {...state, importing: false, importStarted: true}
+		return {...state, importStarted: true}
 	}
 	else if(action.type == PRIVATE_KEY){
 		return {...state, privateKey: action.payload.key}

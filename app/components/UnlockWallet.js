@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import {TweenMax} from "gsap";
-import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
 const Tools = require('../utils/tools')
 import CloseButtonPopup from './Others/CloseButtonPopup';
@@ -16,26 +15,6 @@ class UnlockWallet extends React.Component {
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.unlockWallet = this.unlockWallet.bind(this);
-  }
-  
- componentWillAppear (callback) {
-    callback();
-  }
-  
-  componentDidAppear(e) {
-
-  }
-  
-  componentWillEnter (callback) {
-    callback();
-  }
-  
-  componentDidEnter(callback) {
-    Tools.animatePopupIn(this.refs.second, callback, "22%");
-  }
-
-  componentWillLeave (callback) {
-    Tools.animatePopupOut(this.refs.second, callback)
   }
 
   unlockWallet(){
@@ -107,7 +86,7 @@ class UnlockWallet extends React.Component {
       fill: this.props.bgColor
     };
      return (
-      <div ref="second" id="unlockPanel">
+      <div className="unlockWallet">
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">Unlock your wallet</p>
         <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "left", margin: "0 auto", paddingTop: "20px"}}>This process unlocks your wallet for staking. You will still be required to enter a password to send <span className="ecc">ECC</span>.</p>
@@ -139,6 +118,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(UnlockWallet));
+export default connect(mapStateToProps, actions)(UnlockWallet);

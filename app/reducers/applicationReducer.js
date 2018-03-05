@@ -57,6 +57,9 @@ export default(state = INITIAL_STATE, action) => {
     if(action.type == UNLOCKING){
 		return {...state, unlocking: action.payload}
 	}
+	else if(action.type == NEWS_SWITCHING_PAGE){
+		return {...state, eccNewsSwitchingPage: action.payload}
+	}
 	else if(action.type == SETTINGS_OPTION_SELECTED){
 		return {...state, settingsOptionSelected: action.payload}
 	}

@@ -16,8 +16,7 @@ import MenuBuilder from './menu';
 import DaemonManager from './Managers/DaemonManager';
 import GUIManager from './Managers/GUIManager';
 import os from 'os';
-
-const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote } = require('electron');
+const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote  } = require('electron');
 const dialog = require('electron').dialog;
 const settings = require('electron-settings');
 const event = require('./utils/eventhandler');
@@ -73,7 +72,6 @@ app.on('ready', async () => {
   }
 
   ds = settings.get('settings.display');
-  console.log("LANGUAGE", app.getLocale());
   mainWindow = new BrowserWindow({
     show: false,
     width: 1650,
@@ -133,6 +131,7 @@ app.on('ready', async () => {
     autoECCLauncher.enable();
   }
   else autoECCLauncher.disable();
+
 
 });
 

@@ -3,43 +3,18 @@ import { connect } from 'react-redux';
 import { traduction, language } from '../../lang/lang';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
-import connectWithTransitionGroup from 'connect-with-transition-group';
 
 class ThemeSelector extends React.Component {
  constructor() {
     super();
   }
   
- componentWillAppear (callback) {
-    callback();
-  }
-  
-  componentDidAppear(e) {
-    console.log("componentDidAppear")
-  }
-  
-   componentWillEnter (callback) {
-    const el = this.refs.second;
-    TweenMax.fromTo(el, 0.3, {x: 600, opacity: 0}, {x: 0, opacity:1,ease: Linear.easeNone, onComplete: callback});
-  }
-  
-    componentDidEnter(callback) {
-  }
-
-  componentWillLeave (callback) {
-    const el = this.refs.second;
-    TweenMax.fromTo(el, 0.3, {x: 0, opacity: 1}, {x: -600, opacity: 0, ease: Linear.easeNone, onComplete: callback});
-  }
-  
-  componentDidLeave(callback) {
-  }  
-  
   render() { 
       var shapeStyle = {
       fill: this.props.bgColor
     };
      return (
-      <div ref="second">
+      <div>
            <p style={{fontWeight:"300"}} className="subTitle">
              {this.props.lang.selectTheme}
            </p>
@@ -91,6 +66,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(ThemeSelector));
+export default connect(mapStateToProps, actions)(ThemeSelector);

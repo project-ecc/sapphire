@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
-import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
 const Tools = require('../../utils/tools')
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
+import Input from '../Others/Input';
 
 class SendConfirmation extends React.Component {
  constructor() {
@@ -17,26 +17,6 @@ class SendConfirmation extends React.Component {
     this.showWrongPassword = this.showWrongPassword.bind(this);
     this.sendECC = this.sendECC.bind(this);
     this.getNameOrAddressHtml = this.getNameOrAddressHtml.bind(this);
-  }
-  
- componentWillAppear (callback) {
-    callback();
-  }
-  
-  componentDidAppear(e) {
-
-  }
-  
-  componentWillEnter (callback) {
-    callback();
-  }
-  
-  componentDidEnter(callback) {
-    Tools.animatePopupIn(this.refs.second, callback, "22%");
-  }
-
-  componentWillLeave (callback) {
-    Tools.animatePopupOut(this.refs.second, callback)
   }
 
   showWrongPassword(){
@@ -116,7 +96,13 @@ class SendConfirmation extends React.Component {
   }
 
   handleChange(event) {
-    this.props.setPassword(event.target.value);
+    const pw = event.target.value;
+    if(pw.length == 0)
+      TweenMax.set('#password', {autoAlpha: 1});
+    else 
+      TweenMax.set('#password', {autoAlpha: 0});
+
+    this.props.setPassword(pw);
   }
 
   handleConfirm(){
@@ -153,13 +139,21 @@ class SendConfirmation extends React.Component {
       fill: this.props.bgColor
     };
      return (
-      <div ref="second" id="unlockPanel" style={{height: this.props.username != "" && this.props.username != undefined ? "350px" : "318px", top: "22%"}}>
+      <div ref="second" style={{height: this.props.username != "" && this.props.username != undefined ? "324px" : "293px", top: "22%"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">Confirm transaction</p>
         <p className="labelAmountSend">Amount: {Tools.formatNumber(Number(this.props.amount))} <span className="ecc">ECC</span></p>
         {this.getNameOrAddressHtml()}
-        <p id="pleaseTypePassword">Please type your password</p>
-        <input className="inputCustom inputSend" type="password" value={this.props.passwordVal} onChange={this.handleChange} autoFocus></input>
+          <Input 
+            divStyle={{width: "400px", marginTop: "20px"}}
+            placeholder= "Password"
+            placeholderId= "password"
+            placeHolderClassName="inputPlaceholder inputPlaceholderUnlock"
+            value={this.props.passwordVal}
+            handleChange={this.handleChange.bind(this)}
+            type="password"
+            inputStyle={{width: "400px", top: "20px", marginBottom: "30px"}}
+          />
         <div>
           <p id="wrongPassword" className="wrongPassword">Wrong password</p>
         </div>
@@ -182,6 +176,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(SendConfirmation));
+export default connect(mapStateToProps, actions)(SendConfirmation);

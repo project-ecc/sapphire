@@ -65,6 +65,40 @@ module.exports = {
       TweenMax.to(element, 0.3, {css:{borderBottom: "2px solid #1c2340"}, delay: duration});
   },
 
+  animateGeneralPanelIn: function(element, callback, f , scaleStart){
+      TweenMax.set(element, {willChange: 'transform'});
+      requestAnimationFrame(() => {
+        TweenMax.fromTo(element, 0.2, {autoAlpha: 0, scale: scaleStart}, {autoAlpha: 1, scale: 1, ease: Linear.easeNone, onComplete: callback, onCompleteParams: [f]});
+    });
+  },
+
+  animateGeneralPanelOut: function(element, callback, f, scaleEnd){
+      TweenMax.set(element, {willChange: 'transform'});
+      requestAnimationFrame(() => {
+        TweenMax.fromTo(element, 0.2, {autoAlpha: 1, scale: 1}, {autoAlpha: 0, scale: scaleEnd, ease: Linear.easeNone, onComplete: callback, onCompleteParams: [f]});
+    });
+  },
+
+  animateLoaderIn: function(element, updatingApplication, animateLogo, callback){
+    console.log("animateLoaderIn")
+      TweenMax.fromTo(element, 1, {autoAlpha: 0}, {autoAlpha:1, ease: Linear.easeNone, onComplete: animateLogo, onCompleteParams: [callback]});
+      if(updatingApplication){
+        $("#gettingReady").text("We are updating your application...")
+      }
+  },
+
+  animateLoaderOut: function(element, callback){
+      TweenMax.fromTo(element, 1, {autoAlpha: 1}, {autoAlpha:0, ease: Linear.easeNone, onComplete: callback});
+  },
+
+  animateInitialSetupIn: function(element, callback){
+      TweenMax.fromTo(element, 0.5, {autoAlpha: 0, scale: 1}, {autoAlpha:1, scale: 1, ease: Linear.easeNone, onComplete: callback});
+  },
+
+  animateInitialSetupOut: function(element, callback){
+      TweenMax.fromTo(element, 0.5, {autoAlpha: 1, scale: 1}, {autoAlpha:0, scale: 2.5, ease: Linear.easeNone, onComplete: callback});
+  },
+
   animatePopupIn: function(element, callback, top){
     TweenMax.set(('.mancha'), {css: {display: "block"}})
     TweenMax.fromTo(('.mancha'), 0.3, {autoAlpha:0}, { autoAlpha:1, ease: Linear.easeNone});
@@ -74,6 +108,14 @@ module.exports = {
   animatePopupOut: function(element, callback){
     TweenMax.fromTo(('.mancha'), 0.3, {autoAlpha:1}, { autoAlpha:0, ease: Linear.easeNone});
     TweenMax.to(element, 0.3, {css: {top: "-50%", opacity:0}, ease: Linear.easeIn, onComplete: callback});
+  },
+
+  animateStepIn: function(element, callback){
+    TweenMax.fromTo(element, 0.3, {x: 600, opacity: 0}, {x: 0, opacity: 1, ease: Linear.easeNone, onComplete: callback});
+  },
+
+  animateStepOut: function(element, callback){
+    TweenMax.fromTo(element, 0.2, {x: 0, opacity: 1}, {x: -600, opacity: 0, ease: Linear.easeNone, onComplete: callback});
   },
 
   //Animations end

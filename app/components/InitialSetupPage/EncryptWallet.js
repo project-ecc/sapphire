@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { traduction, language } from '../../lang/lang';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
-import connectWithTransitionGroup from 'connect-with-transition-group';
+import Input from '../Others/Input';
 
 class EncryptWallet extends React.Component {
  constructor() {
@@ -16,25 +16,7 @@ class EncryptWallet extends React.Component {
     this.encryptWallet = this.encryptWallet.bind(this);
     this.startWallet = this.startWallet.bind(this);
   }
-  
- componentWillAppear (callback) {
-    callback();
-  }
-  
-  componentDidAppear(e) {
-  }
-  
-  componentWillEnter (callback) {
-    const el = this.refs.second;
-    TweenMax.set(el, {willChange: "transform, opacity"});
-    TweenMax.fromTo(el, 0.3, {x: 600, opacity: 0}, {x: 0, opacity:1,ease: Linear.easeNone, onComplete: callback});
-    if(this.props.checkEncrypted){
-      TweenMax.set('#encryptWallet', {autoAlpha: 0});
-      TweenMax.set('#checkingWallet', {autoAlpha: 1});
-    }
-    this.props.isEncrypting(true);
-  }
-  
+
   checkIfEncrypted(){
     this.props.wallet.help().then((data) => {
       if (data.indexOf('walletlock') > -1) {
@@ -70,17 +52,6 @@ class EncryptWallet extends React.Component {
     TweenMax.to('#encrypting', 0.2, {autoAlpha: 1, scale: 1});
   }
 
-  componentDidEnter() {
-  }
-
-  componentWillLeave (callback) {
-    const el = this.refs.second;
-    TweenMax.fromTo(el, 0.3, {x: 0, opacity: 1}, {x: -600, opacity: 0, ease: Linear.easeNone, onComplete: callback});
-  }
-  
-  componentDidLeave(callback) {
-  }
-
   componentWillMount(){
     if(!this.props.notInitialSetup){
       this.props.wallet.walletstart((result) => {
@@ -96,6 +67,15 @@ class EncryptWallet extends React.Component {
         self.checkIfEncrypted();
       }, 2000);
     }
+  }
+
+  componentDidMount(){
+    console.log("Check if encrypted: ", this.props.checkEncrypted)
+    if(this.props.checkEncrypted){
+      TweenMax.set(this.refs.encryptWallet, {autoAlpha: 0});
+      TweenMax.set(this.refs.checkingWallet, {autoAlpha: 1});
+    }
+    this.props.isEncrypting(true);
   }
 
   handlePasswordChange(event){
@@ -138,6 +118,7 @@ class EncryptWallet extends React.Component {
       } 
       else {
         this.props.password("");
+        this.props.passwordConfirmation("");
         this.showWalletEncrypted();
         var self = this;
         setTimeout(function(){
@@ -145,7 +126,7 @@ class EncryptWallet extends React.Component {
             //making sure >_>
             setTimeout(function(){
               self.startWallet();
-            }, 5000)
+            }, 7000)
         }, 5000)
         console.log("encrypted! ", data)
       }
@@ -166,7 +147,7 @@ class EncryptWallet extends React.Component {
   toRender(){
     return (
       <div>
-        <div id="checkingWallet">
+        <div ref="checkingWallet" id="checkingWallet">
           <p style={{fontWeight:"300"}} className="centerText">
            Checking if your wallet is encrypted...
            </p>
@@ -181,21 +162,34 @@ class EncryptWallet extends React.Component {
            Encrypting your wallet...
            </p>
         </div>
-        <div id="encryptWallet">
+        <div ref="encryptWallet" id="encryptWallet">
           <p style={{fontWeight:"300"}}  className="subTitle">
           Encrypt your wallet
           </p>
-
           <div className="inputDivPassword">
-            <p id="enterPassword">Enter Password</p>
-            <input className="inputCustom inputCustomPassword" type="text" value={this.props.passwordValue} onChange={this.handlePasswordChange}></input>
+            <Input 
+              divStyle={{width: "200px"}}
+              placeholder= "Enter Password"
+              placeholderId="enterPassword"
+              value={this.props.passwordValue}
+              handleChange={this.handlePasswordChange.bind(this)}
+              type="password"
+              inputStyle={{width: "200px"}}
+            />
           </div>
           <div className="inputDivPassword">
-            <p id="enterPasswordRepeat" >Repeat Password</p>
-            <input className="inputCustom inputCustomPassword" type="text" value={this.props.passwordConfirmationValue} onChange={this.handleConfirmationPassword}></input>
+            <Input 
+              divStyle={{marginTop: "20px", paddingBottom: "8px", width: "200px"}}
+              placeholder= "Repeat Password"
+              placeholderId="enterPasswordRepeat"
+              value={this.props.passwordConfirmationValue}
+              handleChange={this.handleConfirmationPassword.bind(this)}
+              type="password"
+              inputStyle={{width: "200px"}}
+            />
           </div>
-          <p id="passwordError" style={{fontSize: "15px", fontWeight: "bold", color: "#d09128", visibility: "hidden"}}>{this.props.passwordValue != this.props.passwordConfirmationValue ? "passwords do not match" : "password can't be empty"}</p>
-           <div style={{marginTop: "25px"}} onClick={this.encryptWallet} id="importButton">
+          <p id="passwordError" style={{fontSize: "15px", fontWeight: "bold", color: "#d09128", visibility: "hidden"}}>{this.props.passwordValue != this.props.passwordConfirmationValue ? "Passwords do not match" : "Password can't be empty"}</p>
+           <div style={{marginTop: "8px"}} onClick={this.encryptWallet} id="importButton">
              Encrypt
            </div>
         </div>
@@ -217,11 +211,10 @@ const mapStateToProps = state => {
     lang: state.startup.lang,
     passwordValue: state.setup.password,
     passwordConfirmationValue: state.setup.confirmationPassword,
-    wallet: state.application.wallet
+    wallet: state.application.wallet,
+    totalSteps: state.startup.totalSteps
   };
 };
 
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(EncryptWallet));
+export default connect(mapStateToProps, actions)(EncryptWallet);

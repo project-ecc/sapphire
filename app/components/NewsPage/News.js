@@ -29,8 +29,6 @@ class News extends Component {
       this.props.setEccPostsPage(1);
     }
     this.props.setPostsPerContainer(postsPerContainer);
-    let width = $('.panel').width();
-    let left = $('.panel').position().left;
   }
 
   componentWillUnmount() {
@@ -71,6 +69,11 @@ class News extends Component {
       }, 500)
       this.updateArrows(this.props.eccPostsPage-2);
     }
+  }
+
+  shouldComponentUpdate(props){
+    if(props.eccPostsPage < 1 || props.eccPostsPage * props.postsPerContainer > Object.keys(props.eccPosts).length) return false;
+    return true;
   }
 
   render() {

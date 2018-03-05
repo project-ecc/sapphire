@@ -1,50 +1,16 @@
 import React, { Component } from 'react';
 import { traduction } from '../../lang/lang';
 import { connect } from 'react-redux';
-import {TimelineMax} from "gsap";
+import {TweenMax} from "gsap";
 import * as actions from '../../actions';
 import $ from 'jquery';
 const lang = traduction();
-import connectWithTransitionGroup from 'connect-with-transition-group';
 
 class Loader extends React.Component {
 
  constructor() {
     super();
-    this.animateLogo = this.animateLogo.bind(this);
     this.showLoadingBlockIndex = this.showLoadingBlockIndex.bind(this);
-    this.showComponent = this.showComponent.bind(this);
-  }
-
-  componentWillAppear (callback) {
-    callback();
-  }
-  
-  showComponent(){
-	const self = this;
-  	setTimeout(() => {
-	    const el = self.refs.second;
-	    TweenMax.fromTo(el, 1, {autoAlpha: 0}, {autoAlpha:1, ease: Linear.easeNone, onComplete: self.animateLogo});
-	    if(self.props.updatingApplication){
-	    	$("#gettingReady").text("We are updating your application...")
-	    }
-      	if(self.props.loadingBlockIndexPayment)
-  			self.showLoadingBlockIndex();
-  	
-  	}, self.props.updatingApplication ? 0 : 500)
-  }
-
-  componentDidAppear(e) {
-  	this.showComponent();
-  }
-  
-  componentWillEnter (callback) {
-  	this.showComponent();
-  }
-
-  componentWillLeave (callback) {
-    const el = this.refs.second;
-    TweenMax.fromTo(el, 0.3, {opacity: 1}, {opacity: 0, ease: Linear.easeNone, onComplete: callback});
   }
 
   shouldComponentUpdate(nextProps){
@@ -61,22 +27,6 @@ class Loader extends React.Component {
     TweenMax.fromTo('#message', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
   }
 
-  animateLogo(){
-	CSSPlugin.useSVGTransformAttr = false;
-	TweenMax.to(['#logoLoader'], 0.5, {autoAlpha: 1});
-	if(!this.props.loading)
-		TweenMax.to(['#gettingReady'], 0.5, {autoAlpha: 1});
-
-	var t = new TimelineMax({repeat:-1, yoyo:true});
-	t.set(['#first', '#second', '#third', '#forth'], {x:20, y:20})
-	t.fromTo('#first', 2, {autoAlpha: 0, scale: 0.90}, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%', ease: Power4.easeNone, delay: 0.3}, 0)
-	t.fromTo('#second', 2, {autoAlpha: 0, scale: 0.90}, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%', ease: Power4.easeNone, delay: 0.3}, 0)
-	t.fromTo('#third', 2, {autoAlpha: 0, scale: 0.90}, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%',ease: Power4.easeNone, delay: 0.3}, 0)
-	t.fromTo('#forth', 2, {autoAlpha: 0, scale: 0.90}, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%', ease: Power4.easeNone, delay: 0.3}, 0)
-	t.fromTo('#logo1', 2, {autoAlpha: 1}, {autoAlpha: 0, delay: 0.3}, 0)
-	t.timeScale(2);
-  }
-
   componentDidMount(){
   }
 
@@ -90,7 +40,7 @@ class Loader extends React.Component {
 
   render() {
     return (
-      <div ref="second" id="loading-wrapper">
+      <div>
 			<svg version="1.1" id="logoLoader" x="0px" y="0px" viewBox="0 0 1200 1200" style={{enableBackground:"new 0 0 1200 1200"}}>
  				<filter id="black">
 			        <feOffset result="offOut" in="SourceAlpha" dx="0" dy="-20"/>
@@ -209,6 +159,4 @@ const mapStateToProps = state => {
 
 
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(Loader));
+export default connect(mapStateToProps, actions, null)(Loader);

@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import fs from 'fs';
-import connectWithTransitionGroup from 'connect-with-transition-group';
 import * as actions from '../../actions';
 import { connect } from 'react-redux';
 import $ from 'jquery';
 import { ipcRenderer } from 'electron';
-import TransitionGroup from 'react-transition-group/TransitionGroup';
 import os from 'os';
 import SettingsToggle from './SettingsToggle';
 import SettingsSidebarItem from './SettingsSidebarItem';
@@ -25,6 +23,9 @@ class Settings extends Component {
     this.handleMinimizeToTray = this.handleMinimizeToTray.bind(this);
     this.handleMinimizeOnClose = this.handleMinimizeOnClose.bind(this);
     this.handleStartAtLogin = this.handleStartAtLogin.bind(this);
+    this.handleOperativeSystemNotifications = this.handleOperativeSystemNotifications.bind(this);
+    this.handleNewsNotifications = this.handleNewsNotifications.bind(this);
+    this.handleStakingNotifications = this.handleStakingNotifications.bind(this);
     this.onItemClick = this.onItemClick.bind(this);
     this.handleExportPrivateKeys = this.handleExportPrivateKeys.bind(this);
     this.onClickBackupLocation = this.onClickBackupLocation.bind(this);
@@ -32,43 +33,6 @@ class Settings extends Component {
     this.handleImportPrivateKey = this.handleImportPrivateKey.bind(this);
     this.handleChangePasswordClicked = this.handleChangePasswordClicked.bind(this);
     this.handleSidebarClicked = this.handleSidebarClicked.bind(this);
-  }
-
-  componentDidMount(){
-    $( window ).on('resize', this.handleResize.bind(this));
-  }
-
-  handleResize(){
-  }
-
-  componentWillUnmount(){
-
-  }
-
-  componentWillAppear (callback) {
-    callback();
-  }
-  
-  componentDidAppear() {
-    const el = this.refs.second;
-    TweenMax.fromTo(el, 0.2, {autoAlpha: 0, scale: 2.5}, {autoAlpha: 1, scale: 1, ease: Linear.easeNone});
-  }
-  
-   componentWillEnter (callback) {
-    const el = this.refs.second;
-    TweenMax.fromTo(el, 0.2, {autoAlpha: 0, scale: 2.5}, {autoAlpha: 1, scale: 1, ease: Linear.easeNone, onComplete: callback});
-  }
-  
-  componentDidEnter(callback) {
-    callback();
-  }
-
-  componentWillLeave (callback) {
-    console.log("componentWillLeave")
-  }
-  
-  componentDidLeave(callback) {
-    console.log("componentWillLeave")
   }
 
   handleUpdateApplication(){
@@ -97,34 +61,49 @@ class Settings extends Component {
 
   setTrayIcon(){
     ipcRenderer.send('hideTray', !this.props.hideTrayIcon);
-    this.reloadSettings(!this.props.hideTrayIcon, this.props.minimizeOnClose, this.props.minimizeToTray, this.props.startAtLogin);
+    this.reloadSettings('display.hide_tray_icon', !this.props.hideTrayIcon)
     this.props.setTray(!this.props.hideTrayIcon);
-
   }
 
   handleMinimizeToTray(){
-    this.reloadSettings(this.props.hideTrayIcon, this.props.minimizeOnClose, !this.props.minimizeToTray, this.props.startAtLogin);
+    this.reloadSettings('display.minimise_to_tray', !this.props.minimizeToTray)
     this.props.setMinimizeToTray(!this.props.minimizeToTray);
   }
 
   handleMinimizeOnClose(){
-    this.reloadSettings(this.props.hideTrayIcon, !this.props.minimizeOnClose, this.props.minimizeToTray, this.props.startAtLogin);
+    this.reloadSettings('display.minimise_on_close', !this.props.minimizeOnClose)
     this.props.setMinimizeOnClose(!this.props.minimizeOnClose);
   }
 
   handleStartAtLogin(){
     ipcRenderer.send('autoStart', !this.props.startAtLogin);
-    this.reloadSettings(this.props.hideTrayIcon, this.props.minimizeOnClose, this.props.minimizeToTray, !this.props.startAtLogin);
+    this.reloadSettings('display.start_at_login', !this.props.startAtLogin)
     this.props.setStartAtLogin(!this.props.startAtLogin);
   }
 
-  reloadSettings(hideTrayIcon, minimizeOnClose, minimizeToTray, startAtLogin){
-    settings.set('settings.display', {
-      hyde_tray_icon: hideTrayIcon,
-      minimise_to_tray: minimizeToTray,
-      minimise_on_close: minimizeOnClose,
-      start_at_login: startAtLogin
-    });
+  handleOperativeSystemNotifications(){
+    this.reloadSettings('notifications.operative_system', !this.props.operativeSystemNotifications)
+    this.props.setOperativeSystemNotifications(!this.props.operativeSystemNotifications);
+  }
+
+  handleNewsNotifications(){
+    if(this.props.newsNotifications == true){
+      this.props.setNewsChecked();
+    }
+    this.reloadSettings('notifications.news', !this.props.newsNotifications)
+    this.props.setNewsNotifications(!this.props.newsNotifications);
+  }
+
+  handleStakingNotifications(){
+    if(this.props.stakingNotifications == true){
+      this.props.setEarningsChecked();
+    }
+    this.reloadSettings('notifications.staking', !this.props.stakingNotifications)
+    this.props.setStakingNotifications(!this.props.stakingNotifications);
+  }
+
+  reloadSettings(settingPath, value){
+    settings.set('settings.' + settingPath, value);
     ipcRenderer.send('reloadSettings');
   }
 
@@ -182,21 +161,25 @@ class Settings extends Component {
     return(
       <div className="container">
         <SettingsToggle 
+          keyVal={4}
           text= "Start ECC on system login"
           handleChange = {this.handleStartAtLogin}
           checked = {this.props.startAtLogin}
         />
         <SettingsToggle 
+          keyVal={5}
           text= "Hide tray icon"
           handleChange = {this.setTrayIcon}
           checked = {this.props.hideTrayIcon}
         />
         <SettingsToggle 
+          keyVal={6}
           text= "Minimize to tray instead of the task bar"
           handleChange = {this.handleMinimizeToTray}
           checked = {this.props.minimizeToTray}
         />
         <SettingsToggle 
+          keyVal={7}
           text= "Minimize on close"
           handleChange = {this.handleMinimizeOnClose}
           checked = {this.props.minimizeOnClose}
@@ -249,6 +232,37 @@ class Settings extends Component {
     )
   }
 
+  handleMediumClick(){
+    open("https://medium.com/@project_ecc")
+  }
+
+  getNotificationSettings(){
+    return(
+      <div className="container">
+        <SettingsToggle 
+          keyVal={2}
+          text= "Operative System notifications"
+          subText = {this.props.operativeSystemNotifications ? <p className="settingsToggleSubText">Disable this option to only get notifications inside Sapphire</p> : <p className="settingsToggleSubText">Enable this option to get operative system notifications"</p>}
+          handleChange = {this.handleOperativeSystemNotifications}
+          checked = {this.props.operativeSystemNotifications}
+        />
+        <SettingsToggle 
+          keyVal={3}
+          text= {<p>ECC News notifications from <span className="mediumToggle" onClick={this.handleMediumClick}>Medium</span></p>}
+          handleChange = {this.handleNewsNotifications}
+          checked = {this.props.newsNotifications}
+        />
+        <SettingsToggle 
+          keyVal={1}
+          text= "Staking notifications"
+          subText = {this.props.stakingNotifications ? <p className="settingsToggleSubText">Disable this option to not get notified of staking rewards</p> : <p className="settingsToggleSubText">Enable this option to get notified of staking rewards</p>}
+          handleChange = {this.handleStakingNotifications}
+          checked = {this.props.stakingNotifications}
+        />
+      </div>
+    )
+  }
+
   goToTranslationPlatform(){
     open("https://poeditor.com/join/project/p7WYAsLDSj");
   }
@@ -287,12 +301,13 @@ class Settings extends Component {
       case "Wallet": return this.getWalletSettings();
       case "Language": return this.getLanguageSettings();
       case "Appearance": return this.getAppearanceSettings();
+      case "Notifications": return this.getNotificationSettings();
     }
   }
 
   render() {
     return (
-      <div ref="second" id="settings" style={{position: "absolute", top:"40px", height: "100%", width: "100%"}}>
+      <div>
         <div id="brigher">
         </div>
         <div id="darker">
@@ -329,11 +344,12 @@ const mapStateToProps = state => {
     wallet: state.application.wallet,
     updateAvailable: state.startup.guiUpdate || state.startup.daemonUpdate,
     backingUpWallet: state.application.backingUpWallet,
-    settingsOptionSelected: state.application.settingsOptionSelected
+    settingsOptionSelected: state.application.settingsOptionSelected,
+    operativeSystemNotifications: state.notifications.operativeSystemNotificationsEnabled,
+    newsNotifications: state.notifications.newsNotificationsEnabled,
+    stakingNotifications: state.notifications.stakingNotificationsEnabled
   };
 };
 
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(Settings));
+export default connect(mapStateToProps, actions)(Settings);

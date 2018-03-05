@@ -16,12 +16,10 @@ class Sidebar extends Component {
   }
 
   checkPopupActive(){
-    console.log("this.props.changingPassword: ", this.props.changingPassword)
     return this.props.unlocking || this.props.sendingEcc || this.props.creatingAddress || this.props.exportingPrivateKeys || this.props.importingPrivateKey || this.props.changingPassword;
   }
 
   resize(){
-    console.log("resize")
     if($( window ).width() >= 1024){
       $('.sidebar').css('left', '0px');
       $('.mainSubPanel').css('padding-left', '224px');
@@ -93,10 +91,11 @@ class Sidebar extends Component {
 
   subscribeToEvent(){
     var self = this;
-    $(window).on("click", function() {
-      console.log("click")
+    $(window).on("click", function(e) {
+      if($(e.target).is('.sidebar') || $(e.target).is('#sidebarLogo') || $(e.target).is('.userimage')) {
+        return;
+      }
       var offset = $('.sidebar').offset().left;
-      console.log(offset)
       if($( window ).width() <= 1023 && offset == 0){
         $('.sidebar').css('left', '-224px');
       }
@@ -105,6 +104,7 @@ class Sidebar extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.resize)
+    $( window ).off('click');
     $('.miniButton').css('left', '-10px');
   }
 
@@ -197,7 +197,7 @@ class Sidebar extends Component {
     return (
       <div className="sidebar">
         <div className="userimage">
-          <img src={usericon} />
+          <img id="sidebarLogo" src={usericon} />
         </div>
         <ul className="sidebar-menu">
           <li className="have-children"><a style={walletStyle} href="#" onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="wallet" className="mainOption"><div className="arrowMenu"></div><img src={wallet}/><span></span>Wallet</a> 
@@ -234,7 +234,6 @@ class Sidebar extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log("changingPassword: ", state.application.changingPassword)
   return{
     lang: state.startup.lang,
     walletHovered: state.sideBar.walletHovered,

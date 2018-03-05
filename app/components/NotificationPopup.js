@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import {TweenMax} from "gsap";
-import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
 const Tools = require('../utils/tools')
 
@@ -24,29 +23,6 @@ class NotificationPopup extends React.Component {
     this.handleHoverAnsPayments = this.handleHoverAnsPayments.bind(this);
     this.handleHoverOutAnsPayments = this.handleHoverOutAnsPayments.bind(this);
   }
-  
- componentWillAppear (callback) {
-    callback();
-  }
-  
-  componentDidAppear(e) {
-
-  }
-  
-  componentWillEnter (callback) {
-    callback();
-  }
-  
-  componentDidEnter(callback) {
-    tools.animatePopupIn(this.refs.second, callback, "30%");
-  }
-
-  componentWillLeave (callback) {
-    tools.animatePopupOut(this.refs.second, callback)
-  }
-  
-  componentDidLeave(callback) {
-  }  
 
   componentDidMount(){
     var self = this;
@@ -251,9 +227,7 @@ const mapStateToProps = state => {
 };
 
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(NotificationPopup));
+export default connect(mapStateToProps, actions)(NotificationPopup);
 
 
 class NotificationItem extends Component {

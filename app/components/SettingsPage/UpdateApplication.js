@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
-import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
 const tools = require('../../utils/tools')
 import CloseButtonPopup from '../Others/CloseButtonPopup';
@@ -16,32 +15,6 @@ class UpdateApplication extends React.Component {
     this.handleCancel = this.handleCancel.bind(this);
   }
   
- componentWillAppear (callback) {
-    callback();
-  }
-  
-  componentDidAppear(e) {
-
-  }
-  
-  componentWillEnter (callback) {
-    callback();
-  }
-  
-  componentDidEnter(callback) {
-    tools.animatePopupIn(this.refs.second, callback, "22%");
-  }
-
-  componentWillLeave (callback) {
-    tools.animatePopupOut(this.refs.second, callback)
-  }
-
-  componentDidLeave(callback) {
-  }  
-
-  componentDidMount(){
-  }
-
   handleConfirm(){
     var self = this;
     this.props.setUpdateApplication(false);
@@ -74,7 +47,7 @@ class UpdateApplication extends React.Component {
       fill: this.props.bgColor
     };
      return (
-      <div ref="second" id="unlockPanel" style={{height: "220px", top: "22%"}}>
+      <div style={{height: "220px"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">Application Update</p>
         {this.getCorrectHtml()}
@@ -93,6 +66,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(UpdateApplication));
+export default connect(mapStateToProps, actions)(UpdateApplication);

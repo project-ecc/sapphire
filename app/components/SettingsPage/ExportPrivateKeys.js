@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import {TweenMax, TimelineMax} from "gsap";
-import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
 import { ipcRenderer } from 'electron';
 var fs = require('fs');
@@ -25,37 +24,9 @@ class ExportPrivateKeys extends React.Component {
     this.tween = undefined;
     this.toPrint = [];
   }
-  
- componentWillAppear (callback) {
-    callback();
-  }
-  
-  componentDidAppear(e) {
-
-  }
-  
-  componentWillEnter (callback) {
-    callback();
-  }
-  
-  componentDidEnter(callback) {
-    tools.animatePopupIn(this.refs.second, callback, "22%");
-  }
-
-  componentWillLeave (callback) {
-    tools.animatePopupOut(this.refs.second, callback)
-  }
 
   showWrongPassword(){
     tools.showTemporaryMessage('#wrongPassword');
-  }
-
-  
-  componentDidLeave(callback) {
-  }  
-
-  componentDidMount(){
-
   }
 
   componentWillUnmount(){
@@ -63,7 +34,12 @@ class ExportPrivateKeys extends React.Component {
   }
 
   handleChange(event) {
-    this.props.setPassword(event.target.value);
+    const pw = event.target.value;
+    if(pw.length == 0)
+      TweenMax.set('#password', {autoAlpha: 1});
+    else 
+      TweenMax.set('#password', {autoAlpha: 0});
+    this.props.setPassword(pw);
   }
 
   handleCancel(){
@@ -107,9 +83,18 @@ class ExportPrivateKeys extends React.Component {
   getPasswordPanel(){
     return(
       <div id="passwordPanel" style={{position: "absolute", width: "100%", top: "70px"}}>
-        <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px"}}>Please type your password</p>
-        <input className="inputCustom" type="password" style={{width: "400px", top: "20px", marginBottom: "30px"}} value={this.props.passwordVal} onChange={this.handleChange} autoFocus></input>
+        <p style={{fontSize: "16px", width: "450px", margin: "0 auto",textAlign: "justify"}}>Please, after exporting the private keys print the file and delete it right after. Do not keep it in your computer.</p>
         <div>
+        <Input 
+            divStyle={{width: "400px", marginTop: "15px"}}
+            placeholder= "Password"
+            placeholderId= "password"
+            placeHolderClassName="inputPlaceholder inputPlaceholderUnlock"
+            value={this.props.passwordVal}
+            handleChange={this.handleChange.bind(this)}
+            type="password"
+            inputStyle={{width: "400px", top: "20px", marginBottom: "30px"}}
+          />
           <p id="wrongPassword" className="wrongPassword">Wrong password</p>
         </div>
       </div>
@@ -128,6 +113,10 @@ class ExportPrivateKeys extends React.Component {
   handleConfirm(){
     var self = this;
     var wasStaking = this.props.staking;
+    if(this.props.passwordVal == ""){
+      this.showWrongPassword();
+      return;
+    }
     this.unlockWallet(false, 5, async () => {
       TweenMax.to('#passwordPanel', 0.3, {x: "-100%"})
       TweenMax.to('#setLocationPanel', 0.3, {x: "-100%"})
@@ -307,11 +296,8 @@ class ExportPrivateKeys extends React.Component {
   }
 
   render() { 
-      var shapeStyle = {
-      fill: this.props.bgColor
-    };
      return (
-      <div ref="second" id="unlockPanel" style={{height: "300px", top: "22%", overflowX: "hidden"}}>
+      <div id="exportPrivKey">
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">Export Private Keys</p>
         {this.getPasswordPanel()}
@@ -337,6 +323,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(ExportPrivateKeys));
+export default connect(mapStateToProps, actions)(ExportPrivateKeys);

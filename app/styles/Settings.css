@@ -180,6 +180,18 @@
 	margin-top: 50px;
 }
 
+.settingsToggleSubText{
+	font-size: 14px;
+    padding-top: 13px;
+    color: #777b90 !important;
+    font-weight: 700;
+}
+
+.mediumToggle{
+	text-decoration: underline;
+    cursor: pointer;
+}
+
 @media only screen and (max-width: 900px) {
     .subSettings {
         max-width: 520px;

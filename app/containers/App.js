@@ -19,6 +19,8 @@ const settings = require('electron-settings');
 import NotificationPopup from '../components/NotificationPopup';
 import UnlockWallet from '../components/UnlockWallet';
 import GenericPanel from './GenericPanel';
+import TransitionComponent from '../components/Others/TransitionComponent';
+const Tools = require('../utils/tools')
 
 class App extends Component<Props> {
   constructor(props) {
@@ -50,47 +52,82 @@ class App extends Component<Props> {
     let minimizeToTray = false;
     let minimizeOnClose = false;
     const ds = settings.get('settings.display');
-    //TODO can't really be undefined
-    if(ds == undefined) return;
 
-    if(ds.minimise_to_tray !== undefined && ds.minimise_to_tray)
+    if(ds && ds.minimise_to_tray !== undefined && ds.minimise_to_tray)
       minimizeToTray = true;
-    if(ds.tray_icon !== undefined && ds.tray_icon)
+    if(ds && ds.hide_tray_icon !== undefined && ds.hide_tray_icon)
       tray = true;
-    if(ds.minimise_on_close !== undefined && ds.minimise_on_close)
+    if(ds && ds.minimise_on_close !== undefined && ds.minimise_on_close)
       minimizeOnClose = true;
-    if(ds.start_at_login !== undefined && ds.start_at_login)
+    if(ds && ds.start_at_login !== undefined && ds.start_at_login)
       startAtLogin = true;
 
     this.props.setMinimizeOnClose(minimizeOnClose);
     this.props.setMinimizeToTray(minimizeToTray);
     this.props.setStartAtLogin(startAtLogin);
     this.props.setTray(tray);
+
+    let operativeSystemNotifications = true;
+    let newsNotifications = true;
+    let stakingNotifications = true;
+
+    const ns = settings.get('settings.notifications');
+
+    if(ns && ns.operative_system !== undefined && ns.operative_system)
+      operativeSystemNotifications = true;
+    if(ns && ns.news !== undefined && ns.news)
+      newsNotifications = true;
+    if(ns && ns.staking !== undefined && ns.staking)
+      stakingNotifications = true;
+
+    this.props.setOperativeSystemNotifications(operativeSystemNotifications);
+    this.props.setNewsNotifications(newsNotifications);
+    this.props.setStakingNotifications(stakingNotifications);
   }
 
   getPopup(){
+    let component = null;
+    let id = "unlockPanel";
+    let animateIn = Tools.animatePopupIn;
+    let animateOut = Tools.animatePopupOut;
+
+    if(this.props.exportingPrivateKeys){
+      component = <ExportPrivateKeys />;
+    }
+    else if(this.props.importingPrivateKey){
+      component = <ImportPrivateKey notInitialSetup = {true}/>;
+    }
+    else if(this.props.changingPassword){
+      component = <ChangePassword />
+    }
+    else if(this.props.changingPassword){
+      component = <ImportPrivateKey />
+    }    
+    else if(this.props.updateApplication){
+      component = <UpdateApplication />
+    }    
+    else if(this.props.sending){
+      component = <SendConfirmation />
+    }
+    else if(this.props.creatingAddress){
+      component = <ConfirmNewAddress />
+    }
+    else if(this.props.unlocking){
+      component = <UnlockWallet />
+    }
+
     return(
       <div>
-        <TransitionGroup component={"article"}> 
-         { this.props.exportingPrivateKeys ? <ExportPrivateKeys/> : null}
-        </TransitionGroup>
-        <TransitionGroup component={"aside"}>
-         { this.props.importingPrivateKey ? <ImportPrivateKey notInitialSetup = {true}/> : null}
-        </TransitionGroup>
-        <TransitionGroup component={"aside"}>
-         { this.props.changingPassword ? <ChangePassword/> : null}
-        </TransitionGroup>
-        <TransitionGroup  component={"aside"}>
-         { this.props.updateApplication ? <UpdateApplication/> : null}
-        </TransitionGroup>
-        <TransitionGroup component={"article"}>
-           { this.props.unlocking ? <UnlockWallet/> : null}
-        </TransitionGroup>
-        <TransitionGroup component={"article"}>
-           { this.props.sending ? <SendConfirmation/> : null}
-        </TransitionGroup>
-        <TransitionGroup component={"article"}>
-            { this.props.creatingAddress ? <ConfirmNewAddress/> : null}
+        <TransitionGroup component="article">
+          { component != null ? 
+            <TransitionComponent 
+              children={component}
+              id= {id}
+              animationType= "popup"
+              animateIn= {animateIn}
+              animateOut = {animateOut}/> 
+            : null
+          }
         </TransitionGroup>
       </div>
     )
@@ -98,8 +135,17 @@ class App extends Component<Props> {
   getMainApp(){
     return(
       <div>
-        <TransitionGroup component={"section"}>
-          {<GenericPanel/>}
+        <TransitionGroup component="section">
+          { !this.props.unencryptedWallet && this.props.setupDone && !this.props.loader && !this.props.updatingApplication && !this.props.settings ?
+            <TransitionComponent 
+              children={<GenericPanel />}
+              id= ""
+              class= "genericPanel"
+              animationType= "genericPanel"
+              animateIn= {Tools.animateGeneralPanelIn}
+              animateOut = {Tools.animateGeneralPanelOut}/>
+              : null
+          }
         </TransitionGroup>
       </div>
     )
@@ -107,6 +153,7 @@ class App extends Component<Props> {
 
   news(){
     var settingsSelected = this.props.settings;
+    this.props.setNotifications(false);
     if(this.props.news && !settingsSelected){ 
       return;
     }
@@ -138,6 +185,7 @@ class App extends Component<Props> {
   }
   
   settings(){
+    this.props.setNotifications(false);
     if(this.props.checkingDaemonStatusPrivateKey) return;
     this.props.setSettings(!this.props.settings);
     this.props.setExportingPrivateKeys(false);
@@ -161,37 +209,78 @@ class App extends Component<Props> {
   }
 
   getLoader(){
-    console.log("LOADER: ", this.props.loader || this.props.updatingApplication)
-    if(this.props.loader || this.props.updatingApplication){
-      return(
-        <TransitionGroup component={"aside"}>
-          <Loading />
-        </TransitionGroup> 
-      )
-    }
-    else{
-      return null;
-    }
+    return(
+      <div>
+        <TransitionGroup component="aside">
+          { this.props.loader || this.props.updatingApplication ?
+            <TransitionComponent 
+              children={<Loading />}
+              id= "loading-wrapper"
+              animationType= "loader"
+              animateIn= {Tools.animateLoaderIn}
+              animateOut = {Tools.animateLoaderOut}
+              animateLogo = {this.animateLogo.bind(this)}
+              updatingApplication = {this.props.updatingApplication}/>
+              : null
+          }
+        </TransitionGroup>
+      </div>
+    )
+  }
+
+  animateLogo(callback){
+    CSSPlugin.useSVGTransformAttr = false;
+    TweenMax.to(['#logoLoader'], 0.5, {autoAlpha: 1});
+    if(!this.props.loading)
+      TweenMax.to(['#gettingReady'], 0.5, {autoAlpha: 1});
+
+    var t = new TimelineMax({repeat:-1, yoyo:true});
+    t.set(['#first', '#second', '#third', '#forth'], {x:20, y:20})
+    t.fromTo('#first', 2, {autoAlpha: 0, scale: 0.90}, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%', ease: Power4.easeNone, delay: 0.3}, 0)
+    t.fromTo('#second', 2, {autoAlpha: 0, scale: 0.90}, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%', ease: Power4.easeNone, delay: 0.3}, 0)
+    t.fromTo('#third', 2, {autoAlpha: 0, scale: 0.90}, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%',ease: Power4.easeNone, delay: 0.3}, 0)
+    t.fromTo('#forth', 2, {autoAlpha: 0, scale: 0.90}, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%', ease: Power4.easeNone, delay: 0.3}, 0)
+    t.fromTo('#logo1', 2, {autoAlpha: 1}, {autoAlpha: 0, delay: 0.3}, 0)
+    t.timeScale(2);
+    callback();
   }
 
   getSettings(){
-    if(this.props.settings){
+    return(
+      <TransitionGroup component="section">
+        { this.props.settings ?
+          <TransitionComponent 
+            children={<Settings />}
+            id= "settings"
+            animationType= "settings"
+            animateIn= {Tools.animateGeneralPanelIn}
+            animateOut = {Tools.animateGeneralPanelOut}/>
+            : null
+        }
+      </TransitionGroup>
+    )
+  }
+
+  getInitialSetup(){
+    if(!this.props.setupDone && !this.props.loader && !this.props.updatingApplication || this.props.unencryptedWallet){
       return(
-        <TransitionGroup component={"section"}>
-          <Settings />
+        <TransitionGroup>
+          <TransitionComponent 
+            children={<InitialSetup/>}
+            id= "initialSetup"
+            animationType= "initialSetup"
+            animateIn= {Tools.animateInitialSetupIn}
+            animateOut = {Tools.animateInitialSetupOut}/>
         </TransitionGroup>
       )
-    }else{
-      return null;
     }
+    return null;
   }
 
   getNotificationsPopup(){
     if(this.props.notificationPopup){
       return(
-        <TransitionGroup>
-          <NotificationPopup/>
-        </TransitionGroup>
+        <NotificationPopup/>
       )
     }
     else 
@@ -241,10 +330,8 @@ class App extends Component<Props> {
         <div className="mancha">
         </div>
         <div>
-        {this.props.setupDone && !this.props.loader && !this.props.updatingApplication && !this.props.settings ? this.getMainApp()  : null}
-        <TransitionGroup>
-          {!this.props.setupDone && !this.props.loader && !this.props.updatingApplication ? <InitialSetup/> : null}
-        </TransitionGroup>
+        {this.getMainApp()}
+        {this.getInitialSetup()}
         {this.getSettings()}
         {this.getLoader()}
         {this.getNotificationsPopup()}
@@ -274,7 +361,9 @@ const mapStateToProps = state => {
     notificationPopup: state.notifications.popupEnabled,
     unlocking: state.application.unlocking,
     sending: state.application.sendingEcc,
-    creatingAddress: state.application.creatingAddress
+    creatingAddress: state.application.creatingAddress,
+    unencryptedWallet: state.startup.unencryptedWallet,
+    loading: state.startup.loading,
   };
 };
 

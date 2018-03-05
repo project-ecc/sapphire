@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { traduction } from '../../lang/lang';
 const homedir = require('os').homedir();
 import * as actions from '../../actions';
-import connectWithTransitionGroup from 'connect-with-transition-group';
 import { connect } from 'react-redux';
 const lang = traduction();
 const settings = require('electron-settings');
@@ -285,6 +284,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(Transaction));
+export default connect(mapStateToProps, actions)(Transaction);

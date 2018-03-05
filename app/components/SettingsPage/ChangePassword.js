@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import {TweenMax, TimelineMax} from "gsap";
-import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
@@ -16,27 +15,6 @@ class ChangePassword extends React.Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.changePassword = this.changePassword.bind(this);
   }
-  
- componentWillAppear (callback) {
-    callback();
-  }
-  
-  componentDidAppear(e) {
-
-  }
-  
-  componentWillEnter (callback) {
-    callback();
-  }
-  
-  componentDidEnter(callback) {
-    Tools.readRpcCredentials();
-    Tools.animatePopupIn(this.refs.pointer, callback, "22%");
-  }
-
-  componentWillLeave (callback) {
-    Tools.animatePopupOut(this.refs.pointer, callback)
-  }
 
   showWrongPassword(){
     Tools.showTemporaryMessage('#wrongPassword');
@@ -48,13 +26,6 @@ class ChangePassword extends React.Component {
     this.props.setNewPassword("");
   }
   
-  componentDidLeave(callback) {
-  }  
-
-  componentDidMount(){
-
-  }
-
   handlePasswordChange(event) {
     let pw = event.target.value;
     if(pw.length == 0){
@@ -131,7 +102,7 @@ class ChangePassword extends React.Component {
       fill: this.props.bgColor
     };
      return (
-      <div ref="pointer" id="unlockPanel" style={{height: "305px", top: "22%", overflowX: "hidden"}}>
+      <div className="changePassword">
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">Change Password</p>
         <Input 
@@ -181,6 +152,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(ChangePassword));
+export default connect(mapStateToProps, actions)(ChangePassword);

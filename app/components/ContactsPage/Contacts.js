@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { traduction } from '../../lang/lang';
 const homedir = require('os').homedir();
 import * as actions from '../../actions';
-import connectWithTransitionGroup from 'connect-with-transition-group';
 import { connect } from 'react-redux';
 import AddressBook from '../SendTransactions/AddressBook';
 import low from '../../utils/low';
@@ -173,6 +172,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(Contacts));
+export default connect(mapStateToProps, actions)(Contacts);

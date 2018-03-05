@@ -10,16 +10,21 @@ import {
   LOADING,
   CALCULATING_STAKING_REWARDS,
   UPDATING_APP,
-  UPDATE_AVAILABLE
+  UPDATE_AVAILABLE,
+  UNENCRYPTED_WALLET,
+  SETUP_DONE_INTERNAL
 } from '../actions/types';
 
 
-const INITIAL_STATE = {lang: lang, loader: true, initialSetup: false, partialInitialSetup: false, setupDone: false, importWallet: false, totalSteps: 0, loading: false, updatingApp: false, guiUpdate: false, daemonUpdate:false}
+const INITIAL_STATE = {lang: lang, loader: true, initialSetup: false, partialInitialSetup: false, setupDone: false, importWallet: false, loading: false, updatingApp: false, guiUpdate: false, daemonUpdate:false, unencryptedWallet: false, setupDoneInternal: false}
 
 export default(state = INITIAL_STATE, action) => {
 	if(action.type == SET_LANGUAGE){
 		lang = traduction();
 		return {...state, lang: lang};
+	}
+	else if(action.type == UNENCRYPTED_WALLET){
+		return {...state, loader: false, loading: false, unencryptedWallet: action.payload}
 	}
 	else if(action.type == UPDATE_AVAILABLE){
 		return {...state, daemonUpdate: action.payload.daemonUpdate, guiUpdate: action.payload.guiUpdate}
@@ -29,15 +34,15 @@ export default(state = INITIAL_STATE, action) => {
 	}
 	else if(action.type == INITIAL_SETUP){
 		console.log("got initial setup")
-		return {...state, initialSetup: true, totalSteps: 4, loader: false, loading: false};
+		return {...state, initialSetup: true, loader: false, loading: false, unencryptedWallet: false};
 	}
 	else if(action.type == PARTIAL_INITIAL_SETUP){
 		console.log("got partial initial setup")
-		return {...state, partialInitialSetup: true, totalSteps: 2 , loader: false, loading: false};
+		return {...state, partialInitialSetup: true, loader: false, loading: false, unencryptedWallet: false};
 	}
 	else if(action.type == SETUP_DONE){
 		console.log("got setup done")
-		return {...state, setupDone: true};
+		return {...state, setupDone: true, setupDoneInternal: true, initialSetup: false, partialInitialSetup: false, unencryptedWallet: false};
 	}
 	else if(action.type == IMPORT_WALLET){
 		console.log("got import wallet")
@@ -45,6 +50,9 @@ export default(state = INITIAL_STATE, action) => {
 	}
 	else if(action.type == LOADING){
 		return {...state, loading: action.payload, loader: action.payload}
+	}
+	else if(action.type == SETUP_DONE_INTERNAL){
+		return {...state, setupDoneInternal: action.payload}
 	}
 	return state;
 }

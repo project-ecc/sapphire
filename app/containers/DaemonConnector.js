@@ -1,6 +1,6 @@
 import Wallet from '../utils/wallet';
 import { ipcRenderer } from 'electron';
-import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION } from '../actions/types';
+import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET } from '../actions/types';
 const event = require('../utils/eventhandler');
 const tools = require('../utils/tools')
 const sqlite3 = require('sqlite3');
@@ -106,6 +106,7 @@ class DaemonConnector {
   mainCycle(){
     if(process.env.NODE_ENV === 'development' && (this.store.getState().startup.loading || this.store.getState().startup.loader)){
       this.store.dispatch({type: LOADING, payload:false})
+      this.store.dispatch({type: PARTIAL_INITIAL_SETUP })
     }
     if(this.store.getState().startup.updatingApp){
       var self = this;
@@ -213,6 +214,10 @@ class DaemonConnector {
   stateCheckerInitialStartup(){
     var self = this;
     this.wallet.getInfo().then((data) => {
+      if(!data.encrypted){
+        console.log("RUNNING UNENCRYPTED WALLET")
+        self.store.dispatch({type: UNENCRYPTED_WALLET, payload: true})
+      }
       if(self.loadingBlockIndexPayment){
         self.loadingBlockIndexPayment = false;
         self.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: false})
@@ -243,6 +248,10 @@ class DaemonConnector {
   getChainInfo(){
   	var self = this;
 	  this.wallet.getInfo().then((data) => {
+      if(!data.encrypted){
+        console.log("RUNNING UNENCRYPTED WALLET")
+        self.store.dispatch({type: UNENCRYPTED_WALLET, payload: true})
+      }
       if(self.loadingBlockIndexPayment){
         self.loadingBlockIndexPayment = false;
         self.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: false})
@@ -251,6 +260,13 @@ class DaemonConnector {
       self.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data.blocks == 0 || data.headers == 0 ? 0 : ((data.blocks * 100) / data.headers).toFixed(2)})
 		})
 	}
+
+
+  fixNewsText(text){
+    var result = text.replace(new RegExp('</p><p>', 'g'), ' ')
+    result = result.replace(new RegExp('</blockquote><p>', 'g'), '. ')
+    return result;
+  }
 
   getECCPosts(){
     var posts = this.store.getState().application.eccPosts;
@@ -266,9 +282,9 @@ class DaemonConnector {
       parser.on('item', (item) => {
         let url = item.guid.text;
         let hasVideo = item["content:encoded"].indexOf('iframe');
-        let text = $(item["content:encoded"]).text();
+        let text = $(self.fixNewsText(item["content:encoded"])).text();
         let index = text.indexOf("Team");
-        if(index == 18){
+        if(index == 13){
          text = text.slice(index + 4);
         }
         let date = item["pubdate"];
@@ -304,7 +320,7 @@ class DaemonConnector {
           self.store.dispatch({type: POSTS_PER_CONTAINER, payload: this.store.getState().application.postsPerContainerEccNews})
 
         }
-        if(post && post.date > lastCheckedNews){
+        if(post && post.date > lastCheckedNews && this.store.getState().notifications.newsNotificationsEnabled){
           self.store.dispatch({type: NEWS_NOTIFICATION, payload: post.date})
         }
       });
@@ -353,7 +369,7 @@ class DaemonConnector {
       transactionsInfo.get('addresses').push(currentAddress).write();
       this.processedAddresses.push(currentAddress)
     }
-      
+    this.from = 0;  
     this.transactionsIndexed = false;
     this.db = new sqlite3.Database(app.getPath('userData') + '/transactions');
     this.db.run("DELETE FROM TRANSACTIONS;");
@@ -533,7 +549,7 @@ class DaemonConnector {
       if(this.transactionsIndexed){
         this.store.dispatch({type: STAKING_REWARD, payload: entries[i]})
       }
-      if(entry.time > lastCheckedEarnings){
+      if(entry.time > lastCheckedEarnings && this.store.getState().notifications.stakingNotificationsEnabled){
         self.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: entry.amount, date: entry.time}})
       }
     }

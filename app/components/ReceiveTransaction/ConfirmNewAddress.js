@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
-import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
@@ -16,26 +15,6 @@ class ConfirmNewAddress extends React.Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.createNormalAddress = this.createNormalAddress.bind(this);
     this.getConfirmationText = this.getConfirmationText.bind(this);
-  }
-  
- componentWillAppear (callback) {
-    callback();
-  }
-  
-  componentDidAppear(e) {
-
-  }
-  
-  componentWillEnter (callback) {
-    callback();
-  }
-  
-  componentDidEnter(callback) {
-    tools.animatePopupIn(this.refs.second, callback, "22%");
-  }
-
-  componentWillLeave (callback) {
-    tools.animatePopupOut(this.refs.second, callback)
   }
 
   createNormalAddress(){
@@ -90,7 +69,7 @@ class ConfirmNewAddress extends React.Component {
       fill: this.props.bgColor
     };
      return (
-      <div ref="second" id="unlockPanel" style={{top: "22%", height: "auto", textAlign: "center"}}>
+      <div style={{height: "auto !important", textAlign: "center"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">Confirm New Address</p>
        	{this.getConfirmationText()}
@@ -112,6 +91,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(ConfirmNewAddress));
+export default connect(mapStateToProps, actions)(ConfirmNewAddress);

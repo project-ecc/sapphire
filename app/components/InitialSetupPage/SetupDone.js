@@ -3,16 +3,10 @@ import { connect } from 'react-redux';
 import { traduction, language } from '../../lang/lang';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
-import connectWithTransitionGroup from 'connect-with-transition-group';
 
 class SetupDone extends React.Component {
  constructor() {
     super();
-  }
-  
-  componentWillEnter (callback) {
-    const el = this.refs.second;
-    TweenMax.fromTo(el, 0.3, {x: 600, opacity: 0}, {x: 0, opacity:1,ease: Linear.easeNone, onComplete: callback});
   }
 
   renderNewUser(){
@@ -34,10 +28,14 @@ class SetupDone extends React.Component {
     )
   }
 
+  componentWillMount(){
+    this.props.setSetupDoneInternal(true);
+  }
+
   render() { 
     const toReturn = this.props.paymentChainSync < 95 ? this.renderNewUser() : this.renderExistingUser();
      return (
-      <div ref="second" style={{height: "330px"}}>
+      <div>
         {toReturn}
       </div>
       );
@@ -51,6 +49,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(SetupDone));
+export default connect(mapStateToProps, actions)(SetupDone);

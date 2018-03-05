@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import connectWithTransitionGroup from 'connect-with-transition-group';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
 import $ from 'jquery';
 import ToggleButton from 'react-toggle';
-import TransitionGroup from 'react-transition-group/TransitionGroup';
 import Sidebar from './Sidebar';
 import HomePage from './Pages/HomePage';
 import ReceivePage from './Pages/ReceivePage';
@@ -18,42 +16,6 @@ import NewsPage from './Pages/NewsPage';
 class GenericPanel extends Component {
   constructor(props) {
     super(props);
-  }
-
-  componentDidMount(){
-  }
-
-
-  componentWillUnmount(){
-
-  }
-
-  componentWillAppear (callback) {
-    callback();
-  }
-  
-  componentDidAppear(e) {
-    const el = this.refs.second;
-    TweenMax.fromTo(el, 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1, ease: Linear.easeNone});
-  }
-  
-  componentWillEnter (callback) {
-    const el = this.refs.second;
-    TweenMax.fromTo(el, 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1, ease: Linear.easeNone, onComplete: callback});
-  }
-  
-  componentDidEnter(callback) {
-  }
-
-  componentWillLeave (callback) {
-    const el = this.refs.second;
-    TweenMax.fromTo(el, 0.15, {autoAlpha: 1, scale: 1}, {autoAlpha: 1, scale: 0.5, ease: Linear.easeNone});
-  }
-  
-  componentDidLeave(callback) {
-  }
-
-  componentWillReceiveProps(props){
   }
 
   getPanel(){
@@ -75,10 +37,9 @@ class GenericPanel extends Component {
     }
   }
 
-
   render() {
     return (
-      <div ref="second" className="genericPanel">
+      <div>
         <Sidebar/>
         <div className="mainSubPanel">
           {this.getPanel()}
@@ -97,6 +58,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(GenericPanel));
+export default connect(mapStateToProps, actions)(GenericPanel);

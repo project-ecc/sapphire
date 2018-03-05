@@ -3,41 +3,13 @@ import { connect } from 'react-redux';
 import { traduction, language } from '../../lang/lang';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
-import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
 const settings = require('electron-settings');
 
 class LanguageSelector extends React.Component {
- constructor() {
-  super();
-  this.onItemClick = this.onItemClick.bind(this);
-  }
-  
- componentWillAppear (callback) {
-    console.log("componentWillAppear")
-    const el = this.refs.first;
-    TweenMax.fromTo(el, 0.3, {opacity: 0}, {opacity: 1, onComplete: callback});
-  }
-  
-  componentDidAppear(e) {
-    console.log("componentDidAppear")
-  }
-  
-   componentWillEnter (callback) {
-    console.log("componentWillEnter")
-    const el = this.refs.first;
-    TweenMax.fromTo(el, 0.3, {x: -600, opacity: 0}, {x: 0, opacity: 1, ease: Linear.easeNone, onComplete: callback});
-  }
-  
-    componentDidEnter(callback) {
-  }
-
-  componentWillLeave (callback) {
-    const el = this.refs.first;
-    TweenMax.fromTo(el, 0.2, {x: 0, opacity: 1}, {x: -600, opacity: 0, ease: Linear.easeNone, onComplete: callback});
-  }
-  
-    componentDidLeave(callback) {
+  constructor() {
+    super();
+    this.onItemClick = this.onItemClick.bind(this);
   }
   
   handleDropDownClicked(){
@@ -51,7 +23,6 @@ class LanguageSelector extends React.Component {
     $('.dropdownLanguageSelector').find('.dropdown-menuLanguageSelector').slideUp(300);
   }
   
-
   onItemClick(event) {
     let lang = event.currentTarget.dataset.id;
     settings.set('settings.lang', lang);
@@ -63,7 +34,7 @@ class LanguageSelector extends React.Component {
       fill: this.props.bgColor
     };
      return (
-      <div ref="first">
+      <div>
          <div className="contentLanguageSelector">
            <p className="selectLanguageLanguageSelector" style={{fontWeight:"300"}}>
              {this.props.lang.selectLanguage}
@@ -106,6 +77,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(LanguageSelector));
+export default connect(mapStateToProps, actions)(LanguageSelector);

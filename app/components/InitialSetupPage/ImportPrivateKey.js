@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { traduction, language } from '../../lang/lang';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
-import connectWithTransitionGroup from 'connect-with-transition-group';
 import $ from 'jquery';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 const tools = require('../../utils/tools')
@@ -20,44 +19,10 @@ class ImportPrivateKey extends React.Component {
     this.failedToImportAddress = this.failedToImportAddress.bind(this);
     this.getCloseButton = this.getCloseButton.bind(this);
   }
-  
- componentWillAppear (callback) {
-    callback();
-  }
-  
-  componentDidAppear(e) {
-  }
-  
-  componentWillEnter (callback) {
-    const el = this.refs.second;
-    if(this.props.notInitialSetup){
-      tools.animatePopupIn(this.refs.second, callback, "22%");
-    }
-    else
-    {
-      TweenMax.fromTo(el, 0.3, {x: 600, opacity: 0}, {x: 0, opacity:1,ease: Linear.easeNone, onComplete: callback});
-    }
-  }
-  
-  componentDidEnter() {
-  }
-
-  componentWillLeave (callback) {
-    const el = this.refs.second;
-    if(this.props.notInitialSetup){
-      tools.animatePopupOut(this.refs.second, callback)
-    }
-    else{
-      TweenMax.fromTo(el, 0.3, {x: 0, opacity: 1}, {x: -600, opacity: 0, ease: Linear.easeNone, onComplete: callback});
-    }
-  }
 
   componentWillUnmount(){
     this.props.privateKey("");
     this.props.password("");
-  }
-  
-  componentDidLeave(callback) {
   }
 
   unlockWallet(flag, time, callback){
@@ -72,13 +37,17 @@ class ImportPrivateKey extends React.Component {
       console.log("data: ", data)
       data = data[0];
       if (data !== null && data.code === -14) {
+        self.props.setCheckingDaemonStatusPrivKey(false)
         self.showWrongPassword();
       } else if (data !== null && data.code === 'ECONNREFUSED') {
           console.log("daemong ain't working mate :(")
       } else if (data === null) {
           callback();
       } else {
-        console.log("error unlocking wallet: ", data)
+        setTimeout(()=> {
+            self.props.setCheckingDaemonStatusPrivKey(true)
+            self.importPrivateKey();
+          }, 500);
       }
     }).catch((err) => {
       console.log("err unlocking wallet: ", err);
@@ -106,7 +75,7 @@ class ImportPrivateKey extends React.Component {
         else if(result[0].code == "-28"){
           setTimeout(()=> {
             this.importPrivateKey();
-          }, 100);
+          }, 500);
           
         }
         else{
@@ -120,7 +89,7 @@ class ImportPrivateKey extends React.Component {
         //imported but rescaning 
         else if(result.code == "ESOCKETTIMEDOUT"){
           this.checkDaemonStatus();
-          TweenMax.to('#importing p', 0.5, {autoAlpha: 1});
+          TweenMax.to('#importingPrivKey p', 0.5, {autoAlpha: 1});
         }
       });
     });
@@ -296,11 +265,11 @@ class ImportPrivateKey extends React.Component {
         height: "320px",
         width: "600px",
         backgroundColor: "#14182f",
-        marginLeft: "-300px"
+        position: "relative"
       }
     }
      return (
-      <div  ref="second" id= {this.props.notInitialSetup ? "unlockPanel" : ""} style={style}>
+      <div style={style}>
         {this.toRender()}
       </div>
       );
@@ -319,6 +288,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connectWithTransitionGroup(connect(mapStateToProps, actions, null, {
-    withRef: true,
-  })(ImportPrivateKey));
+export default connect(mapStateToProps, actions)(ImportPrivateKey);
