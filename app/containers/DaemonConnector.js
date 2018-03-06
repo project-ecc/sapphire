@@ -110,7 +110,6 @@ class DaemonConnector {
   mainCycle(){
     if(process.env.NODE_ENV === 'development' && (this.store.getState().startup.loading || this.store.getState().startup.loader)){
       this.store.dispatch({type: LOADING, payload:false})
-      this.store.dispatch({type: PARTIAL_INITIAL_SETUP })
     }
     if(this.store.getState().startup.updatingApp){
       var self = this;
@@ -179,28 +178,21 @@ class DaemonConnector {
   }
 
   notifyUserOfApplicationUpdate(){
-    console.log("HEHEHE")
-    console.log(this.store.getState().startup.toldUserAboutUpdate)
-    if(!this.store.getState().startup.toldUserAboutUpdate){
-      this.sendOSNotification("Application update available", () => {
-        this.store.dispatch({type: SETTINGS, payload: true})
-        this.store.dispatch({type: SETTINGS_OPTION_SELECTED, payload: "General"})
-      })
-      
-      this.store.dispatch({type: TELL_USER_OF_UPDATE})
-    }
+    this.sendOSNotification("Application update available", () => {
+      this.store.dispatch({type: SETTINGS, payload: true})
+      this.store.dispatch({type: SETTINGS_OPTION_SELECTED, payload: "General"})
+    })
+    this.store.dispatch({type: TELL_USER_OF_UPDATE})
   }
 
   handleGuiUpdate(){
     console.log("daemon connector got gui update message, updating state")
     this.store.dispatch({type: UPDATE_AVAILABLE, payload: {guiUpdate: true, daemonUpdate: this.store.getState().startup.daemonUpdate} })
-    this.notifyUserOfApplicationUpdate();
   }
 
   handleDaemonUpdate(){
     console.log("daemon connector got daemon update message, updating state")
     this.store.dispatch({type: UPDATE_AVAILABLE, payload: {guiUpdate: this.store.getState().startup.guiUpdate, daemonUpdate: true} })
-    this.notifyUserOfApplicationUpdate();
   }
 
   handleInitialSetup(event, args){
@@ -222,8 +214,12 @@ class DaemonConnector {
 
   getWalletInfo(){
     this.wallet.command([{method: "getwalletinfo"}]).then((data) => {
-      if(data.length > 0)
+      if(data.length > 0){
         this.store.dispatch({type: WALLET_INFO, payload: {balance: data[0].balance, unconfirmedBalance: data[0].unconfirmed_balance}});
+        if((this.store.getState().startup.daemonUpdate || this.store.getState().startup.guiUpdate) && !this.store.getState().startup.toldUserAboutUpdate){
+          this.notifyUserOfApplicationUpdate();
+        }
+      }
     })
     .catch((err) => {
         console.log(err.code + " : " + err.message)

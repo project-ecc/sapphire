@@ -130,7 +130,7 @@ app.on('ready', async () => {
     setupTrayIcon();
   }
   
-  if (ds !== undefined || ds.start_at_login !== undefined || ds.start_at_login) {
+  if (ds !== undefined && ds.start_at_login !== undefined && ds.start_at_login) {
     autoECCLauncher.enable();
   }
   else autoECCLauncher.disable();
