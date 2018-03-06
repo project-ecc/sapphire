@@ -21,6 +21,7 @@ import UnlockWallet from '../components/UnlockWallet';
 import GenericPanel from './GenericPanel';
 import TransitionComponent from '../components/Others/TransitionComponent';
 const Tools = require('../utils/tools')
+const notifier = require('node-notifier');
 
 class App extends Component<Props> {
   constructor(props) {
@@ -30,6 +31,8 @@ class App extends Component<Props> {
     this.loadSettingsToRedux = this.loadSettingsToRedux.bind(this);
     this.news = this.news.bind(this);
     this.notification = this.notification.bind(this);
+    this.setGenericAnimationToFalse = this.setGenericAnimationToFalse.bind(this);
+    this.setGenericAnimationToTrue = this.setGenericAnimationToTrue.bind(this);
   }
   componentDidMount() {
     this.props.getSetup();
@@ -132,24 +135,6 @@ class App extends Component<Props> {
       </div>
     )
   }
-  getMainApp(){
-    return(
-      <div>
-        <TransitionGroup component="section">
-          { !this.props.unencryptedWallet && this.props.setupDone && !this.props.loader && !this.props.updatingApplication && !this.props.settings ?
-            <TransitionComponent 
-              children={<GenericPanel />}
-              id= ""
-              class= "genericPanel"
-              animationType= "genericPanel"
-              animateIn= {Tools.animateGeneralPanelIn}
-              animateOut = {Tools.animateGeneralPanelOut}/>
-              : null
-          }
-        </TransitionGroup>
-      </div>
-    )
-  }
 
   news(){
     var settingsSelected = this.props.settings;
@@ -185,6 +170,7 @@ class App extends Component<Props> {
   }
   
   settings(){
+    if(this.props.genericPanelAnimationOn) return;
     this.props.setNotifications(false);
     if(this.props.checkingDaemonStatusPrivateKey) return;
     this.props.setSettings(!this.props.settings);
@@ -245,20 +231,60 @@ class App extends Component<Props> {
     callback();
   }
 
+  resetWillChange(callback){
+    const el = this.refs.animate;
+    TweenMax.set(el, {willChange: 'auto'});
+    this.props.setGenericAnimationToFalse();
+    callback();
+  }
+
+  setGenericAnimationToFalse(){
+    this.props.setGenericAnimationOn(false);
+  }
+
+  setGenericAnimationToTrue(){
+    this.props.setGenericAnimationOn(true);
+  }
+
+  getMainApp(){  
+    if(!this.props.unencryptedWallet && this.props.setupDone && !this.props.loader && !this.props.updatingApplication && !this.props.settings){
+      return(
+          <TransitionGroup component="section">
+            <TransitionComponent 
+              children={<GenericPanel />}
+              id= ""
+              class= "genericPanel"
+              animationType= "genericPanel"
+              animateIn= {Tools.animateGeneralPanelIn}
+              animateOut = {Tools.animateGeneralPanelOut}
+              resetWillChange = {this.resetWillChange}
+              setGenericAnimationToFalse = {this.setGenericAnimationToFalse}
+              setGenericAnimationToTrue = {this.setGenericAnimationToTrue}/>
+          </TransitionGroup>
+      )
+    }
+    else
+      return null;
+  }
+
   getSettings(){
-    return(
-      <TransitionGroup component="section">
-        { this.props.settings ?
+    if(this.props.settings){
+      return(
+        <TransitionGroup component="section">
           <TransitionComponent 
             children={<Settings />}
             id= "settings"
             animationType= "settings"
             animateIn= {Tools.animateGeneralPanelIn}
-            animateOut = {Tools.animateGeneralPanelOut}/>
-            : null
-        }
-      </TransitionGroup>
-    )
+            animateOut = {Tools.animateGeneralPanelOut}
+            resetWillChange = {this.resetWillChange}
+            setGenericAnimationToFalse = {this.setGenericAnimationToFalse}
+            setGenericAnimationToTrue = {this.setGenericAnimationToTrue}/>
+        </TransitionGroup>
+      )
+    }
+    else
+      return null;
   }
 
   getInitialSetup(){
@@ -306,13 +332,13 @@ class App extends Component<Props> {
           <div id="topBar">
           <img className="miniButton" src={miniButton}></img>
             <div id="appButtons">
-             <div onClick={this.notification} className="appButton" id="eccNewsIcon">
+             <div onClick={this.notification} className="appButton functionIcon" id="eccNewsIcon">
                 <img src={notification}></img>
               </div>
-             <div onClick={this.news} className="appButton" id="eccNewsIcon">
+             <div onClick={this.news} className="appButton functionIcon" id="eccNewsIcon">
                 <img src={news}></img>
               </div>
-              <div onClick={this.settings} className="appButton">
+              <div onClick={this.settings} className="appButton functionIcon">
                 <img src={settings}></img>
               </div>
               <div onClick={this.minimize} className="appButton">
@@ -364,6 +390,7 @@ const mapStateToProps = state => {
     creatingAddress: state.application.creatingAddress,
     unencryptedWallet: state.startup.unencryptedWallet,
     loading: state.startup.loading,
+    genericPanelAnimationOn: state.application.genericPanelAnimationOn
   };
 };
 

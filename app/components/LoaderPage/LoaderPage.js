@@ -5,7 +5,7 @@ import {TweenMax} from "gsap";
 import * as actions from '../../actions';
 import $ from 'jquery';
 const lang = traduction();
-
+const Tools = require('../../utils/tools')
 class Loader extends React.Component {
 
  constructor() {
@@ -27,10 +27,11 @@ class Loader extends React.Component {
     TweenMax.fromTo('#message', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
   }
 
-  componentDidMount(){
-  }
-
   componentWillMount(){
+  	if(this.props.showingFunctionIcons){
+  	  Tools.hideFunctionIcons();
+      this.props.setShowingFunctionIcons(false);
+  	}
   }
 
   showLoadingBlockIndex(){
@@ -153,7 +154,8 @@ const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
     loading: state.startup.loading,
-    updatingApplication: state.startup.updatingApp
+    updatingApplication: state.startup.updatingApp,
+    showingFunctionIcons: state.application.showingFunctionIcons
   };
 };
 

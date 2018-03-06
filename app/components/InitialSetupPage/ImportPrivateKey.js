@@ -5,7 +5,7 @@ import * as actions from '../../actions';
 import {TweenMax} from "gsap";
 import $ from 'jquery';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
-const tools = require('../../utils/tools')
+const Tools = require('../../utils/tools')
 import Input from '../Others/Input';
 
 class ImportPrivateKey extends React.Component {
@@ -54,6 +54,19 @@ class ImportPrivateKey extends React.Component {
     });
   }
 
+  hideFunctionIcons(){
+    if(this.props.showingFunctionIcons){
+      Tools.hideFunctionIcons();
+      this.props.setShowingFunctionIcons(false);
+    }
+  }
+
+  showFunctionIcons(){
+    if(!this.props.showingFunctionIcons){
+      Tools.showFunctionIcons();
+      this.props.setShowingFunctionIcons(true);
+    }
+  }
 
   importPrivateKey(){
     if(this.props.passwordVal == ""){
@@ -61,6 +74,7 @@ class ImportPrivateKey extends React.Component {
       return;
     }
     this.unlockWallet(false, 5, () => {
+      this.hideFunctionIcons();
       this.importingAddress();
       this.props.setCheckingDaemonStatusPrivKey(true)
       const method = "importprivkey"
@@ -69,6 +83,8 @@ class ImportPrivateKey extends React.Component {
         console.log(result)
         if(result[0] == null){
           console.log("imported address")
+          this.props.setCheckingDaemonStatusPrivKey(false);
+          this.showFunctionIcons();
           this.addressImported();
         }
         //loading wallet
@@ -98,6 +114,7 @@ class ImportPrivateKey extends React.Component {
   checkDaemonStatus(){
     var self = this;
     this.props.wallet.getInfo().then((data) => {
+      self.showFunctionIcons();
       self.props.setCheckingDaemonStatusPrivKey(false);
       self.addressImported();
     })
@@ -181,7 +198,7 @@ class ImportPrivateKey extends React.Component {
   }
 
   showWrongPassword(){
-    tools.showTemporaryMessage('#wrongPassword');
+    Tools.showTemporaryMessage('#wrongPassword');
   }
 
   toRender(){
@@ -283,7 +300,8 @@ const mapStateToProps = state => {
     privateKeyValue: state.setup.privateKey,
     wallet: state.application.wallet,
     passwordVal: state.setup.password,
-    checkingDaemonStatusPrivateKey: state.application.checkingDaemonStatusPrivateKey
+    checkingDaemonStatusPrivateKey: state.application.checkingDaemonStatusPrivateKey,
+    showingFunctionIcons: state.application.showingFunctionIcons
   };
 };
 

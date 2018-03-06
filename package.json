@@ -22,7 +22,7 @@
     "flow": "flow check",
     "flow-typed": "rimraf flow-typed/npm && flow-typed install --overwrite || true",
     "start-hot-renderer": "cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./app/main.dev",
-    "postinstall": "npm rebuild --runtime=electron --target=1.6.6 --disturl=https://atom.io/download/atom-shell --build-from-source",
+    "postinstall": "npm rebuild --runtime=electron --target=1.8.2 --disturl=https://atom.io/download/atom-shell --build-from-source",
     "dev": "cross-env START_HOT=1 npm run hot-updates-server",
     "package-aa-win-32": "npm run build && build --win -c ./os/win32.json -p always",
     "package-aa-win-64": "npm run build && build --win --x64 -c ./os/win64.json -p always",
@@ -34,7 +34,7 @@
     "package-linux-32": "npm run build && build --linux --ia32 -c ./os/lin32.json",
     "package-all": "npm run package-win && npm run package-win-32 && npm run package-linux && npm run package-linux-32"
   },
-  "browserslist": "electron 1.6",
+  "browserslist": "electron 1.8",
   "build": {
     "productName": "Ecc-GUI",
     "appId": "com.github.greg-griffith.lynx",
@@ -139,7 +139,6 @@
     "cross-env": "^5.0.0",
     "cross-spawn": "^5.1.0",
     "css-loader": "^0.28.3",
-    "electron": "1.6.10",
     "electron-builder": "^19.55.3",
     "electron-devtools-installer": "^2.2.0",
     "enzyme": "^2.9.1",
@@ -194,6 +193,7 @@
     "bootstrap-material-design": "^0.5.10",
     "child_process": "^1.0.2",
     "devtron": "^1.4.0",
+    "electron": "^1.8.2",
     "electron-debug": "^1.2.0",
     "electron-dl": "^1.10.0",
     "electron-settings": "^3.1.1",

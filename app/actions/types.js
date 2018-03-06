@@ -98,3 +98,6 @@ export const OPERATIVE_SYSTEM_NOTIFICATIONS = "operative_system_notifications";
 export const NEWS_NOTIFICATIONS = "news_notifications";
 export const STAKING_NOTIFICATIONS = "staking_notifications";
 export const SETUP_DONE_INTERNAL = "setup_done_internal";
+export const SHOWING_FUNCTION_ICONS = "showing_function_icons";
+export const GENERIC_PANEL_ANIMATION_ON = "generic_panel_animation_on";
+export const TELL_USER_OF_UPDATE = "tell_user_of_update";

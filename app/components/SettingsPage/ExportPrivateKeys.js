@@ -5,7 +5,7 @@ import {TweenMax, TimelineMax} from "gsap";
 import $ from 'jquery';
 import { ipcRenderer } from 'electron';
 var fs = require('fs');
-var jsPDF = require('jsPDF');
+var jsPDF = require('jspdf');
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';

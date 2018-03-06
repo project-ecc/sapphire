@@ -1,6 +1,6 @@
 import Wallet from '../utils/wallet';
 import { ipcRenderer } from 'electron';
-import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET } from '../actions/types';
+import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS, SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE } from '../actions/types';
 const event = require('../utils/eventhandler');
 const tools = require('../utils/tools')
 const sqlite3 = require('sqlite3');
@@ -57,6 +57,8 @@ class DaemonConnector {
     this.processPendingTransactions = this.processPendingTransactions.bind(this);
     this.removeTransactionFromDb = this.removeTransactionFromDb.bind(this);
     this.removeTransactionFromMemory = this.removeTransactionFromMemory.bind(this);
+    this.sendOSNotification = this.sendOSNotification.bind(this);
+    this.goToEarningsPanel = this.goToEarningsPanel.bind(this);
     //this.createWallet = this.createWallet.bind(this);
     this.subscribeToEvents();
     this.currentAddresses = [];
@@ -86,6 +88,8 @@ class DaemonConnector {
     setInterval(() => {
       self.getCoinMarketCapStats();
     }, 120000)
+    this.stakingRewardsCountNotif = 0;
+    this.stakingRewardsTotalEarnedNotif = 0;
 	}
 
   subscribeToEvents(){
@@ -174,14 +178,29 @@ class DaemonConnector {
     }, 2000)
   }
 
+  notifyUserOfApplicationUpdate(){
+    console.log("HEHEHE")
+    console.log(this.store.getState().startup.toldUserAboutUpdate)
+    if(!this.store.getState().startup.toldUserAboutUpdate){
+      this.sendOSNotification("Application update available", () => {
+        this.store.dispatch({type: SETTINGS, payload: true})
+        this.store.dispatch({type: SETTINGS_OPTION_SELECTED, payload: "General"})
+      })
+      
+      this.store.dispatch({type: TELL_USER_OF_UPDATE})
+    }
+  }
+
   handleGuiUpdate(){
     console.log("daemon connector got gui update message, updating state")
     this.store.dispatch({type: UPDATE_AVAILABLE, payload: {guiUpdate: true, daemonUpdate: this.store.getState().startup.daemonUpdate} })
+    this.notifyUserOfApplicationUpdate();
   }
 
   handleDaemonUpdate(){
     console.log("daemon connector got daemon update message, updating state")
     this.store.dispatch({type: UPDATE_AVAILABLE, payload: {guiUpdate: this.store.getState().startup.guiUpdate, daemonUpdate: true} })
+    this.notifyUserOfApplicationUpdate();
   }
 
   handleInitialSetup(event, args){
@@ -261,6 +280,18 @@ class DaemonConnector {
 		})
 	}
 
+  sendOSNotification(body, callback){
+    console.log(body)
+      let myNotification = new Notification('Sapphire', {
+        body: body
+      })
+
+      myNotification.onclick = () => {
+        callback();
+        ipcRenderer.send('show');
+      }
+  }
+
 
   fixNewsText(text){
     var result = text.replace(new RegExp('</p><p>', 'g'), ' ')
@@ -279,6 +310,16 @@ class DaemonConnector {
       }
       const today = new Date();
       var parser = new FeedMe();
+      var totalNews = 0;
+      var title = "This is a title";
+      parser.on('end', () => {
+        if(totalNews == 0 || !this.store.getState().notifications.newsNotificationsEnabled) return;
+        self.sendOSNotification(totalNews == 1 ? title : `${totalNews} New ECC News`, () => {
+          self.store.dispatch({type: SELECTED_PANEL, payload: "news"})
+          this.store.dispatch({type: SELECTED_SIDEBAR, payload: {undefined}})
+        })
+      });
+
       parser.on('item', (item) => {
         let url = item.guid.text;
         let hasVideo = item["content:encoded"].indexOf('iframe');
@@ -321,6 +362,7 @@ class DaemonConnector {
 
         }
         if(post && post.date > lastCheckedNews && this.store.getState().notifications.newsNotificationsEnabled){
+          totalNews++;
           self.store.dispatch({type: NEWS_NOTIFICATION, payload: post.date})
         }
       });
@@ -533,11 +575,20 @@ class DaemonConnector {
     this.insertIntoDb(entries)
   }
 
+  goToEarningsPanel(){
+      this.store.dispatch({type: SELECTED_PANEL, payload: "transactions"})
+      this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: this.store.getState().chains.transactionsData, type: "generate"}})
+      this.store.dispatch({type: SELECTED_SIDEBAR, payload: {parent: "walletSelected", child: "transactionsSelected"}})
+  }
+
   insertIntoDb(entries){
     this.openDb();
     var self = this;
     var statement = "BEGIN TRANSACTION;";
     var lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
+    var earningsCountNotif = 0;
+    var earningsTotalNotif = 0;
+    let shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
     for (var i = 0; i < entries.length; i++) {
       var entry = entries[i];
       statement += `INSERT INTO transactions VALUES('${entry.txId}', ${entry.time}, ${entry.amount}, '${entry.category}', '${entry.address}', ${entry.fee}, '${entry.confirmations}');`;
@@ -549,9 +600,19 @@ class DaemonConnector {
       if(this.transactionsIndexed){
         this.store.dispatch({type: STAKING_REWARD, payload: entries[i]})
       }
-      if(entry.time > lastCheckedEarnings && this.store.getState().notifications.stakingNotificationsEnabled){
+      if(entry.time * 1000 > lastCheckedEarnings && shouldNotifyEarnings){
         self.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: entry.amount, date: entry.time}})
+        earningsCountNotif++;
+        earningsTotalNotif += entry.amount;
       }
+    }
+
+    if(shouldNotifyEarnings && earningsCountNotif > 0){
+      earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
+      let title = `Staking reward - ${earningsTotalNotif} ECC`;
+      self.sendOSNotification(earningsCountNotif == 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`, () => {
+        this.goToEarningsPanel();
+      })
     }
 
     statement += "COMMIT;";
@@ -647,16 +708,27 @@ class DaemonConnector {
         console.log("ERROR GETTING TRANSACTIONS: ", err);
       }
       var lastCheckedEarnings = self.store.getState().notifications.lastCheckedEarnings;
-      console.log(lastCheckedEarnings)
+      var earningsCountNotif = 0;
+      var earningsTotalNotif = 0;
+      let shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
       rows.map((transaction) => {
         var time = transaction.time*1000;
         var amount = transaction.amount;
-        if(time > lastCheckedEarnings){ 
+        if(time > lastCheckedEarnings && shouldNotifyEarnings){ 
           self.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}}) 
+          earningsCountNotif++;
+          earningsTotalNotif += amount;
         }
 
       })
-      self.store.dispatch({type: STAKING_REWARD, payload: rows})
+      if(shouldNotifyEarnings && earningsCountNotif > 0){
+        earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
+        let title = `Staking reward - ${earningsTotalNotif} ECC`;
+        self.sendOSNotification(earningsCountNotif == 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`, () => {
+          this.goToEarningsPanel();
+        })
+        self.store.dispatch({type: STAKING_REWARD, payload: rows})
+      }
     });
 
     sql = `SELECT * FROM pendingTransactions;`;

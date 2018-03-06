@@ -12,11 +12,12 @@ import {
   UPDATING_APP,
   UPDATE_AVAILABLE,
   UNENCRYPTED_WALLET,
-  SETUP_DONE_INTERNAL
+  SETUP_DONE_INTERNAL,
+  TELL_USER_OF_UPDATE
 } from '../actions/types';
 
 
-const INITIAL_STATE = {lang: lang, loader: true, initialSetup: false, partialInitialSetup: false, setupDone: false, importWallet: false, loading: false, updatingApp: false, guiUpdate: false, daemonUpdate:false, unencryptedWallet: false, setupDoneInternal: false}
+const INITIAL_STATE = {lang: lang, loader: true, initialSetup: false, partialInitialSetup: false, setupDone: false, importWallet: false, loading: false, updatingApp: false, guiUpdate: false, daemonUpdate:false, unencryptedWallet: false, setupDoneInternal: false, toldUserAboutUpdate: false}
 
 export default(state = INITIAL_STATE, action) => {
 	if(action.type == SET_LANGUAGE){
@@ -26,11 +27,14 @@ export default(state = INITIAL_STATE, action) => {
 	else if(action.type == UNENCRYPTED_WALLET){
 		return {...state, loader: false, loading: false, unencryptedWallet: action.payload}
 	}
+	else if(action.type == TELL_USER_OF_UPDATE){
+		return {...state, toldUserAboutUpdate: true}
+	}
 	else if(action.type == UPDATE_AVAILABLE){
 		return {...state, daemonUpdate: action.payload.daemonUpdate, guiUpdate: action.payload.guiUpdate}
 	}
 	else if(action.type == UPDATING_APP){
-		return {...state, updatingApp: action.payload}
+		return {...state, updatingApp: action.payload, daemonUpdate: false, guiUpdate: false, toldUserAboutUpdate: false}
 	}
 	else if(action.type == INITIAL_SETUP){
 		console.log("got initial setup")

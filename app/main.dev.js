@@ -16,7 +16,7 @@ import MenuBuilder from './menu';
 import DaemonManager from './Managers/DaemonManager';
 import GUIManager from './Managers/GUIManager';
 import os from 'os';
-const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote  } = require('electron');
+const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote, Notification   } = require('electron');
 const dialog = require('electron').dialog;
 const settings = require('electron-settings');
 const event = require('./utils/eventhandler');
@@ -25,7 +25,7 @@ var fs = require('fs');
 var AutoLaunch = require('auto-launch');
 
 let autoECCLauncher = new AutoLaunch({
-	name: 'Lynx'
+	name: 'Sapphire'
 });
 let walletPath;
 let tray = null;
@@ -66,12 +66,15 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
+
+
 app.on('ready', async () => {
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
     await installExtensions();
   }
 
-  ds = settings.get('settings.display');
+  app.setAppUserModelId("com.github.greg-griffith.lynx")
+
   mainWindow = new BrowserWindow({
     show: false,
     width: 1650,
@@ -174,6 +177,11 @@ ipcMain.on('autoStart', (e, autoStart) => {
 	if(autoStart)
 		autoECCLauncher.enable();
 	else autoECCLauncher.disable();
+});
+
+ipcMain.on('show', (e, args) => {
+	mainWindow.show();
+	mainWindow.focus();
 });
 
 ipcMain.on('minimize', (e, args) => {

@@ -18,6 +18,14 @@ class TransitionComponent extends React.Component {
     else if(this.props.animationType == "initialSetup"){
       this.props.animateIn(this.refs.animate, callback);
     }
+    else if(this.props.animationType == "settings"){
+      this.props.animateIn(this.refs.animate, this.props.resetWillChange.bind(this),  callback, 2.5);
+      this.props.setGenericAnimationToTrue();
+    }
+    else if(this.props.animationType == "genericPanel"){
+      this.props.animateIn(this.refs.animate, this.props.resetWillChange.bind(this), callback, 0.5);
+      this.props.setGenericAnimationToTrue();
+    }
     else callback();
   }
   
@@ -27,12 +35,6 @@ class TransitionComponent extends React.Component {
     if(this.props.animationType == "popup"){
       this.props.animateIn(this.refs.animate, callback, "22%");
     }
-    else if(this.props.animationType == "genericPanel"){
-      this.props.animateIn(this.refs.animate, this.resetWillChange.bind(this), callback, 0.5);
-    }
-    else if(this.props.animationType == "settings"){
-      this.props.animateIn(this.refs.animate, this.resetWillChange.bind(this),  callback, 2.5);
-    }
     else if(this.props.animationType == "loader"){
       this.props.animateIn(this.refs.animate, this.props.updatingApplication, this.props.animateLogo, callback);
     }
@@ -40,12 +42,6 @@ class TransitionComponent extends React.Component {
       this.props.animateIn(this.refs.animate, callback);
     }
     else callback();
-  }
-
-  resetWillChange(callback){
-    const el = this.refs.animate;
-    TweenMax.set(el, {willChange: 'auto'});
-    callback();
   }
 
   componentWillUnmount(){
@@ -57,10 +53,10 @@ class TransitionComponent extends React.Component {
     if(this.props.animationType == "popup")
       this.props.animateOut(this.refs.animate, callback)
     else if(this.props.animationType == "genericPanel"){
-      this.props.animateOut(this.refs.animate, this.resetWillChange.bind(this), callback, 1);
+      this.props.animateOut(this.refs.animate, this.props.resetWillChange.bind(this), callback, 1);
     }    
     else if(this.props.animationType == "settings"){
-      this.props.animateOut(this.refs.animate, this.resetWillChange.bind(this), callback, 2.5);
+      this.props.animateOut(this.refs.animate, this.props.resetWillChange.bind(this), callback, 2.5);
     }
     else if(this.props.animationType == "loader" || this.props.animationType == "initialSetup"){
       callback()

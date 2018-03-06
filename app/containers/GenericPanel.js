@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
-import $ from 'jquery';
 import ToggleButton from 'react-toggle';
 import Sidebar from './Sidebar';
 import HomePage from './Pages/HomePage';
@@ -12,6 +11,8 @@ import SettingsPage from './Pages/SettingsPage';
 import ContactsPage from './Pages/ContactsPage';
 import NetworkStatsPage from './Pages/NetworkStatsPage';
 import NewsPage from './Pages/NewsPage';
+import {TweenMax} from "gsap";
+const Tools = require('../utils/tools')
 
 class GenericPanel extends Component {
   constructor(props) {
@@ -37,6 +38,16 @@ class GenericPanel extends Component {
     }
   }
 
+  componentWillMount(){
+    if(!this.props.showingFunctionIcons){
+      var self = this;
+      setTimeout(() => {
+        Tools.showFunctionIcons();
+        self.props.setShowingFunctionIcons(true);
+      }, 400)
+    }
+  }
+
   render() {
     return (
       <div>
@@ -53,7 +64,8 @@ class GenericPanel extends Component {
 const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
-    selectedPanel: state.application.selectedPanel
+    selectedPanel: state.application.selectedPanel,
+    showingFunctionIcons: state.application.showingFunctionIcons
   };
 };
 

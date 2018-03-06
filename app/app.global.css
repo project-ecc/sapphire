@@ -69,6 +69,11 @@ input::-webkit-inner-spin-button {
   width: 100%;
 }
 
+.functionIcon{
+  position: relative;
+  visibility: hidden;
+}
+
 article{
   position: absolute;
   text-align: center;
@@ -192,6 +197,7 @@ aside{
   background-color: #14182f;
   width: 100%;
   z-index: 101;
+  position: fixed;
 }
 
 .inputDiv{

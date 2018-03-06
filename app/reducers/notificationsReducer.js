@@ -72,6 +72,7 @@ export default(state = INITIAL_STATE, action) => {
 		if(action.payload > entries["news"].date){
 			entries["news"].date = action.payload;
 		}
+
 		return {...state, entries: entries}
 	}
 	else if(action.type == STAKING_NOTIFICATION){

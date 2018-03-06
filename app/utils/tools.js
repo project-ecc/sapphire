@@ -48,6 +48,14 @@ module.exports = {
 
   //Animations
 
+  showFunctionIcons: function(element){
+    TweenMax.staggerFromTo('.functionIcon', 0.4, {x: 20, autoAlpha: 0}, {x: 0, autoAlpha: 1}, -0.2);
+  },
+
+  hideFunctionIcons: function(element){
+    TweenMax.staggerFromTo('.functionIcon', 0.4, {x: 0, autoAlpha: 1}, {x: 20, autoAlpha: 0}, -0.2);
+  },
+  
   showTemporaryMessage: function (element, text, time=2000) {
     if(text){
       $(element).text(text)
