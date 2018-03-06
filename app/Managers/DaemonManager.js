@@ -185,10 +185,11 @@ class DaemonManager {
 			console.log("daemon exists, version: ", data)
 			return data.split(' ')[1];
 		}
-		else{
+		else if(!fs.existsSync(this.path) && fs.mkdirSync(this.path)){
 			console.log("daemon does not exist")
 			return -1;
 		}
+		else return -1;
 	};
 
     async checkIfWalletExists() { 
