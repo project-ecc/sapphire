@@ -53,7 +53,7 @@ module.exports = {
   },
 
   hideFunctionIcons: function(element){
-    TweenMax.staggerFromTo('.functionIcon', 0.4, {x: 0, autoAlpha: 1}, {x: 20, autoAlpha: 0}, -0.2);
+    TweenMax.staggerTo('.functionIcon', 0.4, {x: 20, autoAlpha: 0}, -0.2);
   },
   
   showTemporaryMessage: function (element, text, time=2000) {
