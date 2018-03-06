@@ -277,7 +277,6 @@ class DaemonConnector {
 	}
 
   sendOSNotification(body, callback){
-    console.log(body)
       let myNotification = new Notification('Sapphire', {
         body: body
       })
@@ -333,7 +332,7 @@ class DaemonConnector {
           post = {
             title: item.title,
             timeSince: time,
-            hasVideo: hasVideo != -1 ? true : false,
+            hasVideo: hasVideo != -1 ? true : false, //probably going to remove this video flag
             url: url,
             body: text,
             date: iTime.getTime()

@@ -39,6 +39,8 @@
 	height: 100%;
 	margin: 0 auto;
 	background-color: #181e35;
+	top: 40px;
+    position: relative;
 }
 
 #brighter{
