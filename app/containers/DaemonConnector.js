@@ -109,7 +109,7 @@ class DaemonConnector {
 
   mainCycle(){
     if(process.env.NODE_ENV === 'development' && (this.store.getState().startup.loading || this.store.getState().startup.loader)){
-      this.store.dispatch({type: LOADING, payload:false})
+      this.store.dispatch({type: LOADING, payload:true})
     }
     if(this.store.getState().startup.updatingApp){
       var self = this;

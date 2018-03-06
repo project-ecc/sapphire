@@ -97,6 +97,21 @@ aside{
   width: 100%;
 }
 
+.closingApplication{
+  min-width: 400px !important;
+  margin-left: -190px !important;
+  font-weight: 500;
+}
+
+.closingApplication p{
+  margin: 30px 0px;
+  display: inline-block;
+}
+
+#miniAnimation{
+  display: inline-block;
+}
+
 .mainSubPanel{
   padding-left: 224px;
   padding-right: 0;

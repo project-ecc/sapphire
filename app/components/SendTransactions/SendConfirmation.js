@@ -135,9 +135,6 @@ class SendConfirmation extends React.Component {
   }
 
   render() { 
-      var shapeStyle = {
-      fill: this.props.bgColor
-    };
      return (
       <div ref="second" style={{height: this.props.username != "" && this.props.username != undefined ? "324px" : "293px", top: "22%"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>

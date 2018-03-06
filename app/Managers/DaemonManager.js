@@ -133,9 +133,14 @@ class DaemonManager {
 		var self = this;
 		return new Promise(function(resolve, reject){
 			self.wallet.walletstop()
-		      .then(() => {
-		      	console.log("stopped daemon")
-		      	resolve(true);
+		      .then((data) => {
+		      	if(data == "ECC server stopping"){
+		      		console.log("stopping daemon");
+		      		resolve(true);
+		      	}
+		      	else{
+		      		resolve(false);
+		      	}
 		      })
 		      .catch(err => {
 		        console.log("failed to stop daemon:", err);
@@ -156,7 +161,6 @@ class DaemonManager {
 	async updateDaemon(){
 		console.log("daemon manager got update call")
 		var r = await this.stopDaemon();
-		console.log("R: ", r)
 		if(r){
 			var self = this;
 			setTimeout( async ()=> {
@@ -170,7 +174,6 @@ class DaemonManager {
 				this.toldUserAboutUpdate = false;
 			}, 7000)
 		}
-		else console.log("DAEMON DIDNT STOP BITCH")
 	}
 
 

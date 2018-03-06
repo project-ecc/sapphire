@@ -14,6 +14,7 @@ import ChangePassword from '../components/SettingsPage/ChangePassword';
 import UpdateApplication from '../components/SettingsPage/UpdateApplication';
 import SendConfirmation from '../components/SendTransactions/SendConfirmation';
 import ConfirmNewAddress from '../components/ReceiveTransaction/ConfirmNewAddress';
+import ClosingApplication from '../components/Others/ClosingApplication';
 import { Link } from 'react-router-dom';
 const settings = require('electron-settings');
 import NotificationPopup from '../components/NotificationPopup';
@@ -33,11 +34,17 @@ class App extends Component<Props> {
     this.notification = this.notification.bind(this);
     this.setGenericAnimationToFalse = this.setGenericAnimationToFalse.bind(this);
     this.setGenericAnimationToTrue = this.setGenericAnimationToTrue.bind(this);
+    this.processCloseRequest = this.processCloseRequest.bind(this);
+    this.close = this.close.bind(this);
   }
   componentDidMount() {
     this.props.getSetup();
 
     this.loadSettingsToRedux();
+
+    ipcRenderer.on('closing_daemon', () => {
+      this.processCloseRequest();
+    });
 
     ipcRenderer.on('focused', (e) => {
       $(".appButton").mouseover(function(){
@@ -93,7 +100,7 @@ class App extends Component<Props> {
     let id = "unlockPanel";
     let animateIn = Tools.animatePopupIn;
     let animateOut = Tools.animatePopupOut;
-
+    let classVal = "";
     if(this.props.exportingPrivateKeys){
       component = <ExportPrivateKeys />;
     }
@@ -118,6 +125,10 @@ class App extends Component<Props> {
     else if(this.props.unlocking){
       component = <UnlockWallet />
     }
+    else if(this.props.closingApplication){
+      component = <ClosingApplication />
+      classVal = "closingApplication"
+    }
 
     return(
       <div>
@@ -126,6 +137,7 @@ class App extends Component<Props> {
             <TransitionComponent 
               children={component}
               id= {id}
+              class = {classVal}
               animationType= "popup"
               animateIn= {animateIn}
               animateOut = {animateOut}/> 
@@ -190,8 +202,20 @@ class App extends Component<Props> {
   maximize(){
     ipcRenderer.send('maximize');
   }
+
   close(){
     ipcRenderer.send('close');
+    if(!this.props.minimizeOnClose){
+      this.processCloseRequest();
+    }
+  }
+
+  processCloseRequest(){
+    if(this.props.loader){
+      TweenMax.to('#loading-wrapper', 0.3, {autoAlpha: 0.5});
+    }
+    Tools.hideFunctionIcons();
+    this.props.setClosingApplication();
   }
 
   getLoader(){
@@ -390,7 +414,9 @@ const mapStateToProps = state => {
     creatingAddress: state.application.creatingAddress,
     unencryptedWallet: state.startup.unencryptedWallet,
     loading: state.startup.loading,
-    genericPanelAnimationOn: state.application.genericPanelAnimationOn
+    genericPanelAnimationOn: state.application.genericPanelAnimationOn,
+    minimizeOnClose: state.application.minimizeOnClose,
+    closingApplication: state.application.closingApplication
   };
 };
 

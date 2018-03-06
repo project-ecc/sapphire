@@ -101,3 +101,4 @@ export const SETUP_DONE_INTERNAL = "setup_done_internal";
 export const SHOWING_FUNCTION_ICONS = "showing_function_icons";
 export const GENERIC_PANEL_ANIMATION_ON = "generic_panel_animation_on";
 export const TELL_USER_OF_UPDATE = "tell_user_of_update";
+export const CLOSING_APPLICATION = "closing_application";

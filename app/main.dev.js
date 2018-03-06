@@ -123,6 +123,18 @@ app.on('ready', async () => {
     return false;
   });
 
+	mainWindow.webContents.on('before-input-event', async function (event, input) {
+		if ((input.key === 'q' || input.key === "Q" || input.key === "w" || input.key === "W") && input.control) {
+			event.preventDefault();
+			sendMessage("closing_daemon");
+			let closedDaemon = false;
+			do{
+				closedDaemon = await daemonManager.stopDaemon();
+			}while(!closedDaemon);
+			app.exit(0);
+		}
+	})
+
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 
@@ -143,8 +155,13 @@ function setupTrayIcon(){
       {
         label: 'Quit',
         accelerator: 'Command+Q',
-        click: function () {
-          app.exit(0);
+        click: async function () {
+			sendMessage("closing_daemon");
+			let closedDaemon = false;
+			do{
+				closedDaemon = await daemonManager.stopDaemon();
+			}while(!closedDaemon);
+			app.exit(0);
         }
       },
     ];
@@ -218,7 +235,7 @@ ipcMain.on('initialSetup', (e, args) => {
 	daemonManager.startDaemonChecker();
 })
 
-ipcMain.on('close', (e, args) => {
+ipcMain.on('close', async (e, args) => {
     //daemonManager.stopDaemon();
 	if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
       if (!ds.minimise_to_tray) {
@@ -227,12 +244,16 @@ ipcMain.on('close', (e, args) => {
         mainWindow.hide();
       }
     } else {
+      let closedDaemon = false;
+      do{
+      	closedDaemon = await daemonManager.stopDaemon();
+      }while(!closedDaemon);
       app.quit();
     }
 });
 
-app.on('before-quit', () => {
-	//daemonManager.stopDaemon();
+app.on('before-quit', async () => {
+
 });
 
 function sendMessage(type, argument = undefined) {

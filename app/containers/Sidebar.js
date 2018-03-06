@@ -16,7 +16,7 @@ class Sidebar extends Component {
   }
 
   checkPopupActive(){
-    return this.props.unlocking || this.props.sendingEcc || this.props.creatingAddress || this.props.exportingPrivateKeys || this.props.importingPrivateKey || this.props.changingPassword;
+    return this.props.unlocking || this.props.sendingEcc || this.props.creatingAddress || this.props.exportingPrivateKeys || this.props.importingPrivateKey || this.props.changingPassword || this.props.closingApplication;
   }
 
   resize(){
@@ -261,7 +261,8 @@ const mapStateToProps = state => {
     exportingPrivateKeys: state.application.exportingPrivateKeys,
     importingPrivateKey: state.application.importingPrivateKey,
     changingPassword: state.application.changingPassword,
-    eccNews: state.application.showingNews
+    eccNews: state.application.showingNews,
+    closingApplication: state.application.closingApplication
   };
 };
 
