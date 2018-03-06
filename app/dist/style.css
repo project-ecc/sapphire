@@ -15915,6 +15915,8 @@ i.fa.fa-chevron-down{
 	height: 100%;
 	margin: 0 auto;
 	background-color: #181e35;
+	top: 40px;
+    position: relative;
 }
 
 #brighter{
@@ -16998,6 +17000,21 @@ aside{
   width: 100%;
 }
 
+.closingApplication{
+  min-width: 400px !important;
+  margin-left: -190px !important;
+  font-weight: 500;
+}
+
+.closingApplication p{
+  margin: 30px 0px;
+  display: inline-block;
+}
+
+#miniAnimation{
+  display: inline-block;
+}
+
 .mainSubPanel{
   padding-left: 224px;
   padding-right: 0;
@@ -17098,6 +17115,7 @@ aside{
   background-color: #14182f;
   width: 100%;
   z-index: 101;
+  position: fixed;
 }
 
 .inputDiv{

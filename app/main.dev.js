@@ -146,8 +146,6 @@ app.on('ready', async () => {
     autoECCLauncher.enable();
   }
   else autoECCLauncher.disable();
-
-
 });
 
 function setupTrayIcon(){
