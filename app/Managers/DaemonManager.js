@@ -7,8 +7,10 @@ const event = require('../utils/eventhandler');
 const os = require('os');
 var https = require('https');
 var psList = require('ps-list');
+var checksum = require('checksum');
 import Wallet from '../utils/wallet';
 import Tools from '../utils/tools';
+
 /*
 *	Handles daemon updates and the daemon'state
 */
@@ -236,11 +238,19 @@ class DaemonManager {
 				response.pipe(file);
 				file.on('finish', function() {
 					self.downloading = false;
-					self.installedVersion = self.currentVersion;
-					self.saveVersion(self.installedVersion);
 					console.log("Done downloading")
 					file.close(null);
-					resolve(true);
+					let sumFromServer = "";//TODO
+					checksum.file(this.path + "/Eccoind.exe", function (err, sum) {
+					   if(sumFromServer === sum){
+						self.installedVersion = self.currentVersion;
+						self.saveVersion(self.installedVersion);
+					   	resolve(true);
+					   }
+					   else{
+					   	reject(false);
+					   }
+					})
 				});
 				}).on('error', function(err) { 
 					self.downloading = false;

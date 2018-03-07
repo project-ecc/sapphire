@@ -216,7 +216,7 @@ class DaemonConnector {
     this.wallet.command([{method: "getwalletinfo"}]).then((data) => {
       if(data.length > 0){
         this.store.dispatch({type: WALLET_INFO, payload: {balance: data[0].balance, unconfirmedBalance: data[0].unconfirmed_balance}});
-        if((this.store.getState().startup.daemonUpdate || this.store.getState().startup.guiUpdate) && !this.store.getState().startup.toldUserAboutUpdate){
+        if((this.store.getState().startup.daemonUpdate || this.store.getState().startup.guiUpdate) && !this.store.getState().startup.toldUserAboutUpdate && !this.store.getState().startup.loader){
           this.notifyUserOfApplicationUpdate();
         }
       }

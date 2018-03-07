@@ -12,7 +12,7 @@ const { exec } = require('child_process');
 import Client from 'bitcoin-core';
 import {version} from './../../package.json';
 var cp = require('child_process');
-
+var checksum = require('checksum');
 
 class GUIManager{
 
@@ -63,21 +63,32 @@ class GUIManager{
 		var request = https.get(this.getDownloadUrl(), function(response) {
 			response.pipe(file);
 			file.on('finish', function() {
-				self.installedVersion = self.currentVersion;
+				self.downloading = false;
 				console.log("Done downloading gui")
 				file.close(null);
+				fs.unlink(dest);
+				let sumFromServer = "";
+				checksum.file(this.path + "/Eccoind.exe", function (err, sum) {
+					if(sumFromServer === sum){
+						self.installedVersion = self.currentVersion;
+						try{
+							var child = cp.fork("./app/Managers/UpdateGUI", {detached:true});
+							app.quit();
+						}catch(e){
+							console.log(e);
+						}
+					}
+					else{
+						self.downloadGUI();
+					}
+				});
 
-				try{
-					var child = cp.fork("./app/Managers/UpdateGUI", {detached:true});
-					app.quit();
-				}catch(e){
-					console.log(e);
-				}
 				
 			});
 			}).on('error', function(err) { 
 				self.downloading = false;
 				fs.unlink(dest);
+				self.downloadGUI();
 		});
 	}
 
