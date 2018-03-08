@@ -30,9 +30,6 @@ class LanguageSelector extends React.Component {
   }
   
   render() { 
-      var shapeStyle = {
-      fill: this.props.bgColor
-    };
      return (
       <div>
          <div className="contentLanguageSelector">

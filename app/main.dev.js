@@ -77,8 +77,8 @@ app.on('ready', async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1650,
-    height: 800,
+    width: 1271,
+    height: 777,
     minWidth: 800,
     minHeight: 600,
     icon: iconPath,

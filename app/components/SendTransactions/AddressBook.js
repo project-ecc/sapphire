@@ -20,9 +20,8 @@ class AddressBook extends Component {
   componentDidMount() {
     const friendList = low.get('friends').value();
     this.props.setContacts(friendList);
-    const self = this;  
-    $( window ).on('resize', function() {
-      self.updateTable(self.props.friends);
+    $( window ).on('resize', () => {
+      this.updateTable(self.props.friends);
     });
     this.updateTable(friendList);
   }
@@ -97,7 +96,6 @@ class AddressBook extends Component {
   }
 
   render() {
-    const self = this;
     let bin = require('../../../resources/images/delete-contact.ico');
 
     return (
@@ -115,7 +113,7 @@ class AddressBook extends Component {
           <div id="rows" className="container" style={{width: "100%", padding: "0 0"}}>
           {this.props.friends.map((friend, index) => {
             return (
-              <div className="row normalWeight rowContact" onClick={self.rowClicked.bind(self, friend)} onMouseLeave={self.handleMouseLeave} onMouseEnter={self.handleMouseEnter.bind(self, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default", backgroundColor: index % 2 != 0 ? "transparent" : "#1b223d"}} key={`friend_${index}`}>
+              <div className="row normalWeight rowContact" onClick={this.rowClicked.bind(this, friend)} onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default", backgroundColor: index % 2 != 0 ? "transparent" : "#1b223d"}} key={`friend_${index}`}>
                 <div className="col-sm-4 tableColumn tableColumContactFix">
                   {friend.name}
                 </div>
@@ -123,7 +121,7 @@ class AddressBook extends Component {
                   {friend.address}
                 </div>
                 <div className="col-sm-1 tableColumn">
-                  <img className="deleteContactIcon" onClick={this.deleteAddress.bind(self, friend)} style={{visibility: this.props.hoveredAddress == friend ? "visible" : "hidden"}}src={bin}/>
+                  <img className="deleteContactIcon" onClick={this.deleteAddress.bind(this, friend)} style={{visibility: this.props.hoveredAddress == friend ? "visible" : "hidden"}}src={bin}/>
                 </div>
               </div>
             );

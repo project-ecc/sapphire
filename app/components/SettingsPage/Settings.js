@@ -112,7 +112,6 @@ class Settings extends Component {
   }
 
   backupWallet(location){
-    var self = this;
     this.props.wallet.command([{
       method: 'backupwallet', parameters: [location]
     }
@@ -242,7 +241,7 @@ class Settings extends Component {
         <SettingsToggle 
           keyVal={2}
           text= "Operative System notifications"
-          subText = {this.props.operativeSystemNotifications ? <p className="settingsToggleSubText">Disable this option to only get notifications inside Sapphire</p> : <p className="settingsToggleSubText">Enable this option to get operative system notifications"</p>}
+          subText = {this.props.operativeSystemNotifications ? <p className="settingsToggleSubText">Disable this option to only get notifications inside Sapphire</p> : <p className="settingsToggleSubText">Enable this option to get operative system notifications</p>}
           handleChange = {this.handleOperativeSystemNotifications}
           checked = {this.props.operativeSystemNotifications}
         />

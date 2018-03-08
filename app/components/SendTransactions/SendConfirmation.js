@@ -24,28 +24,27 @@ class SendConfirmation extends React.Component {
   }
 
   sendECC(){
-    var self = this;
-    var wasStaking = this.props.staking;
+    let wasStaking = this.props.staking;
     this.unlockWallet(false, 5, () => {
       var batch = [];
-      console.log(self.props.amount)
+      console.log(this.props.amount)
       var obj = {
-        method: 'sendToAddress', parameters: [self.props.address, self.props.amount]
+        method: 'sendToAddress', parameters: [this.props.address, this.props.amount]
       }
       batch.push(obj)
       this.props.wallet.command(batch).then((data) => {
         if(wasStaking){
-            self.unlockWallet(true, 31556926, () => {
+            this.unlockWallet(true, 31556926, () => {
            });
         }
         else{ 
-          self.props.setStaking(false);
+          this.props.setStaking(false);
         }
-        self.props.setPassword("");
-        self.props.setSendingECC(false);
-        self.props.setUsernameSend("");
-        self.props.setAmountSend("");
-        self.props.setAddressSend("");
+        this.props.setPassword("");
+        this.props.setSendingECC(false);
+        this.props.setUsernameSend("");
+        this.props.setAmountSend("");
+        this.props.setAddressSend("");
         $('#message').text('Sent successfully!')
         Tools.showTemporaryMessage('#message');
         setTimeout(() => {
@@ -60,7 +59,6 @@ class SendConfirmation extends React.Component {
   }
 
   unlockWallet(flag, time, callback){
-    var self = this;
     var batch = [];
     var obj = {
       method: 'walletpassphrase', parameters: [this.props.passwordVal, time, flag]
@@ -71,9 +69,9 @@ class SendConfirmation extends React.Component {
       console.log("data: ", data)
       data = data[0];
       if (data !== null && data.code === -14) {
-        self.showWrongPassword();
+        this.showWrongPassword();
       } else if (data !== null && data.code === 'ECONNREFUSED') {
-          console.log("daemong ain't working mate :(")
+          console.log("Daemon not running - Dev please look into this and what exactly triggered it");
       } else if (data === null) {
           callback();
       } else {
@@ -81,17 +79,6 @@ class SendConfirmation extends React.Component {
       }
     }).catch((err) => {
       console.log("err unlocking wallet: ", err);
-    });
-  }
-  
-  componentDidLeave(callback) {
-  }  
-
-  componentDidMount(){
-    $(document).keypress(function(e) {
-      if(e.which == 13) {
-          console.log("enter pressed")
-      }
     });
   }
 

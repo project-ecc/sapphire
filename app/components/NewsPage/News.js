@@ -12,9 +12,8 @@ class News extends Component {
   }
 
   componentDidMount() {
-    const self = this;
-    $( window ).on('resize', function() {
-      self.updateContainer();
+    $( window ).on('resize', () => {
+      this.updateContainer();
     });
     this.updateContainer();
     this.props.setNewsChecked(new Date().getTime());
@@ -48,14 +47,13 @@ class News extends Component {
 
   switchPage(direction){
     if(this.props.switchingPage) return;
-    var self = this;
     if(direction == "right" && !$('#arrowRight').hasClass('arrowInactive')){
       this.props.setNewsSwitchingPage(true);
       TweenMax.to('#postsContainer' + (this.props.eccPostsPage-1), 0.5, {x: -1500, autoAlpha: 0});
       TweenMax.fromTo('#postsContainer' + (this.props.eccPostsPage), 0.5, {x: 1500, autoAlpha: 0}, {x: 0, autoAlpha: 1});
       setTimeout(() => {
-        self.props.setEccPostsPage(this.props.eccPostsPage + 1);
-        self.props.setNewsSwitchingPage(false);
+        this.props.setEccPostsPage(this.props.eccPostsPage + 1);
+        this.props.setNewsSwitchingPage(false);
       }, 500)
       this.updateArrows(this.props.eccPostsPage);
     }
@@ -64,8 +62,8 @@ class News extends Component {
       TweenMax.to('#postsContainer' + (this.props.eccPostsPage-1), 0.5, {x: 1500, autoAlpha: 0});
       TweenMax.fromTo('#postsContainer' + (this.props.eccPostsPage-2), 0.5, {x: -1500, autoAlpha: 0}, {x: 0, autoAlpha: 1});
       setTimeout(() => {
-        self.props.setEccPostsPage(this.props.eccPostsPage - 1);
-        self.props.setNewsSwitchingPage(false);
+        this.props.setEccPostsPage(this.props.eccPostsPage - 1);
+        this.props.setNewsSwitchingPage(false);
       }, 500)
       this.updateArrows(this.props.eccPostsPage-2);
     }
@@ -77,7 +75,7 @@ class News extends Component {
   }
 
   render() {
-    var self = this;
+    let self = this;
     let items = 0;
     return (
       <div className="panel">

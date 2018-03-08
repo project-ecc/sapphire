@@ -213,7 +213,7 @@ class DaemonManager {
 	};
 
 	async getLatestVersion(){
-		const opts = { url: 'http://7539b832.ngrok.io/daemoninfo'};
+		const opts = { url: 'http://1b519385.ngrok.io/daemoninfo'};
 		var self = this;
 		request(opts)
 	      .then((response) => {
@@ -242,20 +242,21 @@ class DaemonManager {
 					file.close(null);
 					let sumFromServer = "";//TODO
 					checksum.file(this.path + "/Eccoind.exe", function (err, sum) {
+						console.log(sum)
 					   if(sumFromServer === sum){
 						self.installedVersion = self.currentVersion;
 						self.saveVersion(self.installedVersion);
 					   	resolve(true);
 					   }
 					   else{
-					   	reject(false);
+					   	resolve(false);
 					   }
 					})
 				});
 				}).on('error', function(err) { 
 					self.downloading = false;
 					fs.unlink(dest);
-					reject(false); 
+					resolve(false); 
 			});
 		});
 	}

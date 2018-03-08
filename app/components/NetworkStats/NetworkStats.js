@@ -10,14 +10,7 @@ class NetworkStats extends Component {
     this.getHtmlChainInfo = this.getHtmlChainInfo.bind(this);
   }
 
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-  }
-
   getPercentage(percentage){
-    console.log(percentage)
     if(percentage == 100) return 1130;
     else if(percentage == 0) return 0;
 

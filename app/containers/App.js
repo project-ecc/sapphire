@@ -149,7 +149,7 @@ class App extends Component<Props> {
   }
 
   news(){
-    var settingsSelected = this.props.settings;
+    let settingsSelected = this.props.settings;
     this.props.setNotifications(false);
     if(this.props.news && !settingsSelected){ 
       return;
@@ -244,7 +244,7 @@ class App extends Component<Props> {
     if(!this.props.loading)
       TweenMax.to(['#gettingReady'], 0.5, {autoAlpha: 1});
 
-    var t = new TimelineMax({repeat:-1, yoyo:true});
+    let t = new TimelineMax({repeat:-1, yoyo:true});
     t.set(['#first', '#second', '#third', '#forth'], {x:20, y:20})
     t.fromTo('#first', 2, {autoAlpha: 0, scale: 0.90}, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%', ease: Power4.easeNone, delay: 0.3}, 0)
     t.fromTo('#second', 2, {autoAlpha: 0, scale: 0.90}, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%', ease: Power4.easeNone, delay: 0.3}, 0)

@@ -65,11 +65,8 @@ class ConfirmNewAddress extends React.Component {
   }
 
   render() { 
-      var shapeStyle = {
-      fill: this.props.bgColor
-    };
      return (
-      <div style={{height: "auto !important", textAlign: "center"}}>
+      <div style={{height: "auto !important", textAlign: "center", width: "535px"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">Confirm New Address</p>
        	{this.getConfirmationText()}

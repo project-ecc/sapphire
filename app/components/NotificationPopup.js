@@ -25,36 +25,33 @@ class NotificationPopup extends React.Component {
   }
 
   componentDidMount(){
-    var self = this;
     $('#newsNotifications').on("click", function(){
-      self.props.setSelectedPanel("news");
-      self.props.setNotifications(false);
-      self.props.selectedSideBar("news");
-      self.props.setShowingNews(true);
+      this.props.setSelectedPanel("news");
+      this.props.setNotifications(false);
+      this.props.selectedSideBar("news");
+      this.props.setShowingNews(true);
     });
     $('#earningsNotification').on("click", function(){
-      self.props.setSelectedPanel("transactions");
-      self.props.setTransactionsData(self.props.transactions, "generate");
-      self.props.selectedSideBar("wallet", "transactions");
-      self.props.setNotifications(false);
+      this.props.setSelectedPanel("transactions");
+      this.props.setTransactionsData(this.props.transactions, "generate");
+      this.props.selectedSideBar("wallet", "transactions");
+      this.props.setNotifications(false);
     });
     $('#applicationUpdate').on("click", function(){
-      self.props.setUpdateApplication(true);
-      self.props.setNotifications(false);
+      this.props.setUpdateApplication(true);
+      this.props.setNotifications(false);
     });
     $('#notificationContainer').on("click", function(event) {
       event.stopPropagation();
     });
-    var self = this;
     setTimeout(() => {
-      self.subscribeToEvent();
+      this.subscribeToEvent();
     }, 100);
   }
 
   subscribeToEvent(){
-    var self = this;
-    $(window).on("click", function() {
-      self.props.setNotifications(false)
+    $(window).on("click", () => {
+      this.props.setNotifications(false)
     });
   }
 
@@ -68,7 +65,6 @@ class NotificationPopup extends React.Component {
   }
   
   getNotificationsBody(){
-    var self = this;
     if(this.props.notifications["total"] == 0 && !this.props.updateAvailable){
       return(
         <p id="noNotifications">You have no notifications</p>
@@ -99,11 +95,11 @@ class NotificationPopup extends React.Component {
       return null;
     }
     let earnings = require('../../resources/images/overview-blue.png');
-    var ansPaymentsObject = this.props.notifications["ansPayments"];
-    var totalAnsPayments = ansPaymentsObject["payments"].count;
-    var date = ansPaymentsObject["firstDueDate"];
+    let ansPaymentsObject = this.props.notifications["ansPayments"];
+    let totalAnsPayments = ansPaymentsObject["payments"].count;
+    let date = ansPaymentsObject["firstDueDate"];
     console.log(date)
-    var body = <p id="mediumPosts">ANS Payment - {Tools.formatNumber(ansPaymentsObject["payments"][0]["cost"])} <span className="ecc">ECC</span></p>
+    let body = <p id="mediumPosts">ANS Payment - {Tools.formatNumber(ansPaymentsObject["payments"][0]["cost"])} <span className="ecc">ECC</span></p>
     const today = new Date();
     let time = Tools.calculateTimeSince(this.props.lang, today, new Date(date));
     if(totalAnsPayments > 1)
@@ -145,10 +141,10 @@ class NotificationPopup extends React.Component {
       return null;
     }
     let earnings = require('../../resources/images/overview-blue.png');
-    var earningsObject = this.props.notifications["stakingEarnings"];
-    var totalEarnings = earningsObject.count;
-    var date = earningsObject.date;
-    var body = <p id="mediumPosts">Staking reward - {Tools.formatNumber(earningsObject["total"])} <span className="ecc">ECC</span></p>
+    let earningsObject = this.props.notifications["stakingEarnings"];
+    let totalEarnings = earningsObject.count;
+    let date = earningsObject.date;
+    let body = <p id="mediumPosts">Staking reward - {Tools.formatNumber(earningsObject["total"])} <span className="ecc">ECC</span></p>
     const today = new Date();
     let time = Tools.calculateTimeSince(this.props.lang, today, new Date(date));
     if(totalEarnings > 1)
@@ -168,9 +164,9 @@ class NotificationPopup extends React.Component {
       return null;
     }
     let news = require('../../resources/images/news-white.png');
-    var totalNews = this.props.notifications["news"].total;
-    var date = this.props.notifications["news"].date;
-    var newsBody = <p id="mediumPosts">New ECC medium post</p>
+    let totalNews = this.props.notifications["news"].total;
+    let date = this.props.notifications["news"].date;
+    let newsBody = <p id="mediumPosts">New ECC medium post</p>
     const today = new Date();
     let time = Tools.calculateTimeSince(this.props.lang, today, new Date(date));
     if(totalNews > 1)
@@ -197,9 +193,6 @@ class NotificationPopup extends React.Component {
   }
 
   render() { 
-      var shapeStyle = {
-      fill: this.props.bgColor
-    };
      return (
       <div ref="second">
         <div id="notificationContainer">

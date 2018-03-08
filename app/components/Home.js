@@ -159,7 +159,7 @@ class Home extends Component {
             <div className="row">
               <div className="col-sm-4"  style={{padding: "0 0"}}>
                 <p className="darker stakingBalance">Staking</p>
-                <p className="normalWeight">0 <span className="ecc">ecc</span></p>
+                <p className="normalWeight">{this.props.stakingVal} <span className="ecc">ecc</span></p>
                 <div style={{width: "52px", margin: "0 auto", marginTop: "10px"}}>
                 <ToggleButton
                   checked={this.props.staking}
@@ -235,7 +235,8 @@ const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
     staking: state.chains.isStaking,
-    balance: tools.formatNumber(state.chains.balance),
+    balance: tools.formatNumber(state.chains.balance + state.chains.staking),
+    stakingVal: state.chains.staking,
 
     //Earnings stuff
     allEarningsSelected: state.earningsExpenses.allEarningsSelected,

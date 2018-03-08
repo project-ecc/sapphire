@@ -10,9 +10,6 @@ class ThemeSelector extends React.Component {
   }
   
   render() { 
-      var shapeStyle = {
-      fill: this.props.bgColor
-    };
      return (
       <div>
            <p style={{fontWeight:"300"}} className="subTitle">

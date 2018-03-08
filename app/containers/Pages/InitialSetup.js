@@ -49,9 +49,8 @@ class InitialSetup extends Component {
       this.props.setUnencryptedWallet(false);
     }
     this.props.stepForward();
-      const self = this;
       setTimeout(() => {
-        self.props.stepOver();
+        this.props.stepOver();
       }, 300);
   };
 

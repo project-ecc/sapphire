@@ -15170,7 +15170,7 @@ li.active.have-children span::after {
 .inputPlaceholderUnlock{
   z-index: 0;
   text-align: center;
-  top: 20px;
+  top: 24px;
 }
 
 
@@ -15432,6 +15432,7 @@ input.toggle:checked + label:after {
 }.inputPlaceholderReceive{
 	z-index: 0;
 	text-align: left !important;
+	top: 5px;
 }
 
 #ansExplanation{
@@ -17125,7 +17126,6 @@ aside{
 
 .inputPlaceholder{
   position: absolute;
-  top: 2px; 
   text-align: center; 
   color: #555d77; 
   font-size: 15px; 

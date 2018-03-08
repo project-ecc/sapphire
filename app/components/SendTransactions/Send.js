@@ -33,7 +33,6 @@ class Send extends Component {
   }
 
   confirmSend() {
-    var self = this;
     if(this.props.amount == "" || Number(this.props.amount) == 0){
       tools.highlightInput('#inputAmountSend', 1)
     }
@@ -51,7 +50,7 @@ class Send extends Component {
           tools.showTemporaryMessage('#message', "Invalid address");
           tools.highlightInput('#inputAddressSend', 2.1)
         } else {
-          self.props.setSendingECC(true);
+          this.props.setSendingECC(true);
         }
         }).catch((err) => {
           console.log(err);

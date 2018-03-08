@@ -57,7 +57,6 @@ class DaemonConnector {
     this.processPendingTransactions = this.processPendingTransactions.bind(this);
     this.removeTransactionFromDb = this.removeTransactionFromDb.bind(this);
     this.removeTransactionFromMemory = this.removeTransactionFromMemory.bind(this);
-    this.sendOSNotification = this.sendOSNotification.bind(this);
     this.goToEarningsPanel = this.goToEarningsPanel.bind(this);
     //this.createWallet = this.createWallet.bind(this);
     this.subscribeToEvents();
@@ -178,7 +177,7 @@ class DaemonConnector {
   }
 
   notifyUserOfApplicationUpdate(){
-    this.sendOSNotification("Application update available", () => {
+    Tools.sendOSNotification("Application update available", () => {
       this.store.dispatch({type: SETTINGS, payload: true})
       this.store.dispatch({type: SETTINGS_OPTION_SELECTED, payload: "General"})
     })
@@ -276,18 +275,6 @@ class DaemonConnector {
 		})
 	}
 
-  sendOSNotification(body, callback){
-      let myNotification = new Notification('Sapphire', {
-        body: body
-      })
-
-      myNotification.onclick = () => {
-        callback();
-        ipcRenderer.send('show');
-      }
-  }
-
-
   fixNewsText(text){
     var result = text.replace(new RegExp('</p><p>', 'g'), ' ')
     result = result.replace(new RegExp('</blockquote><p>', 'g'), '. ')
@@ -309,7 +296,7 @@ class DaemonConnector {
       var title = "This is a title";
       parser.on('end', () => {
         if(totalNews == 0 || !this.store.getState().notifications.newsNotificationsEnabled) return;
-        self.sendOSNotification(totalNews == 1 ? title : `${totalNews} New ECC News`, () => {
+        Tools.sendOSNotification(totalNews == 1 ? title : `${totalNews} New ECC News`, () => {
           self.store.dispatch({type: SELECTED_PANEL, payload: "news"})
           this.store.dispatch({type: SELECTED_SIDEBAR, payload: {undefined}})
         })
@@ -605,7 +592,7 @@ class DaemonConnector {
     if(shouldNotifyEarnings && earningsCountNotif > 0){
       earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
       let title = `Staking reward - ${earningsTotalNotif} ECC`;
-      self.sendOSNotification(earningsCountNotif == 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`, () => {
+      Tools.sendOSNotification(earningsCountNotif == 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`, () => {
         this.goToEarningsPanel();
       })
     }
@@ -719,7 +706,7 @@ class DaemonConnector {
       if(shouldNotifyEarnings && earningsCountNotif > 0){
         earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
         let title = `Staking reward - ${earningsTotalNotif} ECC`;
-        self.sendOSNotification(earningsCountNotif == 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`, () => {
+        Tools.sendOSNotification(earningsCountNotif == 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`, () => {
           this.goToEarningsPanel();
         })
         self.store.dispatch({type: STAKING_REWARD, payload: rows})

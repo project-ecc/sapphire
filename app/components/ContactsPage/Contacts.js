@@ -77,27 +77,25 @@ class Contacts extends Component {
   }
 
   addNormalAddress() {
-    const self = this;
-
     this.props.wallet.validate(this.props.newContactAddress).then((isAddressValid) => {
       console.log(isAddressValid)
         if (isAddressValid.isvalid) {
-          const tt = low.get('friends').find({ address: self.props.newContactAddress }).value();
+          const tt = low.get('friends').find({ address: this.props.newContactAddress }).value();
           if (tt != null) {
-            self.addressAlreadyExists();
-            self.resetFields();
+            this.addressAlreadyExists();
+            this.resetFields();
             return;
           } else {
-            const name = self.props.newContactName;
-            const address = self.props.newContactAddress;
+            const name = this.props.newContactName;
+            const address = this.props.newContactAddress;
             if (address !== '') {
               low.get('friends').push({ name, address }).write();
               const friendList = low.get('friends').value();
-              self.props.setContacts(friendList);
+              this.props.setContacts(friendList);
               //this is a temporary workaround because setContacts is not triggering a re-render of AddressBook.js
               this.props.setHoveredAddress(["a"]);
-              self.resetFields();
-              self.addressAddedSuccessfuly();
+              this.resetFields();
+              this.addressAddedSuccessfuly();
             }
           }
         } 

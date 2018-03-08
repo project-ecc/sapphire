@@ -23,9 +23,8 @@ class Receive extends Component {
   }
 
   componentDidMount() {
-    const self = this;
-    $( window ).on('resize', function() {
-      self.updateTable(self.props.userAddresses);
+    $( window ).on('resize', () => {
+      this.updateTable(this.props.userAddresses);
     });
     this.updateTable(this.props.userAddresses);
     if(this.props.newAddressName)
@@ -148,7 +147,6 @@ class Receive extends Component {
 
   render() {
     let ansAddresImage = require('../../../resources/images/ans_address.png');
-    var self = this;
     let counter = 0;
     return (
       <div className="panel">
@@ -207,14 +205,14 @@ class Receive extends Component {
               if(this.props.filterAll || this.props.filterNormal && !address.ans || this.props.filterAns && address.ans){
                 counter++;
                 return (
-                  <div className="row rowDynamic normalWeight tableRowCustom" style={{backgroundColor: self.props.selectedAddress && address.address == self.props.selectedAddress.address ? "#212136" : counter % 2 != 0 ? "transparent" : "#1b223d"}} key={`address_${index}`}>
-                    <div className="col-sm-3 tableColumn tableColumnFixReceive" onClick={self.rowClicked.bind(self, address)}>
+                  <div className="row rowDynamic normalWeight tableRowCustom" style={{backgroundColor: this.props.selectedAddress && address.address == this.props.selectedAddress.address ? "#212136" : counter % 2 != 0 ? "transparent" : "#1b223d"}} key={`address_${index}`}>
+                    <div className="col-sm-3 tableColumn tableColumnFixReceive" onClick={this.rowClicked.bind(this, address)}>
                       {address.account}
                     </div>
-                    <div className="col-sm-6 tableColumn" onClick={self.rowClicked.bind(self, address)}>
+                    <div className="col-sm-6 tableColumn" onClick={this.rowClicked.bind(this, address)}>
                       {address.address}
                     </div>
-                    <div className="col-sm-3 tableColumn" onClick={self.rowClicked.bind(self, address)}>
+                    <div className="col-sm-3 tableColumn" onClick={this.rowClicked.bind(this, address)}>
                       {address.amount}
                     </div>
                   </div>

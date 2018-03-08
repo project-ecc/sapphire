@@ -19,12 +19,11 @@ class Transaction extends Component {
   }
 
   componentDidMount() {
-    const self = this;
-    $( window ).on('resize', function() {
-      self.updateTable();
+    $( window ).on('resize', () => {
+      this.updateTable();
     });
     $(".extraInfoTransaction").hide();
-    self.updateTable();
+    this.updateTable();
   }
 
   componentWillUnmount() {
@@ -42,12 +41,10 @@ class Transaction extends Component {
   }
 
   getAllTransactions(page) {
-    const self = this;
-
     this.props.wallet.getTransactions(null, 100, 100 * page).then((data) => {
-        self.props.setTransactionsData(data, this.props.type)
-        self.props.setTransactionsPage(page);
-        self.updateTable();
+        this.props.setTransactionsData(data, this.props.type)
+        this.props.setTransactionsPage(page);
+        this.updateTable();
         $(".extraInfoTransaction").hide();
     }).catch((err) => {
         console.log("error getting transactions: ", err)
@@ -158,7 +155,6 @@ class Transaction extends Component {
 
   render() {
     const data = this.orderTransactions(this.props.data);
-    const self = this;
     const today = new Date();
     let counter = -1;
     return (
@@ -168,7 +164,7 @@ class Transaction extends Component {
             <p className="tableHeader" style={{paddingTop: "7px", paddingLeft: "5%", color: "#b4b7c8"}}>Transactions</p>
             <div className="dropdownFilterSelector" style={{position: "absolute", right: "40px", top: "9px", height:"30px", padding:"0 0", width :"210px", textAlign:"center"}} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
               <div className="selectFilterSelector" style={{border: "none", position:"relative", top: "-1px", height: "30px"}}>
-                <p className="normalWeight">{self.getValue(this.props.type)}</p>
+                <p className="normalWeight">{this.getValue(this.props.type)}</p>
                 <i className="fa fa-chevron-down"></i>
               </div>
               <input type="hidden" name="gender"></input>
@@ -193,12 +189,12 @@ class Transaction extends Component {
           <div id="rows" className="container" style={{height: "500px", width: "100%", padding: "0 0"}}>
             {data.map((t, index) => {
 
-              if (self.props.type === 'all'
-              || self.props.type === t.category
-              || self.props.type === t.confirmations
-              || (self.props.type == 1 && t.confirmations > 0)
-              || (self.props.type == -1 && t.confirmations < 0)){
-                if(self.props.type == "generate" && t.amount == 0) return null;
+              if (this.props.type === 'all'
+              || this.props.type === t.category
+              || this.props.type === t.confirmations
+              || (this.props.type == 1 && t.confirmations > 0)
+              || (this.props.type == -1 && t.confirmations < 0)){
+                if(this.props.type == "generate" && t.amount == 0) return null;
                 counter++;
                 const iTime = new Date(t.time * 1000);
                 let time = Tools.calculateTimeSince(lang, today, iTime);
@@ -221,7 +217,7 @@ class Transaction extends Component {
                 }
 
                 return (
-                  <div className="row normalWeight" style={{cursor: "pointer", fontSize: "15px", color: "#9099b7", minHeight: "40px", backgroundColor: counter % 2 != 0 ? "transparent" : "#1b223d"}} key={`transaction_${index}_${t.txid}`} onClick={self.rowClicked.bind(self, index)}>
+                  <div className="row normalWeight" style={{cursor: "pointer", fontSize: "15px", color: "#9099b7", minHeight: "40px", backgroundColor: counter % 2 != 0 ? "transparent" : "#1b223d"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
                     <div className="col-sm-6 transactionAddress" style={{paddingLeft: "4%", paddingTop: "9px"}}>
                       <p style={{ margin: '0px' }}><span>{category}</span><span className="desc2 transactionAddress"> ({t.address})</span></p>
                     </div>
@@ -229,7 +225,7 @@ class Transaction extends Component {
                       <p style={{ margin: '0px' }}><span>{t.amount} ecc</span></p>
                     </div>
                     <div className="col-sm-2" style={{paddingTop: "9px"}}>
-                      <p style={{ margin: '0px' }}>{self.renderStatus(t.confirmations)}</p>
+                      <p style={{ margin: '0px' }}>{this.renderStatus(t.confirmations)}</p>
                     </div>
                     <div className="col-sm-2" style={{paddingTop: "9px"}}>
                       <p style={{ margin: '0px' }}><span>{time}</span></p>
@@ -261,10 +257,10 @@ class Transaction extends Component {
           </div>
           <div className="row">
             <div className="col-sm-6 text-right">
-              <p className="buttonTransaction" onClick={this.handlePreviousClicked} style={{marginRight: "50px", opacity: self.props.page == 0 ? "0.2" : "1", cursor: self.props.page == 0 ? "default" : "pointer"}}>Previous</p>
+              <p className="buttonTransaction" onClick={this.handlePreviousClicked} style={{marginRight: "50px", opacity: this.props.page == 0 ? "0.2" : "1", cursor: this.props.page == 0 ? "default" : "pointer"}}>Previous</p>
             </div>
             <div className="col-sm-6 text-left">
-              <p className="buttonTransaction" onClick={this.handleNextClicked} style={{marginLeft: "50px", opacity: self.props.data.length < 100 ? "0.2" : "1", cursor: self.props.data.length < 100 ? "default" : "pointer"}}>Next</p>
+              <p className="buttonTransaction" onClick={this.handleNextClicked} style={{marginLeft: "50px", opacity: this.props.data.length < 100 ? "0.2" : "1", cursor: this.props.data.length < 100 ? "default" : "pointer"}}>Next</p>
             </div>        
           </div>
         </div>

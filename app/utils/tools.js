@@ -7,6 +7,18 @@ var fsPath = require('fs-path');
 const settings = require('electron-settings');
 
 module.exports = {
+
+  sendOSNotification: function(body, callback){
+      let myNotification = new Notification('Sapphire', {
+        body: body
+      })
+
+      myNotification.onclick = () => {
+        callback();
+        ipcRenderer.send('show');
+      }
+  },
+
   formatNumber: function (number) {
     return number.toLocaleString(undefined, {minimumFractionDigits:0, maximumFractionDigits: 8})
   },
@@ -76,14 +88,14 @@ module.exports = {
   animateGeneralPanelIn: function(element, callback, f , scaleStart){
       TweenMax.set(element, {willChange: 'transform'});
       requestAnimationFrame(() => {
-        TweenMax.fromTo(element, 0.2, {autoAlpha: 0, scale: scaleStart}, {autoAlpha: 1, scale: 1, ease: Linear.easeNone, onComplete: callback, onCompleteParams: [f]});
+        TweenMax.fromTo(element, 0.15, {autoAlpha: 0, scale: scaleStart}, {autoAlpha: 1, scale: 1, ease: Linear.easeNone, onComplete: callback, onCompleteParams: [f]});
     });
   },
 
   animateGeneralPanelOut: function(element, callback, f, scaleEnd){
       TweenMax.set(element, {willChange: 'transform'});
       requestAnimationFrame(() => {
-        TweenMax.fromTo(element, 0.2, {autoAlpha: 1, scale: 1}, {autoAlpha: 0, scale: scaleEnd, ease: Linear.easeNone, onComplete: callback, onCompleteParams: [f]});
+        TweenMax.fromTo(element, 0.15, {autoAlpha: 1, scale: 1}, {autoAlpha: 0, scale: scaleEnd, ease: Linear.easeNone, onComplete: callback, onCompleteParams: [f]});
     });
   },
 
@@ -110,7 +122,7 @@ module.exports = {
   animatePopupIn: function(element, callback, top){
     TweenMax.set(('.mancha'), {css: {display: "block"}})
     TweenMax.fromTo(('.mancha'), 0.3, {autoAlpha:0}, { autoAlpha:1, ease: Linear.easeNone});
-    TweenMax.fromTo(element, 0.3, {css: {top: "-50%", opacity:0}}, {css: {top: top, opacity:1}, ease: Linear.easeOut, onComplete: callback});
+    TweenMax.fromTo(element, 0.3, {css: {top: "-50%", opacity:0}}, {css: {top: top, opacity:1}, ease: Power1.easeOut, onComplete: callback});
   },
 
   animatePopupOut: function(element, callback){

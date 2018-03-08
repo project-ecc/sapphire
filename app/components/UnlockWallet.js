@@ -19,9 +19,8 @@ class UnlockWallet extends React.Component {
 
   unlockWallet(){
     Tools.updateConfig(1);
-    var self = this;
-    var batch = [];
-    var obj = {
+    let batch = [];
+    let obj = {
       method: 'reloadconfig', parameters: ["staking"],
       method: 'walletpassphrase', parameters: [this.props.passwordVal, 31556926, true]
     }
@@ -35,9 +34,10 @@ class UnlockWallet extends React.Component {
       } else if (data !== null && data.code === 'ECONNREFUSED') {
         console.log("daemong ain't working mate :(")
       } else if (data === null) {
-        self.props.setUnlocking(false);
+        this.props.setPassword("");
+        this.props.setUnlocking(false);
         setTimeout(() => {
-          self.props.setStaking(true);
+          this.props.setStaking(true);
         }, 300)
       } else {
         console.log("error unlocking wallet: ", data)
@@ -47,15 +47,9 @@ class UnlockWallet extends React.Component {
     });
   }
   
-  componentDidLeave(callback) {
-  }  
-
-  componentDidMount(){
-    $(document).keypress(function(e) {
-      if(e.which == 13) {
-          console.log("enter pressed")
-      }
-    });
+  componentWillUnmount()
+  {
+    this.props.setPassword("");
   }
 
   handleChange(event) {
@@ -82,9 +76,6 @@ class UnlockWallet extends React.Component {
   }
   
   render() { 
-      var shapeStyle = {
-      fill: this.props.bgColor
-    };
      return (
       <div className="unlockWallet">
         <CloseButtonPopup handleClose={this.handleCancel}/>

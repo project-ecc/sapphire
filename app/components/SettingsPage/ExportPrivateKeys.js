@@ -9,7 +9,7 @@ var jsPDF = require('jspdf');
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
-const tools = require('../../utils/tools')
+const Tools = require('../../utils/tools')
 
 class ExportPrivateKeys extends React.Component {
  constructor() {
@@ -26,7 +26,7 @@ class ExportPrivateKeys extends React.Component {
   }
 
   showWrongPassword(){
-    tools.showTemporaryMessage('#wrongPassword');
+    Tools.showTemporaryMessage('#wrongPassword');
   }
 
   componentWillUnmount(){
@@ -69,7 +69,7 @@ class ExportPrivateKeys extends React.Component {
   }
 
   animateDots(){
-    var t = new TimelineMax({repeat:-1});
+    let t = new TimelineMax({repeat:-1});
     //t.staggerTo('.ecc', 0.2, {autoAlpha: 1}, 0.2)
     //.staggerTo('.ecc', 0.4, {autoAlpha: 0.2}, 0.1)
     t.to('#firstDot', 0.25, {autoAlpha: 1})
@@ -111,8 +111,7 @@ class ExportPrivateKeys extends React.Component {
   }
 
   handleConfirm(){
-    var self = this;
-    var wasStaking = this.props.staking;
+    let wasStaking = this.props.staking;
     if(this.props.passwordVal == ""){
       this.showWrongPassword();
       return;
@@ -125,30 +124,30 @@ class ExportPrivateKeys extends React.Component {
       await this.getDataToExport();
 
       if(wasStaking){
-          self.unlockWallet(true, 31556926, () => {
+          this.unlockWallet(true, 31556926, () => {
          });
       }
       else{ 
-        self.props.setStaking(false);
+        this.props.setStaking(false);
       }
-      self.props.setPassword("");
+      this.props.setPassword("");
     })
   }
 
   async getDataToExport(){
-    var accounts = await this.getAccounts();
-    var addresses = await this.getAddressesOfAccounts(accounts);
-    var batch = [];
-    for(var i = 0; i < addresses[0].length; i++){
+    let accounts = await this.getAccounts();
+    let addresses = await this.getAddressesOfAccounts(accounts);
+    let batch = [];
+    for(let i = 0; i < addresses[0].length; i++){
       batch.push({
         method: 'dumpprivkey', parameters: [addresses[0][i]]
       });
     }
-    var privKeys = await this.getPrivateKeys(batch);
+    let privKeys = await this.getPrivateKeys(batch);
     
-    var counter = 1;
-    var aux = [];
-    for(var i = 0; i < addresses[0].length; i++){
+    let counter = 1;
+    let aux = [];
+    for(let i = 0; i < addresses[0].length; i++){
 
       aux.push(addresses[0][i]); 
       aux.push(privKeys[i]);
@@ -156,7 +155,7 @@ class ExportPrivateKeys extends React.Component {
       counter++;
       if(counter == 24 || i == addresses[0].length - 1 ){
         this.toPrint.push([]);
-        for(var j = 0; j < aux.length; j++)
+        for(let j = 0; j < aux.length; j++)
           this.toPrint[this.toPrint.length-1].push(aux[j]);
         aux.length = 0;
         counter=1;
@@ -165,7 +164,6 @@ class ExportPrivateKeys extends React.Component {
   }
 
   unlockWallet(flag, time, callback){
-    var self = this;
     var batch = [];
     var obj = {
       method: 'walletpassphrase', parameters: [this.props.passwordVal, time, flag]
@@ -175,7 +173,7 @@ class ExportPrivateKeys extends React.Component {
     this.props.wallet.command(batch).then((data) => {
       data = data[0];
       if (data !== null && data.code === -14) {
-        self.showWrongPassword();
+        this.showWrongPassword();
       } else if (data !== null && data.code === 'ECONNREFUSED') {
           console.log("daemong ain't working mate :(")
       } else if (data === null) {
@@ -193,10 +191,10 @@ class ExportPrivateKeys extends React.Component {
   }
 
   generatePDF(){
-    var doc = new jsPDF()
+    let doc = new jsPDF()
     doc.setFontSize(10);
     doc.text(this.toPrint[0], 10, 10)
-    for(var i = 1; i < this.toPrint.length; i++){
+    for(let i = 1; i < this.toPrint.length; i++){
       doc.addPage();
       doc.text(this.toPrint[i], 10, 10)
     }
@@ -229,18 +227,18 @@ class ExportPrivateKeys extends React.Component {
   getAddressesOfAccounts(accounts){
     return new Promise((resolve, reject) => {
       var promises = [];
-      var keys = Object.keys(accounts);
-      for(var i = 0; i < keys.length; i++){
-        var promise = this.getAddress(keys[i]);
+      let keys = Object.keys(accounts);
+      for(let i = 0; i < keys.length; i++){
+        let promise = this.getAddress(keys[i]);
         promises.push(promise);
       }
 
       Promise.all(promises).then((data) => {
-        var oneArray = [];
+        let oneArray = [];
         if(data.length > 1)
         {
-          for(var i = 0; i < data.length; i++){
-            for(var j = 0; j < data[i].length; j++){
+          for(let i = 0; i < data.length; i++){
+            for(let j = 0; j < data[i].length; j++){
               oneArray.push(data[i][j]);
             }
           }
@@ -267,17 +265,16 @@ class ExportPrivateKeys extends React.Component {
 
   handleExportClick(){
     ipcRenderer.send('exportPrivateKeys');
-    const self = this;
     ipcRenderer.on('locationSelected', (event, arg) => {
       if(arg != undefined){
         $('#exportPrivKeyButton').text("Export");
         $('#selectedlocation').text(arg);
-        if(self.tween !== undefined)
-          self.tween.kill();
+        if(this.tween !== undefined)
+          this.tween.kill();
         $('#selectedlocation').css("opacity", "1");
         $('#selectedlocation').css("color", "#555d77");
         $('#selectedlocation').css("visibility", "visible");
-        self.props.setLocationToExport(arg);
+        this.props.setLocationToExport(arg);
       }
     });
   }

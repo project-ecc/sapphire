@@ -60,7 +60,6 @@ class ChangePassword extends React.Component {
   }
 
   changePassword(){
-    var self = this;
     var wasStaking = this.props.isStaking;
     this.props.wallet.walletChangePassphrase(this.props.passwordVal, this.props.newPassword).then((data)=>{
       if(data == null){
@@ -69,7 +68,7 @@ class ChangePassword extends React.Component {
         }
         Tools.showTemporaryMessage('#wrongPassword', "Operation Successfull!");
         setTimeout(()=>{
-          self.props.setChangingPassword(false)
+          this.props.setChangingPassword(false)
         }, 2000)
       }
       else if(data.code && data.code == -14){
@@ -98,9 +97,6 @@ class ChangePassword extends React.Component {
   }
 
   render() { 
-      var shapeStyle = {
-      fill: this.props.bgColor
-    };
      return (
       <div className="changePassword">
         <CloseButtonPopup handleClose={this.handleCancel}/>

@@ -16,11 +16,10 @@ class UpdateApplication extends React.Component {
   }
   
   handleConfirm(){
-    var self = this;
     this.props.setUpdateApplication(false);
     this.props.setUpdateAvailable();
     setTimeout(() => {
-      self.props.setUpdatingApplication(true);
+      this.props.setUpdatingApplication(true);
       ipcRenderer.send('update');
     }, 300)
   }
@@ -43,9 +42,6 @@ class UpdateApplication extends React.Component {
   }
 
   render() { 
-      var shapeStyle = {
-      fill: this.props.bgColor
-    };
      return (
       <div style={{height: "220px"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>

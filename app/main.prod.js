@@ -97,6 +97,8 @@ const event = __webpack_require__("./app/utils/eventhandler.js");
 const os = __webpack_require__("os");
 var https = __webpack_require__("https");
 var psList = __webpack_require__("./node_modules/ps-list/index.js");
+var checksum = __webpack_require__("./node_modules/checksum/checksum.js");
+
 
 /*
 *	Handles daemon updates and the daemon'state
@@ -307,7 +309,7 @@ class DaemonManager {
 		var _this5 = this;
 
 		return _asyncToGenerator(function* () {
-			const opts = { url: 'http://7539b832.ngrok.io/daemoninfo' };
+			const opts = { url: 'http://1b519385.ngrok.io/daemoninfo' };
 			var self = _this5;
 			request(opts).then(function (response) {
 				const parsed = JSON.parse(response);
@@ -333,16 +335,24 @@ class DaemonManager {
 					response.pipe(file);
 					file.on('finish', function () {
 						self.downloading = false;
-						self.installedVersion = self.currentVersion;
-						self.saveVersion(self.installedVersion);
 						console.log("Done downloading");
 						file.close(null);
-						resolve(true);
+						let sumFromServer = ""; //TODO
+						checksum.file(this.path + "/Eccoind.exe", function (err, sum) {
+							console.log(sum);
+							if (sumFromServer === sum) {
+								self.installedVersion = self.currentVersion;
+								self.saveVersion(self.installedVersion);
+								resolve(true);
+							} else {
+								resolve(false);
+							}
+						});
 					});
 				}).on('error', function (err) {
 					self.downloading = false;
 					fs.unlink(dest);
-					reject(false);
+					resolve(false);
 				});
 			});
 		})();
@@ -409,6 +419,7 @@ var _require3 = __webpack_require__("child_process");
 const exec = _require3.exec;
 
 var cp = __webpack_require__("child_process");
+var checksum = __webpack_require__("./node_modules/checksum/checksum.js");
 
 class GUIManager {
 
@@ -430,7 +441,7 @@ class GUIManager {
 	}
 
 	getLatestVersion() {
-		const opts = { url: 'http://7539b832.ngrok.io/walletinfo' };
+		const opts = { url: 'http://1b519385.ngrok.io/walletinfo' };
 		request(opts).then(response => {
 			const parsed = JSON.parse(response);
 			const githubVersion = parsed.name;
@@ -454,20 +465,29 @@ class GUIManager {
 		var request = https.get(this.getDownloadUrl(), function (response) {
 			response.pipe(file);
 			file.on('finish', function () {
-				self.installedVersion = self.currentVersion;
+				self.downloading = false;
 				console.log("Done downloading gui");
 				file.close(null);
-
-				try {
-					var child = cp.fork("./app/Managers/UpdateGUI", { detached: true });
-					app.quit();
-				} catch (e) {
-					console.log(e);
-				}
+				fs.unlink(dest);
+				let sumFromServer = "";
+				checksum.file(this.path + "/Eccoind.exe", function (err, sum) {
+					if (sumFromServer === sum) {
+						self.installedVersion = self.currentVersion;
+						try {
+							var child = cp.fork("./app/Managers/UpdateGUI", { detached: true });
+							app.quit();
+						} catch (e) {
+							console.log(e);
+						}
+					} else {
+						self.downloadGUI();
+					}
+				});
 			});
 		}).on('error', function (err) {
 			self.downloading = false;
 			fs.unlink(dest);
+			self.downloadGUI();
 		});
 	}
 
@@ -601,8 +621,8 @@ app.on('ready', _asyncToGenerator(function* () {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1650,
-    height: 800,
+    width: 1271,
+    height: 777,
     minWidth: 800,
     minHeight: 600,
     icon: iconPath,
@@ -927,9 +947,9 @@ class MenuBuilder {
   }
 
   buildMenu() {
-    //if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
-    this.setupDevelopmentEnvironment();
-    //}
+    if (false) {
+      this.setupDevelopmentEnvironment();
+    }
 
     let template;
 
@@ -1118,6 +1138,18 @@ var fsPath = __webpack_require__("./node_modules/fs-path/lib/index.js");
 const settings = __webpack_require__("./node_modules/electron-settings/index.js");
 
 module.exports = {
+
+  sendOSNotification: function sendOSNotification(body, callback) {
+    let myNotification = new Notification('Sapphire', {
+      body: body
+    });
+
+    myNotification.onclick = () => {
+      callback();
+      ipcRenderer.send('show');
+    };
+  },
+
   formatNumber: function formatNumber(number) {
     return number.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 8 });
   },
@@ -1163,7 +1195,7 @@ module.exports = {
   },
 
   hideFunctionIcons: function hideFunctionIcons(element) {
-    _gsap.TweenMax.staggerFromTo('.functionIcon', 0.4, { x: 0, autoAlpha: 1 }, { x: 20, autoAlpha: 0 }, -0.2);
+    _gsap.TweenMax.staggerTo('.functionIcon', 0.4, { x: 20, autoAlpha: 0 }, -0.2);
   },
 
   showTemporaryMessage: function showTemporaryMessage(element, text, time = 2000) {
@@ -1186,14 +1218,14 @@ module.exports = {
   animateGeneralPanelIn: function animateGeneralPanelIn(element, callback, f, scaleStart) {
     _gsap.TweenMax.set(element, { willChange: 'transform' });
     requestAnimationFrame(() => {
-      _gsap.TweenMax.fromTo(element, 0.2, { autoAlpha: 0, scale: scaleStart }, { autoAlpha: 1, scale: 1, ease: Linear.easeNone, onComplete: callback, onCompleteParams: [f] });
+      _gsap.TweenMax.fromTo(element, 0.15, { autoAlpha: 0, scale: scaleStart }, { autoAlpha: 1, scale: 1, ease: Linear.easeNone, onComplete: callback, onCompleteParams: [f] });
     });
   },
 
   animateGeneralPanelOut: function animateGeneralPanelOut(element, callback, f, scaleEnd) {
     _gsap.TweenMax.set(element, { willChange: 'transform' });
     requestAnimationFrame(() => {
-      _gsap.TweenMax.fromTo(element, 0.2, { autoAlpha: 1, scale: 1 }, { autoAlpha: 0, scale: scaleEnd, ease: Linear.easeNone, onComplete: callback, onCompleteParams: [f] });
+      _gsap.TweenMax.fromTo(element, 0.15, { autoAlpha: 1, scale: 1 }, { autoAlpha: 0, scale: scaleEnd, ease: Linear.easeNone, onComplete: callback, onCompleteParams: [f] });
     });
   },
 
@@ -1220,7 +1252,7 @@ module.exports = {
   animatePopupIn: function animatePopupIn(element, callback, top) {
     _gsap.TweenMax.set('.mancha', { css: { display: "block" } });
     _gsap.TweenMax.fromTo('.mancha', 0.3, { autoAlpha: 0 }, { autoAlpha: 1, ease: Linear.easeNone });
-    _gsap.TweenMax.fromTo(element, 0.3, { css: { top: "-50%", opacity: 0 } }, { css: { top: top, opacity: 1 }, ease: Linear.easeOut, onComplete: callback });
+    _gsap.TweenMax.fromTo(element, 0.3, { css: { top: "-50%", opacity: 0 } }, { css: { top: top, opacity: 1 }, ease: Power1.easeOut, onComplete: callback });
   },
 
   animatePopupOut: function animatePopupOut(element, callback) {
@@ -30076,6 +30108,102 @@ module.exports.httpify = function (resp, headers) {
   }
   resp.headers = c.dict
   return c
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/checksum/checksum.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+/*!
+ * checksum
+ * Copyright(c) 2013 Daniel D. Shaw <dshaw@dshaw.com>
+ * MIT Licensed
+ */
+
+
+/**
+ * Module dependencies
+ */
+
+var crypto = __webpack_require__("crypto")
+  , fs = __webpack_require__("fs")
+
+/**
+ * Exports
+ */
+
+module.exports = checksum
+checksum.file = checksumFile
+
+/**
+ * Checksum
+ */
+
+function checksum (value, options) {
+  options || (options = {})
+  if (!options.algorithm) options.algorithm = 'sha1'
+
+  var hash = crypto.createHash(options.algorithm)
+
+  if (!hash.write) { // pre-streaming crypto API in node < v0.9
+
+    hash.update(value)
+    return hash.digest('hex')
+
+  } else { // v0.9+ streaming crypto
+
+    hash.setEncoding('hex')
+    hash.end(value)
+    return hash.read()
+
+  }
+}
+
+/**
+ * Checksum File
+ */
+
+function checksumFile (filename, options, callback) {
+  if (typeof options === 'function') {
+    callback = options
+    options = {}
+  }
+
+  options || (options = {})
+  if (!options.algorithm) options.algorithm = 'sha1'
+
+  fs.stat(filename, function (err, stat) {
+    if (!err && !stat.isFile()) err = new Error('Not a file')
+    if (err) return callback(err)
+    
+    
+    var hash = crypto.createHash(options.algorithm)
+      , fileStream = fs.createReadStream(filename)
+
+    if (!hash.write) { // pre-streaming crypto API in node < v0.9
+
+      fileStream.on('data', function (data) {
+        hash.update(data)
+      })
+
+      fileStream.on('end', function () {
+        callback(null, hash.digest('hex'))
+      })
+
+    } else { // v0.9+ streaming crypto
+
+      hash.setEncoding('hex')
+      fileStream.pipe(hash, { end: false })
+
+      fileStream.on('end', function () {
+        hash.end()
+        callback(null, hash.read())
+      })
+
+    }
+  })
 }
 
 
@@ -112435,7 +112563,7 @@ function wrappy (fn, cb) {
 /***/ "./package.json":
 /***/ (function(module, exports) {
 
-module.exports = {"name":"Lynx-Gui","productName":"Lynx","version":"0.1.5","description":"Electron application providing the graphical user interface for the ECC Wallet","scripts":{"test":"cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js","test-all":"npm run lint && npm run flow && npm run test && npm run build && npm run test-e2e","test-watch":"npm test -- --watch","test-e2e":"cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js e2e","lint":"eslint --cache --format=node_modules/eslint-formatter-pretty .","lint-fix":"npm run lint -- --fix","lint-styles":"stylelint app/*.css app/components/*.css --syntax scss","lint-styles-fix":"stylefmt -r app/*.css app/components/*.css","hot-updates-server":"cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack-dev-server/bin/webpack-dev-server --config webpack.config.renderer.dev.js","build":"concurrently \"npm run build-main\" \"npm run build-renderer\"","build-dll":"cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.dev.dll.js --progress --profile --colors","build-main":"cross-env NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.main.prod.js --progress --profile --colors","build-renderer":"cross-env NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.prod.js --progress --profile --colors","start":"cross-env NODE_ENV=production electron ./app/","prestart":"npm run build","flow":"flow check","flow-typed":"rimraf flow-typed/npm && flow-typed install --overwrite || true","start-hot-renderer":"cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./app/main.dev","postinstall":"npm rebuild --runtime=electron --target=1.8.2 --disturl=https://atom.io/download/atom-shell --build-from-source","dev":"cross-env START_HOT=1 npm run hot-updates-server","package-aa-win-32":"npm run build && build --win -c ./os/win32.json -p always","package-aa-win-64":"npm run build && build --win --x64 -c ./os/win64.json -p always","package-aa-all":"npm run package-aa-win-32 && npm run package-aa-win-64","package-win":"npm run build && build --win --x64 -c ./os/win64.json","package-win-32":"npm run build && build --win --ia32 -c ./os/win32.json","package-osx":"npm run build && build --mac --x64 -c ./os/osx.json","package-linux":"npm run build && build --linux -c ./os/lin64.json","package-linux-32":"npm run build && build --linux --ia32 -c ./os/lin32.json","package-all":"npm run package-win && npm run package-win-32 && npm run package-linux && npm run package-linux-32"},"browserslist":"electron 1.8","build":{"productName":"Ecc-GUI","appId":"com.github.greg-griffith.lynx","files":["dist/","node_modules/","app.html","main.prod.js","main.prod.js.map","package.json"],"publish":[{"provider":"github","owner":"Greg-Griffith","repo":"Lynx","vPrefixedTagName":"true","protocol":"https"}],"dmg":{"contents":[{"x":130,"y":220},{"x":410,"y":220,"type":"link","path":"/Applications"}]},"win":{"target":["nsis"]},"nsis":{"perMachine":true},"linux":{"target":["deb","AppImage"]},"directories":{"buildResources":"resources"}},"repository":"git+https://github.com/greg-griffith/lynx.git","author":"Greg Griffith <griffith@cryptounited.com> (https://github.com/greg-griffith)","license":"MIT","bugs":{"url":"https://github.com/greg-griffith/lynx/issues"},"keywords":["electron"],"homepage":"https://github.com/greg-griffith/lynx","jest":{"moduleNameMapper":{"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":"<rootDir>/internals/mocks/fileMock.js","\\.(css|less|sass|scss)$":"identity-obj-proxy"},"moduleFileExtensions":["js"],"moduleDirectories":["node_modules","app/node_modules"],"transform":{"^.+\\.js$":"babel-jest"},"setupFiles":["./internals/scripts/CheckBuiltsExist.js"]},"devDependencies":{"babel-core":"^6.24.1","babel-eslint":"^7.2.3","babel-jest":"^20.0.3","babel-loader":"^7.1.0","babel-plugin-add-module-exports":"^0.2.1","babel-plugin-dev-expression":"^0.2.1","babel-plugin-dynamic-import-webpack":"^1.0.1","babel-plugin-flow-runtime":"^0.11.1","babel-plugin-transform-class-properties":"^6.24.1","babel-plugin-transform-es2015-classes":"^6.24.1","babel-preset-env":"^1.5.1","babel-preset-react":"^6.24.1","babel-preset-react-hmre":"^1.1.1","babel-preset-react-optimize":"^1.0.1","babel-preset-stage-0":"^6.24.1","babel-register":"^6.24.1","babili-webpack-plugin":"0.1.1","chalk":"^2.0.1","concurrently":"^3.5.0","cross-env":"^5.0.0","cross-spawn":"^5.1.0","css-loader":"^0.28.3","electron":"^1.8.2","electron-builder":"^19.55.3","electron-devtools-installer":"^2.2.0","enzyme":"^2.9.1","enzyme-to-json":"^1.5.1","eslint":"^3.19.0","eslint-config-airbnb":"^15.0.1","eslint-formatter-pretty":"^1.1.0","eslint-import-resolver-webpack":"^0.8.3","eslint-plugin-compat":"^1.0.4","eslint-plugin-flowtype":"^2.33.0","eslint-plugin-flowtype-errors":"^3.3.0","eslint-plugin-import":"^2.6.0","eslint-plugin-jest":"^20.0.3","eslint-plugin-jsx-a11y":"5.0.3","eslint-plugin-promise":"^3.5.0","eslint-plugin-react":"^7.1.0","express":"^4.15.3","extract-text-webpack-plugin":"^2.1.2","fbjs-scripts":"^0.8.0","file-loader":"^0.11.1","flow-bin":"^0.48.0","flow-runtime":"^0.13.0","flow-typed":"^2.1.2","html-webpack-plugin":"^2.29.0","identity-obj-proxy":"^3.0.0","jest":"^20.0.4","jsdom":"^11.0.0","minimist":"^1.2.0","node-sass":"^4.5.3","react-addons-test-utils":"^15.0.6","react-test-renderer":"^15.6.1","redux-logger":"^3.0.6","request":"^2.83.0","rimraf":"^2.6.1","sass-loader":"^6.0.6","sinon":"^2.3.5","spectron":"^3.7.0","style-loader":"^0.18.1","stylefmt":"^6.0.0","stylelint":"^7.12.0","stylelint-config-standard":"^16.0.0","url-loader":"^0.5.8","webpack":"^3.0.0","webpack-bundle-analyzer":"^2.8.2","webpack-dev-server":"^2.5.0","webpack-merge":"^4.1.0"},"dependencies":{"auto-launch":"^5.0.5","bitcoin-core":"git://github.com/Greg-Griffith/bitcoin-core.git","bootstrap":"^4.0.0-alpha.6","bootstrap-material-design":"^0.5.10","child_process":"^1.0.2","devtron":"^1.4.0","electron-debug":"^1.2.0","electron-dl":"^1.10.0","electron-settings":"^3.1.1","events":"^1.1.1","feedme":"^1.1.2","font-awesome":"^4.7.0","fs-path":"0.0.23","glob":"^7.1.2","gsap":"^1.20.3","history":"^4.6.3","jquery":"^3.2.1","jspdf":"^1.3.5","lowdb":"^0.16.2","open":"0.0.5","path":"^0.12.7","project-version":"^1.0.0","ps-list":"^4.0.0","radium":"^0.21.2","react":"^15.6.1","react-dom":"^15.6.1","react-hot-loader":"3.0.0-beta.6","react-loading":"^0.1.4","react-redux":"^5.0.5","react-router":"^4.1.1","react-router-dom":"^4.1.1","react-router-redux":"^5.0.0-alpha.6","react-toggle":"^4.0.2","react-transition-group":"^1.2.1","redux":"^3.7.1","redux-thunk":"^2.2.0","rss-to-json":"^1.0.4","source-map-support":"^0.4.15","sqlite3":"^3.1.13"},"devEngines":{"node":">=6.x","npm":">=3.x","yarn":">=0.21.3"},"dev-main":"index.js","main":"./app/main.prod.js"}
+module.exports = {"name":"Lynx-Gui","productName":"Lynx","version":"0.1.5","description":"Electron application providing the graphical user interface for the ECC Wallet","scripts":{"test":"cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js","test-all":"npm run lint && npm run flow && npm run test && npm run build && npm run test-e2e","test-watch":"npm test -- --watch","test-e2e":"cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js e2e","lint":"eslint --cache --format=node_modules/eslint-formatter-pretty .","lint-fix":"npm run lint -- --fix","lint-styles":"stylelint app/*.css app/components/*.css --syntax scss","lint-styles-fix":"stylefmt -r app/*.css app/components/*.css","hot-updates-server":"cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack-dev-server/bin/webpack-dev-server --config webpack.config.renderer.dev.js","build":"concurrently \"npm run build-main\" \"npm run build-renderer\"","build-dll":"cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.dev.dll.js --progress --profile --colors","build-main":"cross-env NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.main.prod.js --progress --profile --colors","build-renderer":"cross-env NODE_ENV=production node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.prod.js --progress --profile --colors","start":"cross-env NODE_ENV=production electron ./app/","prestart":"npm run build","flow":"flow check","flow-typed":"rimraf flow-typed/npm && flow-typed install --overwrite || true","start-hot-renderer":"cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./app/main.dev","postinstall":"npm rebuild --runtime=electron --target=1.8.2 --disturl=https://atom.io/download/atom-shell --build-from-source","dev":"cross-env START_HOT=1 npm run hot-updates-server","package-aa-win-32":"npm run build && build --win -c ./os/win32.json -p always","package-aa-win-64":"npm run build && build --win --x64 -c ./os/win64.json -p always","package-aa-all":"npm run package-aa-win-32 && npm run package-aa-win-64","package-win":"npm run build && build --win --x64 -c ./os/win64.json","package-win-32":"npm run build && build --win --ia32 -c ./os/win32.json","package-osx":"npm run build && build --mac --x64 -c ./os/osx.json","package-linux":"npm run build && build --linux -c ./os/lin64.json","package-linux-32":"npm run build && build --linux --ia32 -c ./os/lin32.json","package-all":"npm run package-win && npm run package-win-32 && npm run package-linux && npm run package-linux-32"},"browserslist":"electron 1.8","build":{"productName":"Ecc-GUI","appId":"com.github.greg-griffith.lynx","files":["dist/","node_modules/","app.html","main.prod.js","main.prod.js.map","package.json"],"publish":[{"provider":"github","owner":"Greg-Griffith","repo":"Lynx","vPrefixedTagName":"true","protocol":"https"}],"dmg":{"contents":[{"x":130,"y":220},{"x":410,"y":220,"type":"link","path":"/Applications"}]},"win":{"target":["nsis"]},"nsis":{"perMachine":true},"linux":{"target":["deb","AppImage"]},"directories":{"buildResources":"resources"}},"repository":"git+https://github.com/greg-griffith/lynx.git","author":"Greg Griffith <griffith@cryptounited.com> (https://github.com/greg-griffith)","license":"MIT","bugs":{"url":"https://github.com/greg-griffith/lynx/issues"},"keywords":["electron"],"homepage":"https://github.com/greg-griffith/lynx","jest":{"moduleNameMapper":{"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":"<rootDir>/internals/mocks/fileMock.js","\\.(css|less|sass|scss)$":"identity-obj-proxy"},"moduleFileExtensions":["js"],"moduleDirectories":["node_modules","app/node_modules"],"transform":{"^.+\\.js$":"babel-jest"},"setupFiles":["./internals/scripts/CheckBuiltsExist.js"]},"devDependencies":{"babel-core":"^6.24.1","babel-eslint":"^7.2.3","babel-jest":"^20.0.3","babel-loader":"^7.1.0","babel-plugin-add-module-exports":"^0.2.1","babel-plugin-dev-expression":"^0.2.1","babel-plugin-dynamic-import-webpack":"^1.0.1","babel-plugin-flow-runtime":"^0.11.1","babel-plugin-transform-class-properties":"^6.24.1","babel-plugin-transform-es2015-classes":"^6.24.1","babel-preset-env":"^1.5.1","babel-preset-react":"^6.24.1","babel-preset-react-hmre":"^1.1.1","babel-preset-react-optimize":"^1.0.1","babel-preset-stage-0":"^6.24.1","babel-register":"^6.24.1","babili-webpack-plugin":"0.1.1","chalk":"^2.0.1","checksum":"^0.1.1","concurrently":"^3.5.0","cross-env":"^5.0.0","cross-spawn":"^5.1.0","css-loader":"^0.28.3","electron":"^1.8.2","electron-builder":"^19.55.3","electron-devtools-installer":"^2.2.0","enzyme":"^2.9.1","enzyme-to-json":"^1.5.1","eslint":"^3.19.0","eslint-config-airbnb":"^15.0.1","eslint-formatter-pretty":"^1.1.0","eslint-import-resolver-webpack":"^0.8.3","eslint-plugin-compat":"^1.0.4","eslint-plugin-flowtype":"^2.33.0","eslint-plugin-flowtype-errors":"^3.3.0","eslint-plugin-import":"^2.6.0","eslint-plugin-jest":"^20.0.3","eslint-plugin-jsx-a11y":"5.0.3","eslint-plugin-promise":"^3.5.0","eslint-plugin-react":"^7.1.0","express":"^4.15.3","extract-text-webpack-plugin":"^2.1.2","fbjs-scripts":"^0.8.0","file-loader":"^0.11.1","flow-bin":"^0.48.0","flow-runtime":"^0.13.0","flow-typed":"^2.1.2","html-webpack-plugin":"^2.29.0","identity-obj-proxy":"^3.0.0","jest":"^20.0.4","jsdom":"^11.0.0","minimist":"^1.2.0","node-sass":"^4.5.3","react-addons-test-utils":"^15.0.6","react-test-renderer":"^15.6.1","redux-logger":"^3.0.6","request":"^2.83.0","rimraf":"^2.6.1","sass-loader":"^6.0.6","sinon":"^2.3.5","spectron":"^3.7.0","style-loader":"^0.18.1","stylefmt":"^6.0.0","stylelint":"^7.12.0","stylelint-config-standard":"^16.0.0","url-loader":"^0.5.8","webpack":"^3.0.0","webpack-bundle-analyzer":"^2.8.2","webpack-dev-server":"^2.5.0","webpack-merge":"^4.1.0"},"dependencies":{"auto-launch":"^5.0.5","bitcoin-core":"git://github.com/Greg-Griffith/bitcoin-core.git","bootstrap":"^4.0.0-alpha.6","bootstrap-material-design":"^0.5.10","child_process":"^1.0.2","devtron":"^1.4.0","electron-debug":"^1.2.0","electron-dl":"^1.10.0","electron-settings":"^3.1.1","events":"^1.1.1","feedme":"^1.1.2","font-awesome":"^4.7.0","fs-path":"0.0.23","glob":"^7.1.2","gsap":"^1.20.3","history":"^4.6.3","jquery":"^3.2.1","jspdf":"^1.3.5","lowdb":"^0.16.2","open":"0.0.5","path":"^0.12.7","project-version":"^1.0.0","ps-list":"^4.0.0","radium":"^0.21.2","react":"^15.6.1","react-dom":"^15.6.1","react-hot-loader":"3.0.0-beta.6","react-loading":"^0.1.4","react-redux":"^5.0.5","react-router":"^4.1.1","react-router-dom":"^4.1.1","react-router-redux":"^5.0.0-alpha.6","react-toggle":"^4.0.2","react-transition-group":"^1.2.1","redux":"^3.7.1","redux-thunk":"^2.2.0","rss-to-json":"^1.0.4","source-map-support":"^0.4.15","sqlite3":"^3.1.13"},"devEngines":{"node":">=6.x","npm":">=3.x","yarn":">=0.21.3"},"dev-main":"index.js","main":"./app/main.prod.js"}
 
 /***/ }),
 

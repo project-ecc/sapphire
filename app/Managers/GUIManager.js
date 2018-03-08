@@ -34,7 +34,7 @@ class GUIManager{
 	}
 
 	getLatestVersion(){
-		const opts = { url: 'http://7539b832.ngrok.io/walletinfo'};
+		const opts = { url: 'http://1b519385.ngrok.io/walletinfo'};
 		request(opts)
 	      .then((response) => {
 				const parsed = JSON.parse(response);
