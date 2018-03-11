@@ -10,14 +10,16 @@ const os = require('os');
 const psList = require('ps-list');
 const { exec } = require('child_process');
 import Client from 'bitcoin-core';
+import {grabWalletDir} from "../utils/platform.service";
 import {version} from './../../package.json';
 var cp = require('child_process');
 var checksum = require('checksum');
 
+
 class GUIManager{
 
 	constructor(){
-		this.path = `${homedir}/.eccoin-wallet`;
+		this.path = grabWalletDir();
 		this.os = require("os");
 		this.arch = os.arch();
 		this.os = process.platform;
@@ -45,11 +47,11 @@ class GUIManager{
 					this.toldUserAboutUpdate = true;
 					event.emit('guiUpdate');
                 }
-                
+
 	      })
 	      .catch(error => {
 	      	console.log(error);
-	      	
+
 	      });
 	      setTimeout(this.getLatestVersion.bind(this), 60000);
 	}
@@ -59,7 +61,7 @@ class GUIManager{
 		console.log("going to download GUI")
 		this.upgrading = true;
 		var self = this;
-		var file = fs.createWriteStream(this.path + "/Sapphire" + this.getExecutableExtension());
+		var file = fs.createWriteStream(this.path + "Sapphire" + this.getExecutableExtension());
 		var request = https.get(this.getDownloadUrl(), function(response) {
 			response.pipe(file);
 			file.on('finish', function() {
@@ -68,7 +70,7 @@ class GUIManager{
 				file.close(null);
 				fs.unlink(dest);
 				let sumFromServer = "";
-				checksum.file(this.path + "/Eccoind.exe", function (err, sum) {
+				checksum.file(this.path + "Sapphire" + this.getExecutableExtension(), function (err, sum) {
 					if(sumFromServer === sum){
 						self.installedVersion = self.currentVersion;
 						try{
@@ -83,9 +85,9 @@ class GUIManager{
 					}
 				});
 
-				
+
 			});
-			}).on('error', function(err) { 
+			}).on('error', function(err) {
 				self.downloading = false;
 				fs.unlink(dest);
 				self.downloadGUI();
@@ -109,7 +111,7 @@ class GUIManager{
 	getExecutableExtension(){
 		if(this.os === "win32") return ".exe";
 		else if(this.os === "linux") return ".AppImage";
-		else return ".dmg";
+		else return ".app";
 	}
 
 }

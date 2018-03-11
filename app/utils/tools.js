@@ -2,6 +2,7 @@ const homedir = require('os').homedir();
 const fs = require('fs');
 const os = require('os');
 import {TweenMax} from "gsap";
+import {getConfUri} from "./platform.service";
 import $ from 'jquery';
 var fsPath = require('fs-path');
 const settings = require('electron-settings');
@@ -67,7 +68,7 @@ module.exports = {
   hideFunctionIcons: function(element){
     TweenMax.staggerTo('.functionIcon', 0.4, {x: 20, autoAlpha: 0}, -0.2);
   },
-  
+
   showTemporaryMessage: function (element, text, time=2000) {
     if(text){
       $(element).text(text)
@@ -141,10 +142,8 @@ module.exports = {
   //Animations end
 
   updateConfig: function(staking){
-    const directory = process.platform === "win32" ? `${homedir}/appdata/roaming/eccoin` : `${homedir}/.eccoin`;
-    const filePath = process.platform === "win32" ? `${homedir}/appdata/roaming/eccoin/eccoin.conf` : `${homedir}/.eccoin/eccoin.conf`;
-    if(fs.existsSync(filePath)){  
-      fs.readFile(filePath, 'utf8', (err, data) => {
+    if(fs.existsSync(getConfUri())){
+      fs.readFile(getConfUri(), 'utf8', (err, data) => {
         if (err) {
            console.log("readFile error: ", err);
            return;
@@ -152,9 +151,9 @@ module.exports = {
         if (/staking=[0-9]/g.test(data)) {
             const result = data.replace(/staking=[0-9]/g, 'staking='+staking);
 
-          fs.writeFileSync(filePath, result, 'utf8', (err) => {
+          fs.writeFileSync(getConfUri(), result, 'utf8', (err) => {
             if (err) {
-              console.log("writeFileSync error: ", err); 
+              console.log("writeFileSync error: ", err);
               return;
             }
             else{
@@ -162,10 +161,10 @@ module.exports = {
               return;
             }
           });
-          
+
         } else {
 
-          fs.appendFileSync(filePath, os.EOL + 'staking='+staking, 'utf8', (err) => {
+          fs.appendFileSync(getConfUri(), os.EOL + 'staking='+staking, 'utf8', (err) => {
             if (err) {
               console.log("appendFile error: ", err);
               return;
@@ -188,14 +187,12 @@ module.exports = {
   },
 
   updateOrCreateConfig(username, password){
-    const directory = process.platform === "win32" ? `${homedir}/appdata/roaming/eccoin` : `${homedir}/.eccoin`;
-    const filePath = process.platform === "win32" ? `${homedir}/appdata/roaming/eccoin/eccoin.conf` : `${homedir}/.eccoin/eccoin.conf`;
     return new Promise((resolve, reject) => {
-      fs.exists(filePath, (exists) => {
+      fs.exists(getConfUri(), (exists) => {
         if(!exists){
            //create
            const toWrite = "maxconnections=100" + os.EOL + "rpcuser=" + username + os.EOL + "rpcpassword=" + password + os.EOL + "addnode=www.cryptounited.io" + os.EOL + "rpcport=19119" + os.EOL + "rpcconnect=127.0.0.1" + os.EOL + "staking=0" + os.EOL + "zapwallettxes=0";
-           fsPath.writeFile(filePath, toWrite, 'utf8', (err) => {
+           fsPath.writeFile(getConfUri(), toWrite, 'utf8', (err) => {
                 if (err) {
                   console.log(err)
                   resolve(false);
@@ -205,7 +202,7 @@ module.exports = {
             });
         }
         else{
-          fs.readFile(filePath, 'utf8', (err, data) => {
+          fs.readFile(getConfUri(), 'utf8', (err, data) => {
             if (err) {
                console.log("readFile error: ", err);
                resolve(false);
@@ -232,7 +229,7 @@ module.exports = {
               result += `${os.EOL}rpcpassword=${password}`;
             }
 
-            fs.writeFile(filePath, result, 'utf8', (err) => {
+            fs.writeFile(getConfUri(), result, 'utf8', (err) => {
               if(!err)
                 resolve(true);
               else resolve(false);
@@ -244,16 +241,14 @@ module.exports = {
   },
 
   readRpcCredentials(){
-    const directory = process.platform === "win32" ? `${homedir}/appdata/roaming/eccoin` : `${homedir}/.eccoin`;
-    const filePath = process.platform === "win32" ? `${homedir}/appdata/roaming/eccoin/eccoin.conf` : `${homedir}/.eccoin/eccoin.conf`;
     var toReturn = null;
     return new Promise((resolve, reject) => {
-      fs.exists(filePath, (exists) => {
+      fs.exists(getConfUri(), (exists) => {
         if(!exists){
            resolve(toReturn);
            return;
         }
-        fs.readFile(filePath, 'utf8', (err, data) => {
+        fs.readFile(getConfUri(), 'utf8', (err, data) => {
           if (err) {
             console.log("readFile error: ", err);
             resolve(toReturn);

@@ -9,6 +9,7 @@ var https = require('https');
 var psList = require('ps-list');
 var checksum = require('checksum');
 import Wallet from '../utils/wallet';
+import {getPlatformWalletUri, grabWalletDir, grabEccoinDir } from "../utils/platform.service";
 import Tools from '../utils/tools';
 
 /*
@@ -17,8 +18,8 @@ import Tools from '../utils/tools';
 class DaemonManager {
 
 	constructor(){
-		this.path = `${homedir}/.eccoin-wallet`;
-		this.versionPath = `${homedir}/.eccoin-wallet/wallet-version.txt`;
+		this.path = `${grabWalletDir()}`;
+		this.versionPath = `${grabWalletDir()}wallet-version.txt`;
 		this.installedVersion = -1;
 		this.currentVersion = -1;
 		this.walletDat = false;
@@ -68,7 +69,7 @@ class DaemonManager {
 			var result = await Tools.updateOrCreateConfig(daemonCredentials.username, daemonCredentials.password)
 			this.wallet = new Wallet(daemonCredentials.username, daemonCredentials.password)
 		}*/
-		
+
 		console.log("going to check daemon version")
 		this.installedVersion = await this.checkIfDaemonExists();
 		//on startup daemon should not be running unless it was to update the application
@@ -107,7 +108,7 @@ class DaemonManager {
 		if(this.installedVersion != -1 && !this.downloading){
 			var self = this;
 			psList().then(data => {
-			    for (var i = 0; i < data.length; i++) { 
+			    for (var i = 0; i < data.length; i++) {
 				    if(data[i].name.indexOf('Eccoind') > -1){
 				     self.running = true;
 				     console.log("Daemon running")
@@ -127,7 +128,7 @@ class DaemonManager {
 	    this.wallet.walletstart((result) => {
 	      if (result) {
 	      	cb(result);
-	      } 
+	      }
 	    });
 	}
 
@@ -171,9 +172,9 @@ class DaemonManager {
 			setTimeout( async ()=> {
 				var downloaded = false;
 				do{
-					downloaded = await self.downloadDaemon();	
+					downloaded = await self.downloadDaemon();
 				}while(!downloaded)
-				event.emit("updatedDaemon"); 
+				event.emit("updatedDaemon");
 				if(self.shouldRestart)
 					self.startDaemon();
 				this.toldUserAboutUpdate = false;
@@ -182,8 +183,8 @@ class DaemonManager {
 	}
 
 
-    async checkIfDaemonExists() { 
-		if (fs.existsSync(this.path + "/Eccoind.exe")) {
+    async checkIfDaemonExists() {
+		if (fs.existsSync(getPlatformWalletUri())) {
 		    try{
 	    		var data = fs.readFileSync(this.versionPath, "utf8");
 			}catch(e){
@@ -200,12 +201,12 @@ class DaemonManager {
 		else return -1;
 	};
 
-    async checkIfWalletExists() { 
-    	if(!fs.existsSync(homedir + "/AppData/Roaming/eccoin")){
-    		fs.mkdirSync(homedir + "/AppData/Roaming/eccoin");
+    async checkIfWalletExists() {
+    	if(!fs.existsSync(grabEccoinDir())){
+    		fs.mkdirSync(grabEccoinDir());
     		return false;
     	}
-		if (fs.existsSync(homedir + "/AppData/Roaming/eccoin/wallet.dat")) {
+		if (fs.existsSync(`${grabEccoinDir()}wallet.dat`)) {
 			console.log("wallet exists")
 			return true;
 		}
@@ -236,7 +237,7 @@ class DaemonManager {
 		var self = this;
 		return new Promise(function(resolve, reject){
 			console.log("going to download")
-			var file = fs.createWriteStream(self.path + "/Eccoind" + self.getExecutableExtension());
+			var file = fs.createWriteStream(grabWalletDir() + "Eccoind" + self.getExecutableExtension());
 			var request = https.get(self.getDownloadUrl(), function(response) {
 				response.pipe(file);
 				file.on('finish', function() {
@@ -244,7 +245,7 @@ class DaemonManager {
 					console.log("Done downloading")
 					file.close(null);
 					let sumFromServer = "";//TODO
-					checksum.file(this.path + "/Eccoind.exe", function (err, sum) {
+					checksum.file(grabWalletDir() + "Eccoind" + self.getExecutableExtension(), function (err, sum) {
 						console.log(sum)
 					   if(sumFromServer === sum){
 						self.installedVersion = self.currentVersion;
@@ -256,10 +257,10 @@ class DaemonManager {
 					   }
 					})
 				});
-				}).on('error', function(err) { 
+				}).on('error', function(err) {
 					self.downloading = false;
 					fs.unlink(dest);
-					resolve(false); 
+					resolve(false);
 			});
 		});
 	}
@@ -288,7 +289,7 @@ class DaemonManager {
 	getExecutableExtension(){
 		if(this.os === "win32") return ".exe";
 		else if(this.os === "linux") return "";
-		else return ".dmg";
+		else return ".app";
 	}
 
 }
