@@ -21,7 +21,7 @@ class AddressBook extends Component {
     const friendList = low.get('friends').value();
     this.props.setContacts(friendList);
     $( window ).on('resize', () => {
-      this.updateTable(self.props.friends);
+      this.updateTable(this.props.friends);
     });
     this.updateTable(friendList);
   }
