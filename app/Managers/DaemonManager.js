@@ -136,8 +136,11 @@ class DaemonManager {
 		return new Promise(function(resolve, reject){
 			self.wallet.walletstop()
 		      .then((data) => {
-		      	if(data == "ECC server stopping"){
+		      	if(data && data == "ECC server stopping"){
 		      		console.log("stopping daemon");
+		      		resolve(true);
+		      	}
+		      	else if(data && data.code === 'ECONNREFUSED'){
 		      		resolve(true);
 		      	}
 		      	else{
