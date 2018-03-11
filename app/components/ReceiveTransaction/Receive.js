@@ -194,13 +194,13 @@ class Receive extends Component {
               <p className="tableFilterReceive fixMarginReceive" onClick={this.filterClicked.bind(this, "all")} style={{color: this.props.filterAll ? "#a4a3e6" : "#555d77"}}>All</p>
             </div>
           </div>
-          <div className="container tableContainer">
+          <div className="tableContainer">
               <div className="row rowDynamic">
                 <div className="col-sm-3 headerAddresses headerAddressFix">{this.props.filterAll ? "ACCOUNT" : this.props.filterNormal ? "ACCOUNT" : "NAME"}</div>
                 <div id="addressHeader" className="col-sm-6 headerAddresses">{this.props.filterAll ? "ADDRESS / NAME" : "ADDRESS"}</div>
                 <div id="addressHeader" className="col-sm-3 headerAddresses">AMOUNT</div>
               </div>
-            <div id="rows" className="container">
+            <div id="rows">
             {this.props.userAddresses.map((address, index) => {
               if(this.props.filterAll || this.props.filterNormal && !address.ans || this.props.filterAns && address.ans){
                 counter++;

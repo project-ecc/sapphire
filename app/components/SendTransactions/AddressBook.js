@@ -104,13 +104,13 @@ class AddressBook extends Component {
           <p className="tableHeader" style={{paddingTop: this.props.sendPanel ? "4px" : "7px", paddingLeft: "5%"}}>Contacts</p>
           {this.getHeaderText()}
         </div>
-        <div className="container tableContainer">
+        <div className="tableContainer">
             <div className="row" style={{height: "55px"}}>
               <div className="col-sm-4 headerAddresses tableColumContactFix">NAME</div>
               <div id="addressHeader" className="col-sm-7 headerAddresses">ADDRESS</div>
               <div className="col-sm-1 headerAddresses"></div>
             </div>
-          <div id="rows" className="container" style={{width: "100%", padding: "0 0"}}>
+          <div id="rows" style={{width: "100%", padding: "0 0"}}>
           {this.props.friends.map((friend, index) => {
             return (
               <div className="row normalWeight rowContact" onClick={this.rowClicked.bind(this, friend)} onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default", backgroundColor: index % 2 != 0 ? "transparent" : "#1b223d"}} key={`friend_${index}`}>

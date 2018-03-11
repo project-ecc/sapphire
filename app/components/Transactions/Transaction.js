@@ -179,14 +179,14 @@ class Transaction extends Component {
               </ul>
             </div>
           </div>
-          <div className="container" style={{width: "100%", marginTop: "5px", padding: "0 0"}}>
+          <div style={{width: "100%", marginTop: "5px", padding: "0 0"}}>
             <div className="row" style={{height: "55px"}}>
               <div className="col-sm-6" style={{position:"relative", fontSize: "14px", color: "#555d77", paddingLeft: "4%", paddingTop: "16px", fontWeight: "600"}}>TYPE</div>
               <div id="addressHeader" className="col-sm-2 headerAddresses" style={{position:"relative", fontSize: "14px", color: "#555d77", paddingTop: "16px", fontWeight: "600"}}>AMOUNT</div>
               <div id="addressHeader" className="col-sm-2 headerAddresses" style={{position:"relative", fontSize: "14px", color: "#555d77", paddingTop: "16px", fontWeight: "600"}}>STATUS</div>
               <div id="addressHeader" className="col-sm-2 headerAddresses" style={{position:"relative", fontSize: "14px", color: "#555d77", paddingTop: "16px", fontWeight: "600"}}>TIME</div>
             </div>
-          <div id="rows" className="container" style={{height: "500px", width: "100%", padding: "0 0"}}>
+          <div id="rows" style={{height: "500px", width: "100%", padding: "0 0"}}>
             {data.map((t, index) => {
 
               if (this.props.type === 'all'
