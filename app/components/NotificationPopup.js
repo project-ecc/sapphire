@@ -25,23 +25,23 @@ class NotificationPopup extends React.Component {
   }
 
   componentDidMount(){
-    $('#newsNotifications').on("click", function(){
+    $('#newsNotifications').on("click", () => {
       this.props.setSelectedPanel("news");
       this.props.setNotifications(false);
       this.props.selectedSideBar("news");
       this.props.setShowingNews(true);
     });
-    $('#earningsNotification').on("click", function(){
+    $('#earningsNotification').on("click", () => {
       this.props.setSelectedPanel("transactions");
       this.props.setTransactionsData(this.props.transactions, "generate");
       this.props.selectedSideBar("wallet", "transactions");
       this.props.setNotifications(false);
     });
-    $('#applicationUpdate').on("click", function(){
+    $('#applicationUpdate').on("click", () => {
       this.props.setUpdateApplication(true);
       this.props.setNotifications(false);
     });
-    $('#notificationContainer').on("click", function(event) {
+    $('#notificationContainer').on("click", (event) => {
       event.stopPropagation();
     });
     setTimeout(() => {
