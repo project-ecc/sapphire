@@ -1,7 +1,7 @@
 import Client from 'bitcoin-core';
+import shell from 'node-powershell';
 import {getPlatformWalletUri} from "./platform.service";
 
-const homedir = require('os').homedir();
 const { exec, spawn } = require('child_process');
 
 var client = undefined;
