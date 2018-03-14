@@ -197,10 +197,17 @@ class TopBar extends React.Component {
   }
 
   render() { 
+    let menuBar = null;
+    if (process.platform === 'darwin'){
+      menuBar = this.getDarwinBar();
+    }
+    else{
+      menuBar = this.getWinLinBar();
+    }
      return (
         <div id="wrapperToBeAbleToResize">
           <div id="topBar">
-            {this.getDarwinBar()}
+            {menuBar}
           </div>
         </div>
       );
