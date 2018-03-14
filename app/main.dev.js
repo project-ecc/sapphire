@@ -220,6 +220,10 @@ ipcMain.on('minimize', (e, args) => {
 	mainWindow.minimize();
 });
 
+ipcMain.on('full-screen', (e, args) => {
+	mainWindow.setFullScreen(true)
+});
+
 ipcMain.on('hideTray', (e, hideTray) => {
 	if(!hideTray)
 		setupTrayIcon();

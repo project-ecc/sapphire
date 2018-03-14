@@ -24,7 +24,7 @@ class TopBar extends React.Component {
     });
 
     if (true){
-      ipcRenderer.on('maximize', () => {this.maximize(true)});
+      ipcRenderer.on('maximize', () => {this.fullScreenMac(true)});
     }
   }
 
@@ -38,9 +38,9 @@ class TopBar extends React.Component {
     $(".appButton").removeClass('appButtonHover');
   }
 
-  maximize(externalAction){
+  fullScreenMac(externalAction){
     if(!externalAction){
-      ipcRenderer.send('maximize');
+      ipcRenderer.send('full-screen');
     }
     if(!this.props.appMaximized){
       TweenMax.to('#appButtonsMac', 0.3, {autoAlpha: 0});
@@ -48,6 +48,11 @@ class TopBar extends React.Component {
     else{
       TweenMax.to('#appButtonsMac', 0.3, {autoAlpha: 1});
     }
+    this.props.setAppMaximized(!this.props.appMaximized);
+  }
+
+  maximize(){
+    ipcRenderer.send('maximize');
     this.props.setAppMaximized(!this.props.appMaximized);
   }
 
@@ -136,7 +141,7 @@ class TopBar extends React.Component {
           <div onClick={this.minimize} className="appButtonMac">
             <img src={minimize}></img>
           </div>
-          <div onClick={this.maximize.bind(this, false)} className="appButtonMac">
+          <div onClick={this.fullScreenMac.bind(this, false)} className="appButtonMac">
             <img src={maximize}></img>
           </div>
         </div>
