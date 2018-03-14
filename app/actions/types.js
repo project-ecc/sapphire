@@ -102,3 +102,5 @@ export const SHOWING_FUNCTION_ICONS = "showing_function_icons";
 export const GENERIC_PANEL_ANIMATION_ON = "generic_panel_animation_on";
 export const TELL_USER_OF_UPDATE = "tell_user_of_update";
 export const CLOSING_APPLICATION = "closing_application";
+export const MAC_BUTTONS_HOVER = "mac_buttons_hover";
+export const APP_MAXIMIZED = "app_maximized";

@@ -16930,6 +16930,24 @@ textarea:focus, input:focus{
 
 #payAns p:hover{
 	background-color: #1c2340;
+}.appButtonMac img{
+	width: 12px;
+}
+
+#appButtonsMac{
+	position: fixed;
+    z-index: 2;
+    height: 40px;
+    top: 5px;
+    left: 20px;
+    -webkit-app-region: no-drag;
+    transition: .3s left;
+}
+
+.appButtonMac{
+	display: inline-block;
+    width: 20px;
+    height: 100%;
 }html,
 body {
   font-family: Muli, sans-serif;

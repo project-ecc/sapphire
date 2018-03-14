@@ -29,15 +29,12 @@ class App extends Component<Props> {
   constructor(props) {
     super(props);
     this.getMainApp = this.getMainApp.bind(this);
-    this.settings = this.settings.bind(this);
     this.loadSettingsToRedux = this.loadSettingsToRedux.bind(this);
-    this.news = this.news.bind(this);
-    this.notification = this.notification.bind(this);
     this.setGenericAnimationToFalse = this.setGenericAnimationToFalse.bind(this);
     this.setGenericAnimationToTrue = this.setGenericAnimationToTrue.bind(this);
     this.processCloseRequest = this.processCloseRequest.bind(this);
-    this.close = this.close.bind(this);
   }
+
   componentDidMount() {
     this.props.getSetup();
 
@@ -147,68 +144,6 @@ class App extends Component<Props> {
         </TransitionGroup>
       </div>
     )
-  }
-
-  news(){
-    let settingsSelected = this.props.settings;
-    this.props.setNotifications(false);
-    if(this.props.news && !settingsSelected){ 
-      return;
-    }
-    this.props.setSelectedPanel("news");
-    this.props.selectedSideBar(undefined);
-    this.props.setShowingNews(settingsSelected ? true : !this.props.news);
-    if(this.props.settings){
-      this.props.setSettings(false);
-      this.props.setExportingPrivateKeys(false);
-      this.props.setPanelExportingPrivateKeys(1);
-      this.props.setImportingPrivateKey(false);
-      this.props.setChangingPassword(false);
-      this.props.setUpdateApplication(false);
-      TweenMax.to($('.mancha'), 0.2, { autoAlpha:0, ease: Linear.easeNone});
-    }
-  }
-
-  notification(){
-    if(!this.props.notificationPopup){
-      this.props.setExportingPrivateKeys(false);
-      this.props.setPanelExportingPrivateKeys(1);
-      this.props.setImportingPrivateKey(false);
-      this.props.setChangingPassword(false);
-      this.props.setUpdateApplication(false);
-      TweenMax.to($('.mancha'), 0.2, { autoAlpha:0, ease: Linear.easeNone});
-    }
-    this.props.setNotifications(!this.props.notificationPopup);
-
-  }
-  
-  settings(){
-    if(this.props.genericPanelAnimationOn) return;
-    this.props.setNotifications(false);
-    if(this.props.checkingDaemonStatusPrivateKey) return;
-    this.props.setSettings(!this.props.settings);
-    this.props.setExportingPrivateKeys(false);
-    this.props.setPanelExportingPrivateKeys(1);
-    this.props.setImportingPrivateKey(false);
-    this.props.setChangingPassword(false);
-    this.props.setUpdateApplication(false);
-    TweenMax.to($('.mancha'), 0.2, { autoAlpha:0, ease: Linear.easeNone});
-  }
-
-  minimize(){
-    ipcRenderer.send('minimize');
-    $(".appButton").removeClass('appButtonHover');
-  }
-
-  maximize(){
-    ipcRenderer.send('maximize');
-  }
-
-  close(){
-    ipcRenderer.send('close');
-    if(!this.props.minimizeOnClose){
-      this.processCloseRequest();
-    }
   }
 
   processCloseRequest(){
@@ -340,10 +275,7 @@ class App extends Component<Props> {
   render() {
     return (
       <div id="main">
-        <TopBar 
-          settings= {this.props.settings}
-          news= {this.props.news}
-        />
+        <TopBar />
         <div className="mancha">
         </div>
         <div>
@@ -375,13 +307,11 @@ const mapStateToProps = state => {
     news: state.application.selectedPanel == "news" ? true : false,
     updateApplication: state.application.updateApplication,
     updatingApplication: state.startup.updatingApp,
-    notificationPopup: state.notifications.popupEnabled,
     unlocking: state.application.unlocking,
     sending: state.application.sendingEcc,
     creatingAddress: state.application.creatingAddress,
     unencryptedWallet: state.startup.unencryptedWallet,
     loading: state.startup.loading,
-    genericPanelAnimationOn: state.application.genericPanelAnimationOn,
     minimizeOnClose: state.application.minimizeOnClose,
     closingApplication: state.application.closingApplication
   };

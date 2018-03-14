@@ -25,6 +25,7 @@
 @import "./styles/Contacts.css";
 @import "./styles/News.css";
 @import "./styles/Notifications.css";
+@import "./styles/TopBar.css";
 
 html,
 body {

@@ -109,6 +109,18 @@ app.on('ready', async () => {
   	sendMessage("focused");
   }); 
 
+  mainWindow.on('leave-full-screen', function(event){
+  	if (true){
+  		sendMessage("maximize");
+  	}
+  });
+
+  mainWindow.on('enter-full-screen', function(event){
+  	if (true){
+  		sendMessage("maximize");
+  	}
+  });
+
   mainWindow.on('close', function (event) {
     if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
       event.preventDefault();
