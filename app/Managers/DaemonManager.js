@@ -5,11 +5,12 @@ const request = require('request-promise-native');
 const homedir = require('os').homedir();
 const event = require('../utils/eventhandler');
 const os = require('os');
+const extract = require('extract-zip');
 var https = require('https');
 var psList = require('ps-list');
 var checksum = require('checksum');
 import Wallet from '../utils/wallet';
-import {getPlatformWalletUri, grabWalletDir, grabEccoinDir } from "../utils/platform.service";
+import {getPlatformWalletUri, grabWalletDir, grabEccoinDir, getDaemonUrl , getPlatformFileName} from "../utils/platform.service";
 import Tools from '../utils/tools';
 
 /*
@@ -217,7 +218,12 @@ class DaemonManager {
 	};
 
 	async getLatestVersion(){
-		const opts = { url: 'http://1b519385.ngrok.io/daemoninfo'};
+		const opts = {
+		  url: 'https://api.github.com/repos/Greg-Griffith/eccoin/releases/latest',
+      headers: {
+        'User-Agent': 'request'
+      }
+		};
 		var self = this;
 		request(opts)
 	      .then((response) => {
@@ -231,65 +237,76 @@ class DaemonManager {
 	      });
 
 	}
+  async downloadDaemon(){
+    this.downloading = true;
+    var self = this;
+    return new Promise((resolve, reject) => {
+      console.log('downloading daemon')
+      // Download daemon.zip
 
-	async downloadDaemon(){
-		this.downloading = true;
-		var self = this;
-		return new Promise(function(resolve, reject){
-			console.log("going to download")
-			var file = fs.createWriteStream(grabWalletDir() + "Eccoind" + self.getExecutableExtension());
-			var request = https.get(self.getDownloadUrl(), function(response) {
-				response.pipe(file);
-				file.on('finish', function() {
-					self.downloading = false;
-					console.log("Done downloading")
-					file.close(null);
-					let sumFromServer = "";//TODO
-					checksum.file(grabWalletDir() + "Eccoind" + self.getExecutableExtension(), function (err, sum) {
-						console.log(sum)
-					   if(sumFromServer === sum){
-						self.installedVersion = self.currentVersion;
-						self.saveVersion(self.installedVersion);
-					   	resolve(true);
-					   }
-					   else{
-					   	resolve(false);
-					   }
-					})
-				});
-				}).on('error', function(err) {
-					self.downloading = false;
-					fs.unlink(dest);
-					resolve(false);
-			});
+      // create new destination zip.
+      const file = fs.createWriteStream(grabWalletDir() + 'Eccoind.zip');
+      const request = https.get(getDaemonUrl(), (response) => {
+
+        response.pipe(file);
+        file.on('finish', function () {
+
+          // unzip file.
+          extract(`${grabWalletDir()}Eccoind.zip`, { dir: `${grabWalletDir()}` }, (err) => {
+            if (err) {
+              console.log(err);
+            } else {
+              self.downloading = false;
+              console.log('Done downloading');
+              file.close(null);
+
+              if (fs.existsSync(`${grabWalletDir()}Eccoind.zip`)) {
+                fs.unlink(`${grabWalletDir()}Eccoind.zip`, (error) => {
+                  if (error) {
+                    alert(`An error ocurred updating${error.message}`);
+                    console.log(error);
+                    return;
+                  } else {
+                    console.log('File successfully deleted');
+                    self.installedVersion = self.currentVersion;
+                    self.saveVersion(self.installedVersion);
+                    resolve(true);
+
+                    // TODO below this line grab platform and checksum file.
+                    // let sumFromServer = '';//TODO
+                    // checksum.file(grabWalletDir() + getPlatformFileName(), (error, sum) => {
+                    //   console.log(sum);
+                    //   if (sumFromServer === sum){
+                    //     self.installedVersion = self.currentVersion;
+                    //     self.saveVersion(self.installedVersion);
+                    //     resolve(true);
+                    //   } else {
+                    //     resolve(false);
+                    //   }
+                    // });
+                  }
+                });
+              } else {
+                alert("This file doesn't exist, cannot delete");
+              }
+              console.log('unzip successfully.');
+            }
+          });
+        });
+      }).on('error', function(err) {
+        console.log(err)
+        self.downloading = false;
+        fs.unlink(dest);
+        resolve(false);
+      });
 		});
 	}
 
 	saveVersion(version){
 		console.log(this.versionPath)
-		console.log(version)
+		console.log("version" + version)
 		var writter = fs.createWriteStream(this.versionPath);
 		writter.write(version.toString());
-	}
-
-	getDownloadUrl(){
-		var os = this.os;
-		var arch = this.arch;
-
-		if(os === "win32" && arch === "x64")
-			return "https://www.ecc.network/downloads/updates/eccoind-win64.exe";
-		else if(os === "win32" && arch === "x32")
-			return "https://www.ecc.network/downloads/updates/eccoind-win32.exe";
-		else if(os === "darwin" && arch === "x64")
-			return "https://www.ecc.network/downloads/updates/eccoind-linux64";
-		else if(os === "win32" && arch === "x32")
-			return "https://www.ecc.network/downloads/updates/eccoind-linux32";
-	}
-
-	getExecutableExtension(){
-		if(this.os === "win32") return ".exe";
-		else if(this.os === "linux") return "";
-		else return ".app";
 	}
 
 }
