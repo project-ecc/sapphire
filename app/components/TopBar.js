@@ -23,8 +23,8 @@ class TopBar extends React.Component {
       this.props.setMacButtonsHover(false);
     });
 
-    if (true){
-      ipcRenderer.on('maximize', () => {this.fullScreenMac(true)});
+    if (process.platform === 'darwin'){
+      ipcRenderer.on('full-screen', () => {this.fullScreenMac(true)});
     }
   }
 
@@ -41,12 +41,6 @@ class TopBar extends React.Component {
   fullScreenMac(externalAction){
     if(!externalAction){
       ipcRenderer.send('full-screen');
-    }
-    if(!this.props.appMaximized){
-      TweenMax.to('#appButtonsMac', 0.3, {autoAlpha: 0});
-    }
-    else{
-      TweenMax.to('#appButtonsMac', 0.3, {autoAlpha: 1});
     }
     this.props.setAppMaximized(!this.props.appMaximized);
   }

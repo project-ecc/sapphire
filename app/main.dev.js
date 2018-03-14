@@ -36,6 +36,7 @@ let ds = undefined;
 let mainWindow = null;
 let guiUpdate = false;
 let daemonUpdate = false;
+let fullScreen = false;
 
 function sendStatusToWindow(text) {
   mainWindow.webContents.send('message', text);
@@ -110,14 +111,16 @@ app.on('ready', async () => {
   }); 
 
   mainWindow.on('leave-full-screen', function(event){
-  	if (true){
-  		sendMessage("maximize");
+  if (process.platform === 'darwin'){
+  		sendMessage("full-screen");
+  		fullScreen = false
   	}
   });
 
   mainWindow.on('enter-full-screen', function(event){
-  	if (true){
-  		sendMessage("maximize");
+  	if (process.platform === 'darwin'){
+  		sendMessage("full-screen");
+  		fullScreen = true;
   	}
   });
 
@@ -221,7 +224,12 @@ ipcMain.on('minimize', (e, args) => {
 });
 
 ipcMain.on('full-screen', (e, args) => {
-	mainWindow.setFullScreen(true)
+	if(fullScreen)
+		mainWindow.setFullScreen(false);
+	else 
+		mainWindow.setFullScreen(true);
+
+	fullScreen = !fullScreen;
 });
 
 ipcMain.on('hideTray', (e, hideTray) => {
