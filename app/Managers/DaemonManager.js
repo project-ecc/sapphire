@@ -109,7 +109,7 @@ class DaemonManager {
 			var self = this;
 			psList().then(data => {
 			    for (var i = 0; i < data.length; i++) {
-				    if(data[i].name.indexOf('Eccoind') > -1){
+				    if(data[i].name.toLowerCase().indexOf('eccoind') > -1){
 				     self.running = true;
 				     console.log("Daemon running")
 				     return;
