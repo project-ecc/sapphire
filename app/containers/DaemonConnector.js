@@ -428,6 +428,8 @@ class DaemonConnector {
   }
 
   async loadTransactionsForProcessing(){
+    console.log("RUNNING loadTransactionsForProcessing()")
+    console.log("CURRENT FROM: ", this.currentFrom)
     this.isIndexingTransactions = true;
 
     this.checkIfTransactionsNeedToBeDeleted();
@@ -458,6 +460,7 @@ class DaemonConnector {
     for (let i = 0; i < transactions.length; i++) {
       time = transactions[i].time;
       if(time > this.currentFrom || !this.transactionsIndexed){
+        console.log("FOUND NEW TRANSACTION: ", transactions[i].txid)
         shouldRequestAnotherPage = true;
         txId = transactions[i].txid;
         amount = transactions[i].amount;
@@ -493,6 +496,7 @@ class DaemonConnector {
   }
 
   processTransactions(){
+    console.log("RUNNING processTransactions()")
     let entries = [];
     /*let auxCurrentAddresses = [];
     let currentAddresses = this.store.getState().application.userAddresses;
@@ -504,6 +508,8 @@ class DaemonConnector {
       let values = this.transactionsMap[key];
       for(let i = 1; i < values.length; i++){
         if(values[i].category == "generate" && values[i].amount > 0){
+          console.log("PUSHING ENTRY: ", key)
+          console.log("TIME: ", values[i].time)
           entries.push({...values[i], txId: key})
           break;
         }

@@ -312,6 +312,7 @@ const mapStateToProps = state => {
     creatingAddress: state.application.creatingAddress,
     unencryptedWallet: state.startup.unencryptedWallet,
     loading: state.startup.loading,
+    notificationPopup: state.notifications.popupEnabled,
     minimizeOnClose: state.application.minimizeOnClose,
     closingApplication: state.application.closingApplication
   };
