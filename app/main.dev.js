@@ -15,6 +15,7 @@ import path from 'path';
 import MenuBuilder from './menu';
 import DaemonManager from './Managers/DaemonManager';
 import GUIManager from './Managers/GUIManager';
+import {grabWalletDir} from "./utils/platform.service";
 import os from 'os';
 const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote, Notification   } = require('electron');
 const dialog = require('electron').dialog;
@@ -108,7 +109,7 @@ app.on('ready', async () => {
 
   mainWindow.on('focus', function (event) {
   	sendMessage("focused");
-  }); 
+  });
 
   mainWindow.on('leave-full-screen', function(event){
   if (process.platform === 'darwin'){
@@ -156,7 +157,7 @@ app.on('ready', async () => {
   if (ds === undefined || ds.tray_icon === undefined || !ds.tray_icon) {
     setupTrayIcon();
   }
-  
+
   if (ds !== undefined && ds.start_at_login !== undefined && ds.start_at_login) {
     autoECCLauncher.enable();
   }
@@ -313,7 +314,7 @@ event.on('guiUpdate', () => {
 })
 
 event.on('updatedDaemon', () => {
-	sendMessage("daemonUpdated");	
+	sendMessage("daemonUpdated");
 	daemonUpdate = false;
 	if(guiUpdate){
 		event.emit('updateGui');
@@ -321,7 +322,7 @@ event.on('updatedDaemon', () => {
 })
 
 event.on('daemonStarted', () => {
-	sendMessage("importedWallet");	
+	sendMessage("importedWallet");
 })
 
 ipcMain.on('importWallet', (e, args) => {
@@ -363,18 +364,11 @@ console.log("called open file")
         });
    else{
    	sendMessage("importStarted");
-   	const homedir = require('os').homedir();
-   	const platform = os.platform();
+    walletPath = `${grabWalletDir()}wallet.dat`;
 
-	if (platform.indexOf('win') > -1) {
-	walletPath = `${app.getPath('appData')}/eccoin/wallet.dat`;
-	} else {
-	walletPath = `${app.getPath('home')}/.eccoin/wallet.dat`;
-	}
+	  console.log(walletPath)
 
-	console.log(walletPath)
-
-   	copyFile(fileName, walletPath, function(err){
+   	copyFile(fileName,walletPath, function(err){
 		if(err){
 			console.log("error copying wallet: ", err);
 		}
@@ -383,7 +377,7 @@ console.log("called open file")
 		}
    	})
    }
- }); 
+ });
 }
 
 function copyFile(source, target, cb) {
