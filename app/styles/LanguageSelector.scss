@@ -1,0 +1,123 @@
+@import "./themes.scss";
+
+.selectLanguageLanguageSelector{
+  font-size: 22px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.dropdownLanguageSelector {
+  @include themify($themes) { 
+    background-color: themed('bodyBackgroundColor');  
+    color: themed('bodyParagraphColor');
+  }
+  width: 300px;
+  display: inline-block;
+  border-radius: 5px;
+  //box-shadow: 0 0 2px rgb(204, 204, 204);
+  transition: all .5s ease;
+  position: relative;
+  font-size: 15px;
+  text-align: left
+}
+.dropdownLanguageSelector .selectLanguageSelector {
+    @include themify($themes) { 
+      border: themed('inputBorderBottom');  
+    }
+    cursor: pointer;
+    display: block;
+    padding: 8px;
+    background-color: transparent;
+}
+.dropdownLanguageSelector .selectLanguageSelector i {
+    @include themify($themes) { 
+      color: themed('bodyParagraphColor');
+    } 
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .3s ease-in-out;
+    float: right
+}
+.dropdownLanguageSelector:hover {
+    //box-shadow: 0 0 4px rgb(204, 204, 204)
+}
+.dropdownLanguageSelector:active {
+    @include themify($themes) { 
+      background-color: themed('homePanelsBackgroundColor');
+    } 
+}
+.dropdownLanguageSelector.active:hover,
+.dropdownLanguageSelector.active {
+    @include themify($themes) { 
+      background-color: themed('homePanelsBackgroundColor');
+    } 
+    //box-shadow: 0 0 4px rgb(204, 204, 204);
+    border-radius: 5px 5px 0 0;
+}
+.dropdownLanguageSelector.active .selectLanguageSelector i {
+    transform: rotate(180deg)
+}
+.dropdownLanguageSelector .dropdown-menuLanguageSelector {
+    @include themify($themes) { 
+      background-color: themed('bodyBackgroundColor');  
+      border: themed('inputBorderBottom');  
+    }
+    position: absolute;
+    width: 100%;
+    left: 0;
+    margin-top: 1px;
+    //box-shadow: 0 1px 2px rgb(204, 204, 204);
+    border-radius: 0 1px 5px 5px;
+    overflow: hidden;
+    display: none;
+    max-height: 144px;
+    overflow-y: auto;
+    z-index: 9
+}
+.dropdownLanguageSelector .dropdown-menuLanguageSelector li {
+    padding: 10px;
+    transition: all .2s ease-in-out;
+    cursor: pointer
+} 
+.dropdownLanguageSelector .dropdown-menuLanguageSelector {
+    padding: 0;
+    list-style: none
+}
+.dropdownLanguageSelector .dropdown-menuLanguageSelector li:hover {
+    @include themify($themes) { 
+      background-color: themed('homePanelsBackgroundColor');
+    } 
+}
+.dropdownLanguageSelector .dropdown-menuLanguageSelector li:active {
+    @include themify($themes) { 
+      background-color: themed('homePanelsBackgroundColor');
+    } 
+}
+
+i.fa.fa-chevron-down{
+  position: relative;
+  top: -18px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+ 
+::-webkit-scrollbar-track {
+  @include themify($themes) { 
+    -webkit-box-shadow: themed('scrollbarTrackBoxShadow');
+    background-color: themed('scrollbarTrackBackgroundColor');
+  } 
+  border-radius: 8px;
+}
+ 
+::-webkit-scrollbar-thumb {
+  @include themify($themes) { 
+    background-color: themed('scrollbarThumbBackgroundColor');
+  } 
+  border-radius: 10px;
+}
+
+.contentLanguageSelector{
+  text-align: center;
+}

@@ -1,0 +1,139 @@
+@import "./styles/themes.scss";
+
+.trasactionInfoTitle{
+  @include themify($themes) { 
+    color: themed('bodySecondaryParagraphColor');  
+  }
+}
+
+#transactionAddresses{
+  @include themify($themes) { 
+    background-color: themed('homePanelsBackgroundColor');  
+    box-shadow: themed('mainElementBoxShadow');
+  }
+}
+
+.transactions {
+  padding-top: 5px;
+  position: relative;
+}
+
+.buttonTransaction{ 
+  @include themify($themes) { 
+    border: themed('buttonBorder');  
+  }
+  position: relative;
+  bottom: -36px;
+  display: inline-block;
+  padding: 6px 0px;
+  min-width: 110px;
+  border-radius: 30px;
+  text-align: center;
+  cursor: pointer;
+  margin: 0 auto;
+  font-weight: 600;
+}
+
+.buttonTransaction:hover{
+  @include themify($themes) { 
+    background-color: themed('buttonBorderedHoverColor');  
+  }
+}
+
+.dropdownFilterSelector {
+  @include themify($themes) { 
+    color: themed('bodyParagraphColor');  
+    background-color: themed('bodyBackgroundColor');
+  }
+  width: 300px;
+  display: inline-block;
+  border-radius: 5px;
+  //box-shadow: 0 0 2px rgb(204, 204, 204);
+  transition: all .5s ease;
+  position: relative;
+  font-size: 15px;
+  text-align: left
+}
+
+.dropdownFilterSelector .selectFilterSelector {
+    cursor: pointer;
+    display: block;
+    padding: 6px;
+    background-color: transparent;
+}
+
+.dropdownFilterSelector .selectFilterSelector i {
+    @include themify($themes) { 
+      color: themed('bodyParagraphColor');  
+    }
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .3s ease-in-out;
+    float: right
+}
+
+.dropdownFilterSelector:hover {
+    //box-shadow: 0 0 4px rgb(204, 204, 204)
+}
+
+.dropdownFilterSelector.active .selectFilterSelector i {
+    transform: rotate(180deg)
+}
+
+.dropdownFilterSelector .dropdown-menuFilterSelector {
+    @include themify($themes) { 
+      background-color: themed('bodyBackgroundColor');  
+      border: themed('settingsItemBorderBottom');
+    }
+    position: absolute;
+    width: 100%;
+    left: 0;
+    margin-top: 1px;
+    //box-shadow: 0 1px 2px rgb(204, 204, 204);
+    border-radius: 0 1px 5px 5px;
+    overflow: hidden;
+    display: none;
+    max-height: 144px;
+    overflow-y: scroll;
+    z-index: 9
+}
+
+.dropdownFilterSelector .dropdown-menuFilterSelector li {
+    padding: 8px;
+    transition: all .2s ease-in-out;
+    cursor: pointer
+} 
+
+.dropdownFilterSelector .dropdown-menuFilterSelector {
+    padding: 0;
+    list-style: none
+}
+
+.dropdownFilterSelector .dropdown-menuFilterSelector li:hover {
+    @include themify($themes) { 
+      background-color: themed('homePanelsBackgroundColor');  
+    }
+}
+
+.dropdownFilterSelector .dropdown-menuFilterSelector li:active {
+    @include themify($themes) { 
+      background-color: themed('homePanelsBackgroundColor');  
+    }
+}
+
+i.fa.fa-chevron-down{
+  position: relative;
+  top: -18px;
+  right: 5px;
+}
+
+@media screen and (max-width: 1200px) {
+    .transactionId {
+        font-size: 13px;
+        font-weight: 600;
+    }
+    .transactionAddress{
+        font-size: 13px;
+        font-weight: 600;
+    }
+}

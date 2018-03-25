@@ -1,0 +1,203 @@
+@import "./themes.scss";
+
+.sidebar {
+  @include themify($themes) { 
+    background-color: themed('sidebarBackgroundColor'); 
+    box-shadow: themed('sidebarBoxShadow'); 
+  }
+  width: 224px;
+  position: fixed;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-weight: normal;
+  transition: left 0.3s;
+  z-index: 3;
+  margin-top: 40px;
+}
+
+.sidebarlist {
+  margin-top: 25px;
+  list-style: none;
+  padding-left: 0;
+  text-align: left;
+}
+
+.arrowMenu {
+  @include themify($themes) { 
+    border: themed('sidebarArrowBorder'); 
+    border-width: 3px 3px 0 0;
+  }
+  height: 9px; 
+  width: 9px;
+  transform: rotate(135deg);
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  transition: all 0.3s;
+}
+
+ul.sidebar-menu {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  list-style-type: none;
+  margin-top: 50px;
+  transition: margin-top 0.3s;
+}
+.sidebar-menu li a span {
+  margin-right: 20px;
+  position: relative;
+  width: auto;
+  left: auto;
+}
+.sidebar-menu li a  {
+  @include themify($themes) { 
+    color: themed('sidebarItemColor'); 
+  }
+  padding: 13px 25px;
+  display: block;
+  text-decoration: none;
+  cursor: pointer;
+}
+li.have-children ul {
+  padding: 0px;
+} 
+li.have-children ul li a {
+  @include themify($themes) { 
+    background-color: themed('sidebarSubOptionRectangleBackgroundColor'); 
+  }
+  padding-left: 74px;
+} 
+
+li.have-children, li {
+  position: relative;
+}
+
+li.active.have-children span::after {
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+.sidebar-menu .have-children > ul {
+    display: none;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  width: 2rem;
+  height: 2rem;
+  background: transparent;
+  border-top: .4rem solid black;
+  border-right: .4rem solid black;
+  transition: all 200ms ease;
+  
+  &.left {
+    left: 0;
+    transform: translate3d(0,-50%,0) rotate(-135deg);
+  }
+
+  &.right {
+    right: 0;
+    transform: translate3d(0,-50%,0) rotate(45deg);
+  }
+  
+  &:hover {
+    border-top: .4rem solid orange;
+    border-right: .4rem solid orange;
+    box-shadow: .2rem -.2rem 0 black;
+
+    &.left {
+      left: -.2rem;
+    }
+
+    &.right {
+      right: -.2rem;
+    }
+  }
+}
+
+.userimage {
+  margin-top: 60px;
+  margin-bottom: 10px;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.connections {
+  position: absolute; 
+  bottom: 50px; 
+  width: 100%;
+  z-index: 10;
+  text-align: center;
+  font-size: 0.8em;
+  color: #fff;
+}
+
+.sidebarItemSelected{
+  @include themify($themes) { 
+    color: themed('sidebarSelectedItemColor') !important; 
+  }
+}
+
+.connections p {
+  margin-bottom: 2.5px;
+  margin-top: 2.5px;
+}
+
+.custom_progress {
+  height: 10px !important;
+  border-radius: 10px !important;
+  width: 90% !important;
+  margin-left: 5% !important;
+  margin-bottom: 2.5px !important;
+}
+
+
+.sidebarImage{
+  position: absolute;
+  top: 16px;
+  left: 45px;
+}
+
+.progress {
+    @include themify($themes) { 
+      background-color: themed('sidebarProgressBarFirstBackgroundColor'); 
+    }
+    margin: 10px;
+    height: 8px;
+    border-radius: 5px;
+    overflow: visible;
+    width: 162px;
+    margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.bar {
+    @include themify($themes) { 
+      background-color: themed('sidebarProgressBarBackgroundColor'); 
+      box-shadow: themed('sidebarProgressBarBoxShadow');
+    }
+    height: 7px;
+    border-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+@media screen and (max-height: 730px) {
+    .userimage{
+      opacity: 0;
+    }
+
+    ul.sidebar-menu{
+      margin-top: -150px;
+    }
+}
+
+.fixLink{
+  padding: 0 0 !important;
+  text-decoration: none !important;
+}

@@ -1,0 +1,39 @@
+@import "./themes.scss";
+
+ #passwordError{
+  @include themify($themes) { 
+    color: themed('popupMessageText');
+  }
+ }
+
+.centerText{
+    font-size: 22px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    width: 500px;
+    margin: 0 auto;
+	position: absolute;
+	width: 100%;
+	text-align: center;
+	margin-top: 40px;
+}
+
+#encryptWallet{
+	width: 100%;
+	text-align: center;
+}
+
+.passwordInput{
+	display: block;
+	margin: 0 auto;
+	margin-bottom: 30px;
+    width: 300px;
+}
+
+#checkingWallet, #walletEncrypted, #encrypting{
+	visibility: hidden;
+}
+
+.changePasswordInput{
+	top: 5px;
+}

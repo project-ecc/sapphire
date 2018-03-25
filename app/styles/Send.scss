@@ -1,0 +1,107 @@
+@import "./themes.scss";
+
+#rows{
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+.sendPlaceholder{
+	position:relative;
+	top: 85px;
+	width: 80%;
+	text-align: left;
+	font-size: 15px;
+	font-weight: 600;
+	left: 2px;
+}
+.sendPlaceholderAmount{
+	top: 60px;
+}
+
+.sendButton{
+	display: inline-block;
+	text-align: center;
+	position: relative !important;
+	top: 27px;
+	left: 20px;
+}
+
+#message{
+	@include themify($themes) { 
+		color: themed('eccTicker');  
+	}
+	position: relative;
+	text-align: center;
+	font-size: 15px;
+	visibility: hidden;
+	top: 65px;
+}
+
+#clearButton{
+	position: relative;
+	top: 67px;
+	left: 50%;
+	margin-left: -38%;
+	cursor: pointer;
+	z-index: 2;
+}
+
+.tableColumContactFix{
+	padding-left: 10%;
+}
+
+.deleteContactIcon{
+	cursor: pointer;
+	width: 20px;
+}
+
+.inputSend{
+	width: 400px;
+	top: 20px;
+	margin-bottom: 30px;
+}
+
+#pleaseTypePassword{
+	@include themify($themes) { 
+		color: themed('bodyParagraphColor');  
+	}
+	font-size: 16px;
+	width: 400px;
+	text-align: center;
+	margin: 0 auto;
+	padding-top: 25px;
+}
+
+.labelSend{
+	@include themify($themes) { 
+		color: themed('bodyParagraphColor');  
+	}
+	font-size: 16px;
+	width: 400px;
+	text-align: left;
+	margin: 0 auto;
+	padding-top: 10px;
+}
+
+.labelAddressSend{
+	@include themify($themes) { 
+		color: themed('bodySecondaryParagraphColor');  
+	}
+	font-size: 14px;
+	width: 400px;
+	text-align: left;
+	margin: 0 auto;
+	padding-top: 10px;
+	font-weight: 600;
+}
+
+.labelAmountSend{
+	@include themify($themes) { 
+		color: themed('bodyParagraphColor');  
+	}
+	font-size: 16px;
+	width: 400px;
+	text-align: left;
+	margin: 0 auto;
+	padding-top: 25px;
+}

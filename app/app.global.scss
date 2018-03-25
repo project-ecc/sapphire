@@ -1,0 +1,273 @@
+@import "~font-awesome/css/font-awesome.css";
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~bootstrap-material-design/dist/css/bootstrap-material-design.css";
+@import "~bootstrap-material-design/dist/css/ripples.min.css";
+@import url("https://fonts.googleapis.com/css?family=Muli:200,300,400,600,700,800,900");
+@import "./styles/Sidebar.scss";
+@import "./styles/Home.scss";
+@import "./styles/Receive.scss";
+@import "./styles/Send.scss";
+@import "./styles/Transactions.scss";
+@import "./styles/Settings.scss";
+@import "./styles/Loading.scss";
+@import "./styles/InitialSetup.css";
+@import "./styles/LanguageSelector.scss";
+@import "./styles/ThemeSelector.css";
+@import "./styles/ImportWallet.scss";
+@import "./styles/ImportPrivateKey.scss";
+@import "./styles/EncryptWallet.scss";
+@import "./styles/NetworkStats.scss";
+@import "./styles/Contacts.scss";
+@import "./styles/News.scss";
+@import "./styles/Notifications.scss";
+@import "./styles/TopBar.scss";
+@import "./styles/Table.scss";
+@import "./styles/ExportPrivateKeys.scss";
+@import "./styles/themes.scss";
+
+html,
+
+body {
+  /*background-image: -webkit-radial-gradient(top, circle cover, #24232f 0%, #181e35 80%);
+  background-image: -moz-radial-gradient(top, circle cover, #24232f 0%, #181e35 80%);
+  background-image: -o-radial-gradient(top, circle cover, #24232f 0%, #181e35 80%);
+  background-image: radial-gradient(top, circle cover, #24232f 0%, #181e35 80%);
+  height: 100%;*/
+}
+
+*:focus {
+  outline: none !important;
+  border-color: inherit;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+}
+
+p{
+  margin: 0 0;
+  padding: 0 0;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+article{
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  left: 0px;
+}
+
+aside{
+  position: fixed;
+  z-index: 100;
+  text-align: center;
+}
+
+#main{
+    @include themify($themes) { 
+      background-color: themed('bodyBackgroundColor');  
+      color: themed('bodyParagraphColor'); ;
+    }
+    width: 100%;
+    height: 100vh;
+    font-family: Muli, sans-serif;
+    font-size: 17px;
+    overflow: hidden;
+    font-weight: 600;
+}
+
+.ecc{
+  @include themify($themes) { 
+    color: themed('eccTicker');  
+  }
+}
+
+.textSelectable{
+  @include themify($themes) { 
+    color: themed('tableHeaderDescription');  
+  }
+}
+
+.textSelected{
+  @include themify($themes) { 
+    color: themed('textSelected');  
+  }
+}
+
+#settings{
+  top: 40px; 
+  width: 100%;
+}
+
+.changePassword{
+  height: 305px;
+}
+
+.genericPanel{
+  position: fixed;
+  top: 0px;
+  width: 100%;
+}
+
+.closingApplication{
+  min-width: 400px !important;
+  margin-left: -190px !important;
+  font-weight: 500;
+}
+
+.closingApplication p{
+  margin: 30px 0px;
+  display: inline-block;
+}
+
+#miniAnimation{
+  display: inline-block;
+}
+
+.mainSubPanel{
+  padding-left: 224px;
+  padding-right: 0;
+  height: 100vh;
+  overflow-y: scroll;
+  transition: padding-left 0.3s;
+  z-index: 0;
+  padding-top: 40px;
+}
+
+#exportPrivKey{
+  height: 300px;
+}
+
+
+.panel{
+  height: 100%;
+  width: 100%;
+  padding-left: 40px;
+  padding-right: 40px;
+  overflow-x: hidden;
+}
+
+.inputDiv{
+  position: relative; 
+  margin: 0 auto;
+}
+
+.inputPlaceholder{
+  @include themify($themes) { 
+    color: themed('inputPlaceHolderColor');  
+  }
+  position: absolute;
+  text-align: center; 
+  font-size: 15px; 
+}
+
+.inputCustom{
+  @include themify($themes) { 
+    color: themed('inputColor');  
+    border-bottom: themed('inputBorderBottom');
+  }
+  font-size: 15px; 
+  font-weight: 600;
+  background-color: transparent;
+  border: none;
+  text-align: center;
+  position: relative;
+}
+
+.popupTitle{
+  @include themify($themes) { 
+    color: themed('bodyParagraphColor');  
+  } 
+  font-size: 18px;
+  padding-top: 20px;
+}
+
+.buttonUnlock{ 
+  @include themify($themes) { 
+    background: themed('fullButtonBackground');  
+    color: themed('fullButtonColor');  
+  } 
+  position: absolute;
+  height: 36px;
+  width: 125px;
+  border-radius: 14px;
+  font-size: 12px;
+  line-height: 37px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+}
+
+#unlockPanel{
+  @include themify($themes) { 
+    background-color: themed('popupBackgroundColor');  
+    box-shadow: themed('popupBoxShadow');  
+  } 
+  min-width: 535px;
+  z-index: 100;
+  position: fixed;
+  top:30%;
+  left: 50%;
+  margin-left: -267px;
+  border-radius: 4px;
+  overflow-x: hidden;
+}
+
+.unlockWallet{
+  height: 265px;
+}
+
+.wrongPassword{
+  @include themify($themes) { 
+    color: themed('popupMessageText');  
+  }
+  width: 100%; 
+  visibility: hidden; 
+  margin-bottom: 14px;
+  font-size: 16px;
+}
+
+.closeButtonPopup{
+  @include themify($themes) { 
+    border: themed('popupCloseButtonBorder');  
+  } 
+  border-radius: 50%; 
+  width: 30px; 
+  height: 30px; 
+  position: absolute; 
+  right: 15px; 
+  top: 15px; 
+  cursor: pointer;
+}
+
+.closeButtonPopup:hover{
+  @include themify($themes) { 
+    background-color: themed('popupCloseButtonHoverBackgroundColor');  
+  }
+}
+
+.closeButtonPopup span{
+  top: -1px;
+  position: relative;
+}
+.normalWeight{
+  font-weight: normal;
+}
+
+.mancha {
+  @include themify($themes) { 
+    background-color: themed('manchaBackgroundColor');  
+  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 11;
+  display: none;
+  opacity: 0;
+}

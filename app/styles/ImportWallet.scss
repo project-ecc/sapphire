@@ -1,0 +1,46 @@
+@import "./themes.scss";
+
+#importButton{
+    @include themify($themes) { 
+        border: themed('settingsItemBorderBottom');
+    }
+    width: max-content;
+    padding: 6px 55px;
+    font-size: 17px;
+    font-weight: 400;
+    text-align: center;
+    margin: 0 auto;
+    cursor: pointer;
+    border-radius: 25px;
+}
+
+.subTitle{
+    font-size: 22px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    width: 500px;
+    margin: 0 auto;
+}
+
+#importing{
+	visibility: hidden;
+	width: 100%;
+	transform: scale(0.5);
+	font-size: 20px;
+	position: absolute;
+	top: 100%;
+}
+
+#imported{
+	visibility: hidden;
+	width: 100%;
+	transform: scale(0.5);
+	font-size: 20px;
+	position: absolute;
+	top: 100%;
+}
+
+.checkmark {
+  width: 45px;
+  margin: 0 auto;
+}

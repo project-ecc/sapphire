@@ -1,0 +1,100 @@
+@import "./themes.scss";
+
+#topBar{
+    @include themify($themes) { 
+        background-color: themed('topBarBackgroundColor');  
+    }
+    width: 100%;
+    height: 37px;
+    position: fixed;
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    -webkit-app-region:drag;
+    z-index: 2000;
+}
+
+#wrapperToBeAbleToResize{
+    @include themify($themes) { 
+        background-color: themed('topBarBackgroundColor');  
+    }
+    height: 40px;
+    width: 100%;
+    z-index: 101;
+    position: fixed;
+}
+
+#appButtonsMac{
+    position: fixed;
+    z-index: 2;
+    height: 40px;
+    top: 5px;
+    left: 20px;
+    -webkit-app-region: no-drag;
+    transition: .3s left;
+}
+
+#appButtons img{
+  display: block;
+  margin: 0 auto;
+  position: relative;
+  top: 14px;
+}
+
+#appButtons{
+  position: fixed;
+  right: 0px;
+  z-index: 2;
+  height: 40px;
+  top: 0px;
+  -webkit-app-region: no-drag;
+  -webkit-user-select: none;
+}
+
+#eccNewsIcon img{
+  width: 19px;
+  top: 13px;
+}
+
+.appButtonMac img{
+	width: 12px;
+}
+
+.appButtonMac{
+	display: inline-block;
+    width: 20px;
+    height: 100%;
+}
+
+.functionIcon{
+  position: relative;
+  visibility: hidden;
+}
+
+.miniButton{
+  width: 10px;
+  position: fixed;
+  top: 5px;
+  left: -10px;
+  transition: left 0.3s;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+  -webkit-user-select: none;
+}
+
+.appButton{
+  display: inline-block;
+  width: 42px;
+  height: 100%;
+  cursor: pointer;
+}
+
+.appButtonHover{
+    @include themify($themes) { 
+        background-color: themed('topBarFunctionIconHover');  
+    }
+}
+
+.appButtonClose:hover{
+  background-color: red;
+}

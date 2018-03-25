@@ -1,0 +1,235 @@
+@import "./themes.scss";
+
+#notificationContainer{
+	@include themify($themes) { 
+		background-color: themed('notificationsBackgroundColor'); 
+		box-shadow: themed('notificationsBoxShadow');  
+	}
+	position: fixed;
+    z-index: 999;
+    top: 60px;
+    right: 33px;
+    width: 400px;
+    border-radius: 16px;
+}
+
+#notificationContainer:before {
+	@include themify($themes) { 
+		border-bottom: themed('notificationsArrowBorderBottom');  
+	}
+    content: "";
+    position: absolute;
+    top: 1px;
+    right: 169px;
+    width: 0;
+    height: 0;
+    transform: translate(-1rem, -100%);
+    border-left: .75rem solid transparent;
+    border-right: .75rem solid transparent;
+}
+
+#notificationHeader{
+	@include themify($themes) { 
+		background-color: themed('notificationsHeaderBackgroundColor');  
+	}
+	height: 40px;
+	border-top-left-radius: 16px;
+	border-top-right-radius: 16px;
+}
+
+#notificationHeader p{
+	@include themify($themes) { 
+		color: themed('inputPlaceHolderColor');  
+	}
+	font-weight: 700;
+	font-size: 16px;
+	text-align: center;
+	position: relative;
+	display: inline-block;
+}
+
+#noNotifications{
+	@include themify($themes) { 
+		color: themed('bodyParagraphColor');  
+	}
+	text-align: center;
+	padding: 20px 0px;
+	font-size: 16px;
+}
+
+.notificationItem{
+	padding-top: 20px;
+	padding-bottom: 10px;
+	cursor: pointer;
+}
+
+.notificationItem:hover{
+	@include themify($themes) { 
+		background-color: themed('notificationsItemHoverBackgroundColor');  
+	}
+}
+
+#mediumPosts{
+	display: inline-block;
+    font-size: 14px;
+}
+
+.notificationItem img{
+	display: inline-block;
+	padding-left: 20px;
+	padding-right: 20px;
+	width: 60px;
+}
+
+.timeNews{
+	@include themify($themes) { 
+		color: themed('inputPlaceHolderColor');  
+	}
+	padding-left: 60px;
+	font-weight: 700;
+	display: block;
+	font-size: 14px;
+}
+
+#notificationCounter{
+	@include themify($themes) { 
+		background-color: themed('homePanelsBackgroundColor');  
+	}
+	display: inline-block;
+    border-radius: 50%;
+    width: 23px;
+    height: 23px;
+    text-align: center;
+    margin-left: 11px;
+    margin-top: 10px;
+    font-size: 15px;
+}
+
+#notificationCounter p{
+	position: relative;
+	top: 1px;
+	font-size: 14px;
+}
+
+#notificationsHeaderContent{
+	margin: 0 auto;
+	width: max-content;
+}
+
+.newsItemBorder{
+	@include themify($themes) { 
+		border-bottom: themed('settingsItemBorderBottom');  
+	}
+}
+
+.newsItemRoundCorners:hover{
+	border-bottom-left-radius: 16px;
+	border-bottom-right-radius: 16px;
+}
+
+#notificationsBody{
+}
+
+.applicationUpdate img{
+	display: inline-block;
+	width: 17px;
+	position: absolute;
+	bottom: 9px;
+    left: 21px;
+}	
+
+.applicationUpdate{
+	@include themify($themes) { 
+		background-color: themed('notificationsHeaderBackgroundColor');  
+	}
+	font-size: 15px;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    margin-top: 30px;
+    padding-top: 8px;
+    padding-bottom: 6px;
+   	border-bottom-left-radius: 16px;
+	border-bottom-right-radius: 16px;
+	cursor: pointer;
+}
+
+.applicationUpdate:hover{
+	@include themify($themes) { 
+		background-color: themed('notificationsItemHoverBackgroundColor');  
+	}
+	border-bottom-left-radius: 16px;
+	border-bottom-right-radius: 16px;
+}
+
+.applicationUpdateOnlyNotif{
+	padding-top: 20px;
+	padding-bottom: 20px;
+	cursor: pointer;
+}
+
+.applicationUpdateOnlyNotif img{
+	display: inline-block;
+	padding-left: 20px;
+	padding-right: 20px;
+	width: 56px;
+	position: relative;
+	top: -2px
+}
+
+.applicationUpdateOnlyNotif p{
+	display: inline-block;
+	font-size: 16px;
+}
+
+.applicationUpdateOnlyNotif:hover{
+	@include themify($themes) { 
+		background-color: themed('notificationsItemHoverBackgroundColor');  
+	}
+	border-bottom-left-radius: 16px;
+	border-bottom-right-radius: 16px;
+}
+
+#payAns{
+	@include themify($themes) { 
+		background-color: themed('notificationsPayServiceBackgroundColor');  
+	}
+	visibility: hidden;
+    position: absolute;
+    width: 100%;
+    height: 74px;
+    top: 1px;
+}
+
+.resetCursor{
+	cursor: default;
+}
+
+.resetCursor:hover{
+	@include themify($themes) { 
+		background-color: themed('notificationsBackgroundColor');  
+	}
+}
+
+#payAns p{
+	@include themify($themes) { 
+		border: themed('notificationsPayServiceButtonBorder');
+		background-color: themed('notificationsHeaderBackgroundColor');  
+	}
+    position: absolute;
+    top: 25px;
+    margin: 0 auto;
+    text-align: center;
+    left: 50%;
+    transform: translate(-50%,0);
+    padding: 2px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+#payAns p:hover{
+	@include themify($themes) { 
+		background-color: themed('homePanelsBackgroundColor');  
+	}
+}

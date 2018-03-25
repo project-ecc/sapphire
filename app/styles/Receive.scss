@@ -1,0 +1,132 @@
+@import "./themes.scss";
+
+.inputPlaceholderReceive{
+	z-index: 0;
+	text-align: left !important;
+	top: 5px;
+}
+
+#ansExplanation{
+	@include themify($themes) { 
+		color: themed('bodySecondaryParagraphColor');  
+	}
+	display: inline-block;
+	font-size: 14px;
+	position: relative;
+	top: 15px;
+}
+
+.typeSelectorReceive{
+	display: inline-block;
+	cursor: pointer;
+}
+
+#headerReceive{
+	text-align: center; 
+	position: relative; 
+	top: 25px; 
+	font-size: 14px;
+}
+
+#headerReceive span{
+	@include themify($themes) { 
+		color: themed('bodySecondaryParagraphColor');  
+	}
+	padding: 0px 20px; 
+}
+
+#inputAddress{
+	width: 750px;
+	margin: 0 auto;
+	position: relative;
+	margin-top: 60px;
+}
+
+#tableFiltersReceive{
+	position: absolute;
+	width: 100%;
+	top: 36px;
+	right:4%;
+	text-align: right;
+}
+
+.tableFilterReceive{
+	padding-top: 1px;
+	font-size: 14px;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.fixMarginReceive{
+	margin-left: 30px;
+}
+
+.headerAddresses{
+	position: relative;
+	font-size: 14px;
+	padding-top: 16px;
+}
+
+.headerAddressFix{
+	padding-left: 5%;
+}
+
+.tableColumnFixReceive{
+	padding-left: 5%;
+}
+
+#imageAns{
+	position: relative; 
+	top: 55px;
+}
+
+.ansLabel{
+	@include themify($themes) { 
+		color: themed('bodySecondaryParagraphColor');  
+	}
+	font-size: 14px;
+	display: inline-block;
+	margin-left: 10px;
+	position: relative;
+	top: 2px;
+	font-weight: 700;
+}
+
+#addressCreatedSuccessfully{
+	@include themify($themes) { 
+		color: themed('popupMessageText');  
+	}
+	font-size: 15px;
+	display: inline-block;
+	position: absolute;
+	top: 2px;
+	width:100%;
+	text-align: center;
+	visibility: hidden;
+}
+
+#addressCreatedSuccessfully span{
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+#upgradeAns{
+	font-size: 13px;
+	color: #a4a3e6;
+	display: inline-block;
+	margin-left: 10px;
+	position: absolute;
+	top: 2px;
+	right: 0px;
+	cursor: pointer;
+}
+
+.confirmationText{
+	font-size: 16px;
+	width: 90%;
+	margin: 0 auto;
+	text-align: justify;
+	font-weight: 500;
+	margin-top:30px;
+	margin-bottom: 70px;
+}

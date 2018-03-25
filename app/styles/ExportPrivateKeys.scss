@@ -1,0 +1,7 @@
+@import "./styles/themes.scss";
+
+.pdfExample{
+	@include themify($themes) { 
+    	color: themed('bodySecondaryParagraphColor');  
+  	}
+}

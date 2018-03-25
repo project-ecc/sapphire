@@ -1,0 +1,102 @@
+@import "./themes.scss";
+
+#rows{
+  width: 100%; 
+  padding: 0 0
+}
+
+.tableHeaderNormal{
+  width: 100%;
+  height:46px;
+  @include themify($themes) { 
+    box-shadow: themed('tableHeaderBoxShadow'); 
+  }
+}
+
+.tableHeaderBig{
+  height:67px;
+}
+
+.tableHeaderTitle{
+  padding-top: 4px;
+  padding-left: 5%;
+  font-size: 23px;
+  font-weight: normal;
+  @include themify($themes) { 
+    color: themed('tableHeaderColorTitle'); 
+  }
+}
+
+.tableHeaderTitleSmall{
+  padding-top: 7px; 
+  padding-left: 5%;
+}
+
+.tableContainer{
+  width: 100%;
+  margin-top: 5px;
+  padding: 0 0;
+}
+
+.rowDynamic{
+  height: 55px;
+  margin: 0 0;
+  width: 100%;
+}
+
+.tableRowCustom{
+  cursor: pointer;
+  font-size: 15px;
+  @include themify($themes) { 
+    color: themed('tableRowColor'); 
+  }
+  margin: 0 0;
+  width: 100%;
+  height: 40px;
+}
+
+.tableRowCustomTransactions{
+  height: auto;
+}
+
+.tableRowHeader{
+  @include themify($themes) { 
+    color: themed('tableRowHeaderColor'); 
+  }
+}
+
+.headerDescription{
+  padding-top: 1px;
+  padding-left: 5%;
+  @include themify($themes) { 
+    color: themed('tableHeaderDescription'); 
+  }
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tableCustom{
+  height:60%;
+  position: relative;
+  top: 50px;
+  @include themify($themes) { 
+    box-shadow: themed('mainElementBoxShadow'); 
+    background-color: themed('tableBackgroundColor');
+  }
+}
+
+.tableRowEven{
+  @include themify($themes) { 
+    background-color: themed('tableRowEven'); 
+  }
+}
+
+.tableRowSelected{
+  @include themify($themes) { 
+    background-color: themed('tableRowSelected'); 
+  }
+}
+
+.tableColumn{
+  padding-top: 9px;
+}
