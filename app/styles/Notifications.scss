@@ -116,6 +116,10 @@
 	width: max-content;
 }
 
+.notificationsHeaderContentFix p{
+	top: 7px
+}
+
 .newsItemBorder{
 	@include themify($themes) { 
 		border-bottom: themed('settingsItemBorderBottom');  

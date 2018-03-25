@@ -318,7 +318,7 @@ const mapStateToProps = state => {
     notificationPopup: state.notifications.popupEnabled,
     minimizeOnClose: state.application.minimizeOnClose,
     closingApplication: state.application.closingApplication,
-    theme: state.application.theme == true ? "theme-lightEcc" : "theme-darkEcc"
+    theme: state.application.theme
   };
 };
 

@@ -27,10 +27,14 @@
   cursor: pointer;
 }
 
-#darkTheme, #lightTheme{
+#darkTheme, #lightTheme, #defaultTheme{
   opacity: 0.6;
 }
 
-#darkTheme:hover, #lightTheme:hover{
+#darkTheme:hover, #lightTheme:hover, #defaultTheme:hover{
   opacity: 1;
+}
+
+.selectedTheme{
+  opacity: 1 !important;
 }

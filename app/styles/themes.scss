@@ -1,5 +1,5 @@
 $themes: (
-  lightEcc: (
+  defaultEcc: (
     //BODY
     bodyBackgroundColor: #181e35,
     bodyParagraphColor: #b4b7c8,
@@ -58,7 +58,7 @@ $themes: (
     settingsHelpTranslateTitleColor: #5a5d6f,
     settingsToggleDescriptionColor: #777b90,
     settingsHelTranslateBackgroundColor: #14182f,
-    
+
     //NOTIFICATION POPUP
     notificationsBackgroundColor: #14182f,
     notificationsBoxShadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2),
@@ -116,7 +116,7 @@ $themes: (
 
     //TOPBAR
     topBarBackgroundColor: #121212,
-    topBarFunctionIconHover: #b4b7c8,
+    topBarFunctionIconHover: #24272f,
 
     //TABLES
     tableBackgroundColor: #191b21,
@@ -178,7 +178,7 @@ $themes: (
     notificationsPayServiceButtonBorder: 1px solid #c39c59,
 
     //POPUP
-    popupBackgroundColor: #14182f,
+    popupBackgroundColor: #15161b,
     popupBoxShadow: 0px 0px 13px -2px black,
     popupCloseButtonBorder: 2px solid #6a6c75,
     popupCloseButtonHoverBackgroundColor: #0f1223,
