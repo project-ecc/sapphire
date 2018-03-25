@@ -15557,16 +15557,15 @@ input.toggle:checked + label:after {
 
 .sendPlaceholder{
 	position:relative;
-	top: 85px;
+	top: 63px;
 	width: 80%;
 	text-align: left;
 	color: #555d77;
 	font-size: 15px;
 	font-weight: 600;
-	left: 2px;
 }
 .sendPlaceholderAmount{
-	top: 60px;
+	top: 115px;
 }
 
 .sendButton{
