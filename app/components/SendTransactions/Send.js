@@ -33,7 +33,7 @@ class Send extends Component {
   }
 
   confirmSend() {
-    if(this.props.amount == "" || Number(this.props.amount) == 0){
+    if(this.props.amount == "" || isNaN(this.props.amount) == 1){
       tools.highlightInput('#inputAmountSend', 1)
     }
     if(this.props.address == ""){
@@ -92,7 +92,7 @@ class Send extends Component {
               divStyle={{display: "inline"}}
               placeholder= "ANS Name / Address"
               placeholderId="addressSend"
-              placeHolderClassName="sendPlaceholder"
+              placeHolderClassName="inputPlaceholder sendPlaceholder"
               value={this.props.address}
               handleChange={this.handleChangeAddress.bind(this)}
               type="text"
@@ -104,7 +104,7 @@ class Send extends Component {
               divStyle={{display: "inline"}}
               placeholder= "Amount"
               placeholderId="amountSend"
-              placeHolderClassName="sendPlaceholder sendPlaceholderAmount"
+              placeHolderClassName="inputPlaceholder sendPlaceholder sendPlaceholderAmount"
               value={this.props.amount}
               handleChange={this.handleChangeAmount.bind(this)}
               type="text"

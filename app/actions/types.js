@@ -104,3 +104,4 @@ export const TELL_USER_OF_UPDATE = "tell_user_of_update";
 export const CLOSING_APPLICATION = "closing_application";
 export const MAC_BUTTONS_HOVER = "mac_buttons_hover";
 export const APP_MAXIMIZED = "app_maximized";
+export const SELECTED_THEME = "selected_theme";

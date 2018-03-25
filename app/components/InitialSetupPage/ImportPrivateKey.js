@@ -232,18 +232,20 @@ class ImportPrivateKey extends React.Component {
            Write down a private key to import an address
            </p>
            <Input 
-            divStyle={{width: "400px", fontWeight: "600"}}
+            divStyle={{width: "400px"}}
               placeholder= "Private Key"
               placeholderId="enterPrivKey"
+              placeHolderClassName="inputPlaceholder changePasswordInput"
               value={this.props.privateKeyValue}
               handleChange={this.handleChangePrivateKey.bind(this)}
               type="text"
               inputStyle={{marginBottom:"32px", width:"400px"}}
             />
            <Input 
-              divStyle={{width: "400px", fontWeight: "600"}}
+              divStyle={{width: "400px"}}
               placeholder= "Enter your password"
               placeholderId="enterPassword"
+              placeHolderClassName="inputPlaceholder changePasswordInput"
               value={this.props.passwordVal}
               handleChange={this.handleChangePassword.bind(this)}
               type="text"
@@ -275,18 +277,12 @@ class ImportPrivateKey extends React.Component {
   }
 
   render() { 
-    console.log(this.props.notInitialSetup)
-    var style = {height: "330px"};
+    var id = "importPrivKey";
     if(this.props.notInitialSetup){
-      style = {
-        height: "320px",
-        width: "600px",
-        backgroundColor: "#14182f",
-        position: "relative"
-      }
+      id="importPrivKeyPopup";
     }
      return (
-      <div style={style}>
+      <div id={id}>
         {this.toRender()}
       </div>
       );

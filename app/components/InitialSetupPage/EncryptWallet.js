@@ -188,7 +188,7 @@ class EncryptWallet extends React.Component {
               inputStyle={{width: "200px"}}
             />
           </div>
-          <p id="passwordError" style={{fontSize: "15px", fontWeight: "bold", color: "#d09128", visibility: "hidden"}}>{this.props.passwordValue != this.props.passwordConfirmationValue ? "Passwords do not match" : "Password can't be empty"}</p>
+          <p id="passwordError" style={{fontSize: "15px", fontWeight: "bold", visibility: "hidden"}}>{this.props.passwordValue != this.props.passwordConfirmationValue ? "Passwords do not match" : "Password can't be empty"}</p>
            <div style={{marginTop: "8px"}} onClick={this.encryptWallet} id="importButton">
              Encrypt
            </div>

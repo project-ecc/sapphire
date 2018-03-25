@@ -123,7 +123,6 @@ class TopBar extends React.Component {
     if(this.props.news && !this.props.settings){
        news = require('../../resources/images/news-orange.png');
     }
-    //if (process.platform === 'darwin'){
 
     return(
       <div>

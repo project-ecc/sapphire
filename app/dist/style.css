@@ -16533,6 +16533,7 @@ textarea:focus, input:focus{
 
 .syncedTextNetwork{
 	font: 700 36px "Muli";
+  fill: white;
 }
 
 .enableNetwork{
@@ -16930,243 +16931,272 @@ textarea:focus, input:focus{
 
 #payAns p:hover{
 	background-color: #1c2340;
-}.appButtonMac img{
-	width: 12px;
-}
+}#topBar {
+  width: 100%;
+  height: 37px;
+  position: fixed;
+  top: 3px;
+  left: 3px;
+  right: 3px;
+  -webkit-app-region: drag;
+  z-index: 2000; }
+  .theme-lightEcc #topBar {
+    background-color: #14182f; }
+  .theme-darkEcc #topBar {
+    background-color: #ffffff; }
 
-#appButtonsMac{
-	position: fixed;
-    z-index: 2;
-    height: 40px;
-    top: 5px;
-    left: 20px;
-    -webkit-app-region: no-drag;
-    transition: .3s left;
-}
+#wrapperToBeAbleToResize {
+  height: 40px;
+  width: 100%;
+  z-index: 101;
+  position: fixed; }
+  .theme-lightEcc #wrapperToBeAbleToResize {
+    background-color: #14182f; }
+  .theme-darkEcc #wrapperToBeAbleToResize {
+    background-color: #ffffff; }
 
-.appButtonMac{
-	display: inline-block;
-    width: 20px;
-    height: 100%;
-}html,
+.appButtonMac img {
+  width: 12px; }
+
+#appButtonsMac {
+  position: fixed;
+  z-index: 2;
+  height: 40px;
+  top: 5px;
+  left: 20px;
+  -webkit-app-region: no-drag;
+  transition: .3s left; }
+
+.appButtonMac {
+  display: inline-block;
+  width: 20px;
+  height: 100%; }
+
+.functionIcon {
+  position: relative;
+  visibility: hidden; }
+
+.miniButton {
+  width: 10px;
+  position: fixed;
+  top: 5px;
+  left: -10px;
+  transition: left 0.3s;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+  -webkit-user-select: none; }
+
+#appButtons img {
+  display: block;
+  margin: 0 auto;
+  position: relative;
+  top: 14px; }
+
+#appButtons {
+  position: fixed;
+  right: 0px;
+  z-index: 2;
+  height: 40px;
+  top: 0px;
+  -webkit-app-region: no-drag;
+  -webkit-user-select: none; }
+
+.appButton {
+  display: inline-block;
+  width: 42px;
+  height: 100%;
+  cursor: pointer; }
+
+.theme-lightEcc .appButtonHover {
+  background-color: #b4b7c8; }
+
+.theme-darkEcc .appButtonHover {
+  background-color: #b4b7c8; }
+
+.appButtonClose:hover {
+  background-color: red; }
+
+#eccNewsIcon img {
+  width: 19px;
+  top: 13px; }
+
+html,
 body {
-  font-family: Muli, sans-serif;
-  background-color: #181e35;
   /*background-image: -webkit-radial-gradient(top, circle cover, #24232f 0%, #181e35 80%);
   background-image: -moz-radial-gradient(top, circle cover, #24232f 0%, #181e35 80%);
   background-image: -o-radial-gradient(top, circle cover, #24232f 0%, #181e35 80%);
   background-image: radial-gradient(top, circle cover, #24232f 0%, #181e35 80%);
-  height: 100%;*/
-  color: #b4b7c8;
-  font-size: 17px;
-  overflow: hidden;
-  font-weight: 600;
-}
+  height: 100%;*/ }
 
 *:focus {
   outline: none !important;
   border-color: inherit;
   -webkit-box-shadow: none !important;
-  box-shadow: none !important;
-}
+  box-shadow: none !important; }
 
-p{
+p {
   margin: 0 0;
-  padding: 0 0;
-}
-
-.ecc{
-  color: #d09128;
-}
+  padding: 0 0; }
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    /* display: none; <- Crashes Chrome on hover */
-    -webkit-appearance: none;
-    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
-}
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0;
+  /* <-- Apparently some margin are still there even though it's hidden */ }
 
-#settings{
-  top: 40px; 
-  width: 100%;
-}
-
-.functionIcon{
-  position: relative;
-  visibility: hidden;
-}
-
-article{
+article {
   position: absolute;
   text-align: center;
   width: 100%;
-  left: 0px;
-}
+  left: 0px; }
 
-aside{
+aside {
   position: fixed;
   z-index: 100;
-  text-align: center;
-}
+  text-align: center; }
 
-.changePassword{
-  height: 305px;
-}
+.theme-lightEcc #main {
+  background-color: #181e35;
+  color: #b4b7c8;
+  width: 100%;
+  height: 100vh;
+  font-family: Muli, sans-serif;
+  font-size: 17px;
+  overflow: hidden;
+  font-weight: 600; }
 
-.genericPanel{
+.theme-darkEcc #main {
+  background-color: #0e121f;
+  color: #b4b7c8;
+  width: 100%;
+  height: 100vh;
+  font-family: Muli, sans-serif;
+  font-size: 17px;
+  overflow: hidden;
+  font-weight: 600; }
+
+.ecc {
+  color: #d09128; }
+
+#settings {
+  top: 40px;
+  width: 100%; }
+
+.changePassword {
+  height: 305px; }
+
+.genericPanel {
   position: fixed;
   top: 0px;
-  width: 100%;
-}
+  width: 100%; }
 
-.closingApplication{
+.closingApplication {
   min-width: 400px !important;
   margin-left: -190px !important;
-  font-weight: 500;
-}
+  font-weight: 500; }
 
-.closingApplication p{
+.closingApplication p {
   margin: 30px 0px;
-  display: inline-block;
-}
+  display: inline-block; }
 
-#miniAnimation{
-  display: inline-block;
-}
+#miniAnimation {
+  display: inline-block; }
 
-.mainSubPanel{
+.mainSubPanel {
   padding-left: 224px;
   padding-right: 0;
   height: 100vh;
   overflow-y: scroll;
   transition: padding-left 0.3s;
   z-index: 0;
-  padding-top: 40px;
-}
+  padding-top: 40px; }
 
-#exportPrivKey{
-  height: 300px;
-}
+#exportPrivKey {
+  height: 300px; }
 
-
-.panel{
+.panel {
   height: 100%;
   width: 100%;
   padding-left: 40px;
   padding-right: 40px;
-  overflow-x: hidden;
-}
+  overflow-x: hidden; }
 
-.tableHeaderBig{
+.tableHeaderBig {
   width: 100%;
-  height:67px;
-  box-shadow: 0 2px 4px -3px rgba(0, 0, 0, 0.74);
-}
+  height: 67px;
+  box-shadow: 0 2px 4px -3px rgba(0, 0, 0, 0.74); }
 
-.tableHeader{
+.tableHeader {
   padding-top: 4px;
   padding-left: 5%;
-  color: #b4b7c8;
-}
+  color: #b4b7c8; }
 
-.tableContainer{
+.tableContainer {
   width: 100%;
   margin-top: 5px;
-  padding: 0 0;
-}
+  padding: 0 0; }
 
-.rowDynamic{
+.rowDynamic {
   height: 55px;
   margin: 0 0;
-  width: 100%;
-}
+  width: 100%; }
 
-.headerDescription{
+.headerDescription {
   padding-top: 1px;
   padding-left: 5%;
   color: #555d77;
   font-size: 14px;
-  font-weight: 600;
-}
+  font-weight: 600; }
 
-#rows{
-  width: 100%; 
-  padding: 0 0
-}
+#rows {
+  width: 100%;
+  padding: 0 0; }
 
-
-.tableCustom{
-  height:60%;
+.tableCustom {
+  height: 60%;
   background-color: #1c2340;
   position: relative;
   top: 50px;
-  box-shadow: 0 4px 11px -6px black;
-}
+  box-shadow: 0 4px 11px -6px black; }
 
-.tableRowCustom{
+.tableRowCustom {
   cursor: pointer;
   font-size: 15px;
   color: #9099b7;
   margin: 0 0;
   width: 100%;
-  height: 40px;
-}
+  height: 40px; }
 
-.tableColumn{
-  padding-top: 9px;
-}
+.tableColumn {
+  padding-top: 9px; }
 
+.inputDiv {
+  position: relative;
+  margin: 0 auto; }
 
-#topBar{
-  width: 100%;
-  height: 37px;
-  background-color: #14182f;
-  position: fixed;
-  top: 3px;
-  left: 3px;
-  right: 3px;
-  -webkit-app-region:drag;
-  z-index: 2000;
-}
-
-#wrapperToBeAbleToResize{
-  height: 40px;
-  background-color: #14182f;
-  width: 100%;
-  z-index: 101;
-  position: fixed;
-}
-
-.inputDiv{
-  position: relative; 
-  margin: 0 auto;
-}
-
-.inputPlaceholder{
+.inputPlaceholder {
   position: absolute;
-  text-align: center; 
-  color: #555d77; 
-  font-size: 15px; 
-}
+  text-align: center;
+  color: #555d77;
+  font-size: 15px; }
 
-.inputCustom{
-  color: #555d77; 
-  font-size: 15px; 
+.inputCustom {
+  color: #555d77;
+  font-size: 15px;
   font-weight: 600;
   background-color: transparent;
   border: none;
   border-bottom: 2px solid #1c2340;
   text-align: center;
-  position: relative;
-}
+  position: relative; }
 
-.popupTitle{
+.popupTitle {
   font-size: 18px;
   color: #b4b7c8;
-  padding-top: 20px;
-}
+  padding-top: 20px; }
 
-.buttonUnlock{
+.buttonUnlock {
   position: absolute;
   height: 36px;
   width: 125px;
@@ -17175,226 +17205,50 @@ aside{
   line-height: 37px;
   font-weight: bold;
   cursor: pointer;
-  background: -webkit-linear-gradient(top, rgb(214, 167, 91) 0%, rgb(162, 109, 22) 100%);
+  background: -webkit-linear-gradient(top, #d6a75b 0%, #a26d16 100%);
   color: #d9daef;
-  text-align: center;
-}
+  text-align: center; }
 
-.wrongPassword{
-  width: 100%; 
-  color: #d09128; 
-  visibility: hidden; 
+.wrongPassword {
+  width: 100%;
+  color: #d09128;
+  visibility: hidden;
   margin-bottom: 14px;
-  font-size: 16px;
-}
+  font-size: 16px; }
 
-.tableHeader{
+.tableHeader {
   font-weight: normal;
-  font-size: 23px;
-}
+  font-size: 23px; }
 
-.closeButtonPopup{
-  border-radius: 50%; 
-  width: 30px; 
-  height: 30px; 
-  border: 2px solid #6a6c75; 
-  position: absolute; 
-  right: 15px; 
-  top: 15px; 
-  cursor: pointer;
-}
+.closeButtonPopup {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #6a6c75;
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  cursor: pointer; }
 
-.closeButtonPopup:hover{
-  background-color: #0f1223;
-}
+.closeButtonPopup:hover {
+  background-color: #0f1223; }
 
-.closeButtonPopup span{
+.closeButtonPopup span {
   top: -1px;
-  position: relative;
-}
-.normalWeight{
-  font-weight: normal;
-}
+  position: relative; }
 
-.miniButton{
-  width: 10px;
-  position: fixed;
-  top: 5px;
-  left: -10px;
-  transition: left 0.3s;
-  cursor: pointer;
-  -webkit-app-region: no-drag;
-  -webkit-user-select: none;
-}
-
-#appButtons img{
-  display: block;
-  margin: 0 auto;
-  position: relative;
-  top: 14px;
-}
-
-#appButtons{
-  position: fixed;
-  right: 0px;
-  z-index: 2;
-  height: 40px;
-  top: 0px;
-  -webkit-app-region: no-drag;
-  -webkit-user-select: none;
-}
-
-.appButton{
-  display: inline-block;
-  width: 42px;
-  height: 100%;
-  cursor: pointer;
-}
-
-.appButtonHover{
-  background-color: #b4b7c8;
-}
-
-.appButtonClose:hover{
-  background-color: red;
-}
-
-#eccNewsIcon img{
-  width: 19px;
-  top: 13px;
-}
-
-.splash-image-container {
-  z-index: 1000;
-  background-color: #fff;
-  height: 100vh;
-  width: 100vw;
-  position: fixed;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 1;
-  transition: opacity 1s linear, z-index 1.5s ease-in;
-}
-
-.splash-image {
-  width: 20%;
-  max-width: 300px;
-}
-
-.splash-image-container.-disappear {
-  opacity: 0;
-  z-index: -1000;
-}
-
-.snack {
-  position: fixed;
-  bottom: -50px;
-  left: 200px;
-  right: 0;
-  margin: 0 auto;
-  background-color: rgba(0,0,0,0.8);
-  color: #fff;
-  padding: 10px;
-  width: 400px;
-  border-radius: 5px;
-  text-align: center;
-}
+.normalWeight {
+  font-weight: normal; }
 
 .mancha {
   position: fixed;
   top: 0;
   left: 0;
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(0, 0, 0, 0.7);
   width: 100%;
   height: 100vh;
   z-index: 11;
   display: none;
-  opacity: 0;
-}
+  opacity: 0; }
 
-.dialog {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  background-color: #fff;
-  width: 400px;
-  padding: 20px 20px 5px;
-  transform: translate(-50%,-50%);
-}
-
-.dialog .header {
-  border-bottom: 1px solid #a1be5a;
-}
-
-.dialog .header .title {
-  font-size: 1.3em;
-  letter-spacing: 2px;
-  margin-bottom: 0;
-}
-
-.dialog .body {
-  padding-top: 25px;
-}
-
-.dialog .body .desc {
-  font-size: 1em;
-  color: #000 !important;
-}
-
-.dialog .body .desc2 {
-  font-size: 1em;
-  color: #bdbdbd !important;
-}
-
-.dialog .footer {
-  text-align: center;
-  padding-top: 15px;
-}
-
-.dialog .footer .button {
-  display: inline-block;
-  width: 100px;
-  padding: 10px 20px;
-  text-align: center;
-  color: #fff;
-  border-radius: 2px;
-  margin-left: 30px;
-  margin-right: 30px;
-  cursor: pointer;
-}
-
-.dialog .footer .btn_cancel {
-  background-color: #bdbdbd;
-}
-
-.dialog .footer .btn_confirm {
-  background-color: #a1be5a;
-}
-
-.dialog .inpuText {
-  font-size: 1em !important;
-}
-
-.dialog .inpuText::-webkit-input-placeholder {
-  font-size: 1em !important;
-}
-
-.fade-enter{
-  opacity: 0 !important;
-}
-
-.fade-enter-active{
-  opacity: 1 !important;
-  transition: .5s ease-in all !important;
-}
-
-.fade-leave{
-  right:0px;
-}
-
-.fade-leave-active{
-  right:-100px;
-  transition: .5s ease-out all;
-}
 /*# sourceMappingURL=style.css.map*/

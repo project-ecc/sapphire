@@ -154,7 +154,7 @@ class Contacts extends Component {
             <div onClick={this.addContact} className="buttonUnlock addContactButton">
              Add Contact
             </div>
-            <p id="ansExplanation" style={{display: "inline-block", color: "#555d77", fontSize: "14px", fontWeight: "600", position: "relative", top:"15px", width:"660px"}}>Type the name of an <span className="ecc">ANS contact</span> and click to add him or fill the Address input (+ optional Name) to add a regular address.</p>
+            <p id="ansExplanation" style={{display: "inline-block", fontSize: "14px", position: "relative", top:"15px", width:"660px"}}>Type the name of an <span className="ecc">ANS contact</span> and click to add him or fill the Address input (+ optional Name) to add a regular address.</p>
           </div>
       </div>
     );

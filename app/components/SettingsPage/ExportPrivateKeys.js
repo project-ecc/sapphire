@@ -285,9 +285,9 @@ class ExportPrivateKeys extends React.Component {
         <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"25px", textAlign: "left"}}>
          The exported PDF has all your public and private keys. In this format:
         </p>
-        <p style={{color:"#555d77", fontWeight: "600"}}>{`<Public Address>`}</p>
-        <p style={{color:"#555d77", fontWeight: "600"}}>{`<Private Key>`}</p>
-        <p style={{color:"#555d77", fontWeight: "600"}}>{`<Line Break>`}</p>
+        <p className="pdfExample">{`<Public Address>`}</p>
+        <p className="pdfExample">{`<Private Key>`}</p>
+        <p className="pdfExample">{`<Line Break>`}</p>
       </div>
     )
   }

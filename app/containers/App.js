@@ -273,18 +273,21 @@ class App extends Component<Props> {
       return null;
   }
   render() {
+    console.log(this.props.theme)
     return (
-      <div id="main">
-        <TopBar />
-        <div className="mancha">
-        </div>
-        <div>
-        {this.getMainApp()}
-        {this.getInitialSetup()}
-        {this.getSettings()}
-        {this.getLoader()}
-        {this.getNotificationsPopup()}
-        {this.getPopup()}
+      <div className={this.props.theme}>
+        <div id="main">
+          <TopBar />
+          <div className="mancha">
+          </div>
+          <div>
+          {this.getMainApp()}
+          {this.getInitialSetup()}
+          {this.getSettings()}
+          {this.getLoader()}
+          {this.getNotificationsPopup()}
+          {this.getPopup()}
+          </div>
         </div>
       </div>
     );
@@ -314,7 +317,8 @@ const mapStateToProps = state => {
     loading: state.startup.loading,
     notificationPopup: state.notifications.popupEnabled,
     minimizeOnClose: state.application.minimizeOnClose,
-    closingApplication: state.application.closingApplication
+    closingApplication: state.application.closingApplication,
+    theme: state.application.theme == true ? "theme-lightEcc" : "theme-darkEcc"
   };
 };
 

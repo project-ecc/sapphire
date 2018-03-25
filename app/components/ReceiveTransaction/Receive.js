@@ -148,12 +148,13 @@ class Receive extends Component {
   render() {
     let ansAddresImage = require('../../../resources/images/ans_address.png');
     let counter = 0;
+    let rowClassName = "row normalWeight tableRowCustom"
     return (
       <div className="panel">
         <div id="headerReceive">
-          <p className="typeSelectorReceive" onClick={this.handleChangeAddressCreationToAns} style={{color: this.props.ansAddress ? "#aeacf3" : "#555d77"}}>ANS</p>
+          <p className={this.props.ansAddress ? "typeSelectorReceive textSelected" : "typeSelectorReceive textSelectable"}  onClick={this.handleChangeAddressCreationToAns}>ANS</p>
           <span>/</span>
-          <p className="typeSelectorReceive" onClick={this.handleChangeAddressCreationToNormal} style={{color: this.props.ansAddress ?"#555d77" : "#aeacf3"}}>Normal Address</p>
+          <p className={this.props.ansAddress ? "typeSelectorReceive textSelectable" : "typeSelectorReceive textSelected"} onClick={this.handleChangeAddressCreationToNormal}>Normal Address</p>
         </div>
         <div id="inputAddress">
           <div style={{display: "inline-block", width: "70%", position: "relative"}}>
@@ -185,27 +186,27 @@ class Receive extends Component {
          </div>
 
          <div className="tableCustom">
-          <div className="tableHeaderBig">
-            <p className="tableHeader">Your Addresses</p>
+          <div className="tableHeaderBig tableHeaderNormal">
+            <p className="tableHeaderTitle">Your Addresses</p>
             <p className="headerDescription">All your normal and ANS addresses</p>
             <div id="tableFiltersReceive">
-              <p className="tableFilterReceive" onClick={this.filterClicked.bind(this, "ans")} style={{ color: this.props.filterAns ? "#a4a3e6" : "#555d77"}}>ANS Addresses</p>
-              <p className="tableFilterReceive fixMarginReceive" onClick={this.filterClicked.bind(this, "normal")} style={{color: this.props.filterNormal ? "#a4a3e6" : "#555d77"}}>Normal Addresses</p>
-              <p className="tableFilterReceive fixMarginReceive" onClick={this.filterClicked.bind(this, "all")} style={{color: this.props.filterAll ? "#a4a3e6" : "#555d77"}}>All</p>
+              <p className= {this.props.filterAns ? "tableFilterReceive textSelected" : "tableFilterReceive textSelectable"} onClick={this.filterClicked.bind(this, "ans")}>ANS Addresses</p>
+              <p className= {this.props.filterNormal ? "tableFilterReceive textSelected fixMarginReceive" : "tableFilterReceive textSelectable fixMarginReceive"} onClick={this.filterClicked.bind(this, "normal")}>Normal Addresses</p>
+              <p className= {this.props.filterAll ? "tableFilterReceive textSelected fixMarginReceive" : "tableFilterReceive textSelectable fixMarginReceive"}onClick={this.filterClicked.bind(this, "all")}>All</p>
             </div>
           </div>
           <div className="tableContainer">
               <div className="row rowDynamic">
-                <div className="col-sm-3 headerAddresses headerAddressFix">{this.props.filterAll ? "ACCOUNT" : this.props.filterNormal ? "ACCOUNT" : "NAME"}</div>
-                <div id="addressHeader" className="col-sm-6 headerAddresses">{this.props.filterAll ? "ADDRESS / NAME" : "ADDRESS"}</div>
-                <div id="addressHeader" className="col-sm-3 headerAddresses">AMOUNT</div>
+                <div className="col-sm-3 headerAddresses headerAddressFix tableRowHeader">{this.props.filterAll ? "ACCOUNT" : this.props.filterNormal ? "ACCOUNT" : "NAME"}</div>
+                <div id="addressHeader" className="col-sm-6 headerAddresses tableRowHeader">{this.props.filterAll ? "ADDRESS / NAME" : "ADDRESS"}</div>
+                <div id="addressHeader" className="col-sm-3 headerAddresses tableRowHeader">AMOUNT</div>
               </div>
             <div id="rows">
             {this.props.userAddresses.map((address, index) => {
               if(this.props.filterAll || this.props.filterNormal && !address.ans || this.props.filterAns && address.ans){
                 counter++;
                 return (
-                  <div className="row rowDynamic normalWeight tableRowCustom" style={{backgroundColor: this.props.selectedAddress && address.address == this.props.selectedAddress.address ? "#212136" : counter % 2 != 0 ? "transparent" : "#1b223d"}} key={`address_${index}`}>
+                  <div className= {this.props.selectedAddress && address.address == this.props.selectedAddress.address ? rowClassName + " tableRowSelected" : counter % 2 != 0 ? rowClassName : rowClassName + " tableRowEven"} key={`address_${index}`}>
                     <div className="col-sm-3 tableColumn tableColumnFixReceive" onClick={this.rowClicked.bind(this, address)}>
                       {address.account}
                     </div>

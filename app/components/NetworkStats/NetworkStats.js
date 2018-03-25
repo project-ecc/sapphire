@@ -33,7 +33,7 @@ class NetworkStats extends Component {
         <svg>
           <text className="percentageSyncedNetworkVal" fill="#b4b7c8" x="50%" y="50%" dy="-35" dx="-40" textAnchor="middle">{percentage}</text>
           <text className="percentageSyncedNetwork" fill="#b4b7c8" x="50%" y="50%" dy="-35" dx={this.getOffset(percentage)} textAnchor="middle">%</text>
-          <text className="syncedTextNetwork" fill="#555d77" x="50%" y="50%" dy="25" dx="-25" textAnchor="middle">SYNCED</text>
+          <text className="syncedTextNetwork" x="50%" y="50%" dy="25" dx="-25" textAnchor="middle">SYNCED</text>
         </svg>
       )
     }
@@ -44,7 +44,7 @@ class NetworkStats extends Component {
 
   getHtmlChainInfo(enabled, percentage, connections, headers, block, color, rgbColor, imageConnections, operation = ""){
     return(
-      <div style={{position: "relative", paddingTop: "30px"}}>
+      <div className="chainInfo" style={{position: "relative", paddingTop: "30px"}}>
         <svg style={{maxWidth:"216px", maxHeight: "230px"}} className="score" width="100%" height="400" viewBox="-25 -25 400 400">
         <circle className="score-empty" cx="175" cy="175" r="180" strokeWidth="5px" fill="none" stroke= "#14182f"></circle>
         <defs>
@@ -67,8 +67,8 @@ class NetworkStats extends Component {
           <img style={{height: "21px"}} src={imageConnections}></img>
           <span style={{position: "relative", left:"9px", fontSize:"20px", top:"3px", fontWeight: "400"}}>{connections}</span>
         </div>
-        <p style={{fontSize:"14px", color:"#555d77", marginTop:"15px"}}>Headers: <span style={{fontSize:"16px"}}>{headers}</span></p>
-        <p style={{fontSize:"14px", color:"#555d77", marginTop:"15px"}}>Block <span style={{fontSize:"16px"}}>{block}</span> of <span style={{fontSize:"16px"}}>{headers}</span></p>
+        <p style={{fontSize:"14px", marginTop:"15px"}}>Headers: <span style={{fontSize:"16px"}}>{headers}</span></p>
+        <p style={{fontSize:"14px", marginTop:"15px"}}>Block <span style={{fontSize:"16px"}}>{block}</span> of <span style={{fontSize:"16px"}}>{headers}</span></p>
       </div>
     )
   }
@@ -90,19 +90,19 @@ class NetworkStats extends Component {
     return (
       <div style={{height: "100%", width: "100%", paddingLeft: "40px", paddingRight: "40px"}}>
         <div id="headerNetwork">
-          <p id="headerNetworkText" style={{fontSize: "70px", color: "#1f2642", fontWeight: "800", display: "inline-block", marginTop:"15px"}}>Network Stats</p>
+          <p id="headerNetworkText" style={{fontSize: "70px", fontWeight: "800", display: "inline-block", marginTop:"15px"}}>Network Stats</p>
           <div style={{display: "inline-block", position: "relative", left: "0px", top:"-8px"}}>
             <img className="networkStatsImage" style={{height: "30px",position: "relative", top: "-14px", left: "35px"}} src={messaging}></img>
             <div style={{display: "inline-block", position: "relative", left: "45px", top:"18px"}}>
-              <p className="networkStatsCounter" style={{fontSize: "24px", color: "#b4b7c8", fontWeight: "200", display: "inline-block"}}>0</p>
-              <p style={{fontSize: "18px", color: "#b4b7c8", fontWeight: "200", position: "relative", top:"-5px", left:"1px"}}>0GB</p>
+              <p className="networkStatsCounter" style={{fontSize: "24px", fontWeight: "200", display: "inline-block"}}>0</p>
+              <p style={{fontSize: "18px", fontWeight: "200", position: "relative", top:"-5px", left:"1px"}}>0GB</p>
             </div>
           </div>
           <div style={{display: "inline-block", position: "relative", left: "40px", top:"-8px"}}>
             <img className="networkStatsImage" style={{height: "30px",position: "relative", top: "-14px", left: "35px"}} src={fileStorage}></img>
             <div style={{display: "inline-block", position: "relative", left: "45px", top:"18px"}}>
-              <p className="networkStatsCounter" style={{fontSize: "24px", color: "#b4b7c8", fontWeight: "200", display: "inline-block"}}>0</p>
-              <p style={{fontSize: "18px", color: "#b4b7c8", fontWeight: "200", position: "relative", top:"-5px", left:"1px"}}>0GB</p>
+              <p className="networkStatsCounter" style={{fontSize: "24px", fontWeight: "200", display: "inline-block"}}>0</p>
+              <p style={{fontSize: "18px", fontWeight: "200", position: "relative", top:"-5px", left:"1px"}}>0GB</p>
             </div>
           </div>
         </div>

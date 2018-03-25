@@ -105,6 +105,7 @@ class ChangePassword extends React.Component {
           divStyle={{marginTop: "45px", width: "300px"}}
           placeholder= "Current Password"
           placeholderId="enterPassword"
+          placeHolderClassName="inputPlaceholder changePasswordInput"
           value={this.props.passwordVal}
           handleChange={this.handlePasswordChange.bind(this)}
           type="password"
@@ -114,6 +115,7 @@ class ChangePassword extends React.Component {
           divStyle={{marginTop: "20px", width: "300px"}}
           placeholder= "Repeat Password"
           placeholderId="enterPasswordRepeat"
+          placeHolderClassName="inputPlaceholder changePasswordInput"
           value={this.props.passwordValConfirmation}
           handleChange={this.handlePasswordConfirmationChange.bind(this)}
           type="password"
@@ -123,6 +125,7 @@ class ChangePassword extends React.Component {
           divStyle={{marginTop: "20px", width: "300px"}}
           placeholder= "New Password"
           placeholderId="enterPasswordConfirmation"
+          placeHolderClassName="inputPlaceholder changePasswordInput"
           value={this.props.newPassword}
           handleChange={this.handleNewPasswordChange.bind(this)}
           type="password"

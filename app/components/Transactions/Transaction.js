@@ -157,11 +157,13 @@ class Transaction extends Component {
     const data = this.orderTransactions(this.props.data);
     const today = new Date();
     let counter = -1;
+    const rowClassName = "row normalWeight tableRowCustom tableRowCustomTransactions";
+    
     return (
       <div style={{height: "100%", width: "100%", paddingLeft: "20px", paddingRight: "10px", overflowX: "hidden"}}>
-        <div id="transactionAddresses" style={{height:"90%", backgroundColor: "#1c2340", position: "relative", top: "25px", boxShadow: "0 4px 11px -6px black"}}>
-          <div style={{width: "100%", height:"46px", boxShadow: "0 2px 4px -3px rgba(0, 0, 0, 0.74)"}}>
-            <p className="tableHeader" style={{paddingTop: "7px", paddingLeft: "5%", color: "#b4b7c8"}}>Transactions</p>
+        <div id="transactionAddresses" style={{height:"90%", position: "relative", top: "25px"}}>
+          <div className="tableHeaderNormal">
+            <p className="tableHeaderTitle tableHeaderTitleSmall">Transactions</p>
             <div className="dropdownFilterSelector" style={{position: "absolute", right: "40px", top: "9px", height:"30px", padding:"0 0", width :"210px", textAlign:"center"}} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
               <div className="selectFilterSelector" style={{border: "none", position:"relative", top: "-1px", height: "30px"}}>
                 <p className="normalWeight">{this.getValue(this.props.type)}</p>
@@ -180,11 +182,11 @@ class Transaction extends Component {
             </div>
           </div>
           <div style={{width: "100%", marginTop: "5px", padding: "0 0"}}>
-            <div className="row" style={{height: "55px"}}>
-              <div className="col-sm-6" style={{position:"relative", fontSize: "14px", color: "#555d77", paddingLeft: "4%", paddingTop: "16px", fontWeight: "600"}}>TYPE</div>
-              <div id="addressHeader" className="col-sm-2 headerAddresses" style={{position:"relative", fontSize: "14px", color: "#555d77", paddingTop: "16px", fontWeight: "600"}}>AMOUNT</div>
-              <div id="addressHeader" className="col-sm-2 headerAddresses" style={{position:"relative", fontSize: "14px", color: "#555d77", paddingTop: "16px", fontWeight: "600"}}>STATUS</div>
-              <div id="addressHeader" className="col-sm-2 headerAddresses" style={{position:"relative", fontSize: "14px", color: "#555d77", paddingTop: "16px", fontWeight: "600"}}>TIME</div>
+            <div className="row rowDynamic">
+              <div className="col-sm-6 headerAddresses tableRowHeader" style={{paddingLeft: "4%"}}>TYPE</div>
+              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">AMOUNT</div>
+              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">STATUS</div>
+              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">TIME</div>
             </div>
           <div id="rows" style={{height: "500px", width: "100%", padding: "0 0"}}>
             {data.map((t, index) => {
@@ -217,7 +219,7 @@ class Transaction extends Component {
                 }
 
                 return (
-                  <div className="row normalWeight" style={{cursor: "pointer", fontSize: "15px", color: "#9099b7", minHeight: "40px", backgroundColor: counter % 2 != 0 ? "transparent" : "#1b223d"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
+                  <div className= {counter % 2 != 0 ? rowClassName : rowClassName + " tableRowEven"} style={{cursor: "pointer", fontSize: "15px", minHeight: "40px"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
                     <div className="col-sm-6 transactionAddress" style={{paddingLeft: "4%", paddingTop: "9px"}}>
                       <p style={{ margin: '0px' }}><span>{category}</span><span className="desc2 transactionAddress"> ({t.address})</span></p>
                     </div>
@@ -232,19 +234,19 @@ class Transaction extends Component {
                     </div>
                     <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{paddingLeft: "4%", width: "100%", paddingTop: "11px", paddingBottom: "11px", cursor:"default", zIndex:"2"}}>
                       <div className="col-sm-8">
-                        <p style={{ margin: '5px 0px 0px 0px' }}><span style={{color: "#555d77", fontWeight: "600"}} className="desc2">{lang.dateString}</span></p>
+                        <p className="trasactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.dateString}</span></p>
                         <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{(new Date(t.time * 1000)).toString()}</span></p>
                       </div>
                       <div className="col-sm-4">
-                        <p style={{ margin: '5px 0px 0px 0px' }}><span style={{color: "#555d77", fontWeight: "600"}} className="desc2">{lang.confirmations}</span></p>
+                        <p className="trasactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.confirmations}</span></p>
                         <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{t.confirmations}</span></p>
                       </div>
                       <div className="col-sm-8">
-                        <p style={{ margin: '5px 0px 0px 0px' }}><span style={{color: "#555d77", fontWeight: "600"}} className="desc2">{lang.transactionId}</span></p>
+                        <p className="trasactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.transactionId}</span></p>
                         <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 transactionId">{t.txid}</span></p>
                       </div>
                       <div className="col-sm-4">
-                        <p style={{ margin: '5px 0px 0px 0px' }}><span style={{color: "#555d77", fontWeight: "600"}} className="desc2">{lang.transactionFee}</span></p>
+                        <p className="trasactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.transactionFee}</span></p>
                         <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">...</span></p>
                       </div>
                     </div>

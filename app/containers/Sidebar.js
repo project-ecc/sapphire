@@ -147,14 +147,14 @@ class Sidebar extends Component {
   render() {
     let progressBar = this.props.paymentChainSync;
 
-    let walletStyle = {};
-    let overviewStyle = {};
-    let sendStyle = {};
-    let addressesStyle = {};
-    let transactionsStyle = {};
-    let fileStorageStyle = {};
-    let messagingStyle = {};
-    let contactsStyle = {};
+    let walletStyle = "";
+    let overviewStyle = "";
+    let sendStyle = "";
+    let addressesStyle = "";
+    let transactionsStyle = "";
+    let fileStorageStyle = "";
+    let messagingStyle = "";
+    let contactsStyle = "";
     let wallet = require('../../resources/images/wallet-blue.png');
     let overview = require('../../resources/images/overview-blue.png');
     let send = require('../../resources/images/send-blue.png');
@@ -166,35 +166,35 @@ class Sidebar extends Component {
 
     if(this.props.walletHovered || this.props.walletSelected){
       wallet = require('../../resources/images/wallet-orange.png');
-      walletStyle = {color: "#d09128"};
+      walletStyle = " sidebarItemSelected";
     }
     if(this.props.overviewHovered || this.props.overviewSelected){
       overview = require('../../resources/images/overview-orange.png');
-      overviewStyle = {color: "#d09128"};
+      overviewStyle = " sidebarItemSelected";
     }    
     if(this.props.sendHovered || this.props.sendSelected){
       send = require('../../resources/images/send-orange.png');
-      sendStyle = {color: "#d09128"};
+      sendStyle = " sidebarItemSelected";
     }
     if(this.props.addressesHovered || this.props.addressesSelected){
       addresses = require('../../resources/images/addresses-orange.png');
-      addressesStyle = {color: "#d09128"};
+      addressesStyle = " sidebarItemSelected";
     }
     if(this.props.transactionsHovered || this.props.transactionsSelected){
       transactions = require('../../resources/images/transactions-orange.png');
-      transactionsStyle = {color: "#d09128"};
+      transactionsStyle = " sidebarItemSelected";
     }
     if(this.props.fileStorageHovered || this.props.fileStorageSelected){
       fileStorage = require('../../resources/images/fileStorage-orange.png');
-      fileStorageStyle = {color: "#d09128"};
+      fileStorageStyle = " sidebarItemSelected";
     }
     if(this.props.messagingHovered || this.props.messagingSelected){
       messaging = require('../../resources/images/messaging-orange.png');
-      messagingStyle = {color: "#d09128"};
+      messagingStyle = " sidebarItemSelected";
     }
     if(this.props.contactsHovered || this.props.contactsSelected){
       contacts = require('../../resources/images/contacts-orange.png');
-      contactsStyle = {color: "#d09128"};
+      contactsStyle = " sidebarItemSelected";
     }
 
     const usericon = require('../../resources/images/logo_setup.png');
@@ -204,15 +204,15 @@ class Sidebar extends Component {
           <img id="sidebarLogo" src={usericon} />
         </div>
         <ul className="sidebar-menu">
-          <li className="have-children"><a style={walletStyle} href="#" onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="wallet" className="mainOption"><div className="arrowMenu"></div><img src={wallet}/><span></span>Wallet</a> 
+          <li className="have-children"><a href="#" onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="wallet" className={"mainOption" + walletStyle}><div className="arrowMenu"></div><img src={wallet}/><span></span>Wallet</a> 
             <ul>
-              <li><img className="sidebarImage" src={overview}/> <a onClick={this.handleClicked} style={overviewStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="overview"> Overview</a></li>
-              <li><img className="sidebarImage" src={send}/> <a onClick={this.handleClicked} style={sendStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="send">Send</a></li>
-              <li><img className="sidebarImage" src={addresses}/> <a onClick={this.handleClicked} style={addressesStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="addresses"><img className="sidebarImage" src={addresses}/> Addresses</a></li>
-              <li><img className="sidebarImage" src={transactions}/>  <a onClick={this.handleClicked} style={transactionsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="transactions">Transactions</a></li>
+              <li><img className="sidebarImage" src={overview}/> <a className={overviewStyle} onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="overview"> Overview</a></li>
+              <li><img className="sidebarImage" src={send}/> <a onClick={this.handleClicked} className={sendStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="send">Send</a></li>
+              <li><img className="sidebarImage" src={addresses}/> <a onClick={this.handleClicked} className={addressesStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="addresses"><img className="sidebarImage" src={addresses}/> Addresses</a></li>
+              <li><img className="sidebarImage" src={transactions}/>  <a onClick={this.handleClicked} className={transactionsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="transactions">Transactions</a></li>
             </ul>
           </li>
-          <li className="have-children"><a onClick={this.handleClicked} style={fileStorageStyle} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="fileStorage" className="mainOption"><div className="arrowMenu"></div><img src={fileStorage}/><span></span>File Storage</a>
+          <li className="have-children"><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="fileStorage" className={"mainOption" + fileStorageStyle}><div className="arrowMenu"></div><img src={fileStorage}/><span></span>File Storage</a>
             <ul>
               <li><a href="#">Customer</a></li>
               <li><a href="#">View Files</a></li>
@@ -220,16 +220,16 @@ class Sidebar extends Component {
               <li><a href="#">Provider</a></li>
             </ul>
           </li>
-          <li><a onClick={this.handleClicked} style={messagingStyle} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="messaging" className="mainOption"><img src={messaging}/><span></span>Messaging</a></li>
-          <li><a onClick={this.handleClicked} style={contactsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="contacts"><img style={{marginRight: "20px", position: "relative", top:"-2px"}} src={contacts}/>Contacts</a></li>
+          <li><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="messaging" className={"mainOption" + messagingStyle}><img src={messaging}/><span></span>Messaging</a></li>
+          <li><a onClick={this.handleClicked} className={contactsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="contacts"><img style={{marginRight: "20px", position: "relative", top:"-2px"}} src={contacts}/>Contacts</a></li>
         </ul>
         <div className="connections sidebar-section-container">
         <a onClick={this.handleClicked} data-id="network" style={{textDecoration: "none", cursor:"pointer"}}>
-          <p style={{fontSize: "13px", color: "#b4b7c8", fontWeight: "600"}}>{`${this.props.lang.nabBarNetworkInfoSyncing} ${progressBar}%`}</p>
+          <p style={{fontSize: "13px"}}>{`${this.props.lang.nabBarNetworkInfoSyncing} ${progressBar}%`}</p>
           <div className="progress">
-            <div className="bar" style={{ width: `${progressBar}%`, backgroundColor: '#d09128' }}></div>
+            <div className="bar" style={{ width: `${progressBar}%`}}></div>
           </div>
-          <p style={{fontSize: "13px", color: "#b4b7c8", fontWeight: "600"}}>{`${this.props.lang.nabBarNetworkInfoActiveConnections}: ${this.props.connections}`}</p>
+          <p style={{fontSize: "13px"}}>{`${this.props.lang.nabBarNetworkInfoActiveConnections}: ${this.props.connections}`}</p>
           </a>
         </div>
       </div>
