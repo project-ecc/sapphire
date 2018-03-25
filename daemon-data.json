@@ -1,0 +1,7 @@
+{
+  "linux32": "https://www.ecc.network/downloads/updates/eccoind-linux32",
+  "linux64": "https://www.ecc.network/downloads/updates/eccoind-linux64",
+  "win32": "https://www.ecc.network/downloads/updates/eccoind-win32.exe",
+  "win64": "https://www.ecc.network/downloads/updates/eccoind-win64.exe",
+  "osx": "https://www.ecc.network/downloads/updates/eccoind-osx.zip"
+}
