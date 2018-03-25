@@ -22,8 +22,10 @@
 }
 
 .newsItemBody{
+	@include themify($themes) { 
+		color: themed('bodySecondaryParagraphColor');
+	}
 	font-size: 16px;
-	color: #555d77;
 	font-weight: 700;
 	padding-bottom: 15px;
 	text-align: justify;
@@ -31,8 +33,10 @@
 }
 
 .newsItemTime{
+	@include themify($themes) { 
+		color: themed('eccTicker');
+	}
 	font-size: 14px;
-	color: #d09128;
 	padding-bottom: 15px;
 	display: inline-block;
 }

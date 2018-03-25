@@ -43,7 +43,7 @@
 .dropdownFilterSelector {
   @include themify($themes) { 
     color: themed('bodyParagraphColor');  
-    background-color: themed('bodyBackgroundColor');
+    background-color: themed('transactionsFilterBackgroundColor');
   }
   width: 300px;
   display: inline-block;
@@ -82,8 +82,8 @@
 
 .dropdownFilterSelector .dropdown-menuFilterSelector {
     @include themify($themes) { 
-      background-color: themed('bodyBackgroundColor');  
-      border: themed('settingsItemBorderBottom');
+      background-color: themed('transactionsFilterBackgroundColor');  
+      border: themed('transactionsFilterBorder');
     }
     position: absolute;
     width: 100%;
@@ -93,8 +93,8 @@
     border-radius: 0 1px 5px 5px;
     overflow: hidden;
     display: none;
-    max-height: 144px;
-    overflow-y: scroll;
+    max-height: 230px;
+    overflow-y: hidden;
     z-index: 9
 }
 

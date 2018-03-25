@@ -46,7 +46,7 @@ class NetworkStats extends Component {
     return(
       <div className="chainInfo" style={{position: "relative", paddingTop: "30px"}}>
         <svg style={{maxWidth:"216px", maxHeight: "230px"}} className="score" width="100%" height="400" viewBox="-25 -25 400 400">
-        <circle className="score-empty" cx="175" cy="175" r="180" strokeWidth="5px" fill="none" stroke= "#14182f"></circle>
+        <circle className="score-empty" cx="175" cy="175" r="180" strokeWidth="5px" fill="none"></circle>
         <defs>
           <filter id="sofGlow" height="300%" width="300%" x="-75%" y="-75%">
             <feMorphology operator="dilate" radius="1" in="SourceAlpha" result="thicken" />
@@ -114,7 +114,7 @@ class NetworkStats extends Component {
             </div>
             <div className="col-sm-4 text-center">
               <p className="networkStatsChainTitle">Payment Chain</p>
-                {this.getHtmlChainInfo(true, this.props.percentagePaymentChain, this.props.connectionsPayment, this.props.headersPaymentChain, this.props.blockPaymentChain, "#d59529", "rgb(213,149, 41)", require('../../../resources/images/connections-orange.png'))}
+                {this.getHtmlChainInfo(true, this.props.percentagePaymentChain, this.props.connectionsPayment, this.props.headersPaymentChain, this.props.blockPaymentChain, this.props.theme == "default" ? "#d59529" : "#c39c59", "rgb(213,149, 41)", require('../../../resources/images/connections-orange.png'))}
             </div>
             <div className="col-sm-4 text-center">
               <p className="networkStatsChainTitle">File Storage Chain</p>
@@ -135,7 +135,8 @@ const mapStateToProps = state => {
     blockPaymentChain: state.chains.blockPayment,
     headersPaymentChain: state.chains.headersPayment,
     messagingChain: state.chains.messagingChain,
-    fileStorageChain: state.chains.fileStorageChain
+    fileStorageChain: state.chains.fileStorageChain,
+    theme: state.application.theme
   };
 };
 
