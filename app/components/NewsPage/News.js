@@ -106,11 +106,11 @@ class News extends Component {
         }
         </div>
         <div id="arrows" style={{width: $('.panel').width()-80, top: items >= this.props.postsPerContainer ? (155 * this.props.postsPerContainer + 180) + "px" : (155 * items + 180) + "px" }}>
-          <div className="increaseClickArea increaseClickAreaLeft">
-            <div id="arrowLeft" onClick={this.switchPage.bind(this, "left")} className={this.props.eccPostsPage - 1 == 0 ? "arrowNews arrowInactive arrowLeftNews" : "arrowNews arrowLeftNews"}></div>
+          <div onClick={this.switchPage.bind(this, "left")} className="increaseClickArea increaseClickAreaLeft">
+            <div id="arrowLeft"  className={this.props.eccPostsPage - 1 == 0 ? "arrowNews arrowInactive arrowLeftNews" : "arrowNews arrowLeftNews"}></div>
           </div>
-          <div className="increaseClickArea">
-            <div id="arrowRight" onClick={this.switchPage.bind(this, "right")} className= {this.props.eccPostsPage * this.props.postsPerContainer < Object.keys(this.props.eccPosts).length ? "arrowNews arrowRightNews" : "arrowNews arrowInactive arrowRightNews"}></div>
+          <div onClick={this.switchPage.bind(this, "right")} className="increaseClickArea">
+            <div id="arrowRight"  className= {this.props.eccPostsPage * this.props.postsPerContainer < Object.keys(this.props.eccPosts).length ? "arrowNews arrowRightNews" : "arrowNews arrowInactive arrowRightNews"}></div>
           </div>
         </div>
         <div id="stats">
