@@ -5,9 +5,6 @@
 }
 
 #importPrivKeyPopup{
-	@include themify($themes) { 
-		color: themed('popupBackgroundColor');  
-	}
     height: 320px;
     width: 600px;
     position: relative;
@@ -84,7 +81,7 @@
 }
 
 .buttonFixPrivKey{
-	position: relative;
+	position: relative !important;
 	margin: 0 auto;
 }
 

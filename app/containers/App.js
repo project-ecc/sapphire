@@ -277,7 +277,7 @@ class App extends Component<Props> {
     return (
       <div className={this.props.theme}>
         <div id="main">
-          <TopBar />
+          <TopBar closeSapphire={this.processCloseRequest}/>
           <div className="mancha">
           </div>
           <div>
