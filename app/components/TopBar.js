@@ -53,7 +53,7 @@ class TopBar extends React.Component {
   close(){
     ipcRenderer.send('close');
     if(!this.props.minimizeOnClose){
-      this.processCloseRequest();
+      this.props.closeSapphire();
     }
   }
 
