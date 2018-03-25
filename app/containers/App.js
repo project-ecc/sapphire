@@ -59,6 +59,7 @@ class App extends Component<Props> {
     let startAtLogin = false;
     let minimizeToTray = false;
     let minimizeOnClose = false;
+    let theme = "theme-defaultEcc";
     const ds = settings.get('settings.display');
 
     if(ds && ds.minimise_to_tray !== undefined && ds.minimise_to_tray)
@@ -69,12 +70,15 @@ class App extends Component<Props> {
       minimizeOnClose = true;
     if(ds && ds.start_at_login !== undefined && ds.start_at_login)
       startAtLogin = true;
+    if(ds && ds.theme !== undefined)
+      theme = ds.theme;
 
     this.props.setMinimizeOnClose(minimizeOnClose);
     this.props.setMinimizeToTray(minimizeToTray);
     this.props.setStartAtLogin(startAtLogin);
     this.props.setTray(tray);
-
+    this.props.setTheme(theme);
+    
     let operativeSystemNotifications = true;
     let newsNotifications = true;
     let stakingNotifications = true;

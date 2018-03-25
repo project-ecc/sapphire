@@ -11,6 +11,7 @@ class ThemeSelector extends Component {
   onClickTheme(name){
     this.props.setTheme(name);
     this.props.setChangedTheme(true);
+    settings.set('settings.display.theme', name);
   }
 
   onHover(name){
