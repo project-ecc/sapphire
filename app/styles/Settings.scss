@@ -192,7 +192,7 @@
 
 #languageRectangle{
 	@include themify($themes) { 
-		background-color: themed('topBarBackgroundColor');  
+		background-color: themed('settingsHelTranslateBackgroundColor');  
 	}
 	padding-left: 15px;
     padding-right: 15px;

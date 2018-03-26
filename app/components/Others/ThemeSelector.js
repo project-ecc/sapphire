@@ -8,10 +8,28 @@ class ThemeSelector extends Component {
     super(props);
   }
 
+  onClickTheme(name){
+    this.props.setTheme(name);
+    this.props.setChangedTheme(true);
+    settings.set('settings.display.theme', name);
+  }
+
+  onHover(name){
+    this.props.setThemeBackup(this.props.theme);
+    this.props.setTheme(name);
+  }
+
+  onUnhover(){
+    if(!this.props.changedTheme){
+      this.props.setTheme(this.props.backupTheme);
+    }
+    this.props.setChangedTheme(false);
+  }
+
   render() {
     return (
      <div id="themes" style={{position:"relative", marginTop:"30px", left:"-32px"}}>
-      <div className="themeSelector" id="darkTheme">
+      <div onMouseEnter={this.onHover.bind(this, "theme-darkEcc")} onMouseLeave={this.onUnhover.bind(this)} onClick={this.onClickTheme.bind(this, "theme-darkEcc")} className={this.props.theme == "theme-darkEcc" ? "themeSelector selectedTheme" : "themeSelector" } id="darkTheme">
        <div className="themes">
          <div className="theme">
           <div className="divSquare" style={{backgroundColor: "#d09128"}}></div>
@@ -22,7 +40,7 @@ class ThemeSelector extends Component {
        </div>
          <p className="themeName">Dark</p>
        </div>
-       <div className="themeSelector">
+       <div onMouseEnter={this.onHover.bind(this, "theme-defaultEcc")} onMouseLeave={this.onUnhover.bind(this)} onClick={this.onClickTheme.bind(this, "theme-defaultEcc")} className={this.props.theme == "theme-defaultEcc" ? "themeSelector selectedTheme" : "themeSelector" } id="defaultTheme">
        <div className="themes">
          <div className="theme">
           <div className="divSquare" style={{backgroundColor: "#d09128"}}></div>
@@ -33,7 +51,7 @@ class ThemeSelector extends Component {
        </div>
          <p className="themeName">Default</p>
        </div>
-       <div className="themeSelector" id="lightTheme">
+       <div style={{visibility: "hidden"}} className="themeSelector" id="lightTheme">
        <div className="themes">
          <div className="theme">
           <div className="divSquare" style={{backgroundColor: "#bbbbbb"}}></div>
@@ -51,7 +69,10 @@ class ThemeSelector extends Component {
 
 const mapStateToProps = state => {
   return{
-    lang: state.startup.lang
+    lang: state.startup.lang,
+    theme: state.application.theme,
+    backupTheme: state.application.backupTheme,
+    changedTheme: state.application.changedTheme
   };
 };
 

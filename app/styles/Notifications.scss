@@ -41,7 +41,6 @@
 	@include themify($themes) { 
 		color: themed('inputPlaceHolderColor');  
 	}
-	top: 7px;
 	font-weight: 700;
 	font-size: 16px;
 	text-align: center;
@@ -115,6 +114,10 @@
 #notificationsHeaderContent{
 	margin: 0 auto;
 	width: max-content;
+}
+
+.notificationsHeaderContentFix p{
+	top: 7px
 }
 
 .newsItemBorder{

@@ -67,7 +67,7 @@ class NotificationPopup extends React.Component {
   getNotificationsBody(){
     if(this.props.notifications["total"] == 0 && !this.props.updateAvailable){
       return(
-        <p id="noNotifications">You have no notifications</p>
+        <p id="noNotifications" className="notificationsHeaderContentFix">You have no notifications</p>
       )
     }
     else{
@@ -98,7 +98,6 @@ class NotificationPopup extends React.Component {
     let ansPaymentsObject = this.props.notifications["ansPayments"];
     let totalAnsPayments = ansPaymentsObject["payments"].count;
     let date = ansPaymentsObject["firstDueDate"];
-    console.log(date)
     let body = <p id="mediumPosts">ANS Payment - {Tools.formatNumber(ansPaymentsObject["payments"][0]["cost"])} <span className="ecc">ECC</span></p>
     const today = new Date();
     let time = Tools.calculateTimeSince(this.props.lang, today, new Date(date));

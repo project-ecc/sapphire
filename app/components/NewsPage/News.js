@@ -54,7 +54,7 @@ class News extends Component {
       setTimeout(() => {
         this.props.setEccPostsPage(this.props.eccPostsPage + 1);
         this.props.setNewsSwitchingPage(false);
-      }, 500)
+      }, 400)
       this.updateArrows(this.props.eccPostsPage);
     }
     else if(direction == "left" && !$('#arrowLeft').hasClass('arrowInactive')){
@@ -64,33 +64,33 @@ class News extends Component {
       setTimeout(() => {
         this.props.setEccPostsPage(this.props.eccPostsPage - 1);
         this.props.setNewsSwitchingPage(false);
-      }, 500)
+      }, 400)
       this.updateArrows(this.props.eccPostsPage-2);
     }
   }
 
-  shouldComponentUpdate(props){
+  /*shouldComponentUpdate(props){
     if(props.eccPostsPage < 1 || props.eccPostsPage * props.postsPerContainer > Object.keys(props.eccPosts).length) return false;
     return true;
-  }
+  }*/
 
   render() {
-    let self = this;
     let items = 0;
+
     return (
       <div className="panel">
         <p id="eccNews">ECC News</p>
         <div id="panelHolder">
         {this.props.eccPostsArrays.map((array, indexArray) => {
           return(
-            <div className="postsContainer" id={"postsContainer" + indexArray} style={{opacity: indexArray == (self.props.eccPostsPage - 1) ? "1" : "0", visibility: indexArray == (self.props.eccPostsPage - 1) ? "visible" : "hidden", transform: indexArray == (self.props.eccPostsPage - 1) ? "initial" : ""}} key={`newsPostContainer_${indexArray}`}>
+            <div className="postsContainer" id={"postsContainer" + indexArray} style={{opacity: indexArray == (this.props.eccPostsPage - 1) ? "1" : "0", visibility: indexArray == (this.props.eccPostsPage - 1) ? "visible" : "hidden", transform: indexArray == (this.props.eccPostsPage - 1) ? "initial" : ""}} key={`newsPostContainer_${indexArray}`}>
             {array.map((post, index) => {
-              if(indexArray == (self.props.eccPostsPage - 1))
+              if(indexArray == (this.props.eccPostsPage - 1))
                 items++;
               return(
                 <NewsItem
                   title = {post.title}
-                  body = {post.body.slice(0, self.getSpliceValue()) + " ..."}
+                  body = {post.body.slice(0, this.getSpliceValue()) + " ..."}
                   time = {post.timeSince}
                   date = {post.date}
                   key = {`newsPost_${post.url}`}
@@ -106,11 +106,11 @@ class News extends Component {
         }
         </div>
         <div id="arrows" style={{width: $('.panel').width()-80, top: items >= this.props.postsPerContainer ? (155 * this.props.postsPerContainer + 180) + "px" : (155 * items + 180) + "px" }}>
-          <div className="increaseClickArea increaseClickAreaLeft">
-            <div id="arrowLeft" onClick={this.switchPage.bind(this, "left")} className={this.props.eccPostsPage - 1 == 0 ? "arrowNews arrowInactive arrowLeftNews" : "arrowNews arrowLeftNews"}></div>
+          <div onClick={this.switchPage.bind(this, "left")} className= {this.props.eccPostsPage - 1 == 0 ? "increaseClickArea increaseClickAreaLeft cursorPointerFalse" : "increaseClickArea increaseClickAreaLeft"}>
+            <div id="arrowLeft"  className={this.props.eccPostsPage - 1 == 0 ? "arrowNews arrowInactive arrowLeftNews" : "arrowNews arrowLeftNews"}></div>
           </div>
-          <div className="increaseClickArea">
-            <div id="arrowRight" onClick={this.switchPage.bind(this, "right")} className= {this.props.eccPostsPage * this.props.postsPerContainer < Object.keys(this.props.eccPosts).length ? "arrowNews arrowRightNews" : "arrowNews arrowInactive arrowRightNews"}></div>
+          <div onClick={this.switchPage.bind(this, "right")} className= {this.props.eccPostsPage * this.props.postsPerContainer < Object.keys(this.props.eccPosts).length ? "increaseClickArea" : "increaseClickArea cursorPointerFalse"}>
+            <div id="arrowRight"  className= {this.props.eccPostsPage * this.props.postsPerContainer < Object.keys(this.props.eccPosts).length ? "arrowNews arrowRightNews" : "arrowNews arrowInactive arrowRightNews"}></div>
           </div>
         </div>
         <div id="stats">

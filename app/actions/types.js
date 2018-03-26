@@ -105,3 +105,5 @@ export const CLOSING_APPLICATION = "closing_application";
 export const MAC_BUTTONS_HOVER = "mac_buttons_hover";
 export const APP_MAXIMIZED = "app_maximized";
 export const SELECTED_THEME = "selected_theme";
+export const SELECTED_THEME_BACKUP = "selected_theme_backup";
+export const CHANGED_THEME = "hovering_theme";

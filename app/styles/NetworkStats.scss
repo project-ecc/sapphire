@@ -43,6 +43,12 @@
   	}
 }
 
+.score-empty{
+	@include themify($themes) { 
+    	stroke: themed('circleTrackColor');  
+  	}
+}
+
 
 @media screen and (max-width: 1250px) {
 	.networkStatsChainTitle{
