@@ -273,11 +273,11 @@ class DaemonManager {
                 if (err) {
                   console.log(err);
                 } else {
-
+                  console.log('unzip successfully.');
                   if (fs.existsSync(`${walletDirectory}Eccoind.zip`)) {
-                    fs.unlink(`${walletDirectory}Eccoind.zip`, (error) => {
+                    fs.unlink(`${walletDirectory}Eccoind.zip`, (deleteFileError) => {
                       if (error) {
-                        console.log(error);
+                        console.log(deleteFileError);
                       } else {
                         console.log('File successfully deleted');
                         self.installedVersion = self.currentVersion;
@@ -288,9 +288,8 @@ class DaemonManager {
                     });
                   } else {
                     resolve(false)
-                    alert("This file doesn't exist, cannot delete");
+                    console.log("This file doesn't exist, cannot delete");
                   }
-                  console.log('unzip successfully.');
                 }
               });
             } else {
