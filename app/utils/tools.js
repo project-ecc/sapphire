@@ -142,38 +142,41 @@ module.exports = {
   //Animations end
 
   updateConfig: function(staking){
-    if(fs.existsSync(getConfUri())){
-      fs.readFile(getConfUri(), 'utf8', (err, data) => {
-        if (err) {
-           console.log("readFile error: ", err);
-           return;
-        }
-        if (/staking=[0-9]/g.test(data)) {
+    return new Promise((resolve, reject) => {
+      if(fs.existsSync(getConfUri())){
+        fs.readFile(getConfUri(), 'utf8', (err, data) => {
+          if (err) {
+            console.log("readFile error: ", err);
+            reject(false);
+          }
+          if (/staking=[0-9]/g.test(data)) {
             const result = data.replace(/staking=[0-9]/g, 'staking='+staking);
 
-          fs.writeFileSync(getConfUri(), result, 'utf8', (err) => {
-            if (err) {
-              console.log("writeFileSync error: ", err);
-              return;
-            }
-            else{
-              console.log("done updating config")
-              return;
-            }
-          });
+            fs.writeFileSync(getConfUri(), result, 'utf8', (err) => {
+              if (err) {
+                console.log("writeFileSync error: ", err);
+                reject(false);
+              }
+              else{
+                console.log("done updating config")
+                resolve(true);
+              }
+            });
 
-        } else {
+          } else {
 
-          fs.appendFileSync(getConfUri(), os.EOL + 'staking='+staking, 'utf8', (err) => {
-            if (err) {
-              console.log("appendFile error: ", err);
-              return;
-            }
-            return;
-          });
-        }
-      });
-    }
+            fs.appendFileSync(getConfUri(), os.EOL + 'staking='+staking, 'utf8', (err) => {
+              if (err) {
+                console.log("appendFile error: ", err);
+                reject(false);
+              }
+              resolve(true);
+            });
+          }
+        });
+      }
+
+    });
   },
 
   generateId: function(length){
