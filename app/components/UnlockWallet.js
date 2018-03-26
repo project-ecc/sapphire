@@ -18,8 +18,8 @@ class UnlockWallet extends React.Component {
   }
 
   unlockWallet(){
-    Tools.updateConfig(1).then((updated) => {
-      if(updated) {
+    //Tools.updateConfig(1).then((updated) => {
+      //if(updated) {
         let batch = [];
         let obj = {
           method: 'reloadconfig', parameters: ["staking"],
@@ -46,11 +46,11 @@ class UnlockWallet extends React.Component {
         }).catch((err) => {
           console.log("err unlocking wallet: ", err);
         });
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      //}
+    //})
+    //.catch((error) => {
+     // console.log(error);
+    //});
   }
 
   componentWillUnmount()

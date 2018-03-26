@@ -830,7 +830,7 @@ class DaemonConnector {
   getTransactions(){
     if(this.store.getState().chains.transactionsPage > 0) return;
     this.wallet.getTransactions(null, 100, 0).then((data) => {
-        this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: data, type: "all"}});
+        this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: data, type: this.store.getState().chains.transactionsType}});
     }).catch((err) => {
         console.log("error getting transactions: ", err)
     });
