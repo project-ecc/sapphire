@@ -32,7 +32,7 @@ export function getDaemonDownloadUrl() {
 
   if (process.platform === 'linux') {
 
-    return serverUrl + os.arch() === 'x32' ? daemonConfig.linux32 : daemonConfig.linux64;
+    return serverUrl += os.arch() === 'x32' ? daemonConfig.linux32 : daemonConfig.linux64;
 
   } else if (process.platform === 'darwin') {
 
@@ -41,7 +41,7 @@ export function getDaemonDownloadUrl() {
 
   } else if (process.platform.indexOf('win') > -1) {
 
-    return serverUrl + os.arch() === 'x32' ? daemonConfig.win32 : daemonConfig.win64;
+    return serverUrl += os.arch() === 'x32' ? daemonConfig.win32 : daemonConfig.win64;
   }
 }
 
