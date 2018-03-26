@@ -1,4 +1,4 @@
-import urls from '../../daemon-data.json';
+import daemonConfig from '../../daemon-data.json';
 const homedir = require('os').homedir();
 const os = require('os');
 
@@ -23,18 +23,25 @@ export function getExecutableExtension(){
   else return '.app';
 
 }
-export function getDaemonUrl() {
+export function getDaemonDownloadUrl() {
+
+  let serverUrl =
+    process.env.NODE_ENV === 'production' ? daemonConfig.live_server_address : daemonConfig.dev_server_address;
+
+  serverUrl += daemonConfig.daemon_url;
+
   if (process.platform === 'linux') {
 
-    return os.arch() === 'x32' ? urls.linux32: urls.linux64;
+    return serverUrl + os.arch() === 'x32' ? daemonConfig.linux32 : daemonConfig.linux64;
 
   } else if (process.platform === 'darwin') {
 
-    return urls.osx;
+    serverUrl += daemonConfig.osx;
+    return serverUrl;
 
   } else if (process.platform.indexOf('win') > -1) {
 
-    return os.arch() === 'x32' ? urls.win32: urls.win64;
+    return serverUrl + os.arch() === 'x32' ? daemonConfig.win32 : daemonConfig.win64;
   }
 }
 

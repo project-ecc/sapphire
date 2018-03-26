@@ -32,28 +32,32 @@ class Home extends Component {
   }
 
   lockWallet(){
-    tools.updateConfig(0);
-    var self = this;
-    var batch = [];
-    var obj = {
-      method: 'reloadconfig', parameters: ["staking"],
-      method: 'walletlock', parameters: []
-    }
-    batch.push(obj)
+    tools.updateConfig(0).then((updated) => {
+      if(updated) {
 
-    this.props.wallet.command(batch).then((data) => {
-      console.log("data: ", data)
-      data = data[0];
-     if (data !== null && data.code === 'ECONNREFUSED') {
-        console.log("daemon not working?")
-      } else if (data === null) {
-        self.props.setStaking(false);
-      } else {
-        console.log("error unlocking wallet: ", data)
+        var batch = [];
+        var obj = {
+          method: 'reloadconfig', parameters: ["staking"],
+          method: 'walletlock', parameters: []
+        }
+        batch.push(obj)
+
+        this.props.wallet.command(batch).then((data) => {
+          console.log("data: ", data)
+          data = data[0];
+          if (data !== null && data.code === 'ECONNREFUSED') {
+            console.log("daemon not working?")
+          } else if (data === null) {
+            this.props.setStaking(false);
+          } else {
+            console.log("error unlocking wallet: ", data)
+          }
+        }).catch((err) => {
+          console.log("err unlocking wallet: ", err);
+        });
       }
-    }).catch((err) => {
-      console.log("err unlocking wallet: ", err);
     });
+
   }
 
   lockWallet(){
@@ -70,19 +74,19 @@ class Home extends Component {
   }
 
   earningsFilterClicked(filter){
-    this.props.setFilterEarningsTime(filter);    
+    this.props.setFilterEarningsTime(filter);
   }
 
   earningsTypeFilterClicked(filter){
-    this.props.setFilterEarningsType(filter);    
+    this.props.setFilterEarningsType(filter);
   }
 
   expensesFilterClicked(filter){
-    this.props.setFilterExpensesTime(filter);    
+    this.props.setFilterExpensesTime(filter);
   }
 
   expensesTypeFilterClicked(filter){
-    this.props.setFilterExpensesType(filter);    
+    this.props.setFilterExpensesType(filter);
   }
 
   getEarnings(){
@@ -187,18 +191,18 @@ class Home extends Component {
                   <div className="arrowHome"></div>
                   <div id="earningsFirst">
                     <p className="normalWeight homePanelTitleOne" style={{fontSize: "20px"}}>Earnings</p>
-                  </div> 
+                  </div>
                     <img onClick={this.earningsTypeFilterClicked.bind(this, "fileStorage")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={fileStorageEarnings}/>
                     <p onClick={this.earningsTypeFilterClicked.bind(this, "staking")} className={this.props.stakingEarningsSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> Staking </p>
                     <p onClick={this.earningsTypeFilterClicked.bind(this, "all")} className={this.props.allEarningsSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> All</p>
                 </div>
-              </div>    
+              </div>
               <div className="col-sm-4 text-center"  style={{padding: "0 0"}}>
                 <p className="normalWeight" style={{fontSize: "20px", position: "relative", top: "60px"}}>{tools.formatNumber(this.getEarnings())} <span className="ecc">ecc</span></p>
                 <p onClick={this.earningsFilterClicked.bind(this, "week")} className= {this.props.weekEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>Last Week</p>
                 <p onClick={this.earningsFilterClicked.bind(this, "month")} className= {this.props.monthEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>Last Month</p>
                 <p onClick={this.earningsFilterClicked.bind(this, "allTime")} className= {this.props.allTimeEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}> All</p>
-              </div>        
+              </div>
             </div>
           </div>
           <div className="homeSection" id="expenses">
@@ -208,22 +212,22 @@ class Home extends Component {
                   <div className="arrowHome arrowExpenses"></div>
                   <div id="earningsFirst">
                     <p className="normalWeight homePanelTitleOne" style={{fontSize: "20px"}}>Expenses</p>
-                  </div> 
+                  </div>
                     <img onClick={this.expensesTypeFilterClicked.bind(this, "messaging")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={messaging}/>
                     <img onClick={this.expensesTypeFilterClicked.bind(this, "fileStorage")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={fileStorageExpenses}/>
                     <p onClick={this.expensesTypeFilterClicked.bind(this, "ans")} style = {{color: this.props.ansExpensesSelected ? "#aeacf3" : "#85899e"}} className={this.props.ansExpensesSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> ANS </p>
                     <p onClick={this.expensesTypeFilterClicked.bind(this, "all")} style = {{color: this.props.allExpensesSelected ? "#aeacf3" : "#85899e"}} className={this.props.allExpensesSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> All</p>
                 </div>
-              </div>    
+              </div>
               <div className="col-sm-4 text-center"  style={{padding: "0 0"}}>
                   <p className="normalWeight" style={{fontSize: "20px", position: "relative", top: "60px"}}>0 <span className="ecc">ecc</span></p>
                     <p onClick={this.expensesFilterClicked.bind(this, "week")} className={this.props.weekExpensesSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>Last Week</p>
                     <p onClick={this.expensesFilterClicked.bind(this, "month")} className={this.props.monthExpensesSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>Last Month</p>
                     <p onClick={this.expensesFilterClicked.bind(this, "allTime")} className={this.props.allTimeExpensesSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}> All</p>
-              </div>  
+              </div>
               <div className="col-sm-4  text-center"  style={{padding: "0 0"}}>
                   <p className="normalWeight homePanelTitleOne" style={{fontSize: "16px", paddingTop: "15px"}}>Next Payments</p>
-              </div>           
+              </div>
             </div>
           </div>
         </div>

@@ -201,42 +201,44 @@ export default class Wallet {
     }
   }
 
-  walletstart(cb) {
-    let path = getPlatformWalletUri();
-    if (process.platform === 'linux') {
-      runExec(`chmod +x "${path}" && "${path}"`, 1000).then(() => {
-        return cb(true);
-      })
+  walletstart() {
+    return new Promise((resolve, reject) => {
+      let path = getPlatformWalletUri();
+      if (process.platform === 'linux') {
+        runExec(`chmod +x "${path}" && "${path}"`, 1000).then(() => {
+          return resolve(true);
+        })
         .catch(() => {
-          cb(false);
+          reject(false);
         });
-    } else if (process.platform === 'darwin') {
-      console.log(path)
-      runExec(`chmod +x "${path}" && "${path}"`, 1000).then(() => {
-        return cb(true);
-      })
+      } else if (process.platform === 'darwin') {
+        console.log(path)
+        runExec(`chmod +x "${path}" && "${path}"`, 1000).then(() => {
+          return resolve(true);
+        })
         .catch((err) => {
           console.log(err)
-          cb(false);
+          reject(false);
         });
-    } else if (process.platform.indexOf('win') > -1) {
-      path = `& "${path}"`;
-      const ps = new shell({ //eslint-disable-line
-        executionPolicy: 'Bypass',
-        noProfile: true
-      });
+      } else if (process.platform.indexOf('win') > -1) {
+        path = `& "${path}"`;
+        const ps = new shell({ //eslint-disable-line
+          executionPolicy: 'Bypass',
+          noProfile: true
+        });
 
-      ps.addCommand(path);
-      ps.invoke()
-        .then(() => {
-          return cb(true);
-        })
-        .catch(err => {
-          console.log(err);
-          cb(false);
-          ps.dispose();
-        });
-    }
+        ps.addCommand(path);
+        ps.invoke()
+          .then(() => {
+            return resolve(true);
+          })
+          .catch(err => {
+            console.log(err);
+            reject(false);
+            ps.dispose();
+          });
+      }
+    });
   }
 }
 

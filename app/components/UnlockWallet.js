@@ -18,35 +18,41 @@ class UnlockWallet extends React.Component {
   }
 
   unlockWallet(){
-    Tools.updateConfig(1);
-    let batch = [];
-    let obj = {
-      method: 'reloadconfig', parameters: ["staking"],
-      method: 'walletpassphrase', parameters: [this.props.passwordVal, 31556926, true]
-    }
-    batch.push(obj)
+    Tools.updateConfig(1).then((updated) => {
+      if(updated) {
+        let batch = [];
+        let obj = {
+          method: 'reloadconfig', parameters: ["staking"],
+          method: 'walletpassphrase', parameters: [this.props.passwordVal, 31556926, true]
+        }
+        batch.push(obj)
 
-    this.props.wallet.command(batch).then((data) => {
-      console.log("data: ", data)
-      data = data[0];
-      if (data !== null && data.code === -14) {
-        Tools.showTemporaryMessage('#wrongPassword');
-      } else if (data !== null && data.code === 'ECONNREFUSED') {
-        console.log("daemong ain't working mate :(")
-      } else if (data === null) {
-        this.props.setPassword("");
-        this.props.setUnlocking(false);
-        setTimeout(() => {
-          this.props.setStaking(true);
-        }, 300)
-      } else {
-        console.log("error unlocking wallet: ", data)
+        this.props.wallet.command(batch).then((data) => {
+          console.log("data: ", data)
+          data = data[0];
+          if (data !== null && data.code === -14) {
+            Tools.showTemporaryMessage('#wrongPassword');
+          } else if (data !== null && data.code === 'ECONNREFUSED') {
+            console.log("daemong ain't working mate :(")
+          } else if (data === null) {
+            this.props.setPassword("");
+            this.props.setUnlocking(false);
+            setTimeout(() => {
+              this.props.setStaking(true);
+            }, 300)
+          } else {
+            console.log("error unlocking wallet: ", data)
+          }
+        }).catch((err) => {
+          console.log("err unlocking wallet: ", err);
+        });
       }
-    }).catch((err) => {
-      console.log("err unlocking wallet: ", err);
+    })
+    .catch((error) => {
+      console.log(error);
     });
   }
-  
+
   componentWillUnmount()
   {
     this.props.setPassword("");
@@ -56,7 +62,7 @@ class UnlockWallet extends React.Component {
     const pw = event.target.value;
     if(pw.length == 0)
       TweenMax.set('#password', {autoAlpha: 1});
-    else 
+    else
       TweenMax.set('#password', {autoAlpha: 0});
 
     this.props.setPassword(pw);
@@ -74,14 +80,14 @@ class UnlockWallet extends React.Component {
   handleCancel(){
     this.props.setUnlocking(false);
   }
-  
-  render() { 
+
+  render() {
      return (
       <div className="unlockWallet">
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">Unlock your wallet</p>
         <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "left", margin: "0 auto", paddingTop: "20px"}}>This process unlocks your wallet for staking. You will still be required to enter a password to send <span className="ecc">ECC</span>.</p>
-          <Input 
+          <Input
             divStyle={{width: "400px"}}
             placeholder= "Password"
             placeholderId= "password"
@@ -97,7 +103,7 @@ class UnlockWallet extends React.Component {
         <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm"/>
       </div>
       );
-    } 
+    }
 };
 
 const mapStateToProps = state => {

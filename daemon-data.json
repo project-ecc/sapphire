@@ -1,7 +1,10 @@
 {
-  "linux32": "https://www.ecc.network/downloads/updates/eccoind-linux32",
-  "linux64": "https://www.ecc.network/downloads/updates/eccoind-linux64",
-  "win32": "https://www.ecc.network/downloads/updates/eccoind-win32.exe",
-  "win64": "https://www.ecc.network/downloads/updates/eccoind-win64.exe",
-  "osx": "https://www.ecc.network/downloads/updates/eccoind-osx.zip"
+  "live_server_address": "https://ecc.network",
+  "dev_server_address": "http://54.245.0.121",
+  "daemon_url": "/api/v1/downloads/eccoin?platform=",
+  "linux32": "linux32",
+  "linux64": "linux64",
+  "win32": "win32",
+  "win64": "win64",
+  "osx": "mac"
 }
