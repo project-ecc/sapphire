@@ -116,7 +116,7 @@ class Transaction extends Component {
   }
 
   handleDropDownClicked(){
-    $('.dropdownFilterSelector').attr('tabindex', 1).focus();
+    $('.dropdownFilterSeglector').attr('tabindex', 1).focus();
     $('.dropdownFilterSelector').toggleClass('active');
     $('.dropdownFilterSelector').find('.dropdown-menuFilterSelector').slideToggle(300);
   }
