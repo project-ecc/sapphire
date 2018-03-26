@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import $ from 'jquery';
 const homedir = require('os').homedir();
+const Tools = require('../utils/tools')
 import * as actions from '../actions';
 
 class Sidebar extends Component {
@@ -155,45 +156,45 @@ class Sidebar extends Component {
     let fileStorageStyle = "";
     let messagingStyle = "";
     let contactsStyle = "";
-    let wallet = require('../../resources/images/wallet-blue.png');
-    let overview = require('../../resources/images/overview-blue.png');
-    let send = require('../../resources/images/send-blue.png');
-    let addresses = require('../../resources/images/addresses-blue.png');
-    let transactions = require('../../resources/images/transactions-blue.png');
-    let fileStorage = require('../../resources/images/fileStorage-default.png');
-    let messaging = require('../../resources/images/messaging-default.png');
-    let contacts = require('../../resources/images/contacts-blue.png');
+    let wallet = Tools.getIconForTheme("wallet", false);
+    let overview = Tools.getIconForTheme("overview", false);
+    let send = Tools.getIconForTheme("send", false);
+    let addresses = Tools.getIconForTheme("addresses", false);
+    let transactions = Tools.getIconForTheme("transactions", false);
+    let fileStorage = Tools.getIconForTheme("fileStorage", false);
+    let messaging = Tools.getIconForTheme("messaging", false);
+    let contacts = Tools.getIconForTheme("contacts", false);
 
     if(this.props.walletHovered || this.props.walletSelected){
-      wallet = require('../../resources/images/wallet-orange.png');
+      wallet = Tools.getIconForTheme("wallet", true);
       walletStyle = " sidebarItemSelected";
     }
     if(this.props.overviewHovered || this.props.overviewSelected){
-      overview = require('../../resources/images/overview-orange.png');
+      overview = Tools.getIconForTheme("overview", true);
       overviewStyle = " sidebarItemSelected";
     }    
     if(this.props.sendHovered || this.props.sendSelected){
-      send = require('../../resources/images/send-orange.png');
+      send = Tools.getIconForTheme("send", true);
       sendStyle = " sidebarItemSelected";
     }
     if(this.props.addressesHovered || this.props.addressesSelected){
-      addresses = require('../../resources/images/addresses-orange.png');
+      addresses = Tools.getIconForTheme("addresses", true);
       addressesStyle = " sidebarItemSelected";
     }
     if(this.props.transactionsHovered || this.props.transactionsSelected){
-      transactions = require('../../resources/images/transactions-orange.png');
+      transactions = Tools.getIconForTheme("transactions", true);
       transactionsStyle = " sidebarItemSelected";
     }
     if(this.props.fileStorageHovered || this.props.fileStorageSelected){
-      fileStorage = require('../../resources/images/fileStorage-orange.png');
+      fileStorage = Tools.getIconForTheme("fileStorage", true);
       fileStorageStyle = " sidebarItemSelected";
     }
     if(this.props.messagingHovered || this.props.messagingSelected){
-      messaging = require('../../resources/images/messaging-orange.png');
+      messaging = Tools.getIconForTheme("messaging", true);
       messagingStyle = " sidebarItemSelected";
     }
     if(this.props.contactsHovered || this.props.contactsSelected){
-      contacts = require('../../resources/images/contacts-orange.png');
+      contacts = Tools.getIconForTheme("contacts", true);
       contactsStyle = " sidebarItemSelected";
     }
 

@@ -13,13 +13,13 @@ class News extends Component {
 
   componentDidMount() {
     $( window ).on('resize', () => {
-      this.updateContainer();
+      this.updateContainer(true);
     });
-    this.updateContainer();
+    this.updateContainer(false);
     this.props.setNewsChecked(new Date().getTime());
   }
 
-  updateContainer(){
+  updateContainer(forceRefresh){
     let containerSize = $(window).height() - 300;
     $('.postsContainer').css('height', containerSize);
     let postsPerContainer = Math.floor(containerSize / 155);
@@ -28,6 +28,11 @@ class News extends Component {
       this.props.setEccPostsPage(1);
     }
     this.props.setPostsPerContainer(postsPerContainer);
+    if(forceRefresh){
+      setTimeout(()=>{
+        this.updateContainer(false);
+      }, 200)
+    }
   }
 
   componentWillUnmount() {
@@ -37,7 +42,7 @@ class News extends Component {
 
   getSpliceValue(){
     let width = $('.panel').width()-80;
-    return Math.floor(width/4);
+    return Math.floor(width/4.1);
   }
 
   updateArrows(page){
