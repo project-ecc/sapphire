@@ -16,7 +16,8 @@ import MenuBuilder from './menu';
 import DaemonManager from './Managers/DaemonManager';
 import GUIManager from './Managers/GUIManager';
 import {grabWalletDir} from "./utils/platform.service";
-import os from 'os';
+import os from 'os';import { traduction } from './lang/lang';
+var lang = traduction();
 const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote, Notification   } = require('electron');
 const dialog = require('electron').dialog;
 const settings = require('electron-settings');
@@ -352,7 +353,7 @@ ipcMain.on('update', (e, args) => {
 
 function openFile () {
 console.log("called open file")
- dialog.showOpenDialog({ title: `Select a file named "wallet.dat"`, filters: [
+ dialog.showOpenDialog({ title: lang.selectAFileName, filters: [
 
    { name: 'wallet', extensions: ['dat'] }
 
@@ -363,7 +364,7 @@ console.log("called open file")
   }
   var fileName = fileNames[0];
   if(fileName.indexOf("wallet.dat") == -1)
-  	 dialog.showMessageBox({ title: "ECC - Wrong file selected", message: "Please select a file named \"wallet.dat\"", type: "error",
+  	 dialog.showMessageBox({ title: lang.wrongFileSelected, message: lang.pleaseSelectAFileNamed, type: "error",
         buttons: ["OK"] }, function(){
         	openFile();
         });

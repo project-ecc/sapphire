@@ -85,11 +85,11 @@ class UnlockWallet extends React.Component {
      return (
       <div className="unlockWallet">
         <CloseButtonPopup handleClose={this.handleCancel}/>
-        <p className="popupTitle">Unlock your wallet</p>
-        <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "left", margin: "0 auto", paddingTop: "20px"}}>This process unlocks your wallet for staking. You will still be required to enter a password to send <span className="ecc">ECC</span>.</p>
-          <Input
+        <p className="popupTitle">{ this.props.lang.unlockWallet }</p>
+        <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "left", margin: "0 auto", paddingTop: "20px"}}>{ this.props.lang.unlockWalletExplanation1 }<br></br>{ this.props.lang.unlockWalletExplanation2 } <span className="ecc">ECC</span>.</p>
+          <Input 
             divStyle={{width: "400px"}}
-            placeholder= "Password"
+            placeholder= { this.props.lang.password }
             placeholderId= "password"
             placeHolderClassName="inputPlaceholder inputPlaceholderUnlock"
             value={this.props.passwordVal}
@@ -98,9 +98,9 @@ class UnlockWallet extends React.Component {
             inputStyle={{width: "400px", top: "20px", marginBottom: "30px"}}
           />
         <div>
-          <p id="wrongPassword" className="wrongPassword">Wrong password</p>
+          <p id="wrongPassword" className="wrongPassword">{ this.props.lang.wrongPassword }</p>
         </div>
-        <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm"/>
+        <ConfirmButtonPopup handleConfirm={this.handleConfirm} text={ this.props.lang.confirm }/>
       </div>
       );
     }

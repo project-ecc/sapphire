@@ -122,15 +122,15 @@ class Contacts extends Component {
       <div className="panel">
         <AddressBook sendPanel={false}/>
         <div style={{position: "relative", top: "60px"}}>
-          <p id="addressExists" className="contactsMessage">Contact already exists</p>
-          <p id="addressAdded" className="contactsMessage">Contact added successfully</p>
-          <p id="addressInvalid" className="contactsMessage">Invalid Address</p>
+          <p id="addressExists" className="contactsMessage">{ this.props.lang.contactAlreadyExists }</p>
+          <p id="addressAdded" className="contactsMessage">{ this.props.lang.contactAddedSuccessfully }</p>
+          <p id="addressInvalid" className="contactsMessage">{ this.props.lang.invalidAddress }</p>
         </div>
         <div id="inputAddress" style={{width: "750px", margin: "0 auto", position: "relative", marginTop:"80px"}}>
           <div style={{display: "inline-block", width: "70%", position: "relative"}}>
             <Input 
               divStyle={{}}
-              placeholder= "Name"
+              placeholder= { this.props.lang.name }
               placeholderId="addressNamePlaceHolder"
               placeHolderClassName="inputPlaceholder inputPlaceholderReceive"
               value={this.props.newContactName}
@@ -141,7 +141,7 @@ class Contacts extends Component {
             />
             <Input 
               divStyle={{position: "relative",  marginTop: "10px"}}
-              placeholder= "Address"
+              placeholder= { this.props.lang.address }
               placeholderId="addressAccountPlaceHolder"
               placeHolderClassName="inputPlaceholder inputPlaceholderReceive"
               value={this.props.newContactAddress}
@@ -152,9 +152,9 @@ class Contacts extends Component {
             />
           </div>
             <div onClick={this.addContact} className="buttonUnlock addContactButton">
-             Add Contact
+            { this.props.lang.addContact }
             </div>
-            <p id="ansExplanation" style={{display: "inline-block", fontSize: "14px", position: "relative", top:"15px", width:"660px"}}>Type the name of an <span className="ecc">ANS contact</span> and click to add him or fill the Address input (+ optional Name) to add a regular address.</p>
+            <p id="ansExplanation" style={{display: "inline-block", fontSize: "14px", position: "relative", top:"15px", width:"660px"}}>{ this.props.lang.ansExplanation1 } <span className="ecc">{ this.props.lang.ansExplanation2 }</span> { this.props.lang.ansExplanation3 }</p>
           </div>
       </div>
     );

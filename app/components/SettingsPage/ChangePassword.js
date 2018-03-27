@@ -66,13 +66,13 @@ class ChangePassword extends React.Component {
         if(wasStaking){
 
         }
-        Tools.showTemporaryMessage('#wrongPassword', "Operation Successfull!");
+        Tools.showTemporaryMessage('#wrongPassword', this.props.lang.operationSuccessful );
         setTimeout(()=>{
           this.props.setChangingPassword(false)
         }, 2000)
       }
       else if(data.code && data.code == -14){
-        Tools.showTemporaryMessage('#wrongPassword', "Wrong Password");
+        Tools.showTemporaryMessage('#wrongPassword', this.props.lang.wrongPasswordProper );
       }
     })
     .catch((err) => {
@@ -82,10 +82,10 @@ class ChangePassword extends React.Component {
 
   handleConfirm(){
     if(this.props.passwordVal == "" || this.props.passwordValConfirmation == "" || this.props.newPassword == ""){
-      Tools.showTemporaryMessage('#wrongPassword', 'Please fill all fields');
+      Tools.showTemporaryMessage('#wrongPassword', this.props.lang.fillAllFields );
     }
     else if(this.props.passwordVal != this.props.passwordValConfirmation){
-      Tools.showTemporaryMessage('#wrongPassword', "Passwords don't match");
+      Tools.showTemporaryMessage('#wrongPassword', this.props.lang.passwordsDontMatch );
     }
     else{
       this.changePassword();
@@ -100,10 +100,10 @@ class ChangePassword extends React.Component {
      return (
       <div className="changePassword">
         <CloseButtonPopup handleClose={this.handleCancel}/>
-        <p className="popupTitle">Change Password</p>
+        <p className="popupTitle">{ this.props.lang.changePassword }</p>
         <Input 
           divStyle={{marginTop: "45px", width: "300px"}}
-          placeholder= "Current Password"
+          placeholder= { this.props.lang.currentPassword }
           placeholderId="enterPassword"
           placeHolderClassName="inputPlaceholder changePasswordInput"
           value={this.props.passwordVal}
@@ -113,7 +113,7 @@ class ChangePassword extends React.Component {
         />
         <Input 
           divStyle={{marginTop: "20px", width: "300px"}}
-          placeholder= "Repeat Password"
+          placeholder= { this.props.lang.repeatPassword }
           placeholderId="enterPasswordRepeat"
           placeHolderClassName="inputPlaceholder changePasswordInput"
           value={this.props.passwordValConfirmation}
@@ -123,7 +123,7 @@ class ChangePassword extends React.Component {
         />
         <Input 
           divStyle={{marginTop: "20px", width: "300px"}}
-          placeholder= "New Password"
+          placeholder= { this.props.lang.newPassword }
           placeholderId="enterPasswordConfirmation"
           placeHolderClassName="inputPlaceholder changePasswordInput"
           value={this.props.newPassword}
@@ -131,7 +131,7 @@ class ChangePassword extends React.Component {
           type="password"
           inputStyle={{width: "300px"}}
         />
-        <p id="wrongPassword" className="wrongPassword" style= {{paddingTop:"10px"}}>Wrong password</p>
+        <p id="wrongPassword" className="wrongPassword" style= {{paddingTop:"10px"}}>{ this.props.lang.wrongPassword }</p>
         <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm"/>
       </div>
       );

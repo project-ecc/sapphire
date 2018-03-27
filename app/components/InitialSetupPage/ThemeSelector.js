@@ -13,7 +13,7 @@ class ThemeSelector extends React.Component {
      return (
       <div>
            <p style={{fontWeight:"300"}} className="subTitle">
-             {this.props.lang.selectTheme}
+             { this.props.lang.selectTheme }
            </p>
          <div id="themes">
           <div className="themeSelector" id="darkTheme">
@@ -25,7 +25,7 @@ class ThemeSelector extends React.Component {
               <div className="divSquare" style={{backgroundColor: "#1e2544"}}></div>
              </div> 
            </div>
-             <p className="themeName">Dark</p>
+             <p className="themeName">{ this.props.lang.dark }</p>
            </div>
            <div className="themeSelector">
            <div className="themes">
@@ -36,7 +36,7 @@ class ThemeSelector extends React.Component {
               <div className="divSquare" style={{backgroundColor: "#1e2544"}}></div>
              </div> 
            </div>
-             <p className="themeName">Default</p>
+             <p className="themeName">{ this.props.lang.default }</p>
            </div>
            <div className="themeSelector" id="lightTheme">
            <div className="themes">
@@ -47,7 +47,7 @@ class ThemeSelector extends React.Component {
               <div className="divSquare" style={{backgroundColor: "#ffffff"}}></div>
              </div> 
            </div>
-             <p className="themeName">Light</p>
+             <p className="themeName">{ this.props.lang.light }</p>
            </div>
          </div>
       </div>

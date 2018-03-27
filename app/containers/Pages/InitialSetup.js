@@ -227,7 +227,7 @@ class InitialSetup extends Component {
           </div>
           <div className="content">
             <p style={{fontWeight:"200"}} id="welcome">
-             {this.props.lang.welcome}
+             { this.props.lang.welcome }
            </p>
           {this.renderStep()}
           </div>

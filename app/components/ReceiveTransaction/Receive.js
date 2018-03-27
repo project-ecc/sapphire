@@ -154,14 +154,14 @@ class Receive extends Component {
         <div id="headerReceive">
           <p className={this.props.ansAddress ? "typeSelectorReceive textSelected" : "typeSelectorReceive textSelectable"}  onClick={this.handleChangeAddressCreationToAns}>ANS</p>
           <span>/</span>
-          <p className={this.props.ansAddress ? "typeSelectorReceive textSelectable" : "typeSelectorReceive textSelected"} onClick={this.handleChangeAddressCreationToNormal}>Normal Address</p>
+          <p className={this.props.ansAddress ? "typeSelectorReceive textSelectable" : "typeSelectorReceive textSelected"} onClick={this.handleChangeAddressCreationToNormal}>{ this.props.lang.normalAddress }</p>
         </div>
         <div id="inputAddress">
           <div style={{display: "inline-block", width: "70%", position: "relative"}}>
             <Input 
               divId="addressName"
               divStyle={{display: "inline"}}
-              placeholder= "Name"
+              placeholder= { this.props.lang.name }
               placeHolderClassName="inputPlaceholder inputPlaceholderReceive"
               placeholderId="addressNamePlaceHolder"
               value={this.props.newAddressName}
@@ -172,7 +172,7 @@ class Receive extends Component {
             <Input 
               divId="addressAccount"
               divStyle={{position: "relative",  marginTop: "10px"}}
-              placeholder= "Account (optional)"
+              placeholder= { this.props.lang.accountOptional }
               placeHolderClassName="inputPlaceholder inputPlaceholderReceive"
               placeholderId="addressAccountPlaceHolder"
               value={this.props.newAddressAccount}
@@ -181,17 +181,17 @@ class Receive extends Component {
               inputStyle={{textAlign: "left", width:"100%", display: "inline-block"}}
             />
           </div>
-           <ConfirmButtonPopup handleConfirm={this.handleCreateNewAddress} style={{marginLeft: "20px", display: "inline-block", width: "auto", padding: "0px 20px"}} text={this.props.ansAddress ? "Create ANS Address" : "Create Normal Address"}/>
-            <p id="ansExplanation" style={{visibility: this.props.ansAddress ? "visible" : "hidden"}}>ANS addresses are recognized by name in the network and have a cost of 0.00000005 <span className="ecc">ecc</span> per month</p>
+           <ConfirmButtonPopup handleConfirm={this.handleCreateNewAddress} style={{marginLeft: "20px", display: "inline-block", width: "auto", padding: "0px 20px"}} text={ this.props.ansAddress ? this.props.lang.createANSAddress : this.props.lang.createNormalAddress }/>
+            <p id="ansExplanation" style={{visibility: this.props.ansAddress ? "visible" : "hidden"}}>{ this.props.lang.ansCost1 } 0.00000005 <span className="ecc">ecc</span> { this.props.lang.ansCost2 }.</p>
          </div>
 
          <div className="tableCustom">
           <div className="tableHeaderBig tableHeaderNormal">
-            <p className="tableHeaderTitle">Your Addresses</p>
-            <p className="headerDescription">All your normal and ANS addresses</p>
+            <p className="tableHeaderTitle">{ this.props.lang.yourAddresses }</p>
+            <p className="headerDescription">{ this.props.lang.allYourNormalAndANS }</p>
             <div id="tableFiltersReceive">
-              <p className= {this.props.filterAns ? "tableFilterReceive textSelected" : "tableFilterReceive textSelectable"} onClick={this.filterClicked.bind(this, "ans")}>ANS Addresses</p>
-              <p className= {this.props.filterNormal ? "tableFilterReceive textSelected fixMarginReceive" : "tableFilterReceive textSelectable fixMarginReceive"} onClick={this.filterClicked.bind(this, "normal")}>Normal Addresses</p>
+              <p className= {this.props.filterAns ? "tableFilterReceive textSelected" : "tableFilterReceive textSelectable"} onClick={this.filterClicked.bind(this, "ans")}>{ this.props.lang.ansAddresses }</p>
+              <p className= {this.props.filterNormal ? "tableFilterReceive textSelected fixMarginReceive" : "tableFilterReceive textSelectable fixMarginReceive"} onClick={this.filterClicked.bind(this, "normal")}>{ this.props.lang.normalAddresses }</p>
               <p className= {this.props.filterAll ? "tableFilterReceive textSelected fixMarginReceive" : "tableFilterReceive textSelectable fixMarginReceive"}onClick={this.filterClicked.bind(this, "all")}>All</p>
             </div>
           </div>
@@ -199,7 +199,7 @@ class Receive extends Component {
               <div className="row rowDynamic">
                 <div className="col-sm-3 headerAddresses headerAddressFix tableRowHeader">{this.props.filterAll ? "ACCOUNT" : this.props.filterNormal ? "ACCOUNT" : "NAME"}</div>
                 <div id="addressHeader" className="col-sm-6 headerAddresses tableRowHeader">{this.props.filterAll ? "ADDRESS / NAME" : "ADDRESS"}</div>
-                <div id="addressHeader" className="col-sm-3 headerAddresses tableRowHeader">AMOUNT</div>
+                <div id="addressHeader" className="col-sm-3 headerAddresses tableRowHeader">{ this.props.lang.amountCAPS }</div>
               </div>
             <div id="rows">
             {this.props.userAddresses.map((address, index) => {
@@ -226,10 +226,10 @@ class Receive extends Component {
         </div>
         <div id="imageAns">
           <img src={ansAddresImage} />
-          <p className="ansLabel">ANS Address</p>
+          <p className="ansLabel">{ this.props.lang.ansAddress }</p>
           <div>
-            <p id="addressCreatedSuccessfully"> Address Created Successfully!<br></br><span className="ecc" onClick={this.goToBackupPage.bind(this)}>Click here to backup your wallet</span></p>
-            <p id="upgradeAns"> {this.props.selectedAddress && this.props.selectedAddress.ans ? "Disable ANS subscription" : this.props.selectedAddress ? "Upgrade to ANS Address" : ""}</p>
+            <p id="addressCreatedSuccessfully"> { this.props.lang.addressCreatedSuccessfully }<br></br><span className="ecc" onClick={this.goToBackupPage.bind(this)}>{ this.props.lang.clickToBackupWallet }</span></p>
+            <p id="upgradeAns"> {this.props.selectedAddress && this.props.selectedAddress.ans ? "{ this.props.lang.disableANSSubscription }" : this.props.selectedAddress ? "{ this.props.lang.upgradeToANS }" : ""}</p>
           </div>
         </div>
       </div>

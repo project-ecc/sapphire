@@ -161,35 +161,35 @@ class Settings extends Component {
       <div className="container">
         <SettingsToggle 
           keyVal={4}
-          text= "Start ECC on system login"
+          text= { this.props.lang.startOnLogin }
           handleChange = {this.handleStartAtLogin}
           checked = {this.props.startAtLogin}
         />
         <SettingsToggle 
           keyVal={5}
-          text= "Hide tray icon"
+          text= { this.props.lang.hideTrayIcon }
           handleChange = {this.setTrayIcon}
           checked = {this.props.hideTrayIcon}
         />
         <SettingsToggle 
           keyVal={6}
-          text= "Minimize to tray instead of the task bar"
+          text= { this.props.lang.minimizeToTray }
           handleChange = {this.handleMinimizeToTray}
           checked = {this.props.minimizeToTray}
         />
         <SettingsToggle 
           keyVal={7}
-          text= "Minimize on close"
+          text= { this.props.lang.minimizeOnClose }
           handleChange = {this.handleMinimizeOnClose}
           checked = {this.props.minimizeOnClose}
         />
         <div className="row settingsToggle">
           <div className="col-sm-6 text-left removePadding">
-            <p>Application version</p>
+            <p>{ this.props.lang.applicationVersion }</p>
             <p id="applicationVersion">v0.1.4g & v1.1.2d</p>
           </div>
           <div className="col-sm-6 text-right removePadding">
-            <p onClick={this.handleUpdateApplication.bind(this)} id={this.props.updateAvailable ? "updateAvailable" : "updateUnavailable"}>{this.props.updateAvailable ? "Install Update" : "No update available"}</p>
+            <p onClick={this.handleUpdateApplication.bind(this)} id={this.props.updateAvailable ? "updateAvailable" : "updateUnavailable"}>{this.props.updateAvailable ? this.props.lang.installUpdate : this.props.lang.noUpdateAvailable }</p>
           </div>
         </div>
       </div>
@@ -199,31 +199,31 @@ class Settings extends Component {
   getWalletSettings(){
     return(
       <div>
-      <p id="walletBackup">Backup</p>
-        <p id="walletBackupExplanation">You should backup your wallet whenever you generate a new address. There are two ways to backup a wallet. One is by backing up a file named wallet.dat, which contains your private keys and gives you access to your addresses. The second and the safest method is by printing the private keys and storing them in a safe. Do not store the private keys in digital form, export them using the function below, print them and delete the file. If anyone gains access to your private keys they can access your ECC.</p>
+      <p id="walletBackup">{ this.props.lang.backup }</p>
+        <p id="walletBackupExplanation">{ this.props.lang.backupExplanation }</p>
         <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
           <div className="col-sm-6 text-center">
-            <p className="buttonTransaction settingsButtonBackup" onClick={this.onClickBackupLocation}>Backup wallet.dat</p>
+            <p className="buttonTransaction settingsButtonBackup" onClick={this.onClickBackupLocation}>{ this.props.lang.backup } wallet.dat</p>
           </div>  
           <div className="col-sm-6 text-center">
-            <p className="buttonTransaction settingsButtonBackup" onClick={this.handleExportPrivateKeys}>Export Private Keys</p>
+            <p className="buttonTransaction settingsButtonBackup" onClick={this.handleExportPrivateKeys}>{ this.props.lang.exportPrivateKeys }</p>
           </div>  
         </div> 
         <div className="container">
           <div className="row settingsToggle">
             <div className="col-sm-10 text-left removePadding">
-              <p className="walletBackupOptions">Password</p>
+              <p className="walletBackupOptions">{ this.props.lang.password }</p>
             </div>
             <div className="col-sm-2 text-right removePadding">
-            <p onClick={this.handleChangePasswordClicked} style={{cursor: "pointer"}}>Change</p>
+            <p onClick={this.handleChangePasswordClicked} style={{cursor: "pointer"}}>{ this.props.lang.change }</p>
             </div>
           </div>
           <div className="row settingsToggle" >
             <div className="col-sm-10 text-left removePadding">
-              <p className="walletBackupOptions">Private Key</p>
+              <p className="walletBackupOptions">{ this.props.lang.privateKey }</p>
             </div>
             <div className="col-sm-2 text-right removePadding">
-            <p onClick={this.handleImportPrivateKey} style={{cursor: "pointer"}}>Import</p>
+            <p onClick={this.handleImportPrivateKey} style={{cursor: "pointer"}}>{ this.props.lang.import }</p>
             </div>
           </div>
         </div> 
@@ -240,21 +240,21 @@ class Settings extends Component {
       <div className="container">
         <SettingsToggle 
           keyVal={2}
-          text= "Operative System notifications"
-          subText = {this.props.operativeSystemNotifications ? <p className="settingsToggleSubText">Disable this option to only get notifications inside Sapphire</p> : <p className="settingsToggleSubText">Enable this option to get operative system notifications</p>}
+          text= { this.props.lang.operativeSystemNotifications }
+          subText = {this.props.operativeSystemNotifications ? <p className="settingsToggleSubText">{ this.props.lang.operativeSystemNotificationsDisable }</p> : <p className="settingsToggleSubText">{ this.props.lang.operativeSystemNotificationsEnable }</p>}
           handleChange = {this.handleOperativeSystemNotifications}
           checked = {this.props.operativeSystemNotifications}
         />
         <SettingsToggle 
           keyVal={3}
-          text= {<p>ECC News notifications from <span className="mediumToggle" onClick={this.handleMediumClick}>Medium</span></p>}
+          text= {<p>{ this.props.lang.eccNewsNotificationsFrom } <span className="mediumToggle" onClick={this.handleMediumClick}>Medium</span></p>}
           handleChange = {this.handleNewsNotifications}
           checked = {this.props.newsNotifications}
         />
         <SettingsToggle 
           keyVal={1}
-          text= "Staking notifications"
-          subText = {this.props.stakingNotifications ? <p className="settingsToggleSubText">Disable this option to not get notified of staking rewards</p> : <p className="settingsToggleSubText">Enable this option to get notified of staking rewards</p>}
+          text= { this.props.lang.stakingNotifications }
+          subText = {this.props.stakingNotifications ? <p className="settingsToggleSubText">{ this.props.lang.stakingNotificationsDisable }</p> : <p className="settingsToggleSubText">{ this.props.lang.stakingNotificationsEnable }</p>}
           handleChange = {this.handleStakingNotifications}
           checked = {this.props.stakingNotifications}
         />
@@ -270,12 +270,12 @@ class Settings extends Component {
     return(
       <div className="container removePadding">
         <div id="languageRectangle">
-          <p id="languageHelp">Help translate Sapphire</p>
-          <p id="languageHelpDesc">If your language is not available and you’d like to help us add it to Sapphire please visit our <span onClick={this.goToTranslationPlatform}>translation platform.</span></p>
+          <p id="languageHelp">{ this.props.lang.helpTranslate1 }</p>
+          <p id="languageHelpDesc">{ this.props.lang.helpTranslate2 } <span onClick={this.goToTranslationPlatform}>{ this.props.lang.helpTranslate3 }.</span></p>
         </div>
         <div className="row" id="settingsLanguageSelector">
           <div className="col-sm-4 text-left">
-            <p >Language</p>
+            <p>{ this.props.lang.language }</p>
           </div>
           <div className="col-sm-8 text-right">
             <LanguageSelector />
@@ -288,7 +288,7 @@ class Settings extends Component {
   getAppearanceSettings(){
     return(
       <div>
-        <p id="walletBackup">Theme</p>
+        <p id="walletBackup">{ this.props.lang.theme }</p>
         <ThemeSelector />
       </div>
     )
@@ -314,12 +314,12 @@ class Settings extends Component {
         <div id="mainSettingsColorFix">
           <div id="settingsContainer">
             <div id="sidebarSettings">
-              <p id="sidebarTitle">APP SETTINGS</p>
-              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "General")} selected={this.props.settingsOptionSelected == "General" ? true : false} text="General" />
-              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Wallet")} selected={this.props.settingsOptionSelected == "Wallet" ? true : false} text="Wallet" />
-              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Notifications")} selected={this.props.settingsOptionSelected == "Notifications" ? true : false} text="Notifications" />
-              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Appearance")} selected={this.props.settingsOptionSelected == "Appearance" ? true : false} text="Appearance" />
-              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Language")} selected={this.props.settingsOptionSelected == "Language" ? true : false} text="Language" />
+              <p id="sidebarTitle">{ this.props.lang.appSettingsCAPS }</p>
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "General")} selected={this.props.settingsOptionSelected == "General" ? true : false} text={ this.props.lang.general } />
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Wallet")} selected={this.props.settingsOptionSelected == "Wallet" ? true : false} text={ this.props.lang.wallet } />
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Notifications")} selected={this.props.settingsOptionSelected == "Notifications" ? true : false} text={ this.props.lang.notifications } />
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Appearance")} selected={this.props.settingsOptionSelected == "Appearance" ? true : false} text={ this.props.lang.appearance } />
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Language")} selected={this.props.settingsOptionSelected == "Language" ? true : false} text={ this.props.lang.language } />
             </div>
             <div className="subSettings">
               {this.getSettings()}

@@ -49,17 +49,17 @@ class ConfirmNewAddress extends React.Component {
   getConfirmationText(){
   	if(this.props.ansAddress){
   		return(
-  			<p className="confirmationText">Press confirm to create an <span className="ecc">ANS address</span> named "{this.props.username}"</p>
+  			<p className="confirmationText">{ this.props.lang.ansCreateConfirm1 } <span className="ecc">{ this.props.lang.ansCreateConfirm2 }</span> { this.props.lang.ansCreateConfirm3 } "{this.props.username}".</p>
   		)
   	}
   	else if(!this.props.ansAddress && this.props.account == ""){
   		return(
-  			<p className="confirmationText">Press confirm to create a <span className="ecc">normal address</span> under an unnamed account</p>	
+  			<p className="confirmationText">{ this.props.lang.normalCreateConfirm1 } <span className="ecc">{ this.props.lang.normalCreateConfirm2 }</span> { this.props.lang.normalCreateConfirm3 }.</p>	
   		)
   	}
 	else if(!this.props.ansAddress && this.props.account != ""){
   		return(
-  			<p className="confirmationText">Press confirm to create a <span className="ecc">normal address</span> under an account named "{this.props.account}". Note that this address is not recognized by name in the network, create an <span className="ecc">ANS address</span> for that functionality.</p>	
+  			<p className="confirmationText">{ this.props.lang.normalCreateConfirm1 } <span className="ecc">{ this.props.lang.normalCreateConfirm2 }</span> { this.props.lang.normalCreateConfirm4 } "{this.props.account}". { this.props.lang.normalCreateConfirm5 }  <span className="ecc">{ this.props.lang.ansCreateConfirm2 }</span> { this.props.lang.normalCreateConfirm6 }.</p>	
   		)
   	}
   }
@@ -68,7 +68,7 @@ class ConfirmNewAddress extends React.Component {
      return (
       <div style={{height: "auto !important", textAlign: "center", width: "535px"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
-        <p className="popupTitle">Confirm New Address</p>
+        <p className="popupTitle">{ this.props.lang.confirmNewAddress }</p>
        	{this.getConfirmationText()}
         <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm"/>
       </div>

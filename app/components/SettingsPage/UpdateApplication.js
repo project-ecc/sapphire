@@ -31,12 +31,12 @@ class UpdateApplication extends React.Component {
   getCorrectHtml(){
     if(this.props.guiUpdate || (this.props.guiUpdate && this.props.daemonUpdate)){
       return(
-        <p className="updateApplicationMessage">This update requires a restart</p>
+        <p className="updateApplicationMessage">{ this.props.lang.updateRequiresRestart }</p>
       )
     }
     else {
       return(
-        <p className="updateApplicationMessage">This update does not require a restart</p>
+        <p className="updateApplicationMessage">{ this.props.lang.updateDoesNotRequireRestart }</p>
       )
     }
   }
@@ -45,9 +45,9 @@ class UpdateApplication extends React.Component {
      return (
       <div style={{height: "220px"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
-        <p className="popupTitle">Application Update</p>
+        <p className="popupTitle">{ this.props.lang.applicationUpdate }</p>
         {this.getCorrectHtml()}
-        <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm"/>
+        <ConfirmButtonPopup handleConfirm={this.handleConfirm} text={ this.props.lang.confirm }/>
       </div>
       );
     } 

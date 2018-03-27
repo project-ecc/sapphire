@@ -13,7 +13,7 @@ class ClosingApplication extends React.Component {
   render() { 
      return (
         <div>
-          <p>Closing Sapphire, please wait</p>
+          <p>{ this.props.lang.closingSapphireWait }</p>
           <MiniLoaderAnimation />
         </div>
       );

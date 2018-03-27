@@ -83,11 +83,11 @@ class ExportPrivateKeys extends React.Component {
   getPasswordPanel(){
     return(
       <div id="passwordPanel" style={{position: "absolute", width: "100%", top: "70px"}}>
-        <p style={{fontSize: "16px", width: "450px", margin: "0 auto",textAlign: "justify"}}>Please, after exporting the private keys print the file and delete it right after. Do not keep it in your computer.</p>
+        <p style={{fontSize: "16px", width: "450px", margin: "0 auto",textAlign: "justify"}}>{ this.props.lang.exportWarning }</p>
         <div>
         <Input 
             divStyle={{width: "400px", marginTop: "15px"}}
-            placeholder= "Password"
+            placeholder= { this.props.lang.password }
             placeholderId= "password"
             placeHolderClassName="inputPlaceholder inputPlaceholderUnlock"
             value={this.props.passwordVal}
@@ -95,7 +95,7 @@ class ExportPrivateKeys extends React.Component {
             type="password"
             inputStyle={{width: "400px", top: "20px", marginBottom: "30px"}}
           />
-          <p id="wrongPassword" className="wrongPassword">Wrong password</p>
+          <p id="wrongPassword" className="wrongPassword">{ this.props.lang.wrongPassword }</p>
         </div>
       </div>
     )
@@ -104,7 +104,7 @@ class ExportPrivateKeys extends React.Component {
   getExportingPanel(){
     return(
       <div id="exportingPanel" style={{position: "absolute", left: "200%", width: "100%", top: "70px"}}>
-        <p style={{marginTop:"30px"}}>Generating file</p>
+        <p style={{marginTop:"30px"}}>{ this.props.lang.generatingFile }</p>
         <span style={{visibility: "visible", fontSize: "40px", opacity:"0.2"}} className="ecc" id="firstDot">.</span><span style={{visibility: "visible", fontSize: "40px", opacity:"0.2"}} className="ecc" id="secondDot">.</span><span style={{visibility: "visible", fontSize: "40px", opacity:"0.2"}} className="ecc" id="thirdDot">.</span>
       </div>
     )
@@ -120,7 +120,7 @@ class ExportPrivateKeys extends React.Component {
       TweenMax.to('#passwordPanel', 0.3, {x: "-100%"})
       TweenMax.to('#setLocationPanel', 0.3, {x: "-100%"})
       this.props.setPanelExportingPrivateKeys(this.props.panelNumber+1);
-      $('#exportPrivKeyButton').text("Export");
+      $('#exportPrivKeyButton').text( this.props.lang.export );
       await this.getDataToExport();
 
       if(wasStaking){
@@ -267,7 +267,7 @@ class ExportPrivateKeys extends React.Component {
     ipcRenderer.send('exportPrivateKeys');
     ipcRenderer.on('locationSelected', (event, arg) => {
       if(arg != undefined){
-        $('#exportPrivKeyButton').text("Export");
+        $('#exportPrivKeyButton').text('{ this.props.lang.export }');
         $('#selectedlocation').text(arg);
         if(this.tween !== undefined)
           this.tween.kill();
@@ -283,7 +283,7 @@ class ExportPrivateKeys extends React.Component {
     return(
       <div id="setLocationPanel" style={{position: "absolute", left:"100%", width: "100%", top: "52px"}}>
         <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"25px", textAlign: "left"}}>
-         The exported PDF has all your public and private keys. In this format:
+          { this.props.lang.exportFormat }:
         </p>
         <p className="pdfExample">{`<Public Address>`}</p>
         <p className="pdfExample">{`<Private Key>`}</p>
@@ -296,11 +296,11 @@ class ExportPrivateKeys extends React.Component {
      return (
       <div id="exportPrivKey">
         <CloseButtonPopup handleClose={this.handleCancel}/>
-        <p className="popupTitle">Export Private Keys</p>
+        <p className="popupTitle">{ this.props.lang.exportPrivateKeys }</p>
         {this.getPasswordPanel()}
         {this.getLocationToExportPanel()}
         {this.getExportingPanel()}
-        <ConfirmButtonPopup buttonId="exportPrivKeyButton" handleConfirm={this.handlePanels} text="Next"/>
+        <ConfirmButtonPopup buttonId="exportPrivKeyButton" handleConfirm={this.handlePanels} text={ this.props.lang.next }/>
       </div>
       );
     } 

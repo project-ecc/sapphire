@@ -149,27 +149,27 @@ class EncryptWallet extends React.Component {
       <div>
         <div ref="checkingWallet" id="checkingWallet">
           <p style={{fontWeight:"300"}} className="centerText">
-           Checking if your wallet is encrypted...
+            { this.props.lang.checkingWallet }
            </p>
         </div>
         <div id="walletEncrypted">
           <p className="centerText" style={{width: "500px", left: "50%", marginLeft: "-250px", fontWeight:"300"}}>
-           Your wallet is encrypted, well done!<br></br>Please write down the password somewhere as there is no way to recover it.
+            { this.props.lang.walletEncrypted1 }<br></br><br></br>{ this.props.lang.walletEncrypted2 }<br></br>{ this.props.lang.walletEncrypted3 }
            </p>
         </div>
         <div id="encrypting">
           <p style={{fontWeight:"300"}}  className="centerText">
-           Encrypting your wallet...
+            { this.props.lang.encrypting }
            </p>
         </div>
         <div ref="encryptWallet" id="encryptWallet">
           <p style={{fontWeight:"300"}}  className="subTitle">
-          Encrypt your wallet
+            { this.props.lang.encryptWallet }
           </p>
           <div className="inputDivPassword">
             <Input 
               divStyle={{width: "200px"}}
-              placeholder= "Enter Password"
+              placeholder= { this.props.lang.enterPassword }
               placeholderId="enterPassword"
               value={this.props.passwordValue}
               handleChange={this.handlePasswordChange.bind(this)}
@@ -180,7 +180,7 @@ class EncryptWallet extends React.Component {
           <div className="inputDivPassword">
             <Input 
               divStyle={{marginTop: "20px", paddingBottom: "8px", width: "200px"}}
-              placeholder= "Repeat Password"
+              placeholder= { this.props.lang.repeatPassword }
               placeholderId="enterPasswordRepeat"
               value={this.props.passwordConfirmationValue}
               handleChange={this.handleConfirmationPassword.bind(this)}
@@ -188,9 +188,9 @@ class EncryptWallet extends React.Component {
               inputStyle={{width: "200px"}}
             />
           </div>
-          <p id="passwordError" style={{fontSize: "15px", fontWeight: "bold", visibility: "hidden"}}>{this.props.passwordValue != this.props.passwordConfirmationValue ? "Passwords do not match" : "Password can't be empty"}</p>
+          <p id="passwordError" style={{fontSize: "15px", fontWeight: "bold", visibility: "hidden"}}>{this.props.passwordValue != this.props.passwordConfirmationValue ? this.props.lang.passwordsDoNotMatch : this.props.lang.passwordCantBeEmpty }</p>
            <div style={{marginTop: "8px"}} onClick={this.encryptWallet} id="importButton">
-             Encrypt
+           { this.props.lang.encrypt }
            </div>
         </div>
       </div>

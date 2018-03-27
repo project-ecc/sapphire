@@ -162,7 +162,7 @@ class Transaction extends Component {
       <div style={{height: "100%", width: "100%", paddingLeft: "20px", paddingRight: "10px", overflowX: "hidden"}}>
         <div id="transactionAddresses" style={{height:"90%", position: "relative", top: "25px"}}>
           <div className="tableHeaderNormal">
-            <p className="tableHeaderTitle tableHeaderTitleSmall">Transactions</p>
+            <p className="tableHeaderTitle tableHeaderTitleSmall">{ this.props.lang.transactions }</p>
             <div className="dropdownFilterSelector" style={{position: "absolute", right: "40px", top: "9px", height:"30px", padding:"0 0", width :"210px", textAlign:"center"}} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
               <div className="selectFilterSelector" style={{border: "none", position:"relative", top: "-1px", height: "30px"}}>
                 <p className="normalWeight">{this.getValue(this.props.type)}</p>
@@ -170,22 +170,22 @@ class Transaction extends Component {
               </div>
               <input type="hidden" name="gender"></input>
               <ul className="dropdown-menuFilterSelector normalWeight" style={{margin: "0 0"}}>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="all">All</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="receive">Received</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="send">Sent</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="generate">Earned</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="1">Confirmed</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="0">Pending</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="-1">Orphaned</li>
+                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="all">{ this.props.lang.all }</li>
+                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="receive">{ this.props.lang.received }</li>
+                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="send">{ this.props.lang.sent }</li>
+                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="generate">{ this.props.lang.earned }</li>
+                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="1">{ this.props.lang.confirmed }</li>
+                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="0">{ this.props.lang.pending }</li>
+                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="-1">{ this.props.lang.orphaned }</li>
               </ul>
             </div>
           </div>
           <div style={{width: "100%", marginTop: "5px", padding: "0 0"}}>
             <div className="row rowDynamic">
-              <div className="col-sm-6 headerAddresses tableRowHeader" style={{paddingLeft: "4%"}}>TYPE</div>
-              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">AMOUNT</div>
-              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">STATUS</div>
-              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">TIME</div>
+              <div className="col-sm-6 headerAddresses tableRowHeader" style={{paddingLeft: "4%"}}>{ this.props.lang.typeCAPS }</div>
+              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.amountCAPS }</div>
+              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.statusCAPS }</div>
+              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.timeCAPS }</div>
             </div>
           <div id="rows" style={{height: "500px", width: "100%", padding: "0 0"}}>
             {data.map((t, index) => {
@@ -233,19 +233,19 @@ class Transaction extends Component {
                     </div>
                     <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{paddingLeft: "4%", width: "100%", paddingTop: "11px", paddingBottom: "11px", cursor:"default", zIndex:"2"}}>
                       <div className="col-sm-8">
-                        <p className="trasactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.dateString}</span></p>
+                        <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.dateString}</span></p>
                         <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{(new Date(t.time * 1000)).toString()}</span></p>
                       </div>
                       <div className="col-sm-4">
-                        <p className="trasactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.confirmations}</span></p>
+                        <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.confirmations}</span></p>
                         <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{t.confirmations}</span></p>
                       </div>
                       <div className="col-sm-8">
-                        <p className="trasactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.transactionId}</span></p>
+                        <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.transactionId}</span></p>
                         <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 transactionId">{t.txid}</span></p>
                       </div>
                       <div className="col-sm-4">
-                        <p className="trasactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.transactionFee}</span></p>
+                        <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.transactionFee}</span></p>
                         <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">...</span></p>
                       </div>
                     </div>
@@ -258,10 +258,10 @@ class Transaction extends Component {
           </div>
           <div className="row">
             <div className="col-sm-6 text-right">
-              <p className="buttonTransaction" onClick={this.handlePreviousClicked} style={{marginRight: "50px", opacity: this.props.page == 0 ? "0.2" : "1", cursor: this.props.page == 0 ? "default" : "pointer"}}>Previous</p>
+              <p className="buttonTransaction" onClick={this.handlePreviousClicked} style={{marginRight: "50px", opacity: this.props.page == 0 ? "0.2" : "1", cursor: this.props.page == 0 ? "default" : "pointer"}}>{ this.props.lang.previous }</p>
             </div>
             <div className="col-sm-6 text-left">
-              <p className="buttonTransaction" onClick={this.handleNextClicked} style={{marginLeft: "50px", opacity: this.props.data.length < 100 ? "0.2" : "1", cursor: this.props.data.length < 100 ? "default" : "pointer"}}>Next</p>
+              <p className="buttonTransaction" onClick={this.handleNextClicked} style={{marginLeft: "50px", opacity: this.props.data.length < 100 ? "0.2" : "1", cursor: this.props.data.length < 100 ? "default" : "pointer"}}>{ this.props.lang.next }</p>
             </div>        
           </div>
         </div>

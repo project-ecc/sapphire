@@ -141,9 +141,9 @@ class Loader extends React.Component {
 			</svg>
 			<div id="loaderText" style={{marginTop: "15px"}}>
 				<div id="blockIndexLoad">
-					<p id="loading" style={{fontSize: "45px", fontWeight: "bold"}}>Loading</p>
+					<p id="loading" style={{fontSize: "45px", fontWeight: "bold"}}>{ this.props.lang.loading }</p>
 				</div>
-				<p ref="mainMessage" style={{marginTop: "-50px", fontWeight:"300", visibility:"hidden"}} id="gettingReady"> Hello, we are getting a few things ready...</p>
+				<p ref="mainMessage" style={{marginTop: "-50px", fontWeight:"300", visibility:"hidden"}} id="gettingReady">{ this.props.lang.mainMessage1 }<br></br>{ this.props.lang.mainMessage2 }</p>
 			</div>
       </div>
     );

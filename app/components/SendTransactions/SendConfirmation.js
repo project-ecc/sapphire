@@ -45,10 +45,10 @@ class SendConfirmation extends React.Component {
         this.props.setUsernameSend("");
         this.props.setAmountSend("");
         this.props.setAddressSend("");
-        $('#message').text('Sent successfully!')
+        $('#message').text('{ this.props.lang.sentSuccessfully }')
         Tools.showTemporaryMessage('#message');
         setTimeout(() => {
-          $('#message').text('Address copied below')
+          $('#message').text('{ this.props.lang.addressCopiedBelow }')
         }, 2500)
       }).catch((err) => {
         this.props.setPassword("");
@@ -108,14 +108,14 @@ class SendConfirmation extends React.Component {
     if(this.props.username != "" && this.props.username != undefined){
       return(
         <div>
-          <p className="labelSend">Name: {this.props.username} </p>
+          <p className="labelSend">{ this.props.lang.name }: {this.props.username} </p>
           <p className="labelAddressSend">({this.props.address})</p>
         </div>
       )
     }else{
       return(
         <div>
-          <p className="labelSend">Address: <span style={{fontSize:"14px"}}>{this.props.address}</span> </p>
+          <p className="labelSend">{ this.props.lang.address }: <span style={{fontSize:"14px"}}>{this.props.address}</span> </p>
         </div>
       )
     }
@@ -125,12 +125,12 @@ class SendConfirmation extends React.Component {
      return (
       <div ref="second" style={{height: this.props.username != "" && this.props.username != undefined ? "324px" : "293px", top: "22%"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
-        <p className="popupTitle">Confirm transaction</p>
-        <p className="labelAmountSend">Amount: {Tools.formatNumber(Number(this.props.amount))} <span className="ecc">ECC</span></p>
+        <p className="popupTitle">{ this.props.lang.confirmTransaction }</p>
+        <p className="labelAmountSend">{ this.props.lang.amount }: {Tools.formatNumber(Number(this.props.amount))} <span className="ecc">ECC</span></p>
         {this.getNameOrAddressHtml()}
           <Input 
             divStyle={{width: "400px", marginTop: "20px"}}
-            placeholder= "Password"
+            placeholder= { this.props.lang.password }
             placeholderId= "password"
             placeHolderClassName="inputPlaceholder inputPlaceholderUnlock"
             value={this.props.passwordVal}

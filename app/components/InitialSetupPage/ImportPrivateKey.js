@@ -220,7 +220,7 @@ class ImportPrivateKey extends React.Component {
       subTitle = {
         paddingBottom: "30px"
       }
-      title = <p style={{fontSize: "18px", color:"#b4b7c8", paddingTop: "20px"}}>Import Private Key</p>;
+      title = <p style={{fontSize: "18px", color:"#b4b7c8", paddingTop: "20px"}}>{ this.props.lang.importPrivateKey }</p>;
     }
 
     return (
@@ -229,11 +229,11 @@ class ImportPrivateKey extends React.Component {
         {title}
         <div id="importAddress" style={textStyle}>
           <p style={subTitle} className= {this.props.notInitialSetup ? "" : "subTitle"}>
-           Write down a private key to import an address
+           { this.props.lang.writeDownAPrivateKeyToImport }
            </p>
            <Input 
             divStyle={{width: "400px"}}
-              placeholder= "Private Key"
+              placeholder= { this.props.lang.enterPrivKey }
               placeholderId="enterPrivKey"
               placeHolderClassName="inputPlaceholder changePasswordInput"
               value={this.props.privateKeyValue}
@@ -243,7 +243,7 @@ class ImportPrivateKey extends React.Component {
             />
            <Input 
               divStyle={{width: "400px"}}
-              placeholder= "Enter your password"
+              placeholder= { this.props.lang.enterYourPassword }
               placeholderId="enterPassword"
               placeHolderClassName="inputPlaceholder changePasswordInput"
               value={this.props.passwordVal}
@@ -251,25 +251,25 @@ class ImportPrivateKey extends React.Component {
               type="text"
               inputStyle={{marginBottom:"10px", width:"400px"}}
             />
-          <p id="wrongPassword" className="wrongPassword">Wrong password</p>
+          <p id="wrongPassword" className="wrongPassword">{ this.props.lang.wrongPassword }</p>
           <div onClick={this.importPrivateKey} className= {this.props.notInitialSetup ? "buttonUnlock buttonFixPrivKey" : ""} id= {this.props.notInitialSetup ? "" : "importButton"}>
-               Import   
+            { this.props.lang.import }   
            </div>
         </div>
         <div style={textStyleFix} id="importingPrivKey" className={this.props.notInitialSetup ? "importingAddressPopup" : ""}>
-          Importing your address <span className="toAnimate">.</span><span className="toAnimate">.</span><span className="toAnimate">.</span>
-          <p>This process may take a few minutes to finish. Please do not close the application.</p>
+          { this.props.lang.importingAddressPopup } <span className="toAnimate">.</span><span className="toAnimate">.</span><span className="toAnimate">.</span>
+          <p>{ this.props.lang.pleaseWait }</p>
         </div>
         <div style={textStyleFix} id="importedAddress" className={this.props.notInitialSetup ? "importedAddressPopup" : ""}>
-          Imported the address successfully
+          { this.props.lang.importedAddress }
           <div onClick={this.goBackToFirstStep} className= {this.props.notInitialSetup ? "buttonUnlock buttonFixPrivKey buttonIncreaseSize" : "importButtonAddress"} id= {this.props.notInitialSetup ? "" : "importButton"}>
-               Import another address
+            { this.props.lang.importAnotherAddress }
            </div>
         </div>
         <div style={textStyleFix} id="importFailed" className={this.props.notInitialSetup ? "importFailedPopup" : ""}>
-          Invalid address
+          { this.props.lang.invalidFailedAddress }
           <div onClick={this.goBackToFirstStep} className= {this.props.notInitialSetup ? "buttonUnlock buttonFixPrivKey buttonIncreaseSize" : "importButtonAddress"} id= {this.props.notInitialSetup ? "" : "importButton"}>
-               Import another address
+            { this.props.lang.importAnotherAddress }
            </div>
         </div>
       </div>

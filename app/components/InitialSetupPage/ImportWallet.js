@@ -53,18 +53,18 @@ class ImportWallet extends React.Component {
     return (
       <div>
         <p style={{fontWeight:"300"}} className="subTitle">
-         Import an existing wallet if you have one
+         { this.props.lang.importExistingWallet }
         </p>
         <div id="import">
            <div onClick={this.openFile} id="importButton">
-             Import
+             { this.props.lang.import }
            </div>
         </div>
         <div style={{fontWeight:"300"}} id="importing">
-          Importing your wallet
+          { this.props.lang.importingYourWallet }
         </div>
         <div style={{fontWeight:"300"}} id="imported">
-          Imported your wallet successfully
+          { this.props.lang.imported }
         </div>
       </div>
     )

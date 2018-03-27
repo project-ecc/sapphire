@@ -162,7 +162,7 @@ class Home extends Component {
           <div className="homeSection text-center" id="balanceInfo">
             <div className="row">
               <div className="col-sm-4"  style={{padding: "0 0"}}>
-                <p className="homePanelTitleTwo stakingBalance">Staking</p>
+                <p className="homePanelTitleTwo stakingBalance">{ this.props.lang.staking }</p>
                 <p className="normalWeight">{this.props.stakingVal} <span className="ecc">ecc</span></p>
                 <div style={{width: "52px", margin: "0 auto", marginTop: "10px"}}>
                 <ToggleButton
@@ -173,13 +173,13 @@ class Home extends Component {
                 </div>
               </div>
               <div className="col-sm-4"  style={{padding: "0 0"}}>
-                <p className="normalWeight homePanelTitleOne" id="balance" style={{fontSize: "20px"}}>Balance</p>
+                <p className="normalWeight homePanelTitleOne" id="balance" style={{fontSize: "20px"}}>{ this.props.lang.balance }</p>
                 <p className="normalWeight" style={{fontSize: "20px"}}>{this.props.balance} <span className="ecc">ecc</span></p>
-                <p className="totalBalance homePanelTitleTwo">Total</p>
+                <p className="totalBalance homePanelTitleTwo">{ this.props.lang.total }</p>
                 <p className="normalWeight">{this.props.balance} <span className="ecc">ecc</span></p>
               </div>
               <div className="col-sm-4"  style={{padding: "0 0"}}>
-                <p className="unconfirmedBalance homePanelTitleTwo">Unconfirmed</p>
+                <p className="unconfirmedBalance homePanelTitleTwo">{ this.props.lang.unconfirmed }</p>
                 <p className="normalWeight">0 <span className="ecc">ecc</span></p>
               </div>
             </div>
@@ -190,19 +190,19 @@ class Home extends Component {
                 <div id="earningsOptions">
                   <div className="arrowHome"></div>
                   <div id="earningsFirst">
-                    <p className="normalWeight homePanelTitleOne" style={{fontSize: "20px"}}>Earnings</p>
-                  </div>
+                    <p className="normalWeight homePanelTitleOne" style={{fontSize: "20px"}}>{ this.props.lang.earnings }</p>
+                  </div> 
                     <img onClick={this.earningsTypeFilterClicked.bind(this, "fileStorage")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={fileStorageEarnings}/>
-                    <p onClick={this.earningsTypeFilterClicked.bind(this, "staking")} className={this.props.stakingEarningsSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> Staking </p>
-                    <p onClick={this.earningsTypeFilterClicked.bind(this, "all")} className={this.props.allEarningsSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> All</p>
+                    <p onClick={this.earningsTypeFilterClicked.bind(this, "staking")} className={this.props.stakingEarningsSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> { this.props.lang.staking } </p>
+                    <p onClick={this.earningsTypeFilterClicked.bind(this, "all")} className={this.props.allEarningsSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> { this.props.lang.all }</p>
                 </div>
               </div>
               <div className="col-sm-4 text-center"  style={{padding: "0 0"}}>
                 <p className="normalWeight" style={{fontSize: "20px", position: "relative", top: "60px"}}>{tools.formatNumber(this.getEarnings())} <span className="ecc">ecc</span></p>
-                <p onClick={this.earningsFilterClicked.bind(this, "week")} className= {this.props.weekEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>Last Week</p>
-                <p onClick={this.earningsFilterClicked.bind(this, "month")} className= {this.props.monthEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>Last Month</p>
-                <p onClick={this.earningsFilterClicked.bind(this, "allTime")} className= {this.props.allTimeEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}> All</p>
-              </div>
+                <p onClick={this.earningsFilterClicked.bind(this, "week")} className= {this.props.weekEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>{ this.props.lang.lastWeek }</p>
+                <p onClick={this.earningsFilterClicked.bind(this, "month")} className= {this.props.monthEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>{ this.props.lang.lastMonth }</p>
+                <p onClick={this.earningsFilterClicked.bind(this, "allTime")} className= {this.props.allTimeEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}> { this.props.lang.all }</p>
+              </div>        
             </div>
           </div>
           <div className="homeSection" id="expenses">
@@ -211,23 +211,23 @@ class Home extends Component {
                 <div id="earningsOptions">
                   <div className="arrowHome arrowExpenses"></div>
                   <div id="earningsFirst">
-                    <p className="normalWeight homePanelTitleOne" style={{fontSize: "20px"}}>Expenses</p>
-                  </div>
+                    <p className="normalWeight homePanelTitleOne" style={{fontSize: "20px"}}>{ this.props.lang.expenses }</p>
+                  </div> 
                     <img onClick={this.expensesTypeFilterClicked.bind(this, "messaging")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={messaging}/>
                     <img onClick={this.expensesTypeFilterClicked.bind(this, "fileStorage")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={fileStorageExpenses}/>
                     <p onClick={this.expensesTypeFilterClicked.bind(this, "ans")} style = {{color: this.props.ansExpensesSelected ? "#aeacf3" : "#85899e"}} className={this.props.ansExpensesSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> ANS </p>
-                    <p onClick={this.expensesTypeFilterClicked.bind(this, "all")} style = {{color: this.props.allExpensesSelected ? "#aeacf3" : "#85899e"}} className={this.props.allExpensesSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> All</p>
+                    <p onClick={this.expensesTypeFilterClicked.bind(this, "all")} style = {{color: this.props.allExpensesSelected ? "#aeacf3" : "#85899e"}} className={this.props.allExpensesSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> { this.props.lang.all }</p>
                 </div>
               </div>
               <div className="col-sm-4 text-center"  style={{padding: "0 0"}}>
                   <p className="normalWeight" style={{fontSize: "20px", position: "relative", top: "60px"}}>0 <span className="ecc">ecc</span></p>
-                    <p onClick={this.expensesFilterClicked.bind(this, "week")} className={this.props.weekExpensesSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>Last Week</p>
-                    <p onClick={this.expensesFilterClicked.bind(this, "month")} className={this.props.monthExpensesSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>Last Month</p>
-                    <p onClick={this.expensesFilterClicked.bind(this, "allTime")} className={this.props.allTimeExpensesSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}> All</p>
-              </div>
+                    <p onClick={this.expensesFilterClicked.bind(this, "week")} className={this.props.weekExpensesSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>{ this.props.lang.lastWeek }</p>
+                    <p onClick={this.expensesFilterClicked.bind(this, "month")} className={this.props.monthExpensesSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>{ this.props.lang.lastMonth }</p>
+                    <p onClick={this.expensesFilterClicked.bind(this, "allTime")} className={this.props.allTimeExpensesSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}> { this.props.lang.all }</p>
+              </div>  
               <div className="col-sm-4  text-center"  style={{padding: "0 0"}}>
-                  <p className="normalWeight homePanelTitleOne" style={{fontSize: "16px", paddingTop: "15px"}}>Next Payments</p>
-              </div>
+                  <p className="normalWeight homePanelTitleOne" style={{fontSize: "16px", paddingTop: "15px"}}>{ this.props.lang.nextPayments }</p>
+              </div>           
             </div>
           </div>
         </div>
