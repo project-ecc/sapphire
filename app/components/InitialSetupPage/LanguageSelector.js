@@ -11,25 +11,25 @@ class LanguageSelector extends React.Component {
     super();
     this.onItemClick = this.onItemClick.bind(this);
   }
-  
+
   handleDropDownClicked(){
     $('.dropdownLanguageSelector').attr('tabindex', 1).focus();
     $('.dropdownLanguageSelector').toggleClass('active');
     $('.dropdownLanguageSelector').find('.dropdown-menuLanguageSelector').slideToggle(300);
   }
-  
+
   handleDrowDownUnfocus(){
     $('.dropdownLanguageSelector').removeClass('active');
     $('.dropdownLanguageSelector').find('.dropdown-menuLanguageSelector').slideUp(300);
   }
-  
+
   onItemClick(event) {
     let lang = event.currentTarget.dataset.id;
     settings.set('settings.lang', lang);
     this.props.setLang();
   }
-  
-  render() { 
+
+  render() {
      return (
       <div>
          <div className="contentLanguageSelector">
@@ -64,8 +64,9 @@ class LanguageSelector extends React.Component {
          </div>
       </div>
       );
-    } 
-};
+    }
+
+}
 
 const mapStateToProps = state => {
   return{

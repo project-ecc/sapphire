@@ -25,7 +25,7 @@ class EncryptWallet extends React.Component {
         this.showEncryptWallet();
         }
       }).catch((err) => {
-      console.log("error checking if encrypted: ", err)
+      console.log("error checking if encrypted: ", err);
       var self = this;
       setTimeout(function(){
         self.checkIfEncrypted();
@@ -70,7 +70,7 @@ class EncryptWallet extends React.Component {
   }
 
   componentDidMount(){
-    console.log("Check if encrypted: ", this.props.checkEncrypted)
+    console.log("Check if encrypted: ", this.props.checkEncrypted);
     if(this.props.checkEncrypted){
       TweenMax.set(this.refs.encryptWallet, {autoAlpha: 0});
       TweenMax.set(this.refs.checkingWallet, {autoAlpha: 1});
@@ -83,7 +83,7 @@ class EncryptWallet extends React.Component {
     if(pw.length == 0){
       TweenMax.set('#enterPassword', {autoAlpha: 1});
     }
-    else 
+    else
       TweenMax.set('#enterPassword', {autoAlpha: 0});
 
     this.props.password(pw);
@@ -94,7 +94,7 @@ class EncryptWallet extends React.Component {
     if(pw.length == 0){
       TweenMax.set('#enterPasswordRepeat', {autoAlpha: 1});
     }
-    else 
+    else
       TweenMax.set('#enterPasswordRepeat', {autoAlpha: 0});
 
     this.props.passwordConfirmation(pw);
@@ -110,12 +110,12 @@ class EncryptWallet extends React.Component {
     this.showEncryptingWallet();
     this.props.wallet.encryptWallet(this.props.passwordValue).then((data) =>{
       if (data.code === -1 || data.code === -28) {
-        console.log("failed to encrypt: ", data)
+        console.log("failed to encrypt: ", data);
         var self = this;
         setTimeout(function(){
           self.encryptWallet();
         }, 1000);
-      } 
+      }
       else {
         this.props.password("");
         this.props.passwordConfirmation("");
@@ -127,7 +127,7 @@ class EncryptWallet extends React.Component {
             setTimeout(function(){
               self.startWallet();
             }, 7000)
-        }, 5000)
+        }, 5000);
         console.log("encrypted! ", data)
       }
       }).catch((err) => {
@@ -167,7 +167,7 @@ class EncryptWallet extends React.Component {
             { this.props.lang.encryptWallet }
           </p>
           <div className="inputDivPassword">
-            <Input 
+            <Input
               divStyle={{width: "200px"}}
               placeholder= { this.props.lang.enterPassword }
               placeholderId="enterPassword"
@@ -178,7 +178,7 @@ class EncryptWallet extends React.Component {
             />
           </div>
           <div className="inputDivPassword">
-            <Input 
+            <Input
               divStyle={{marginTop: "20px", paddingBottom: "8px", width: "200px"}}
               placeholder= { this.props.lang.repeatPassword }
               placeholderId="enterPasswordRepeat"
@@ -197,14 +197,15 @@ class EncryptWallet extends React.Component {
     )
   }
 
-  render() { 
+  render() {
      return (
       <div ref="second" style={{height: "330px"}}>
         {this.toRender()}
       </div>
       );
-    } 
-};
+    }
+
+}
 
 const mapStateToProps = state => {
   return{

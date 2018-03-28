@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
 import $ from 'jquery';
-const tools = require('../../utils/tools')
+const tools = require('../../utils/tools');
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import { ipcRenderer } from 'electron';
@@ -14,7 +14,7 @@ class UpdateApplication extends React.Component {
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
   }
-  
+
   handleConfirm(){
     this.props.setUpdateApplication(false);
     this.props.setUpdateAvailable();
@@ -41,7 +41,7 @@ class UpdateApplication extends React.Component {
     }
   }
 
-  render() { 
+  render() {
      return (
       <div style={{height: "220px"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
@@ -50,8 +50,9 @@ class UpdateApplication extends React.Component {
         <ConfirmButtonPopup handleConfirm={this.handleConfirm} text={ this.props.lang.confirm }/>
       </div>
       );
-    } 
-};
+    }
+
+}
 
 const mapStateToProps = state => {
   return{

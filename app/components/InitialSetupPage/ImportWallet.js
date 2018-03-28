@@ -41,9 +41,9 @@ class ImportWallet extends React.Component {
     ipcRenderer.removeListener('importStarted', this.sendActionImportStarted);
     ipcRenderer.removeListener('importCancelled', this.sendActionImportCancelled);
   }
-  
+
   openFile() {
-    if(this.props.importing) 
+    if(this.props.importing)
       return;
     this.props.importingWallet();
     ipcRenderer.send('importWallet');
@@ -70,14 +70,15 @@ class ImportWallet extends React.Component {
     )
   }
 
-  render() { 
+  render() {
      return (
       <div>
         {this.toRender()}
       </div>
       );
-    } 
-};
+    }
+
+}
 
 const mapStateToProps = state => {
   return{

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
 import $ from 'jquery';
-const Tools = require('../../utils/tools')
+const Tools = require('../../utils/tools');
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
@@ -27,17 +27,17 @@ class SendConfirmation extends React.Component {
     let wasStaking = this.props.staking;
     this.unlockWallet(false, 5, () => {
       var batch = [];
-      console.log(this.props.amount)
+      console.log(this.props.amount);
       var obj = {
         method: 'sendToAddress', parameters: [this.props.address, this.props.amount]
-      }
-      batch.push(obj)
+      };
+      batch.push(obj);
       this.props.wallet.command(batch).then((data) => {
         if(wasStaking){
             this.unlockWallet(true, 31556926, () => {
            });
         }
-        else{ 
+        else{
           this.props.setStaking(false);
         }
         this.props.setPassword("");
@@ -45,7 +45,7 @@ class SendConfirmation extends React.Component {
         this.props.setUsernameSend("");
         this.props.setAmountSend("");
         this.props.setAddressSend("");
-        $('#message').text('{ this.props.lang.sentSuccessfully }')
+        $('#message').text('{ this.props.lang.sentSuccessfully }');
         Tools.showTemporaryMessage('#message');
         setTimeout(() => {
           $('#message').text('{ this.props.lang.addressCopiedBelow }')
@@ -55,18 +55,18 @@ class SendConfirmation extends React.Component {
         console.log("err sending ecc: ", err);
       });
     })
-    
+
   }
 
   unlockWallet(flag, time, callback){
     var batch = [];
     var obj = {
       method: 'walletpassphrase', parameters: [this.props.passwordVal, time, flag]
-    }
-    batch.push(obj)
+    };
+    batch.push(obj);
 
     this.props.wallet.command(batch).then((data) => {
-      console.log("data: ", data)
+      console.log("data: ", data);
       data = data[0];
       if (data !== null && data.code === -14) {
         this.showWrongPassword();
@@ -86,7 +86,7 @@ class SendConfirmation extends React.Component {
     const pw = event.target.value;
     if(pw.length == 0)
       TweenMax.set('#password', {autoAlpha: 1});
-    else 
+    else
       TweenMax.set('#password', {autoAlpha: 0});
 
     this.props.setPassword(pw);
@@ -121,14 +121,14 @@ class SendConfirmation extends React.Component {
     }
   }
 
-  render() { 
+  render() {
      return (
       <div ref="second" style={{height: this.props.username != "" && this.props.username != undefined ? "324px" : "293px", top: "22%"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">{ this.props.lang.confirmTransaction }</p>
         <p className="labelAmountSend">{ this.props.lang.amount }: {Tools.formatNumber(Number(this.props.amount))} <span className="ecc">ECC</span></p>
         {this.getNameOrAddressHtml()}
-          <Input 
+          <Input
             divStyle={{width: "400px", marginTop: "20px"}}
             placeholder= { this.props.lang.password }
             placeholderId= "password"
@@ -144,8 +144,9 @@ class SendConfirmation extends React.Component {
         <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm"/>
       </div>
       );
-    } 
-};
+    }
+
+}
 
 const mapStateToProps = state => {
   return{

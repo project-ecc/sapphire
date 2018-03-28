@@ -81,7 +81,7 @@ app.on('ready', async () => {
     await installExtensions();
   }
 
-  app.setAppUserModelId("com.github.greg-griffith.lynx")
+  app.setAppUserModelId("com.github.greg-griffith.lynx");
 
   mainWindow = new BrowserWindow({
     show: false,
@@ -155,7 +155,7 @@ app.on('ready', async () => {
 			}while(!closedDaemon);
 			app.exit(0);
 		}
-	})
+	});
 
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
@@ -205,7 +205,7 @@ function setupTrayIcon(){
 }
 
 ipcMain.on('app:ready', (e, args) => {
-	console.log("ELECTRON GOT READY MESSAGE")
+	console.log("ELECTRON GOT READY MESSAGE");
 	guiManager = new GUIManager();
 	daemonManager = new DaemonManager();
 });
@@ -233,7 +233,7 @@ ipcMain.on('minimize', (e, args) => {
 ipcMain.on('full-screen', (e, args) => {
 	if(fullScreen)
 		mainWindow.setFullScreen(false);
-	else 
+	else
 		mainWindow.setFullScreen(true);
 
 	fullScreen = !fullScreen;
@@ -262,7 +262,7 @@ ipcMain.on('maximize', (e, args) => {
 ipcMain.on('initialSetup', (e, args) => {
 	settings.set('settings.initialSetup', true);
 	daemonManager.startDaemonChecker();
-})
+});
 
 ipcMain.on('close', async (e, args) => {
     //daemonManager.stopDaemon();
@@ -286,7 +286,7 @@ app.on('before-quit', async () => {
 });
 
 function sendMessage(type, argument = undefined) {
-	console.log("sending message: ", type)
+	console.log("sending message: ", type);
   mainWindow.webContents.send(type, argument);
 }
 
@@ -308,16 +308,16 @@ event.on('wallet', (exists, daemonCredentials) => {
 });
 
 event.on('daemonUpdate', () => {
-	console.log("electron got daemon update message, sending to GUI")
+	console.log("electron got daemon update message, sending to GUI");
 	daemonUpdate = true;
 	sendMessage('daemonUpdate');
-})
+});
 
 event.on('guiUpdate', () => {
-	console.log("electron got gui update message, sending to GUI")
+	console.log("electron got gui update message, sending to GUI");
 	guiUpdate = true;
 	sendMessage('guiUpdate');
-})
+});
 
 event.on('updatedDaemon', () => {
 	sendMessage("daemonUpdated");
@@ -325,20 +325,20 @@ event.on('updatedDaemon', () => {
 	if(guiUpdate){
 		event.emit('updateGui');
 	}
-})
+});
 
 event.on('daemonStarted', () => {
 	sendMessage("importedWallet");
-})
+});
 
 ipcMain.on('importWallet', (e, args) => {
 	openFile();
 });
 
 ipcMain.on('update', (e, args) => {
-	console.log("electron got update signal, sending to daemon")
-	console.log(guiUpdate)
-	console.log(daemonUpdate)
+	console.log("electron got update signal, sending to daemon");
+	console.log(guiUpdate);
+	console.log(daemonUpdate);
 	if(guiUpdate && daemonUpdate){
 		event.emit('updateDaemon', false);
 	}
@@ -352,7 +352,7 @@ ipcMain.on('update', (e, args) => {
 
 
 function openFile () {
-console.log("called open file")
+console.log("called open file");
  dialog.showOpenDialog({ title: lang.selectAFileName, filters: [
 
    { name: 'wallet', extensions: ['dat'] }
@@ -372,7 +372,7 @@ console.log("called open file")
    	sendMessage("importStarted");
     walletPath = `${grabWalletDir()}wallet.dat`;
 
-	  console.log(walletPath)
+	  console.log(walletPath);
 
    	copyFile(fileName,walletPath, function(err){
 		if(err){

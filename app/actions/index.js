@@ -8,7 +8,7 @@ export const getSetup = () => dispatch => {
 	ipcRenderer.on('import_wallet', (e) => {
 		dispatch({ type: IMPORT_WALLET });
 	});
-} 
+};
 
 export const setStepInitialSetup = (step) => {
 	return{
@@ -28,106 +28,106 @@ export const setLang = () => {
 	return{
 		type: SET_LANGUAGE
 	};
-}
+};
 
 export const stepForward = () => {
 	return {
 		type: STEP_FORWARD
 	}
-}
+};
 
 export const importingWallet = () => {
 	return {
 		type: IMPORTING_WALLET
 	}
-}
+};
 
 export const importedWallet = () => {
 	return {
 		type: IMPORTED_WALLET
 	}
-}
+};
 
 export const importCancelled = () => {
 	return {
 		type: IMPORT_CANCELLED
 	}
-}
+};
 
 export const importStarted = () => {
 	return {
 		type: IMPORT_STARTED
 	}
-}
+};
 
 export const stepOver = () => {
 	return {
 		type: STEP_OVER
 	}
-}
+};
 
 export const privateKey = (key) => {
 	return {
 		type: PRIVATE_KEY,
 		payload: {key: key}
 	}
-}
+};
 
 export const password = (password) => {
 	return {
 		type: PASSWORD,
 		payload: {password: password}
 	}
-}
+};
 
 export const passwordConfirmation = (passwordConfirmation) => {
 	return {
 		type: PASSWORD_CONFIRMATION,
 		payload: {passwordConfirmation: passwordConfirmation}
 	}
-}
+};
 
 export const updatePaymentChainSync = (percentage) => {
 	return	{
 		type: PAYMENT_CHAIN_SYNC,
-		payload: percentage	
+		payload: percentage
 	}
-}
+};
 
 export const updateBlockIndexPaymentPercentage = (percentage) => {
 	return	{
 		type: BLOCK_INDEX_PAYMENT_PERCENTAGE,
-		payload: percentage	
+		payload: percentage
 	}
-}
+};
 
 export const updateBlockIndexPayment = (value) => {
 	return	{
 		type: BLOCK_INDEX_PAYMENT,
-		payload: value	
+		payload: value
 	}
-}
+};
 
 export const isEncrypting = (val) => {
 	return {
 		type: ENCRYPTING,
 		payload: val
 	}
-}
+};
 
 export const hoveredSideBar = (val) => {
 	return{
 		type: HOVERED_SIDEBAR,
 		payload: val
 	}
-}
+};
 
 export const unhoveredSideBar = (val) => {
 	return{
 		type: UNHOVERED_SIDEBAR,
 		payload: val
 	}
-}
+};
 
 export const selectedSideBar = (parent, child) => {
 	const p = parent ? parent + "Selected" : undefined;
@@ -136,318 +136,318 @@ export const selectedSideBar = (parent, child) => {
 		type: SELECTED_SIDEBAR,
 		payload: {parent: p, child:  c}
 	}
-}
+};
 
 export const setSidebarHidden = (val) => {
 	return{
 		type: SIDEBAR_HIDDEN,
 		payload: val
 	}
-}
+};
 
 export const setStaking = (val) => {
 	return{
 		type: STAKING,
 		payload: val
 	}
-}
+};
 
 export const setUnlocking = (val) => {
 	return{
 		type: UNLOCKING,
 		payload: val
 	}
-}
+};
 
 export const setPassword = (val) => {
 	return{
 		type: PASSWORD_UNLOCK,
 		payload: val
 	}
-}
+};
 
 export const setAddressSend = (val) => {
 	return{
 		type: ADDRESS_SEND,
 		payload: val
 	}
-}
+};
 
 export const setUsernameSend = (val) => {
 	return{
 		type: NAME_SEND,
 		payload: val
 	}
-}
+};
 
 export const setAmountSend = (val) => {
 	return{
 		type: AMOUNT_SEND,
 		payload: val
 	}
-}
+};
 
 export const setSendingECC = (val) => {
 	return{
 		type: SENDING_ECC,
 		payload: val
 	}
-}
+};
 
 export const setTransactionsPage = (val) => {
 	return{
 		type: TRANSACTIONS_PAGE,
 		payload: val
 	}
-}
+};
 
 export const setTransactionsData = (data, type) => {
 	return{
 		type: TRANSACTIONS_DATA,
 		payload: {data: data, type: type}
 	}
-}
+};
 
 export const setTransactionsRequesting = (val) => {
 	return{
 		type: TRANSACTIONS_REQUESTING,
 		payload: val
 	}
-}
+};
 
 export const setNewAddressName = (val) => {
 	return{
 		type: NEW_ADDRESS_NAME,
 		payload: val
 	}
-}
+};
 
 export const setNewAddressAccount = (val) => {
 	return{
 		type: NEW_ADDRESS_ACCOUNT,
 		payload: val
 	}
-}
+};
 
 export const setUserAddresses = (val) => {
 	return{
 		type: USER_ADDRESSES,
 		payload: val
 	}
-}
+};
 
 export const setCreateAddressAns = (val) => {
 	return{
 		type: ADDRESS_CREATE_ANS,
 		payload: val
 	}
-}
+};
 
 export const setSelectedAddress = (val) => {
 	return{
 		type: SELECTED_ADDRESS,
 		payload: val
 	}
-}
+};
 
 export const setCreatingAddress = (val) =>{
 	return{
 		type: CREATING_ADDRESS,
 		payload: val
 	}
-}
+};
 
 export const setNewContactName = (val) => {
 	return{
 		type: NEW_CONTACT_NAME,
 		payload: val
 	}
-}
+};
 
 export const setNewContactAddress = (val) => {
 	return{
 		type: NEW_CONTACT_ADDRESS,
 		payload: val
 	}
-}
+};
 
 export const setHoveredAddress = (val) => {
 	return{
 		type: HOVERED_ADDRESS,
 		payload: val
 	}
-}
+};
 
 export const setContacts = (val) => {
 	return{
 		type: CONTACTS,
 		payload: val
 	}
-}
+};
 
 export const setSettings = (val) => {
 	return{
 		type: SETTINGS,
 		payload: val
 	}
-}
+};
 
 export const setTray = (val) => {
 	return{
 		type: TRAY,
 		payload: val
 	}
-}
+};
 
 export const setStartAtLogin = (val) => {
 	return{
 		type: START_AT_LOGIN,
 		payload: val
 	}
-}
+};
 
 export const setMinimizeToTray = (val) => {
 	return{
 		type: MINIMIZE_TO_TRAY,
 		payload: val
 	}
-}
+};
 
 export const setMinimizeOnClose = (val) => {
 	return{
 		type: MINIMIZE_ON_CLOSE,
 		payload: val
 	}
-}
+};
 
 export const setExportingPrivateKeys = (val) => {
 	return{
 		type: EXPORT_PRIVATE_KEYS,
 		payload: val
 	}
-}
+};
 
 export const setPanelExportingPrivateKeys = (val) => {
 	return{
 		type: PANEL_EXPORT_PRIVATE_KEYS,
 		payload: val
 	}
-}
+};
 
 export const setLocationToExport = (val) => {
 	return{
 		type: LOCATION_TO_EXPORT,
 		payload: val
 	}
-}
+};
 
 export const setFilterOwnAddresses = (val) => {
 	return{
 		type: FILTER_OWN_ADDRESSES,
 		payload: val
 	}
-}
+};
 
 export const setBackupOperationInProgress = (val) => {
 	return{
 		type: BACKUP_OPERATION_IN_PROGRESS,
 		payload: val
 	}
-}
+};
 
 export const setIndexingTransactions = (val) => {
 	return{
 		type: INDEXING_TRANSACTIONS,
 		payload: val
 	}
-}
+};
 
 export const setStakingReward = (val) => {
 	return{
 		type: STAKING_REWARD,
 		payload: val
 	}
-}
+};
 
 export const setFilterEarningsTime = (val) => {
 	return{
 		type: FILTER_EARNINGS_TIME,
 		payload: val
 	}
-}
+};
 
 export const setFilterEarningsStaking = () => {
 	return{
 		type: FILTER_EARNINGS_STAKING
 	}
-}
+};
 
 export const setFilterEarningsFileStorage = () => {
 	return{
 		type: FILTER_EARNINGS_FILE_STORAGE
 	}
-}
+};
 
 export const setFilterEarningsAll = () => {
 	return{
 		type: FILTER_EARNINGS_ALL
 	}
-}
+};
 
 export const setFilterEarningsType = (val) => {
 	return{
 		type: FILTER_EARNINGS_TYPE,
 		payload: val
 	}
-}
+};
 
 export const setFilterExpensesTime = (val) => {
 	return{
 		type: FILTER_EXPENSES_TIME,
 		payload: val
 	}
-}
+};
 
 export const setFilterExpensesType = (val) => {
 	return{
 		type: FILTER_EXPENSES_TYPE,
 		payload: val
 	}
-}
+};
 
 export const setImportingPrivateKey = (val) => {
 	return{
 		type: IMPORTING_PRIVATE_KEY,
 		payload: val
 	}
-}
+};
 
 export const setChangingPassword = (val) => {
 	return{
 		type: CHANGING_PASSWORD,
 		payload: val
 	}
-}
+};
 
 export const setWasStaking = () => {
 	return{
 		type: WAS_STAKING
 	}
-}
+};
 
 export const setNewPassword = (val) => {
 	return{
 		type: NEW_PASSWORD,
 		payload: val
 	}
-}
+};
 
 export const setCheckingDaemonStatusPrivKey = (val) => {
 	return{
 		type: CHECKING_DAEMON_STATUS_PRIVKEY,
 		payload: val
 	}
-}
+};
 
 
 export const setPostsPerContainer = (val) => {
@@ -455,171 +455,171 @@ export const setPostsPerContainer = (val) => {
 		type: POSTS_PER_CONTAINER,
 		payload: val
 	}
-}
+};
 
 export const setEccPostsPage = (val) => {
 	return{
 		type: ECC_POSTS_PAGE,
 		payload: val
 	}
-}
+};
 
 export const setShowingNews = (val) => {
 	return{
 		type: SHOWING_NEWS,
 		payload: val
 	}
-}
+};
 
 export const setNewsSwitchingPage = (val) => {
 	return{
 		type: NEWS_SWITCHING_PAGE,
 		payload: val
 	}
-}
+};
 
 export const setUpdateApplication = (val) => {
 	return{
 		type: UPDATE_APPLICATION,
 		payload: val
 	}
-}
+};
 
 export const setUpdatingApplication = (val) => {
 	return{
 		type: UPDATING_APP,
 		payload: val
 	}
-}
+};
 
 export const setUpdateAvailable = () => {
 	return{
 		type: UPDATE_AVAILABLE,
 		payload: {guiUpdate: false, daemonUpdate: false}
 	}
-}
+};
 
 export const setSelectedPanel = (val) => {
 	return{
 		type: SELECTED_PANEL,
 		payload: val
 	}
-}
+};
 
 export const setSettingsOptionSelected = (val) => {
 	return{
 		type: SETTINGS_OPTION_SELECTED,
 		payload: val
 	}
-}
+};
 
 export const setNotifications = (val) => {
 	return{
 		type: NOTIFICATIONS_POPUP,
 		payload: val
 	}
-}
+};
 
 export const setNewsChecked = (val) => {
 	return{
 		type: NEWS_CHECKED,
 		payload: val
 	}
-}
+};
 
 export const setEarningsChecked = (val) => {
 	return{
 		type: EARNINGS_CHECKED,
 		payload: val
 	}
-}
+};
 
 export const setUnencryptedWallet = (val) => {
 	return{
 		type: UNENCRYPTED_WALLET,
 		payload: val
 	}
-}
+};
 
 export const setOperativeSystemNotifications = (val) => {
 	return{
 		type: OPERATIVE_SYSTEM_NOTIFICATIONS,
 		payload: val
 	}
-}
+};
 
 export const setNewsNotifications = (val) => {
 	return{
 		type: NEWS_NOTIFICATIONS,
 		payload: val
 	}
-}
+};
 
 export const setStakingNotifications = (val) => {
 	return{
 		type: STAKING_NOTIFICATIONS,
 		payload: val
 	}
-}
+};
 
 export const setSetupDoneInternal = (val) => {
 	return{
 		type: SETUP_DONE_INTERNAL,
 		payload: val
 	}
-}
+};
 
 export const setShowingFunctionIcons = (val) => {
 	return{
 		type: SHOWING_FUNCTION_ICONS,
 		payload: val
 	}
-}
+};
 
 export const setGenericAnimationOn = (val) => {
 	return{
 		type: GENERIC_PANEL_ANIMATION_ON,
 		payload: val
 	}
-}
+};
 
 export const setClosingApplication = () => {
 	return{
 		type: CLOSING_APPLICATION
 	}
-}
+};
 
 export const setMacButtonsHover = (val) => {
 	return{
 		type: MAC_BUTTONS_HOVER,
 		payload: val
 	}
-}
+};
 
 export const setAppMaximized = (val) => {
 	return{
 		type: APP_MAXIMIZED,
 		payload: val
 	}
-}
+};
 
 export const setTheme = (val) => {
 	return{
 		type: SELECTED_THEME,
 		payload: val
 	}
-}
+};
 
 export const setThemeBackup = (val) => {
 	return{
 		type: SELECTED_THEME_BACKUP,
 		payload: val
 	}
-}
+};
 
 export const setChangedTheme = (val) => {
 	return{
 		type: CHANGED_THEME,
 		payload: val
 	}
-}
+};

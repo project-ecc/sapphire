@@ -32,9 +32,9 @@ class Receive extends Component {
     if(this.props.newAddressAccount)
       TweenMax.set('#addressAccountPlaceHolder', {autoAlpha: 0});
     if(!this.props.ansAddress){
-      TweenMax.to('#addressAccount', 0.2, {top: -38})
-      TweenMax.to('#addressName', 0.2, {autoAlpha: 0})
-      TweenMax.to('.tableCustom', 0.2, {top: 0})
+      TweenMax.to('#addressAccount', 0.2, {top: -38});
+      TweenMax.to('#addressName', 0.2, {autoAlpha: 0});
+      TweenMax.to('.tableCustom', 0.2, {top: 0});
       TweenMax.to('#imageAns', 0.2, {top: 6})
     }
   }
@@ -59,7 +59,7 @@ class Receive extends Component {
   }
 
   updateTable(addresses){
-    $('#rows').css("height", $('.tableCustom').height()-128)
+    $('#rows').css("height", $('.tableCustom').height()-128);
     let numberOfChildren = addresses.length;
     let totalSize = numberOfChildren * 40; //40px height of each row
     let sizeOfContainer = $('.tableCustom').height()-128;
@@ -92,21 +92,21 @@ class Receive extends Component {
 
   handleChangeAddressCreationToAns(){
     if(this.props.ansAddress) return;
-    this.props.setCreateAddressAns(true)
-    TweenMax.to('#addressAccount', 0.2, {top: 0})
-    TweenMax.fromTo('#ansExplanation', 0.2, {top: -15}, {top: 15, autoAlpha: 1})
-    TweenMax.to('#addressName', 0.2, {autoAlpha: 1})
-    TweenMax.to('.tableCustom', 0.2, {top: 50})
+    this.props.setCreateAddressAns(true);
+    TweenMax.to('#addressAccount', 0.2, {top: 0});
+    TweenMax.fromTo('#ansExplanation', 0.2, {top: -15}, {top: 15, autoAlpha: 1});
+    TweenMax.to('#addressName', 0.2, {autoAlpha: 1});
+    TweenMax.to('.tableCustom', 0.2, {top: 50});
     TweenMax.to('#imageAns', 0.2, {top: 55})
   }
 
   handleChangeAddressCreationToNormal(){
     if(!this.props.ansAddress) return;
-    this.props.setCreateAddressAns(false)
-    TweenMax.to('#addressAccount', 0.2, {top: -38})
-    TweenMax.fromTo('#ansExplanation', 0.2, {top: 15}, {top: -15, autoAlpha: 0})
-    TweenMax.to('#addressName', 0.2, {autoAlpha: 0})
-    TweenMax.to('.tableCustom', 0.2, {top: 0})
+    this.props.setCreateAddressAns(false);
+    TweenMax.to('#addressAccount', 0.2, {top: -38});
+    TweenMax.fromTo('#ansExplanation', 0.2, {top: 15}, {top: -15, autoAlpha: 0});
+    TweenMax.to('#addressName', 0.2, {autoAlpha: 0});
+    TweenMax.to('.tableCustom', 0.2, {top: 0});
     TweenMax.to('#imageAns', 0.2, {top: 6})
   }
 
@@ -114,7 +114,7 @@ class Receive extends Component {
     const account = event.target.value;
     if(account.length == 0)
       TweenMax.set('#addressAccountPlaceHolder', {autoAlpha: 1});
-    else 
+    else
       TweenMax.set('#addressAccountPlaceHolder', {autoAlpha: 0});
 
     this.props.setNewAddressAccount(account);
@@ -124,7 +124,7 @@ class Receive extends Component {
     const name = event.target.value;
     if(name.length == 0)
       TweenMax.set('#addressNamePlaceHolder', {autoAlpha: 1});
-    else 
+    else
       TweenMax.set('#addressNamePlaceHolder', {autoAlpha: 0});
 
     this.props.setNewAddressName(name);
@@ -136,7 +136,7 @@ class Receive extends Component {
   }
 
   filterClicked(type){
-    console.log(type)
+    console.log(type);
     if(type == "all")
       this.props.setFilterOwnAddresses("all");
     else if(type == "normal")
@@ -148,7 +148,7 @@ class Receive extends Component {
   render() {
     let ansAddresImage = require('../../../resources/images/ans_address.png');
     let counter = 0;
-    let rowClassName = "row normalWeight tableRowCustom"
+    let rowClassName = "row normalWeight tableRowCustom";
     return (
       <div className="panel">
         <div id="headerReceive">
@@ -158,7 +158,7 @@ class Receive extends Component {
         </div>
         <div id="inputAddress">
           <div style={{display: "inline-block", width: "70%", position: "relative"}}>
-            <Input 
+            <Input
               divId="addressName"
               divStyle={{display: "inline"}}
               placeholder= { this.props.lang.name }
@@ -169,7 +169,7 @@ class Receive extends Component {
               type="text"
               inputStyle={{textAlign: "left", width:"100%", display: "inline-block"}}
             />
-            <Input 
+            <Input
               divId="addressAccount"
               divStyle={{position: "relative",  marginTop: "10px"}}
               placeholder= { this.props.lang.accountOptional }

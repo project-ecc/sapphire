@@ -27,7 +27,7 @@ class AddressBook extends Component {
   }
 
   updateTable(friendList){
-    $('#rows').css("height", $('#tableAddresses').height()-128)
+    $('#rows').css("height", $('#tableAddresses').height()-128);
     let numberOfChildren = friendList.length;
     let totalSize = numberOfChildren * 40; //40px height of each row
     let sizeOfContainer = $('#tableAddresses').height()-128;
@@ -59,7 +59,7 @@ class AddressBook extends Component {
   rowClicked(friend) {
     if(!this.props.sendPanel) return;
     clipboard.writeText(friend.address);
-    $('#message').text('{ this.props.lang.addressCopiedBelow }')
+    $('#message').text('{ this.props.lang.addressCopiedBelow }');
     TweenMax.fromTo('#message', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
     TweenMax.to('#message', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
     TweenMax.set('#addressSend', {autoAlpha: 0});
@@ -97,7 +97,7 @@ class AddressBook extends Component {
 
   render() {
     let bin = require('../../../resources/images/delete-contact.ico');
-    let rowClassName = "row normalWeight tableRowCustom"
+    let rowClassName = "row normalWeight tableRowCustom";
 
     return (
       <div className="tableCustom">

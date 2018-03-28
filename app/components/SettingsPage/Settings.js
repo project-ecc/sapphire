@@ -47,7 +47,7 @@ class Settings extends Component {
     $('.dropdownLanguageSelector').toggleClass('active');
     $('.dropdownLanguageSelector').find('.dropdown-menuLanguageSelector').slideToggle(300);
   }
-  
+
   handleDrowDownUnfocus(){
     $('.dropdownLanguageSelector').removeClass('active');
     $('.dropdownLanguageSelector').find('.dropdown-menuLanguageSelector').slideUp(300);
@@ -61,28 +61,28 @@ class Settings extends Component {
 
   setTrayIcon(){
     ipcRenderer.send('hideTray', !this.props.hideTrayIcon);
-    this.reloadSettings('display.hide_tray_icon', !this.props.hideTrayIcon)
+    this.reloadSettings('display.hide_tray_icon', !this.props.hideTrayIcon);
     this.props.setTray(!this.props.hideTrayIcon);
   }
 
   handleMinimizeToTray(){
-    this.reloadSettings('display.minimise_to_tray', !this.props.minimizeToTray)
+    this.reloadSettings('display.minimise_to_tray', !this.props.minimizeToTray);
     this.props.setMinimizeToTray(!this.props.minimizeToTray);
   }
 
   handleMinimizeOnClose(){
-    this.reloadSettings('display.minimise_on_close', !this.props.minimizeOnClose)
+    this.reloadSettings('display.minimise_on_close', !this.props.minimizeOnClose);
     this.props.setMinimizeOnClose(!this.props.minimizeOnClose);
   }
 
   handleStartAtLogin(){
     ipcRenderer.send('autoStart', !this.props.startAtLogin);
-    this.reloadSettings('display.start_at_login', !this.props.startAtLogin)
+    this.reloadSettings('display.start_at_login', !this.props.startAtLogin);
     this.props.setStartAtLogin(!this.props.startAtLogin);
   }
 
   handleOperativeSystemNotifications(){
-    this.reloadSettings('notifications.operative_system', !this.props.operativeSystemNotifications)
+    this.reloadSettings('notifications.operative_system', !this.props.operativeSystemNotifications);
     this.props.setOperativeSystemNotifications(!this.props.operativeSystemNotifications);
   }
 
@@ -90,7 +90,7 @@ class Settings extends Component {
     if(this.props.newsNotifications == true){
       this.props.setNewsChecked();
     }
-    this.reloadSettings('notifications.news', !this.props.newsNotifications)
+    this.reloadSettings('notifications.news', !this.props.newsNotifications);
     this.props.setNewsNotifications(!this.props.newsNotifications);
   }
 
@@ -98,7 +98,7 @@ class Settings extends Component {
     if(this.props.stakingNotifications == true){
       this.props.setEarningsChecked();
     }
-    this.reloadSettings('notifications.staking', !this.props.stakingNotifications)
+    this.reloadSettings('notifications.staking', !this.props.stakingNotifications);
     this.props.setStakingNotifications(!this.props.stakingNotifications);
   }
 
@@ -120,7 +120,7 @@ class Settings extends Component {
       if (data[0] === null) {
         this.props.setBackupOperationInProgress(false);
       } else {
-        console.log("error backing up wallet: ", data)
+        console.log("error backing up wallet: ", data);
         this.props.setBackupOperationInProgress(false);
       }
     }).catch((err) => {
@@ -159,25 +159,25 @@ class Settings extends Component {
   getGeneralSettings(){
     return(
       <div className="container">
-        <SettingsToggle 
+        <SettingsToggle
           keyVal={4}
           text= { this.props.lang.startOnLogin }
           handleChange = {this.handleStartAtLogin}
           checked = {this.props.startAtLogin}
         />
-        <SettingsToggle 
+        <SettingsToggle
           keyVal={5}
           text= { this.props.lang.hideTrayIcon }
           handleChange = {this.setTrayIcon}
           checked = {this.props.hideTrayIcon}
         />
-        <SettingsToggle 
+        <SettingsToggle
           keyVal={6}
           text= { this.props.lang.minimizeToTray }
           handleChange = {this.handleMinimizeToTray}
           checked = {this.props.minimizeToTray}
         />
-        <SettingsToggle 
+        <SettingsToggle
           keyVal={7}
           text= { this.props.lang.minimizeOnClose }
           handleChange = {this.handleMinimizeOnClose}
@@ -204,11 +204,11 @@ class Settings extends Component {
         <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
           <div className="col-sm-6 text-center">
             <p className="buttonTransaction settingsButtonBackup" onClick={this.onClickBackupLocation}>{ this.props.lang.backup } wallet.dat</p>
-          </div>  
+          </div>
           <div className="col-sm-6 text-center">
             <p className="buttonTransaction settingsButtonBackup" onClick={this.handleExportPrivateKeys}>{ this.props.lang.exportPrivateKeys }</p>
-          </div>  
-        </div> 
+          </div>
+        </div>
         <div className="container">
           <div className="row settingsToggle">
             <div className="col-sm-10 text-left removePadding">
@@ -226,7 +226,7 @@ class Settings extends Component {
             <p onClick={this.handleImportPrivateKey} style={{cursor: "pointer"}}>{ this.props.lang.import }</p>
             </div>
           </div>
-        </div> 
+        </div>
       </div>
     )
   }
@@ -238,20 +238,20 @@ class Settings extends Component {
   getNotificationSettings(){
     return(
       <div className="container">
-        <SettingsToggle 
+        <SettingsToggle
           keyVal={2}
           text= { this.props.lang.operativeSystemNotifications }
           subText = {this.props.operativeSystemNotifications ? <p className="settingsToggleSubText">{ this.props.lang.operativeSystemNotificationsDisable }</p> : <p className="settingsToggleSubText">{ this.props.lang.operativeSystemNotificationsEnable }</p>}
           handleChange = {this.handleOperativeSystemNotifications}
           checked = {this.props.operativeSystemNotifications}
         />
-        <SettingsToggle 
+        <SettingsToggle
           keyVal={3}
           text= {<p>{ this.props.lang.eccNewsNotificationsFrom } <span className="mediumToggle" onClick={this.handleMediumClick}>Medium</span></p>}
           handleChange = {this.handleNewsNotifications}
           checked = {this.props.newsNotifications}
         />
-        <SettingsToggle 
+        <SettingsToggle
           keyVal={1}
           text= { this.props.lang.stakingNotifications }
           subText = {this.props.stakingNotifications ? <p className="settingsToggleSubText">{ this.props.lang.stakingNotificationsDisable }</p> : <p className="settingsToggleSubText">{ this.props.lang.stakingNotificationsEnable }</p>}

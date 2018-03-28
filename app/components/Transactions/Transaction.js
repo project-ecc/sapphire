@@ -6,7 +6,7 @@ import * as actions from '../../actions';
 import { connect } from 'react-redux';
 const lang = traduction();
 const settings = require('electron-settings');
-const Tools = require('../../utils/tools')
+const Tools = require('../../utils/tools');
 
 class Transaction extends Component {
   constructor(props) {
@@ -42,7 +42,7 @@ class Transaction extends Component {
 
   getAllTransactions(page) {
     this.props.wallet.getTransactions(null, 100, 100 * page).then((data) => {
-        this.props.setTransactionsData(data, this.props.type)
+        this.props.setTransactionsData(data, this.props.type);
         this.props.setTransactionsPage(page);
         this.updateTable();
         $(".extraInfoTransaction").hide();
@@ -69,7 +69,7 @@ class Transaction extends Component {
 
  updateTable(){
     $(".extraInfoTransaction").hide();
-    $('#rows').css("height", $('#transactionAddresses').height()-204)
+    $('#rows').css("height", $('#transactionAddresses').height()-204);
     let numberOfChildren = this.props.data.length;
     let totalSize = numberOfChildren * 40; //40px height of each row
     let sizeOfContainer = $('#transactionAddresses').height()-204;
@@ -110,7 +110,7 @@ class Transaction extends Component {
     if(this.props.page == state.page && this.props.page > 0 && this.props.type == state.type) return false;
     return true;
   }
-  componentWillReceiveProps(){     
+  componentWillReceiveProps(){
     this.updateTable();
     $(".extraInfoTransaction").hide();
   }
@@ -120,7 +120,7 @@ class Transaction extends Component {
     $('.dropdownFilterSelector').toggleClass('active');
     $('.dropdownFilterSelector').find('.dropdown-menuFilterSelector').slideToggle(300);
   }
-  
+
   handleDrowDownUnfocus(){
     $('.dropdownFilterSelector').removeClass('active');
     $('.dropdownFilterSelector').find('.dropdown-menuFilterSelector').slideUp(300);
@@ -132,7 +132,7 @@ class Transaction extends Component {
 
   onItemClick(event) {
     let type = event.currentTarget.dataset.id;
-    console.log(type)
+    console.log(type);
     if(type == this.props.type) return;
     let data = this.props.data;
     this.props.setTransactionsData(data, type);
@@ -145,8 +145,8 @@ class Transaction extends Component {
       case "0" : return "Pending";
       case "all": return "All";
       case "send" : return "Sent";
-      case "generate": 
-        this.props.setEarningsChecked(new Date().getTime())
+      case "generate":
+        this.props.setEarningsChecked(new Date().getTime());
         return "Earned";
       case "receive": return "Received";
     }
@@ -157,7 +157,7 @@ class Transaction extends Component {
     const today = new Date();
     let counter = -1;
     const rowClassName = "row normalWeight tableRowCustom tableRowCustomTransactions";
-    
+
     return (
       <div style={{height: "100%", width: "100%", paddingLeft: "20px", paddingRight: "10px", overflowX: "hidden"}}>
         <div id="transactionAddresses" style={{height:"90%", position: "relative", top: "25px"}}>
@@ -262,7 +262,7 @@ class Transaction extends Component {
             </div>
             <div className="col-sm-6 text-left">
               <p className="buttonTransaction" onClick={this.handleNextClicked} style={{marginLeft: "50px", opacity: this.props.data.length < 100 ? "0.2" : "1", cursor: this.props.data.length < 100 ? "default" : "pointer"}}>{ this.props.lang.next }</p>
-            </div>        
+            </div>
           </div>
         </div>
       </div>

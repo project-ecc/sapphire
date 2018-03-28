@@ -60,7 +60,7 @@ class TopBar extends React.Component {
   news(){
     let settingsSelected = this.props.settings;
     this.props.setNotifications(false);
-    if(this.props.news && !settingsSelected){ 
+    if(this.props.news && !settingsSelected){
       return;
     }
     this.props.setSelectedPanel("news");
@@ -89,7 +89,7 @@ class TopBar extends React.Component {
     this.props.setNotifications(!this.props.notificationPopup);
 
   }
-  
+
   settings(){
     if(this.props.genericPanelAnimationOn) return;
     this.props.setNotifications(false);
@@ -195,7 +195,7 @@ class TopBar extends React.Component {
     )
   }
 
-  render() { 
+  render() {
     let menuBar = null;
     if (process.platform === 'darwin'){
       menuBar = this.getDarwinBar();
@@ -210,8 +210,9 @@ class TopBar extends React.Component {
           </div>
         </div>
       );
-    } 
-};
+    }
+
+}
 
 const mapStateToProps = state => {
   return{

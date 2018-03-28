@@ -5,10 +5,10 @@ class TransitionComponent extends React.Component {
  constructor() {
     super();
   }
-  
+
  componentWillAppear (callback) {
-  console.log("componentWillAppear", this.props.animationType)
-  console.log("componentWillAppear TRANSITION")
+  console.log("componentWillAppear", this.props.animationType);
+  console.log("componentWillAppear TRANSITION");
     if(this.props.animationType == "loader"){
       this.props.animateIn(this.refs.animate, this.props.updatingApplication, this.props.animateLogo, callback);
     }
@@ -28,10 +28,10 @@ class TransitionComponent extends React.Component {
     }
     else callback();
   }
-  
+
   componentWillEnter(callback){
-    console.log("componentWillEnter", this.props.animationType)
-    console.log("componentWillEnter TRANSITION")
+    console.log("componentWillEnter", this.props.animationType);
+    console.log("componentWillEnter TRANSITION");
     if(this.props.animationType == "popup"){
       this.props.animateIn(this.refs.animate, callback, "22%");
     }
@@ -49,12 +49,12 @@ class TransitionComponent extends React.Component {
   }
 
   componentWillLeave (callback) {
-    console.log("componentWillLeave TRANSITION")
+    console.log("componentWillLeave TRANSITION");
     if(this.props.animationType == "popup")
-      this.props.animateOut(this.refs.animate, callback)
+      this.props.animateOut(this.refs.animate, callback);
     else if(this.props.animationType == "genericPanel"){
       this.props.animateOut(this.refs.animate, this.props.resetWillChange.bind(this), callback, 1);
-    }    
+    }
     else if(this.props.animationType == "settings"){
       this.props.animateOut(this.refs.animate, this.props.resetWillChange.bind(this), callback, 2.5);
     }
@@ -64,18 +64,17 @@ class TransitionComponent extends React.Component {
     else if(this.props.animationType == "firstSetupStep" || this.props.animationType == "setupStep"){
       this.props.animateOut(this.refs.animate, callback)
     }
-    else callback();    
+    else callback();
   }
 
-  render() { 
+  render() {
      return (
       <div ref="animate" className={this.props.class ? this.props.class : ""}  id={this.props.id}>
         {this.props.children}
       </div>
       );
-    } 
-};
+    }
 
-
+}
 
 export default TransitionComponent;

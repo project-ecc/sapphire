@@ -59,7 +59,7 @@ class News extends Component {
       setTimeout(() => {
         this.props.setEccPostsPage(this.props.eccPostsPage + 1);
         this.props.setNewsSwitchingPage(false);
-      }, 400)
+      }, 400);
       this.updateArrows(this.props.eccPostsPage);
     }
     else if(direction == "left" && !$('#arrowLeft').hasClass('arrowInactive')){
@@ -69,7 +69,7 @@ class News extends Component {
       setTimeout(() => {
         this.props.setEccPostsPage(this.props.eccPostsPage - 1);
         this.props.setNewsSwitchingPage(false);
-      }, 400)
+      }, 400);
       this.updateArrows(this.props.eccPostsPage-2);
     }
   }

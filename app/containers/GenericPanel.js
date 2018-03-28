@@ -12,7 +12,7 @@ import ContactsPage from './Pages/ContactsPage';
 import NetworkStatsPage from './Pages/NetworkStatsPage';
 import NewsPage from './Pages/NewsPage';
 import {TweenMax} from "gsap";
-const Tools = require('../utils/tools')
+const Tools = require('../utils/tools');
 
 class GenericPanel extends Component {
   constructor(props) {
@@ -21,19 +21,19 @@ class GenericPanel extends Component {
 
   getPanel(){
     switch(this.props.selectedPanel){
-      case "overview": 
-        return(<HomePage/>)
-      case "send": 
-        return(<SendPage/>)
-      case "addresses": 
-        return(<ReceivePage/>)
-      case "transactions": 
-        return(<TransactionPage/>)
-      case "news": 
-        return(<NewsPage/>)
-      case "network": 
-        return(<NetworkStatsPage/>)
-      case "contacts": 
+      case "overview":
+        return(<HomePage/>);
+      case "send":
+        return(<SendPage/>);
+      case "addresses":
+        return(<ReceivePage/>);
+      case "transactions":
+        return(<TransactionPage/>);
+      case "news":
+        return(<NewsPage/>);
+      case "network":
+        return(<NetworkStatsPage/>);
+      case "contacts":
         return(<ContactsPage/>)
     }
   }

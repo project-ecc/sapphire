@@ -19,20 +19,20 @@ class ConfirmNewAddress extends React.Component {
 
   createNormalAddress(){
     this.props.wallet.createNewAddress(this.props.account).then((newAddress) => {
-    	console.log(newAddress)
+    	console.log(newAddress);
       	event.emit('newAddress');
       	this.props.setCreatingAddress(false);
     }).catch((err) => {
        console.log("error creating address: ", err)
     });
   }
-  
+
   createAnsAddress(){
 
   }
 
   componentDidLeave(callback) {
-  }  
+  }
 
   componentDidMount(){
   }
@@ -54,17 +54,17 @@ class ConfirmNewAddress extends React.Component {
   	}
   	else if(!this.props.ansAddress && this.props.account == ""){
   		return(
-  			<p className="confirmationText">{ this.props.lang.normalCreateConfirm1 } <span className="ecc">{ this.props.lang.normalCreateConfirm2 }</span> { this.props.lang.normalCreateConfirm3 }.</p>	
+  			<p className="confirmationText">{ this.props.lang.normalCreateConfirm1 } <span className="ecc">{ this.props.lang.normalCreateConfirm2 }</span> { this.props.lang.normalCreateConfirm3 }.</p>
   		)
   	}
 	else if(!this.props.ansAddress && this.props.account != ""){
   		return(
-  			<p className="confirmationText">{ this.props.lang.normalCreateConfirm1 } <span className="ecc">{ this.props.lang.normalCreateConfirm2 }</span> { this.props.lang.normalCreateConfirm4 } "{this.props.account}". { this.props.lang.normalCreateConfirm5 }  <span className="ecc">{ this.props.lang.ansCreateConfirm2 }</span> { this.props.lang.normalCreateConfirm6 }.</p>	
+  			<p className="confirmationText">{ this.props.lang.normalCreateConfirm1 } <span className="ecc">{ this.props.lang.normalCreateConfirm2 }</span> { this.props.lang.normalCreateConfirm4 } "{this.props.account}". { this.props.lang.normalCreateConfirm5 }  <span className="ecc">{ this.props.lang.ansCreateConfirm2 }</span> { this.props.lang.normalCreateConfirm6 }.</p>
   		)
   	}
   }
 
-  render() { 
+  render() {
      return (
       <div style={{height: "auto !important", textAlign: "center", width: "535px"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
@@ -73,9 +73,9 @@ class ConfirmNewAddress extends React.Component {
         <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm"/>
       </div>
       );
-    } 
-};
+    }
 
+}
 
 const mapStateToProps = state => {
   return{

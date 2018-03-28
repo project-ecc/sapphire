@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import {TweenMax} from "gsap";
 import $ from 'jquery';
-const Tools = require('../utils/tools')
+const Tools = require('../utils/tools');
 import CloseButtonPopup from './Others/CloseButtonPopup';
 import ConfirmButtonPopup from './Others/ConfirmButtonPopup';
 import Input from './Others/Input';
@@ -24,11 +24,11 @@ class UnlockWallet extends React.Component {
         let obj = {
           method: 'reloadconfig', parameters: ["staking"],
           method: 'walletpassphrase', parameters: [this.props.passwordVal, 31556926, true]
-        }
-        batch.push(obj)
+        };
+        batch.push(obj);
 
         this.props.wallet.command(batch).then((data) => {
-          console.log("data: ", data)
+          console.log("data: ", data);
           data = data[0];
           if (data !== null && data.code === -14) {
             Tools.showTemporaryMessage('#wrongPassword');
@@ -87,7 +87,7 @@ class UnlockWallet extends React.Component {
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">{ this.props.lang.unlockWallet }</p>
         <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "left", margin: "0 auto", paddingTop: "20px"}}>{ this.props.lang.unlockWalletExplanation1 }<br></br>{ this.props.lang.unlockWalletExplanation2 } <span className="ecc">ECC</span>.</p>
-          <Input 
+          <Input
             divStyle={{width: "400px"}}
             placeholder= { this.props.lang.password }
             placeholderId= "password"
@@ -104,7 +104,7 @@ class UnlockWallet extends React.Component {
       </div>
       );
     }
-};
+}
 
 const mapStateToProps = state => {
   return{

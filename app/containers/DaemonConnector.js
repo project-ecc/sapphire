@@ -2,17 +2,17 @@ import Wallet from '../utils/wallet';
 import { ipcRenderer } from 'electron';
 import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS, SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE, SELECTED_THEME } from '../actions/types';
 const event = require('../utils/eventhandler');
-const tools = require('../utils/tools')
+const tools = require('../utils/tools');
 const sqlite3 = require('sqlite3');
-let remote = require('electron').remote
-const app = remote.app
+let remote = require('electron').remote;
+const app = remote.app;
 import transactionsInfo from '../utils/transactionsInfo';
 import notificationsInfo from '../utils/notificationsInfo';
 import $ from 'jquery';
 const FeedMe = require('feedme');
 const https = require('https');
-const Tools = require('../utils/tools')
-const request = require('request')
+const Tools = require('../utils/tools');
+const request = require('request');
 
 //this class acts as a bridge between wallet.js (daemon) and the redux store
 class DaemonConnector {
@@ -75,17 +75,17 @@ class DaemonConnector {
     this.isIndexingTransactions = false;
     this.checkStartupStatusInterval = setInterval(()=>{
       this.stateCheckerInitialStartup();
-    }, 2000)
+    }, 2000);
     this.getECCPosts = this.getECCPosts.bind(this);
     this.getECCPosts();
     setInterval(() => {
       this.getECCPosts();
-    }, 60000)
+    }, 60000);
     this.getCoinMarketCapStats = this.getCoinMarketCapStats.bind(this);
     this.getCoinMarketCapStats();
     setInterval(() => {
       this.getCoinMarketCapStats();
-    }, 120000)
+    }, 120000);
     this.stakingRewardsCountNotif = 0;
     this.stakingRewardsTotalEarnedNotif = 0;
 	}
@@ -138,7 +138,7 @@ class DaemonConnector {
     if(this.step >= 7 && this.transactionsIndexed){
       this.step = 1;
       if(this.partialSetup){
-        this.store.dispatch({type: PARTIAL_INITIAL_SETUP })
+        this.store.dispatch({type: PARTIAL_INITIAL_SETUP });
         this.partialSetup = false;
       }
       if(this.firstRun){
@@ -175,19 +175,19 @@ class DaemonConnector {
 
   notifyUserOfApplicationUpdate(){
     Tools.sendOSNotification("Application update available", () => {
-      this.store.dispatch({type: SETTINGS, payload: true})
+      this.store.dispatch({type: SETTINGS, payload: true});
       this.store.dispatch({type: SETTINGS_OPTION_SELECTED, payload: "General"})
-    })
+    });
     this.store.dispatch({type: TELL_USER_OF_UPDATE})
   }
 
   handleGuiUpdate(){
-    console.log("daemon connector got gui update message, updating state")
+    console.log("daemon connector got gui update message, updating state");
     this.store.dispatch({type: UPDATE_AVAILABLE, payload: {guiUpdate: true, daemonUpdate: this.store.getState().startup.daemonUpdate} })
   }
 
   handleDaemonUpdate(){
-    console.log("daemon connector got daemon update message, updating state")
+    console.log("daemon connector got daemon update message, updating state");
     this.store.dispatch({type: UPDATE_AVAILABLE, payload: {guiUpdate: this.store.getState().startup.guiUpdate, daemonUpdate: true} })
   }
 
@@ -204,7 +204,7 @@ class DaemonConnector {
 
   handleSetupDone(event, args){
     //this.createWallet(args);
-    this.store.dispatch({type: SETUP_DONE, payload: true})
+    this.store.dispatch({type: SETUP_DONE, payload: true});
     this.unsubscribeFromSetupEvents();
   }
 
@@ -227,14 +227,14 @@ class DaemonConnector {
   stateCheckerInitialStartup(){
     this.wallet.getInfo().then((data) => {
       if(!data.encrypted){
-        console.log("RUNNING UNENCRYPTED WALLET")
+        console.log("RUNNING UNENCRYPTED WALLET");
         this.store.dispatch({type: UNENCRYPTED_WALLET, payload: true})
       }
       if(this.loadingBlockIndexPayment){
         this.loadingBlockIndexPayment = false;
         this.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: false})
       }
-      console.log("UPDATING APP: ", this.store.getState().startup.updatingApp)
+      console.log("UPDATING APP: ", this.store.getState().startup.updatingApp);
       if(this.store.getState().startup.updatingApp){
         this.store.dispatch({type: UPDATING_APP, payload: false})
       }
@@ -254,13 +254,13 @@ class DaemonConnector {
           this.store.dispatch({type: LOADING, payload: true})
         }
       }
-    }); 
+    });
   }
 
   getChainInfo(){
 	  this.wallet.getInfo().then((data) => {
       if(!data.encrypted){
-        console.log("RUNNING UNENCRYPTED WALLET")
+        console.log("RUNNING UNENCRYPTED WALLET");
         this.store.dispatch({type: UNENCRYPTED_WALLET, payload: true})
       }
       if(this.loadingBlockIndexPayment){
@@ -273,8 +273,8 @@ class DaemonConnector {
 	}
 
   fixNewsText(text){
-    let result = text.replace(new RegExp('</p><p>', 'g'), ' ')
-    result = result.replace(new RegExp('</blockquote><p>', 'g'), '. ')
+    let result = text.replace(new RegExp('</p><p>', 'g'), ' ');
+    result = result.replace(new RegExp('</blockquote><p>', 'g'), '. ');
     return result;
   }
 
@@ -293,7 +293,7 @@ class DaemonConnector {
       parser.on('end', () => {
         if(totalNews == 0 || !this.store.getState().notifications.newsNotificationsEnabled) return;
         Tools.sendOSNotification(totalNews == 1 ? title : `${totalNews} ${title}`, () => {
-          this.store.dispatch({type: SELECTED_PANEL, payload: "news"})
+          this.store.dispatch({type: SELECTED_PANEL, payload: "news"});
           this.store.dispatch({type: SELECTED_SIDEBAR, payload: {undefined}})
         })
       });
@@ -319,7 +319,7 @@ class DaemonConnector {
             url: url,
             body: text,
             date: iTime.getTime()
-          }
+          };
           posts.push(post);
           this.store.dispatch({type: ECC_POST, payload: posts})
         }
@@ -332,9 +332,9 @@ class DaemonConnector {
             url: url,
             body: text,
             date: iTime.getTime()
-          }
+          };
           posts.unshift(post);
-          this.store.dispatch({type: ECC_POST, payload: posts})
+          this.store.dispatch({type: ECC_POST, payload: posts});
           //update render
           this.store.dispatch({type: POSTS_PER_CONTAINER, payload: this.store.getState().application.postsPerContainerEccNews})
 
@@ -351,7 +351,7 @@ class DaemonConnector {
   getCoinMarketCapStats(){
     let options = {
       url: 'https://api.coinmarketcap.com/v1/ticker/eccoin/',
-    }
+    };
     let self = this;
     function callback(error, response, body) {
       if (!error && response.statusCode == 200) {
@@ -363,14 +363,14 @@ class DaemonConnector {
       {
         console.log(error)
       }
-    } 
+    }
     request(options, callback);
   }
 
 
   //DATABASE RELATED CODE (EARNINGS FROM STAKING)
 
-  needToReloadTransactions(){  
+  needToReloadTransactions(){
     for(let i = 0; i < this.currentAddresses.length; i++){
       if(this.processedAddresses == undefined || !this.processedAddresses.includes(this.currentAddresses[i].address)){
         return true;
@@ -389,7 +389,7 @@ class DaemonConnector {
       transactionsInfo.get('addresses').push(currentAddress).write();
       this.processedAddresses.push(currentAddress)
     }
-    this.from = 0;  
+    this.from = 0;
     this.transactionsIndexed = false;
     this.db = new sqlite3.Database(app.getPath('userData') + '/transactions');
     this.db.run("DELETE FROM TRANSACTIONS;");
@@ -403,14 +403,14 @@ class DaemonConnector {
       this.db.run("CREATE TABLE IF NOT EXISTS transactions (transaction_id VAARCHAR(64) PRIMARY KEY, time INTEGER, amount DECIMAL(11,8), category, address, fee DECIMAL(2,8), confirmations INTEGER);");
       this.db.run("CREATE TABLE IF NOT EXISTS pendingTransactions (transaction_id VAARCHAR(64));");
     });
-    
+
   }
 
   closeDb(){
     if(this.db.open)
       this.db.close();
   }
-  
+
   openDb(){
     if(!this.db || !this.db.open)
       this.db = new sqlite3.Database(app.getPath('userData') + '/transactions');
@@ -430,8 +430,8 @@ class DaemonConnector {
   }
 
   async loadTransactionsForProcessing(){
-    console.log("RUNNING loadTransactionsForProcessing()")
-    console.log("CURRENT FROM: ", this.currentFrom)
+    console.log("RUNNING loadTransactionsForProcessing()");
+    console.log("CURRENT FROM: ", this.currentFrom);
     this.isIndexingTransactions = true;
 
     this.checkIfTransactionsNeedToBeDeleted();
@@ -462,7 +462,7 @@ class DaemonConnector {
     for (let i = 0; i < transactions.length; i++) {
       time = transactions[i].time;
       if(time > this.currentFrom || !this.transactionsIndexed){
-        console.log("FOUND NEW TRANSACTION: ", transactions[i].txid)
+        console.log("FOUND NEW TRANSACTION: ", transactions[i].txid);
         shouldRequestAnotherPage = true;
         txId = transactions[i].txid;
         amount = transactions[i].amount;
@@ -481,16 +481,16 @@ class DaemonConnector {
           address: address,
           fee: fee,
           confirmations: confirmations
-        }); 
+        });
       }else{
-        shouldRequestAnotherPage = false; 
+        shouldRequestAnotherPage = false;
       }
     }
-    
+
     if(transactions.length == this.transactionsToRequest && shouldRequestAnotherPage){
       this.transactionsPage++;
-      this.loadTransactionsForProcessing(); 
-      return;
+      this.loadTransactionsForProcessing();
+
     }
     else{
       this.processTransactions();
@@ -498,7 +498,7 @@ class DaemonConnector {
   }
 
   processTransactions(){
-    console.log("RUNNING processTransactions()")
+    console.log("RUNNING processTransactions()");
     let entries = [];
     /*let auxCurrentAddresses = [];
     let currentAddresses = this.store.getState().application.userAddresses;
@@ -510,9 +510,9 @@ class DaemonConnector {
       let values = this.transactionsMap[key];
       for(let i = 1; i < values.length; i++){
         if(values[i].category == "generate" && values[i].amount > 0){
-          console.log("PUSHING ENTRY: ", key)
-          console.log("TIME: ", values[i].time)
-          entries.push({...values[i], txId: key})
+          console.log("PUSHING ENTRY: ", key);
+          console.log("TIME: ", values[i].time);
+          entries.push({...values[i], txId: key});
           break;
         }
       }
@@ -560,8 +560,8 @@ class DaemonConnector {
   }
 
   goToEarningsPanel(){
-      this.store.dispatch({type: SELECTED_PANEL, payload: "transactions"})
-      this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: this.store.getState().chains.transactionsData, type: "generate"}})
+      this.store.dispatch({type: SELECTED_PANEL, payload: "transactions"});
+      this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: this.store.getState().chains.transactionsData, type: "generate"}});
       this.store.dispatch({type: SELECTED_SIDEBAR, payload: {parent: "walletSelected", child: "transactionsSelected"}})
   }
 
@@ -584,7 +584,7 @@ class DaemonConnector {
         this.store.dispatch({type: STAKING_REWARD, payload: entries[i]})
       }
       if(entry.time * 1000 > lastCheckedEarnings && shouldNotifyEarnings){
-        this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: entry.amount, date: entry.time}})
+        this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: entry.amount, date: entry.time}});
         earningsCountNotif++;
         earningsTotalNotif += entry.amount;
       }
@@ -609,9 +609,9 @@ class DaemonConnector {
     else this.closeDb();
 
     //no more transactions to process, mark as done to avoid spamming the daemon
-    if(!this.transactionsIndexed){    
+    if(!this.transactionsIndexed){
       this.transactionsIndexed = true;
-      this.store.dispatch({type: INDEXING_TRANSACTIONS, payload: false})
+      this.store.dispatch({type: INDEXING_TRANSACTIONS, payload: false});
       this.store.dispatch({type: STAKING_REWARD, payload: entries})
     }
 
@@ -643,7 +643,7 @@ class DaemonConnector {
   removeTransactionFromMemory(transactionId, deleteFromTransactions){
     let pendingTransactions = this.store.getState().application.pendingTransactions;
     let index = pendingTransactions.indexOf(transactionId);
-    
+
     if (index !== -1) {
         pendingTransactions.splice(index, 1);
     }
@@ -653,8 +653,8 @@ class DaemonConnector {
         if(transactions[i].transaction_id == transactionId){
           let index = transactions.indexOf(transactions[i]);
           transactions.splice(index, 1);
-          this.store.dispatch({type: STAKING_REWARD, payload: transactions})
-          this.store.dispatch({type: PENDING_TRANSACTION, payload: pendingTransactions})
+          this.store.dispatch({type: STAKING_REWARD, payload: transactions});
+          this.store.dispatch({type: PENDING_TRANSACTION, payload: pendingTransactions});
           return;
         }
       }
@@ -664,9 +664,9 @@ class DaemonConnector {
   removeTransactionFromDb(transferId, deleteFromTransactions){
     return new Promise((resolve, reject) => {
       this.openDb();
-      let sql = `DELETE FROM pendingtransactions where transaction_id = '${transferId}';`
+      let sql = `DELETE FROM pendingtransactions where transaction_id = '${transferId}';`;
       if(deleteFromTransactions)
-        sql+= `DELETE FROM transactions where transaction_id = '${transferId}';`
+        sql+= `DELETE FROM transactions where transaction_id = '${transferId}';`;
 
       this.db.exec(sql, (err)=> {
         if(err){
@@ -694,13 +694,13 @@ class DaemonConnector {
       rows.map((transaction) => {
         let time = transaction.time*1000;
         let amount = transaction.amount;
-        if(time > lastCheckedEarnings && shouldNotifyEarnings){ 
-          this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}}) 
+        if(time > lastCheckedEarnings && shouldNotifyEarnings){
+          this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}});
           earningsCountNotif++;
           earningsTotalNotif += amount;
         }
 
-      })
+      });
       if(shouldNotifyEarnings && earningsCountNotif > 0){
         earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
         let title = `Staking reward - ${earningsTotalNotif} ECC`;
@@ -719,8 +719,8 @@ class DaemonConnector {
       let aux = [];
       rows.map((val) => {
         aux.push(val.transaction_id)
-      })
-      this.store.dispatch({type: PENDING_TRANSACTION, payload: aux})
+      });
+      this.store.dispatch({type: PENDING_TRANSACTION, payload: aux});
       this.closeDb();
     });
 
@@ -742,11 +742,11 @@ class DaemonConnector {
           address: addresses[i][j],
           amount: tools.formatNumber(amounts[counter]),
           ans: false
-        })
+        });
         counter++;
       }
     }
-    this.store.dispatch({type: USER_ADDRESSES, payload: toReturn})
+    this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
     //We need to have the addresses loaded to be able to index transactions
     this.currentAddresses = toReturn;
     if(!this.transactionsIndexed && this.firstRun && this.currentAddresses.length > 0 && !this.isIndexingTransactions){
@@ -780,7 +780,7 @@ class DaemonConnector {
       Promise.all(promises).then((data) => {
         resolve(data);
       }).catch((err) => {
-        console.log("error waiting for all promises: ", err)
+        console.log("error waiting for all promises: ", err);
         reject(null);
       })
     });
@@ -799,7 +799,7 @@ class DaemonConnector {
       Promise.all(promises).then((data) => {
         resolve(data);
       }).catch((err) => {
-        console.log("error waiting for all promises: ", err)
+        console.log("error waiting for all promises: ", err);
         reject(null);
       })
     });
@@ -810,7 +810,7 @@ class DaemonConnector {
       this.wallet.getReceivedByAddress(address).then((amount) => {
            resolve(amount);
       }).catch((err) => {
-          console.log("error getting address of account ", err)
+          console.log("error getting address of account ", err);
           reject(null);
       });
     });
@@ -821,7 +821,7 @@ class DaemonConnector {
       this.wallet.getAddressesByAccount(account).then((address) => {
            resolve(address);
       }).catch((err) => {
-          console.log("error getting address of account ", err)
+          console.log("error getting address of account ", err);
           reject(null);
       });
     });
@@ -841,7 +841,7 @@ class DaemonConnector {
       this.wallet.getRawTransaction(transactionId).then((data) => {
         resolve(data);
       }).catch((err) => {
-        console.log("error getting getRawTransaction")
+        console.log("error getting getRawTransaction");
         resolve(null)
       });
     });
@@ -868,8 +868,8 @@ class DaemonConnector {
               addressVout = vout.scriptPubKey.addresses[0];
             }
           }
-          if(addressVout == address){ 
-            resolve(false); 
+          if(addressVout == address){
+            resolve(false);
             return;
           }
         }

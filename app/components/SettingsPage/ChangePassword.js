@@ -6,7 +6,7 @@ import $ from 'jquery';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
-const Tools = require('../../utils/tools')
+const Tools = require('../../utils/tools');
 
 class ChangePassword extends React.Component {
  constructor() {
@@ -25,15 +25,15 @@ class ChangePassword extends React.Component {
     this.props.passwordConfirmation("");
     this.props.setNewPassword("");
   }
-  
+
   handlePasswordChange(event) {
     let pw = event.target.value;
     if(pw.length == 0){
       TweenMax.set('#enterPassword', {autoAlpha: 1});
     }
-    else 
+    else
       TweenMax.set('#enterPassword', {autoAlpha: 0});
-    
+
     this.props.setPassword(pw);
   }
 
@@ -42,7 +42,7 @@ class ChangePassword extends React.Component {
     if(pw.length == 0){
       TweenMax.set('#enterPasswordRepeat', {autoAlpha: 1});
     }
-    else 
+    else
       TweenMax.set('#enterPasswordRepeat', {autoAlpha: 0});
 
     this.props.passwordConfirmation(pw)
@@ -53,7 +53,7 @@ class ChangePassword extends React.Component {
     if(pw.length == 0){
       TweenMax.set('#enterPasswordConfirmation', {autoAlpha: 1});
     }
-    else 
+    else
       TweenMax.set('#enterPasswordConfirmation', {autoAlpha: 0});
 
     this.props.setNewPassword(pw)
@@ -96,12 +96,12 @@ class ChangePassword extends React.Component {
     this.props.setChangingPassword(false)
   }
 
-  render() { 
+  render() {
      return (
       <div className="changePassword">
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">{ this.props.lang.changePassword }</p>
-        <Input 
+        <Input
           divStyle={{marginTop: "45px", width: "300px"}}
           placeholder= { this.props.lang.currentPassword }
           placeholderId="enterPassword"
@@ -111,7 +111,7 @@ class ChangePassword extends React.Component {
           type="password"
           inputStyle={{width: "300px"}}
         />
-        <Input 
+        <Input
           divStyle={{marginTop: "20px", width: "300px"}}
           placeholder= { this.props.lang.repeatPassword }
           placeholderId="enterPasswordRepeat"
@@ -121,7 +121,7 @@ class ChangePassword extends React.Component {
           type="password"
           inputStyle={{width: "300px"}}
         />
-        <Input 
+        <Input
           divStyle={{marginTop: "20px", width: "300px"}}
           placeholder= { this.props.lang.newPassword }
           placeholderId="enterPasswordConfirmation"
@@ -135,9 +135,9 @@ class ChangePassword extends React.Component {
         <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm"/>
       </div>
       );
-    } 
-};
+    }
 
+}
 
 const mapStateToProps = state => {
   return{

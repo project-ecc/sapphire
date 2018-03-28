@@ -9,7 +9,7 @@ var jsPDF = require('jspdf');
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
-const Tools = require('../../utils/tools')
+const Tools = require('../../utils/tools');
 
 class ExportPrivateKeys extends React.Component {
  constructor() {
@@ -37,7 +37,7 @@ class ExportPrivateKeys extends React.Component {
     const pw = event.target.value;
     if(pw.length == 0)
       TweenMax.set('#password', {autoAlpha: 1});
-    else 
+    else
       TweenMax.set('#password', {autoAlpha: 0});
     this.props.setPassword(pw);
   }
@@ -85,7 +85,7 @@ class ExportPrivateKeys extends React.Component {
       <div id="passwordPanel" style={{position: "absolute", width: "100%", top: "70px"}}>
         <p style={{fontSize: "16px", width: "450px", margin: "0 auto",textAlign: "justify"}}>{ this.props.lang.exportWarning }</p>
         <div>
-        <Input 
+        <Input
             divStyle={{width: "400px", marginTop: "15px"}}
             placeholder= { this.props.lang.password }
             placeholderId= "password"
@@ -117,8 +117,8 @@ class ExportPrivateKeys extends React.Component {
       return;
     }
     this.unlockWallet(false, 5, async () => {
-      TweenMax.to('#passwordPanel', 0.3, {x: "-100%"})
-      TweenMax.to('#setLocationPanel', 0.3, {x: "-100%"})
+      TweenMax.to('#passwordPanel', 0.3, {x: "-100%"});
+      TweenMax.to('#setLocationPanel', 0.3, {x: "-100%"});
       this.props.setPanelExportingPrivateKeys(this.props.panelNumber+1);
       $('#exportPrivKeyButton').text( this.props.lang.export );
       await this.getDataToExport();
@@ -127,7 +127,7 @@ class ExportPrivateKeys extends React.Component {
           this.unlockWallet(true, 31556926, () => {
          });
       }
-      else{ 
+      else{
         this.props.setStaking(false);
       }
       this.props.setPassword("");
@@ -144,12 +144,12 @@ class ExportPrivateKeys extends React.Component {
       });
     }
     let privKeys = await this.getPrivateKeys(batch);
-    
+
     let counter = 1;
     let aux = [];
     for(let i = 0; i < addresses[0].length; i++){
 
-      aux.push(addresses[0][i]); 
+      aux.push(addresses[0][i]);
       aux.push(privKeys[i]);
       aux.push("");
       counter++;
@@ -167,8 +167,8 @@ class ExportPrivateKeys extends React.Component {
     var batch = [];
     var obj = {
       method: 'walletpassphrase', parameters: [this.props.passwordVal, time, flag]
-    }
-    batch.push(obj)
+    };
+    batch.push(obj);
 
     this.props.wallet.command(batch).then((data) => {
       data = data[0];
@@ -191,16 +191,16 @@ class ExportPrivateKeys extends React.Component {
   }
 
   generatePDF(){
-    let doc = new jsPDF()
+    let doc = new jsPDF();
     doc.setFontSize(10);
-    doc.text(this.toPrint[0], 10, 10)
+    doc.text(this.toPrint[0], 10, 10);
     for(let i = 1; i < this.toPrint.length; i++){
       doc.addPage();
       doc.text(this.toPrint[i], 10, 10)
     }
     doc.save('printMe.pdf');
     this.toPrint = [];
-    this.props.setExportingPrivateKeys(false)
+    this.props.setExportingPrivateKeys(false);
     this.props.setBackupOperationCompleted(true);
   }
 
@@ -246,7 +246,7 @@ class ExportPrivateKeys extends React.Component {
         }
         resolve(data);
       }).catch((err) => {
-        console.log("error waiting for all promises: ", err)
+        console.log("error waiting for all promises: ", err);
         reject(null);
       })
     });
@@ -257,7 +257,7 @@ class ExportPrivateKeys extends React.Component {
       this.props.wallet.getAddressesByAccount(account).then((address) => {
            resolve(address);
       }).catch((err) => {
-          console.log("error getting address of account ", err)
+          console.log("error getting address of account ", err);
           reject(null);
       });
     });
@@ -292,7 +292,7 @@ class ExportPrivateKeys extends React.Component {
     )
   }
 
-  render() { 
+  render() {
      return (
       <div id="exportPrivKey">
         <CloseButtonPopup handleClose={this.handleCancel}/>
@@ -303,9 +303,9 @@ class ExportPrivateKeys extends React.Component {
         <ConfirmButtonPopup buttonId="exportPrivKeyButton" handleConfirm={this.handlePanels} text={ this.props.lang.next }/>
       </div>
       );
-    } 
-};
+    }
 
+}
 
 const mapStateToProps = state => {
   return{

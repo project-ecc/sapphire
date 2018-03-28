@@ -32,15 +32,16 @@ class SetupDone extends React.Component {
     this.props.setSetupDoneInternal(true);
   }
 
-  render() { 
+  render() {
     const toReturn = this.props.paymentChainSync < 95 ? this.renderNewUser() : this.renderExistingUser();
      return (
       <div>
         {toReturn}
       </div>
       );
-    } 
-};
+    }
+
+}
 
 const mapStateToProps = state => {
   return{

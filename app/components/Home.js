@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import ToggleButton from 'react-toggle';
 import * as actions from '../actions';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
-const tools = require('../utils/tools')
+const tools = require('../utils/tools');
 
 class Home extends Component {
   constructor(props) {
@@ -39,11 +39,11 @@ class Home extends Component {
         var obj = {
           method: 'reloadconfig', parameters: ["staking"],
           method: 'walletlock', parameters: []
-        }
-        batch.push(obj)
+        };
+        batch.push(obj);
 
         this.props.wallet.command(batch).then((data) => {
-          console.log("data: ", data)
+          console.log("data: ", data);
           data = data[0];
           if (data !== null && data.code === 'ECONNREFUSED') {
             console.log("daemon not working?")
@@ -191,7 +191,7 @@ class Home extends Component {
                   <div className="arrowHome"></div>
                   <div id="earningsFirst">
                     <p className="normalWeight homePanelTitleOne" style={{fontSize: "20px"}}>{ this.props.lang.earnings }</p>
-                  </div> 
+                  </div>
                     <img onClick={this.earningsTypeFilterClicked.bind(this, "fileStorage")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={fileStorageEarnings}/>
                     <p onClick={this.earningsTypeFilterClicked.bind(this, "staking")} className={this.props.stakingEarningsSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> { this.props.lang.staking } </p>
                     <p onClick={this.earningsTypeFilterClicked.bind(this, "all")} className={this.props.allEarningsSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> { this.props.lang.all }</p>
@@ -202,7 +202,7 @@ class Home extends Component {
                 <p onClick={this.earningsFilterClicked.bind(this, "week")} className= {this.props.weekEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>{ this.props.lang.lastWeek }</p>
                 <p onClick={this.earningsFilterClicked.bind(this, "month")} className= {this.props.monthEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>{ this.props.lang.lastMonth }</p>
                 <p onClick={this.earningsFilterClicked.bind(this, "allTime")} className= {this.props.allTimeEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}> { this.props.lang.all }</p>
-              </div>        
+              </div>
             </div>
           </div>
           <div className="homeSection" id="expenses">
@@ -212,7 +212,7 @@ class Home extends Component {
                   <div className="arrowHome arrowExpenses"></div>
                   <div id="earningsFirst">
                     <p className="normalWeight homePanelTitleOne" style={{fontSize: "20px"}}>{ this.props.lang.expenses }</p>
-                  </div> 
+                  </div>
                     <img onClick={this.expensesTypeFilterClicked.bind(this, "messaging")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={messaging}/>
                     <img onClick={this.expensesTypeFilterClicked.bind(this, "fileStorage")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={fileStorageExpenses}/>
                     <p onClick={this.expensesTypeFilterClicked.bind(this, "ans")} style = {{color: this.props.ansExpensesSelected ? "#aeacf3" : "#85899e"}} className={this.props.ansExpensesSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> ANS </p>
@@ -224,10 +224,10 @@ class Home extends Component {
                     <p onClick={this.expensesFilterClicked.bind(this, "week")} className={this.props.weekExpensesSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>{ this.props.lang.lastWeek }</p>
                     <p onClick={this.expensesFilterClicked.bind(this, "month")} className={this.props.monthExpensesSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>{ this.props.lang.lastMonth }</p>
                     <p onClick={this.expensesFilterClicked.bind(this, "allTime")} className={this.props.allTimeExpensesSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}> { this.props.lang.all }</p>
-              </div>  
+              </div>
               <div className="col-sm-4  text-center"  style={{padding: "0 0"}}>
                   <p className="normalWeight homePanelTitleOne" style={{fontSize: "16px", paddingTop: "15px"}}>{ this.props.lang.nextPayments }</p>
-              </div>           
+              </div>
             </div>
           </div>
         </div>

@@ -8,8 +8,8 @@ class ThemeSelector extends React.Component {
  constructor() {
     super();
   }
-  
-  render() { 
+
+  render() {
      return (
       <div>
            <p style={{fontWeight:"300"}} className="subTitle">
@@ -23,7 +23,7 @@ class ThemeSelector extends React.Component {
               <div className="divSquare" style={{backgroundColor: "#21242a"}}></div>
               <div className="divSquare" style={{backgroundColor: "#333840"}}></div>
               <div className="divSquare" style={{backgroundColor: "#1e2544"}}></div>
-             </div> 
+             </div>
            </div>
              <p className="themeName">{ this.props.lang.dark }</p>
            </div>
@@ -34,7 +34,7 @@ class ThemeSelector extends React.Component {
               <div className="divSquare" style={{backgroundColor: "#14182f"}}></div>
               <div className="divSquare" style={{backgroundColor: "#c4c4d3"}}></div>
               <div className="divSquare" style={{backgroundColor: "#1e2544"}}></div>
-             </div> 
+             </div>
            </div>
              <p className="themeName">{ this.props.lang.default }</p>
            </div>
@@ -45,15 +45,16 @@ class ThemeSelector extends React.Component {
               <div className="divSquare" style={{backgroundColor: "#17152a"}}></div>
               <div className="divSquare" style={{backgroundColor: "#de9b2b"}}></div>
               <div className="divSquare" style={{backgroundColor: "#ffffff"}}></div>
-             </div> 
+             </div>
            </div>
              <p className="themeName">{ this.props.lang.light }</p>
            </div>
          </div>
       </div>
       );
-    } 
-};
+    }
+
+}
 
 const mapStateToProps = state => {
   return{
