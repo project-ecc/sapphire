@@ -9,10 +9,12 @@
 }
 
 .contactsMessage{
+	  @include themify($themes) { 
+	    color: themed('eccTicker');  
+	  }
 	position: absolute;
 	width:100%;
 	text-align: center;
-	color: #d09128;
 	font-size: 15px;
 	visibility: hidden;
 }

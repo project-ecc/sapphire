@@ -7,6 +7,7 @@ import sideBarReducer from './sideBarReducer';
 import applicationReducer from './applicationReducer';
 import earningsExpensesReducer from './earningsExpensesReducer';
 import notificationsReducer from './notificationsReducer';
+import messagingReducer from './messagingReducer';
 
 const rootReducer = combineReducers({
 	startup: startupReducer,
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
 	application: applicationReducer,
 	earningsExpenses: earningsExpensesReducer,
 	notifications: notificationsReducer,
+	messaging: messagingReducer,
     router
 });
 

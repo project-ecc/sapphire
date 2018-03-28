@@ -112,6 +112,9 @@ module.exports = {
       else if(iconName == "transactions" && hover){
         return require('../../resources/images/transactions-orange-pastel.png')
       }
+      else if(iconName == "search"){
+        return require('../../resources/images/search-icon-dark.png')
+      }
     }
     else if(selectedTheme && selectedTheme === "theme-defaultEcc"){
       if(iconName == "wallet" && !hover){
@@ -161,6 +164,9 @@ module.exports = {
       }
       else if(iconName == "transactions" && hover){
         return require('../../resources/images/transactions-orange.png')
+      }
+      else if(iconName == "search"){
+        return require('../../resources/images/search-icon-dark.png')
       }
     }
   },

@@ -111,8 +111,10 @@
 }
 
 #upgradeAns{
+	@include themify($themes) { 
+		color: themed('textSelected');  
+	}
 	font-size: 13px;
-	color: #a4a3e6;
 	display: inline-block;
 	margin-left: 10px;
 	position: absolute;

@@ -3,6 +3,7 @@ import * as actions from '../actions';
 import { connect } from 'react-redux';
 import ToggleButton from 'react-toggle';
 import Sidebar from './Sidebar';
+import MessagingPage from './Pages/MessagingPage';
 import HomePage from './Pages/HomePage';
 import ReceivePage from './Pages/ReceivePage';
 import TransactionPage from './Pages/TransactionPage';
@@ -35,6 +36,8 @@ class GenericPanel extends Component {
         return(<NetworkStatsPage/>)
       case "contacts": 
         return(<ContactsPage/>)
+      case "messaging": 
+        return(<MessagingPage/>)
     }
   }
 
@@ -57,7 +60,7 @@ class GenericPanel extends Component {
     return (
       <div>
         <Sidebar/>
-        <div className="mainSubPanel">
+        <div className="mainSubPanel" style={this.props.selectedPanel == "messaging" ? {overflowY: "hidden"} : {}}>
           {this.getPanel()}
         </div>
       </div>

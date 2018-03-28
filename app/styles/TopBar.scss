@@ -12,6 +12,7 @@
     right: 3px;
     -webkit-app-region:drag;
     z-index: 2000;
+    overflow-y: hidden;
 }
 
 #wrapperToBeAbleToResize{
@@ -22,6 +23,7 @@
     width: 100%;
     z-index: 101;
     position: fixed;
+    overflow-y: hidden;
 }
 
 #appButtonsMac{
@@ -54,6 +56,20 @@
 #eccNewsIcon img{
   width: 19px;
   top: 13px;
+}
+
+#topBarCustomTitle{
+  position: fixed;
+  display: inline-block;
+  top: 3px;
+  color: #464b5a;
+  font-weight: 600;
+  font-size: 20px;
+  left: 50%;
+  transform: translate(-50%,0);
+  visibility: hidden;
+  z-index: -1;
+  position: absolute;
 }
 
 .appButtonMac img{
