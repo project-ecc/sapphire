@@ -57,10 +57,7 @@ export default(state = INITIAL_STATE, action) => {
 		entries["news"].total = 0;
 		entries["differentKinds"] -= 1;
 
-UpdateNotificationInfo(action.payload, state.lastCheckedEarnings, entries;
-  :
-    entries;
-  )
+UpdateNotificationInfo(action.payload, state.lastCheckedEarnings, entries: entries);
     return {...state, lastCheckedNews: action.payload, entries: entries}
 	}
 	else if(action.type == NEWS_NOTIFICATION){
