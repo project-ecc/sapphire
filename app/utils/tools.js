@@ -7,12 +7,13 @@ import $ from 'jquery';
 var fsPath = require('fs-path');
 const settings = require('electron-settings');
 
+
 module.exports = {
 
   sendOSNotification: function(body, callback){
       let myNotification = new Notification('Sapphire', {
         body: body
-      })
+      });
 
       myNotification.onclick = () => {
         callback();
@@ -140,7 +141,7 @@ module.exports = {
       }
       else if(iconName == "contacts" && hover){
         return require('../../resources/images/contacts-orange.png')
-      }      
+      }
       else if(iconName == "overview" && !hover){
         return require('../../resources/images/overview-blue.png')
       }
@@ -213,7 +214,7 @@ module.exports = {
   },
 
   animateLoaderIn: function(element, updatingApplication, animateLogo, callback){
-    console.log("animateLoaderIn")
+    console.log("animateLoaderIn");
       TweenMax.fromTo(element, 1, {autoAlpha: 0}, {autoAlpha:1, ease: Linear.easeNone, onComplete: animateLogo, onCompleteParams: [callback]});
       if(updatingApplication){
         $("#gettingReady").text("We are updating your application...")
@@ -233,7 +234,7 @@ module.exports = {
   },
 
   animatePopupIn: function(element, callback, top){
-    TweenMax.set(('.mancha'), {css: {display: "block"}})
+    TweenMax.set(('.mancha'), {css: {display: "block"}});
     TweenMax.fromTo(('.mancha'), 0.3, {autoAlpha:0}, { autoAlpha:1, ease: Linear.easeNone});
     TweenMax.fromTo(element, 0.3, {css: {top: "-50%", opacity:0}}, {css: {top: top, opacity:1}, ease: Power1.easeOut, onComplete: callback});
   },
@@ -270,7 +271,7 @@ module.exports = {
                 reject(false);
               }
               else{
-                console.log("done updating config")
+                console.log("done updating config");
                 resolve(true);
               }
             });
@@ -309,7 +310,7 @@ module.exports = {
            const toWrite = "maxconnections=100" + os.EOL + "rpcuser=" + username + os.EOL + "rpcpassword=" + password + os.EOL + "addnode=www.cryptounited.io" + os.EOL + "rpcport=19119" + os.EOL + "rpcconnect=127.0.0.1" + os.EOL + "staking=0" + os.EOL + "zapwallettxes=0";
            fsPath.writeFile(getConfUri(), toWrite, 'utf8', (err) => {
                 if (err) {
-                  console.log(err)
+                  console.log(err);
                   resolve(false);
                   return;
                 }
@@ -323,9 +324,9 @@ module.exports = {
                resolve(false);
                return;
             }
-            var patt = /(rpcuser=(.*))/g
+            var patt = /(rpcuser=(.*))/g;
             var myArray = patt.exec(data);
-            var result = data;;
+            var result = data;
             if(myArray && myArray.length > 2)
             {
               result = result.replace('rpcuser='+myArray[2], 'rpcuser='+username);
@@ -334,7 +335,7 @@ module.exports = {
               result += `${os.EOL}rpcuser=${username}`;
             }
 
-            patt = /(rpcpassword=(.*))/g
+            patt = /(rpcpassword=(.*))/g;
             myArray = patt.exec(data);
             if(myArray && myArray.length > 2)
             {
@@ -372,15 +373,15 @@ module.exports = {
           toReturn = {
             username: "",
             password: ""
-          }
-          var patt = /(rpcuser=(.*))/g
+          };
+          var patt = /(rpcuser=(.*))/g;
           var myArray = patt.exec(data);
           if(myArray && myArray.length > 2)
           {
             toReturn.username = myArray[2];
           }
 
-          patt = /(rpcpassword=(.*))/g
+          patt = /(rpcpassword=(.*))/g;
           myArray = patt.exec(data);
           if(myArray && myArray.length > 2)
           {
@@ -390,6 +391,6 @@ module.exports = {
         });
       })
     });
-  }
+  },
 };
 

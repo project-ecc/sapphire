@@ -31,7 +31,7 @@ const INITIAL_STATE = {
         messagingSelected: false,
         contactsSelected: false,
         sidebarHidden: false
-}
+};
 
 export default(state = INITIAL_STATE, action) => {
 	if(action.type == HOVERED_SIDEBAR){

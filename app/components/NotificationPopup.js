@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import {TweenMax} from "gsap";
 import $ from 'jquery';
-const Tools = require('../utils/tools')
+const Tools = require('../utils/tools');
 
 /*
 * There are notifications for:
@@ -63,11 +63,11 @@ class NotificationPopup extends React.Component {
   handleCancel(){
     this.props.setUnlocking(false);
   }
-  
+
   getNotificationsBody(){
     if(this.props.notifications["total"] == 0 && !this.props.updateAvailable){
       return(
-        <p id="noNotifications" className="notificationsHeaderContentFix">You have no notifications</p>
+        <p id="noNotifications" className="notificationsHeaderContentFix">{ this.props.lang.noNotifications }</p>
       )
     }
     else{
@@ -98,22 +98,22 @@ class NotificationPopup extends React.Component {
     let ansPaymentsObject = this.props.notifications["ansPayments"];
     let totalAnsPayments = ansPaymentsObject["payments"].count;
     let date = ansPaymentsObject["firstDueDate"];
-    let body = <p id="mediumPosts">ANS Payment - {Tools.formatNumber(ansPaymentsObject["payments"][0]["cost"])} <span className="ecc">ECC</span></p>
+    let body = <p id="mediumPosts">{ this.props.lang.ansPayment } - {Tools.formatNumber(ansPaymentsObject["payments"][0]["cost"])} <span className="ecc">ECC</span></p>;
     const today = new Date();
     let time = Tools.calculateTimeSince(this.props.lang, today, new Date(date));
     if(totalAnsPayments > 1)
-     body = <p id="mediumPosts">{totalAnsPayments} ANS Payments - {Tools.formatNumber(ansPaymentsObject["payments"][0]["cost"])} <span className="ecc">ECC</span></p>
+     body = <p id="mediumPosts">{totalAnsPayments} { this.props.lang.ansPayments } - {Tools.formatNumber(ansPaymentsObject["payments"][0]["cost"])} <span className="ecc">ECC</span></p>;
     return(
       <div style={{position: "relative"}} onMouseEnter={this.handleHoverAnsPayments} onMouseLeave={this.handleHoverOutAnsPayments}>
-        <NotificationItem 
+        <NotificationItem
           id="ansPaymentsNotification"
           handleMouseIn={this.props.handleHoverPayments}
           image = {earnings}
           body = {body}
-          time = "in 4 days" 
+          time = { this.props.lang.in4Days }
           class = {this.props.last == "incomingStakingPayments" && !this.props.updateAvailable ? "notificationItem newsItemRoundCorners resetCursor" : "notificationItem newsItemBorder resetCursor" }/>
           <div id="payAns">
-            <p>{totalAnsPayments > 1 ? "Extend ANS subscriptions" : "Extend ANS subscription"}</p>
+            <p>{totalAnsPayments > 1 ? this.props.lang.extendANSSubscriptions : this.props.lang.extendANSSubscription }</p>
           </div>
         </div>
     )
@@ -121,8 +121,8 @@ class NotificationPopup extends React.Component {
 
   getUpdateNotification(){
     if(!this.props.updateAvailable) return null;
-    let settings = require('../../resources/images/settings-white.png'); 
-    let body = <p>Click to update your application</p>
+    let settings = require('../../resources/images/settings-white.png');
+    let body = <p>{ this.props.lang.clickToUpdateApp }</p>;
     let className = "applicationUpdate";
     if(this.props.notifications["differentKinds"] == 0){
       className = "applicationUpdateOnlyNotif"
@@ -143,17 +143,17 @@ class NotificationPopup extends React.Component {
     let earningsObject = this.props.notifications["stakingEarnings"];
     let totalEarnings = earningsObject.count;
     let date = earningsObject.date;
-    let body = <p id="mediumPosts">Staking reward - {Tools.formatNumber(earningsObject["total"])} <span className="ecc">ECC</span></p>
+    let body = <p id="mediumPosts">{ this.props.lang.stakingReward } - {Tools.formatNumber(earningsObject["total"])} <span className="ecc">ECC</span></p>;
     const today = new Date();
     let time = Tools.calculateTimeSince(this.props.lang, today, new Date(date));
     if(totalEarnings > 1)
-     body = <p id="mediumPosts">{totalEarnings} Staking rewards - {Tools.formatNumber(earningsObject["total"])} <span className="ecc">ECC</span></p>
+     body = <p id="mediumPosts">{totalEarnings} { this.props.lang.stakingRewards } - {Tools.formatNumber(earningsObject["total"])} <span className="ecc">ECC</span></p>;
     return(
-      <NotificationItem 
+      <NotificationItem
         id="earningsNotification"
         image = {earnings}
         body = {body}
-        time = {time} 
+        time = {time}
         class = {this.props.last == "earnings" && !this.props.updateAvailable ? "notificationItem newsItemRoundCorners" : "notificationItem newsItemBorder" }/>
     )
   }
@@ -165,13 +165,13 @@ class NotificationPopup extends React.Component {
     let news = require('../../resources/images/news-white.png');
     let totalNews = this.props.notifications["news"].total;
     let date = this.props.notifications["news"].date;
-    let newsBody = <p id="mediumPosts">New ECC medium post</p>
+    let newsBody = <p id="mediumPosts">{ this.props.lang.newMediumPost }</p>;
     const today = new Date();
     let time = Tools.calculateTimeSince(this.props.lang, today, new Date(date));
     if(totalNews > 1)
-      newsBody = <p id="mediumPosts">{totalNews} New ECC medium posts</p>
+      newsBody = <p id="mediumPosts">{totalNews} { this.props.lang.newMediumPosts }</p>;
     return(
-      <NotificationItem 
+      <NotificationItem
         id="newsNotifications"
         image = {news}
         body = {newsBody}
@@ -191,13 +191,13 @@ class NotificationPopup extends React.Component {
     )
   }
 
-  render() { 
+  render() {
      return (
       <div ref="second">
         <div id="notificationContainer">
           <div id="notificationHeader">
             <div id="notificationsHeaderContent">
-            <p>Notifications</p>
+            <p>{ this.props.lang.notifications }</p>
             {this.getNotificationsCounter()}
           </div>
           </div>
@@ -205,8 +205,9 @@ class NotificationPopup extends React.Component {
         </div>
       </div>
       );
-    } 
-};
+    }
+
+}
 
 const mapStateToProps = state => {
   return{

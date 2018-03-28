@@ -6,7 +6,7 @@ import {
 } from '../actions/types';
 
 
-const INITIAL_STATE = {allEarningsSelected: true, fileStorageEarningsSelected: false, stakingEarningsSelected: false, weekEarningsSelected: false, monthEarningsSelected: false, allTimeEarningsSelected: true, fileStorageExpensesSelected: false, messagingExpensesSelected: false, ansExpensesSelected: false, allExpensesSelected: false, weekExpenseseSelected: false, monthExpenseseSelected: false, allTimeExpensesSelected: true}
+const INITIAL_STATE = {allEarningsSelected: true, fileStorageEarningsSelected: false, stakingEarningsSelected: false, weekEarningsSelected: false, monthEarningsSelected: false, allTimeEarningsSelected: true, fileStorageExpensesSelected: false, messagingExpensesSelected: false, ansExpensesSelected: false, allExpensesSelected: false, weekExpenseseSelected: false, monthExpenseseSelected: false, allTimeExpensesSelected: true};
 
 export default(state = INITIAL_STATE, action) => {
  if(action.type == FILTER_EXPENSES_TYPE){
@@ -15,16 +15,16 @@ export default(state = INITIAL_STATE, action) => {
 		var all = false;
 		var ans = false;
 		switch(action.payload){
-			case "fileStorage": 
+			case "fileStorage":
 				fileStorage = true;
 				break;
-			case "messaging": 
+			case "messaging":
 				messaging = true;
 				break;
-			case "ans": 
+			case "ans":
 				ans = true;
 				break;
-			case "all": 
+			case "all":
 				all = true;
 				break;
 		}
@@ -35,13 +35,13 @@ export default(state = INITIAL_STATE, action) => {
 		var month = false;
 		var allTime = false;
 		switch(action.payload){
-			case "week": 
+			case "week":
 				week = true;
 				break;
-			case "month": 
+			case "month":
 				month = true;
 				break;
-			case "allTime": 
+			case "allTime":
 				allTime = true;
 				break;
 		}
@@ -52,31 +52,31 @@ export default(state = INITIAL_STATE, action) => {
 		var staking = false;
 		var all = false;
 		switch(action.payload){
-			case "fileStorage": 
+			case "fileStorage":
 				fileStorage = true;
 				break;
-			case "staking": 
+			case "staking":
 				staking = true;
 				break;
-			case "all": 
+			case "all":
 				all = true;
 				break;
 		}
 		return{...state, fileStorageEarningsSelected: fileStorage, stakingEarningsSelected: staking, allEarningsSelected: all}
 	}
 	else if(action.type == FILTER_EARNINGS_TIME){
-		console.log(action.payload)
+		console.log(action.payload);
 		var week = false;
 		var month = false;
 		var allTime = false;
 		switch(action.payload){
-			case "week": 
+			case "week":
 				week = true;
 				break;
-			case "month": 
+			case "month":
 				month = true;
 				break;
-			case "allTime": 
+			case "allTime":
 				allTime = true;
 				break;
 		}

@@ -6,7 +6,7 @@ import $ from 'jquery';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
-const Tools = require('../../utils/tools')
+const Tools = require('../../utils/tools');
 
 class ChangePassword extends React.Component {
  constructor() {
@@ -25,15 +25,15 @@ class ChangePassword extends React.Component {
     this.props.passwordConfirmation("");
     this.props.setNewPassword("");
   }
-  
+
   handlePasswordChange(event) {
     let pw = event.target.value;
     if(pw.length == 0){
       TweenMax.set('#enterPassword', {autoAlpha: 1});
     }
-    else 
+    else
       TweenMax.set('#enterPassword', {autoAlpha: 0});
-    
+
     this.props.setPassword(pw);
   }
 
@@ -42,7 +42,7 @@ class ChangePassword extends React.Component {
     if(pw.length == 0){
       TweenMax.set('#enterPasswordRepeat', {autoAlpha: 1});
     }
-    else 
+    else
       TweenMax.set('#enterPasswordRepeat', {autoAlpha: 0});
 
     this.props.passwordConfirmation(pw)
@@ -53,7 +53,7 @@ class ChangePassword extends React.Component {
     if(pw.length == 0){
       TweenMax.set('#enterPasswordConfirmation', {autoAlpha: 1});
     }
-    else 
+    else
       TweenMax.set('#enterPasswordConfirmation', {autoAlpha: 0});
 
     this.props.setNewPassword(pw)
@@ -66,13 +66,13 @@ class ChangePassword extends React.Component {
         if(wasStaking){
 
         }
-        Tools.showTemporaryMessage('#wrongPassword', "Operation Successfull!");
+        Tools.showTemporaryMessage('#wrongPassword', this.props.lang.operationSuccessful );
         setTimeout(()=>{
           this.props.setChangingPassword(false)
         }, 2000)
       }
       else if(data.code && data.code == -14){
-        Tools.showTemporaryMessage('#wrongPassword', "Wrong Password");
+        Tools.showTemporaryMessage('#wrongPassword', this.props.lang.wrongPasswordProper );
       }
     })
     .catch((err) => {
@@ -82,10 +82,10 @@ class ChangePassword extends React.Component {
 
   handleConfirm(){
     if(this.props.passwordVal == "" || this.props.passwordValConfirmation == "" || this.props.newPassword == ""){
-      Tools.showTemporaryMessage('#wrongPassword', 'Please fill all fields');
+      Tools.showTemporaryMessage('#wrongPassword', this.props.lang.fillAllFields );
     }
     else if(this.props.passwordVal != this.props.passwordValConfirmation){
-      Tools.showTemporaryMessage('#wrongPassword', "Passwords don't match");
+      Tools.showTemporaryMessage('#wrongPassword', this.props.lang.passwordsDontMatch );
     }
     else{
       this.changePassword();
@@ -96,14 +96,14 @@ class ChangePassword extends React.Component {
     this.props.setChangingPassword(false)
   }
 
-  render() { 
+  render() {
      return (
       <div className="changePassword">
         <CloseButtonPopup handleClose={this.handleCancel}/>
-        <p className="popupTitle">Change Password</p>
-        <Input 
+        <p className="popupTitle">{ this.props.lang.changePassword }</p>
+        <Input
           divStyle={{marginTop: "45px", width: "300px"}}
-          placeholder= "Current Password"
+          placeholder= { this.props.lang.currentPassword }
           placeholderId="enterPassword"
           placeHolderClassName="inputPlaceholder changePasswordInput"
           value={this.props.passwordVal}
@@ -111,9 +111,9 @@ class ChangePassword extends React.Component {
           type="password"
           inputStyle={{width: "300px"}}
         />
-        <Input 
+        <Input
           divStyle={{marginTop: "20px", width: "300px"}}
-          placeholder= "Repeat Password"
+          placeholder= { this.props.lang.repeatPassword }
           placeholderId="enterPasswordRepeat"
           placeHolderClassName="inputPlaceholder changePasswordInput"
           value={this.props.passwordValConfirmation}
@@ -121,9 +121,9 @@ class ChangePassword extends React.Component {
           type="password"
           inputStyle={{width: "300px"}}
         />
-        <Input 
+        <Input
           divStyle={{marginTop: "20px", width: "300px"}}
-          placeholder= "New Password"
+          placeholder= { this.props.lang.newPassword }
           placeholderId="enterPasswordConfirmation"
           placeHolderClassName="inputPlaceholder changePasswordInput"
           value={this.props.newPassword}
@@ -131,13 +131,13 @@ class ChangePassword extends React.Component {
           type="password"
           inputStyle={{width: "300px"}}
         />
-        <p id="wrongPassword" className="wrongPassword" style= {{paddingTop:"10px"}}>Wrong password</p>
+        <p id="wrongPassword" className="wrongPassword" style= {{paddingTop:"10px"}}>{ this.props.lang.wrongPassword }</p>
         <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm"/>
       </div>
       );
-    } 
-};
+    }
 
+}
 
 const mapStateToProps = state => {
   return{

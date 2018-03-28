@@ -15,15 +15,14 @@ class MiniLoaderAnimation extends React.Component {
     tl.staggerTo(".toAnimate", 0.5, {opacity:0, yoyo:true,repeat:-1}, 0.1);
   }
 
-  render() { 
+  render() {
      return (
         <div id="miniAnimation">
           <span className="toAnimate">.</span><span className="toAnimate">.</span><span className="toAnimate">.</span>
         </div>
       );
-    } 
-};
+    }
 
-
+}
 
 export default MiniLoaderAnimation;

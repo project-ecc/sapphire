@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
 import $ from 'jquery';
-const tools = require('../../utils/tools')
+const tools = require('../../utils/tools');
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import { ipcRenderer } from 'electron';
@@ -14,7 +14,7 @@ class UpdateApplication extends React.Component {
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
   }
-  
+
   handleConfirm(){
     this.props.setUpdateApplication(false);
     this.props.setUpdateAvailable();
@@ -31,27 +31,28 @@ class UpdateApplication extends React.Component {
   getCorrectHtml(){
     if(this.props.guiUpdate || (this.props.guiUpdate && this.props.daemonUpdate)){
       return(
-        <p className="updateApplicationMessage">This update requires a restart</p>
+        <p className="updateApplicationMessage">{ this.props.lang.updateRequiresRestart }</p>
       )
     }
     else {
       return(
-        <p className="updateApplicationMessage">This update does not require a restart</p>
+        <p className="updateApplicationMessage">{ this.props.lang.updateDoesNotRequireRestart }</p>
       )
     }
   }
 
-  render() { 
+  render() {
      return (
       <div style={{height: "220px"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
-        <p className="popupTitle">Application Update</p>
+        <p className="popupTitle">{ this.props.lang.applicationUpdate }</p>
         {this.getCorrectHtml()}
-        <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm"/>
+        <ConfirmButtonPopup handleConfirm={this.handleConfirm} text={ this.props.lang.confirm }/>
       </div>
       );
-    } 
-};
+    }
+
+}
 
 const mapStateToProps = state => {
   return{

@@ -1,6 +1,10 @@
 import daemonConfig from '../../daemon-data.json';
+import sapphireConfig from '../../gui-data.json';
 const homedir = require('os').homedir();
 const os = require('os');
+
+let serverUrl =
+  process.env.NODE_ENV === 'production' ? daemonConfig.live_server_address : daemonConfig.dev_server_address;
 
 export function getPlatformFileName() {
   if (process.platform === 'linux') {
@@ -23,10 +27,8 @@ export function getExecutableExtension(){
   else return '.app';
 
 }
-export function getDaemonDownloadUrl() {
 
-  let serverUrl =
-    process.env.NODE_ENV === 'production' ? daemonConfig.live_server_address : daemonConfig.dev_server_address;
+export function getDaemonDownloadUrl() {
 
   serverUrl += daemonConfig.daemon_url;
 
@@ -42,6 +44,24 @@ export function getDaemonDownloadUrl() {
   } else if (process.platform.indexOf('win') > -1) {
 
     return serverUrl += os.arch() === 'x32' ? daemonConfig.win32 : daemonConfig.win64;
+  }
+}
+
+export function getSapphireDownloadUrl() {
+  serverUrl += sapphireConfig.daemon_url;
+
+  if (process.platform === 'linux') {
+
+    return serverUrl += os.arch() === 'x32' ? sapphireConfig.linux32 : sapphireConfig.linux64;
+
+  } else if (process.platform === 'darwin') {
+
+    serverUrl += sapphireConfig.osx;
+    return serverUrl;
+
+  } else if (process.platform.indexOf('win') > -1) {
+
+    return serverUrl += os.arch() === 'x32' ? sapphireConfig.win32 : sapphireConfig.win64;
   }
 }
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import $ from 'jquery';
 const homedir = require('os').homedir();
-const Tools = require('../utils/tools')
+const Tools = require('../utils/tools');
 import * as actions from '../actions';
 
 class Sidebar extends Component {
@@ -26,7 +26,7 @@ class Sidebar extends Component {
       $('.mainSubPanel').css('padding-left', '224px');
       this.props.setSidebarHidden(false);
       $('.miniButton').css('left', '-10px');
-      $('#appButtonsMac').css('left', '20px')
+      $('#appButtonsMac').css('left', '20px');
       if(!this.checkPopupActive()){
         TweenMax.to($('.mancha'), 0.3, { autoAlpha:0, ease: Linear.easeNone});
         TweenMax.set($('.mancha'), { zIndex:11});
@@ -108,7 +108,7 @@ class Sidebar extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.resize)
+    window.removeEventListener('resize', this.resize);
     $( window ).off('click');
     $('.miniButton').css('left', '-10px');
   }
@@ -172,7 +172,7 @@ class Sidebar extends Component {
     if(this.props.overviewHovered || this.props.overviewSelected){
       overview = Tools.getIconForTheme("overview", true);
       overviewStyle = " sidebarItemSelected";
-    }    
+    }
     if(this.props.sendHovered || this.props.sendSelected){
       send = Tools.getIconForTheme("send", true);
       sendStyle = " sidebarItemSelected";
@@ -205,7 +205,7 @@ class Sidebar extends Component {
           <img id="sidebarLogo" src={usericon} />
         </div>
         <ul className="sidebar-menu">
-          <li className="have-children"><a href="#" onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="wallet" className={"mainOption" + walletStyle}><div className="arrowMenu"></div><img src={wallet}/><span></span>Wallet</a> 
+          <li className="have-children"><a href="#" onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="wallet" className={"mainOption" + walletStyle}><div className="arrowMenu"></div><img src={wallet}/><span></span>Wallet</a>
             <ul>
               <li><img className="sidebarImage" src={overview}/> <a className={overviewStyle} onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="overview"> Overview</a></li>
               <li><img className="sidebarImage" src={send}/> <a onClick={this.handleClicked} className={sendStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="send">Send</a></li>

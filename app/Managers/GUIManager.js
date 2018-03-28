@@ -14,6 +14,7 @@ import {grabWalletDir} from "../utils/platform.service";
 import {version} from './../../package.json';
 var cp = require('child_process');
 var checksum = require('checksum');
+import {downloadFile} from "../utils/downloader";
 
 
 class GUIManager{
@@ -29,7 +30,7 @@ class GUIManager{
 		this.getLatestVersion();
 		this.upgrading = false;
 		this.toldUserAboutUpdate = false;
-		console.log("wallet version: ", this.installedVersion)
+		console.log("wallet version: ", this.installedVersion);
 		event.on('updateGui', () => {
 			this.downloadGUI();
 		});
@@ -57,61 +58,51 @@ class GUIManager{
 	}
 
 
-	downloadGUI(){
-		console.log("going to download GUI")
+	downloadGUI() {
+
+    const walletDirectory = grabWalletDir();
+    const daemonDownloadURL = getDaemonDownloadUrl();
+
+		console.log("going to download GUI");
 		this.upgrading = true;
-		var self = this;
-		var file = fs.createWriteStream(this.path + "Sapphire" + this.getExecutableExtension());
-		var request = https.get(this.getDownloadUrl(), function(response) {
-			response.pipe(file);
-			file.on('finish', function() {
-				self.downloading = false;
-				console.log("Done downloading gui")
-				file.close(null);
-				fs.unlink(dest);
-				let sumFromServer = "";
-				checksum.file(this.path + "Sapphire" + this.getExecutableExtension(), function (err, sum) {
-					if(sumFromServer === sum){
-						self.installedVersion = self.currentVersion;
-						try{
-							var child = cp.fork("./app/Managers/UpdateGUI", {detached:true});
-							app.quit();
-						}catch(e){
-							console.log(e);
-						}
-					}
-					else{
-						self.downloadGUI();
-					}
-				});
+		const self = this;
+
+    return new Promise((resolve, reject) => {
+      console.log('downloading daemon');
+
+      // download latest daemon info from server
+      const opts = {
+        url: daemonDownloadURL
+      };
+
+      request(opts).then(async (data) => {
+        const parsed = JSON.parse(data);
+        const latestDaemon = parsed.versions[0];
+        const zipChecksum = latestDaemon.checksum;
+        const downloadUrl = latestDaemon.download_url;
 
 
-			});
-			}).on('error', function(err) {
-				self.downloading = false;
-				fs.unlink(dest);
-				self.downloadGUI();
-		});
-	}
+        const downloaded = await downloadFile(downloadUrl, walletDirectory,'Sapphire.zip', zipChecksum, true);
 
-	getDownloadUrl(){
-		var os = this.os;
-		var arch = this.arch;
-
-		if(os === "win32" && arch === "x64")
-			return "https://b6e403fd.ngrok.io/Sapphire.exe";
-		else if(os === "win32" && arch === "x32")
-			return "https://ecc.network/downloads/Lynx-Installer-0.1.5-win32.exe";
-		else if(os === "darwin" && arch === "x64")
-			return "https://ecc.network/downloads/Lynx-Installer-0.1.5-lin64.AppImage";
-		else if(os === "win32" && arch === "x32")
-			return "https://ecc.network/downloads/Lynx-Installer-0.1.5-lin32.AppImage";
-	}
-
-	getExecutableExtension(){
-		if(this.os === "win32") return ".exe";
-		else if(this.os === "linux") return ".AppImage";
-		else return ".app";
+        if (downloaded) {
+          console.log("Done downloading gui");
+          try{
+            self.downloading = false;
+            self.installedVersion = self.currentVersion;
+            const child = cp.fork("./app/Managers/UpdateGUI", {detached:true});
+            app.quit();
+          }catch(e){
+            console.log(e);
+          }
+        } else {
+          self.downloadGUI();
+          // reject(downloaded);
+        }
+      }).catch(error => {
+        console.log(error);
+        reject(false);
+      });
+    });
 	}
 
 }

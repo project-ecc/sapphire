@@ -176,7 +176,7 @@ export default class Wallet {
 
   async walletpassphrase(passphrase, time) {
     try {
-      const ntime = parseInt(time)
+      const ntime = parseInt(time);
       const result = await client.walletPassphrase(passphrase, ntime);
       return result;
     } catch (err) {
@@ -212,12 +212,12 @@ export default class Wallet {
           reject(false);
         });
       } else if (process.platform === 'darwin') {
-        console.log(path)
+        console.log(path);
         runExec(`chmod +x "${path}" && "${path}"`, 1000).then(() => {
           return resolve(true);
         })
         .catch((err) => {
-          console.log(err)
+          console.log(err);
           reject(false);
         });
       } else if (process.platform.indexOf('win') > -1) {

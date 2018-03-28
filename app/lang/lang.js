@@ -62,7 +62,7 @@ export function traduction() {
 }
 
 export function language(){
-	console.log("here")
+	console.log("here");
 		if (settings.has('settings.lang')) {
 		var l = settings.get('settings.lang');
 		if (l == "en") {

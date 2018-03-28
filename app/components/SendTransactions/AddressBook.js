@@ -27,7 +27,7 @@ class AddressBook extends Component {
   }
 
   updateTable(friendList){
-    $('#rows').css("height", $('#tableAddresses').height()-128)
+    $('#rows').css("height", $('#tableAddresses').height()-128);
     let numberOfChildren = friendList.length;
     let totalSize = numberOfChildren * 40; //40px height of each row
     let sizeOfContainer = $('#tableAddresses').height()-128;
@@ -59,7 +59,7 @@ class AddressBook extends Component {
   rowClicked(friend) {
     if(!this.props.sendPanel) return;
     clipboard.writeText(friend.address);
-    $('#message').text("Address copied below")
+    $('#message').text('{ this.props.lang.addressCopiedBelow }');
     TweenMax.fromTo('#message', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
     TweenMax.to('#message', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
     TweenMax.set('#addressSend', {autoAlpha: 0});
@@ -72,7 +72,7 @@ class AddressBook extends Component {
   getHeaderText(){
     if(this.props.sendPanel){
       return(
-        <p className="headerDescription">Select a contact to send <span className="ecc">ecc</span> to</p>
+        <p className="headerDescription">{ this.props.lang.selectAContactToSend1 } <span className="ecc">ecc</span> { this.props.lang.selectAContactToSend2 }</p>
       )
     }
     else{
@@ -97,18 +97,18 @@ class AddressBook extends Component {
 
   render() {
     let bin = require('../../../resources/images/delete-contact.ico');
-    let rowClassName = "row normalWeight tableRowCustom"
+    let rowClassName = "row normalWeight tableRowCustom";
 
     return (
       <div className="tableCustom">
         <div className={this.props.sendPanel ? "tableHeaderNormal tableHeaderBig" : "tableHeaderNormal"}>
-          <p className={this.props.sendPanel ? "tableHeaderTitle" : "tableHeaderTitle tableHeaderTitleSmall"}>Contacts</p>
+          <p className={this.props.sendPanel ? "tableHeaderTitle" : "tableHeaderTitle tableHeaderTitleSmall"}>{ this.props.lang.contacts }</p>
           {this.getHeaderText()}
         </div>
         <div className="tableContainer">
             <div className="row rowDynamic">
-              <div className="col-sm-4 headerAddresses tableColumContactFix tableRowHeader">NAME</div>
-              <div id="addressHeader" className="col-sm-7 headerAddresses tableRowHeader">ADDRESS</div>
+              <div className="col-sm-4 headerAddresses tableColumContactFix tableRowHeader">{ this.props.lang.nameCAPS }</div>
+              <div id="addressHeader" className="col-sm-7 headerAddresses tableRowHeader">{ this.props.lang.addressCAPS }</div>
               <div className="col-sm-1 headerAddresses"></div>
             </div>
           <div id="rows" style={{width: "100%", padding: "0 0"}}>

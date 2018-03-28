@@ -12,9 +12,9 @@ class SetupDone extends React.Component {
   renderNewUser(){
     return(
       <div>
-        <p style={{marginTop: "30px", fontSize: "21px", fontWeight:"300"}}>Setup done!</p>
-        <p style={{marginTop: "30px", fontSize: "21px", fontWeight:"300"}}>Your wallet is now going to sync to the blockchain. <br></br>This process takes some time, please be patient.</p>
-        <p style={{marginTop: "50px", fontSize: "21px", fontWeight:"300"}}>Thank you for chosing <span className="ecc">ECC</span>!</p>
+        <p style={{marginTop: "30px", fontSize: "21px", fontWeight:"300"}}>{ this.props.lang.setupDone }</p>
+        <p style={{marginTop: "30px", fontSize: "21px", fontWeight:"300"}}>{ this.props.lang.setupDone1 } <br></br>{ this.props.lang.setupDone2 }</p>
+        <p style={{marginTop: "50px", fontSize: "21px", fontWeight:"300"}}>{ this.props.lang.setupDone3 } <span className="ecc">ECC</span>!</p>
       </div>
     )
   }
@@ -22,8 +22,8 @@ class SetupDone extends React.Component {
   renderExistingUser(){
     return(
       <div>
-        <p style={{marginTop: "30px", fontSize: "21px", fontWeight:"300", marginTop:"55px"}}>Setup done!</p>
-        <p style={{marginTop: "50px", fontSize: "21px", fontWeight:"300"}}>Thank you for chosing <span className="ecc">ECC</span>!</p>
+        <p style={{marginTop: "30px", fontSize: "21px", fontWeight:"300", marginTop:"55px"}}>{ this.props.lang.setupDone }</p>
+        <p style={{marginTop: "50px", fontSize: "21px", fontWeight:"300"}}>{ this.props.lang.setupDone3 } <span className="ecc">ECC</span>!</p>
       </div>
     )
   }
@@ -32,19 +32,21 @@ class SetupDone extends React.Component {
     this.props.setSetupDoneInternal(true);
   }
 
-  render() { 
+  render() {
     const toReturn = this.props.paymentChainSync < 95 ? this.renderNewUser() : this.renderExistingUser();
      return (
       <div>
         {toReturn}
       </div>
       );
-    } 
-};
+    }
+
+}
 
 const mapStateToProps = state => {
   return{
-    paymentChainSync: state.chains.paymentChainSync
+    paymentChainSync: state.chains.paymentChainSync,
+    lang: state.startup.lang
   };
 };
 

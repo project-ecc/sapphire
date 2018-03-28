@@ -33,12 +33,12 @@ class NetworkStats extends Component {
         <svg>
           <text className="percentageSyncedNetworkVal" fill="#b4b7c8" x="50%" y="50%" dy="-35" dx="-40" textAnchor="middle">{percentage}</text>
           <text className="percentageSyncedNetwork" fill="#b4b7c8" x="50%" y="50%" dy="-35" dx={this.getOffset(percentage)} textAnchor="middle">%</text>
-          <text className="syncedTextNetwork" x="50%" y="50%" dy="25" dx="-25" textAnchor="middle">SYNCED</text>
+          <text className="syncedTextNetwork" x="50%" y="50%" dy="25" dx="-25" textAnchor="middle">{ this.props.lang.synced }</text>
         </svg>
       )
     }
     else return(
-      <text style={{cursor: "pointer"}} onClick={this.processChainClick.bind(this, operation)} className="enableNetwork" fill="#b4b7c8" x="50%" y="50%" dy="-15" dx="-20" textAnchor="middle">Enable it</text>
+      <text style={{cursor: "pointer"}} onClick={this.processChainClick.bind(this, operation)} className="enableNetwork" fill="#b4b7c8" x="50%" y="50%" dy="-15" dx="-20" textAnchor="middle">{ this.props.lang.enable }</text>
     )
   }
 
@@ -67,8 +67,8 @@ class NetworkStats extends Component {
           <img style={{height: "21px"}} src={imageConnections}></img>
           <span style={{position: "relative", left:"9px", fontSize:"20px", top:"3px", fontWeight: "400"}}>{connections}</span>
         </div>
-        <p style={{fontSize:"14px", marginTop:"15px"}}>Headers: <span style={{fontSize:"16px"}}>{headers}</span></p>
-        <p style={{fontSize:"14px", marginTop:"15px"}}>Block <span style={{fontSize:"16px"}}>{block}</span> of <span style={{fontSize:"16px"}}>{headers}</span></p>
+        <p style={{fontSize:"14px", marginTop:"15px"}}>{ this.props.lang.headers }: <span style={{fontSize:"16px"}}>{headers}</span></p>
+        <p style={{fontSize:"14px", marginTop:"15px"}}>{ this.props.lang.block } <span style={{fontSize:"16px"}}>{block}</span> { this.props.lang.of } <span style={{fontSize:"16px"}}>{headers}</span></p>
       </div>
     )
   }
@@ -90,7 +90,7 @@ class NetworkStats extends Component {
     return (
       <div style={{height: "100%", width: "100%", paddingLeft: "40px", paddingRight: "40px"}}>
         <div id="headerNetwork">
-          <p id="headerNetworkText" style={{fontSize: "70px", fontWeight: "800", display: "inline-block", marginTop:"15px"}}>Network Stats</p>
+          <p id="headerNetworkText" style={{fontSize: "70px", fontWeight: "800", display: "inline-block", marginTop:"15px"}}>{ this.props.lang.networkStats }</p>
           <div style={{display: "inline-block", position: "relative", left: "0px", top:"-8px"}}>
             <img className="networkStatsImage" style={{height: "30px",position: "relative", top: "-14px", left: "35px"}} src={messaging}></img>
             <div style={{display: "inline-block", position: "relative", left: "45px", top:"18px"}}>
@@ -109,15 +109,15 @@ class NetworkStats extends Component {
         <div className="container" style={{marginTop: "50px", width:"100%"}}>
           <div className="row">
             <div className="col-sm-4 text-center">
-              <p className="networkStatsChainTitle">Messaging Chain</p>
+              <p className="networkStatsChainTitle">{ this.props.lang.messagingChain }</p>
               {this.getHtmlChainInfo(this.props.messagingChain, 0, 0, 0, 0, "#29d55a", "rgb(41,213, 90)", this.props.messagingChain ? require('../../../resources/images/connections-green.png') : require('../../../resources/images/connections-default.png'), "messaging")}
             </div>
             <div className="col-sm-4 text-center">
-              <p className="networkStatsChainTitle">Payment Chain</p>
+              <p className="networkStatsChainTitle">{ this.props.lang.paymentChain }</p>
                 {this.getHtmlChainInfo(true, this.props.percentagePaymentChain, this.props.connectionsPayment, this.props.headersPaymentChain, this.props.blockPaymentChain, this.props.theme == "default" ? "#d59529" : "#c39c59", "rgb(213,149, 41)", require('../../../resources/images/connections-orange.png'))}
             </div>
             <div className="col-sm-4 text-center">
-              <p className="networkStatsChainTitle">File Storage Chain</p>
+              <p className="networkStatsChainTitle">{ this.props.lang.fileStorageChain }</p>
               {this.getHtmlChainInfo(this.props.fileStorageChain, 0, 0, 0, 0, "#20729c", "rgb(32,114, 156)", this.props.fileStorage ? require('../../../resources/images/connections-blue.png') : require('../../../resources/images/connections-default.png'), "fileStorage")}
             </div>
           </div>

@@ -4,8 +4,8 @@ import {
 	EARNINGS_CHECKED,
 	NEWS_NOTIFICATION,
 	STAKING_NOTIFICATION,
-	OPERATIVE_SYSTEM_NOTIFICATIONS, 
-	NEWS_NOTIFICATIONS, 
+	OPERATIVE_SYSTEM_NOTIFICATIONS,
+	NEWS_NOTIFICATIONS,
 	STAKING_NOTIFICATIONS
 } from '../actions/types';
 
@@ -17,13 +17,13 @@ const INITIAL_STATE = {popupEnabled: false, lastCheckedNews: notificationsInfo.g
 	total: 0,
 	differentKinds: 0,
 	last: "",
-    messaging: {messages: [], date: GetOldDate()}, 
-	news: {total: 0, date: GetOldDate()}, 
-	stakingEarnings: {total: 0, count: 0, date: GetOldDate()}, 
+    messaging: {messages: [], date: GetOldDate()},
+	news: {total: 0, date: GetOldDate()},
+	stakingEarnings: {total: 0, count: 0, date: GetOldDate()},
 	ansPayments: {total: 0.00001, firstDueDate: new Date().setDate(31), payments: [{cost:0.00001, dueDate: new Date().setDate(31)}]},
 	warnings: []
 	}
-}
+};
 
 export default(state = INITIAL_STATE, action) => {
 	if(action.type == NOTIFICATIONS_POPUP){
@@ -57,8 +57,8 @@ export default(state = INITIAL_STATE, action) => {
 		entries["news"].total = 0;
 		entries["differentKinds"] -= 1;
 
-		UpdateNotificationInfo(action.payload, state.lastCheckedEarnings, entries: entries);
-		return {...state, lastCheckedNews: action.payload, entries: entries}
+UpdateNotificationInfo(action.payload, state.lastCheckedEarnings, entries: entries);
+    return {...state, lastCheckedNews: action.payload, entries: entries}
 	}
 	else if(action.type == NEWS_NOTIFICATION){
 		let entries = Object.assign({}, state.entries);

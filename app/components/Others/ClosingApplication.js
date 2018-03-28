@@ -10,15 +10,16 @@ class ClosingApplication extends React.Component {
     super();
   }
 
-  render() { 
+  render() {
      return (
         <div>
-          <p>Closing Sapphire, please wait</p>
+          <p>{ this.props.lang.closingSapphireWait }</p>
           <MiniLoaderAnimation />
         </div>
       );
-    } 
-};
+    }
+
+}
 
 const mapStateToProps = state => {
   return{

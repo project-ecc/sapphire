@@ -6,7 +6,7 @@ import {TweenMax} from "gsap";
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import $ from 'jquery';
 import Input from '../Others/Input';
-const tools = require('../../utils/tools')
+const tools = require('../../utils/tools');
 
 class Send extends Component {
   constructor(props) {
@@ -41,13 +41,13 @@ class Send extends Component {
     }
     if(this.props.address != "" && this.props.amount != "" && Number(this.props.amount) > 0){
       if(this.props.amount > this.props.balance){
-        tools.showTemporaryMessage('#message', "Not enough balance");
+        tools.showTemporaryMessage('#message', this.props.lang.notEnoughBalance);
         tools.highlightInput('#inputAmountSend', 2.1)
       }
       else{
         this.props.wallet.validate(this.props.address).then((isAddressValid) => {
         if (!isAddressValid.isvalid) {
-          tools.showTemporaryMessage('#message', "Invalid address");
+          tools.showTemporaryMessage('#message', this.props.lang.invalidFailedAddress);
           tools.highlightInput('#inputAddressSend', 2.1)
         } else {
           this.props.setSendingECC(true);
@@ -65,7 +65,7 @@ class Send extends Component {
       TweenMax.set('#addressSend', {autoAlpha: 1});
       this.props.setUsernameSend("");
     }
-    else 
+    else
       TweenMax.set('#addressSend', {autoAlpha: 0});
 
     this.props.setAddressSend(address);
@@ -75,7 +75,7 @@ class Send extends Component {
     const amount = event.target.value;
     if(amount.length == 0)
       TweenMax.set('#amountSend', {autoAlpha: 1});
-    else 
+    else
       TweenMax.set('#amountSend', {autoAlpha: 0});
 
     this.props.setAmountSend(amount);
@@ -86,11 +86,11 @@ class Send extends Component {
     return (
       <div className="panel">
         <AddressBook sendPanel={true}/>
-          <p id="message">Address copied below</p>
+          <p id="message">{ this.props.lang.addressCopiedBelow }</p>
           <div style={{width: "632px", margin: "0 auto"}}>
-            <Input 
+            <Input
               divStyle={{display: "inline"}}
-              placeholder= "ANS Name / Address"
+              placeholder= { this.props.lang.ansNameOrAddress }
               placeholderId="addressSend"
               placeHolderClassName="inputPlaceholder sendPlaceholder"
               value={this.props.address}
@@ -100,9 +100,9 @@ class Send extends Component {
               inputId="inputAddressSend"
             />
             <img id="clearButton" onClick={this.handleClear} src={clearButton}/>
-            <Input 
+            <Input
               divStyle={{display: "inline"}}
-              placeholder= "Amount"
+              placeholder= { this.props.lang.amount }
               placeholderId="amountSend"
               placeHolderClassName="inputPlaceholder sendPlaceholder sendPlaceholderAmount"
               value={this.props.amount}

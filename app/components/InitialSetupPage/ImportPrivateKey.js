@@ -5,13 +5,13 @@ import * as actions from '../../actions';
 import {TweenMax} from "gsap";
 import $ from 'jquery';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
-const Tools = require('../../utils/tools')
+const Tools = require('../../utils/tools');
 import Input from '../Others/Input';
 
 class ImportPrivateKey extends React.Component {
  constructor() {
     super();
-    this.handleChangePrivateKey = this.handleChangePrivateKey.bind(this)
+    this.handleChangePrivateKey = this.handleChangePrivateKey.bind(this);
     this.handleChangePassword = this.handleChangePassword.bind(this);
     this.importPrivateKey = this.importPrivateKey.bind(this);
     this.addressImported = this.addressImported.bind(this);
@@ -30,14 +30,14 @@ class ImportPrivateKey extends React.Component {
     var batch = [];
     var obj = {
       method: 'walletpassphrase', parameters: [this.props.passwordVal, time, flag]
-    }
-    batch.push(obj)
+    };
+    batch.push(obj);
 
     this.props.wallet.command(batch).then((data) => {
-      console.log("data: ", data)
+      console.log("data: ", data);
       data = data[0];
       if (data !== null && data.code === -14) {
-        self.props.setCheckingDaemonStatusPrivKey(false)
+        self.props.setCheckingDaemonStatusPrivKey(false);
         self.showWrongPassword();
       } else if (data !== null && data.code === 'ECONNREFUSED') {
           console.log("daemong ain't working mate :(")
@@ -45,7 +45,7 @@ class ImportPrivateKey extends React.Component {
           callback();
       } else {
         setTimeout(()=> {
-            self.props.setCheckingDaemonStatusPrivKey(true)
+            self.props.setCheckingDaemonStatusPrivKey(true);
             self.importPrivateKey();
           }, 500);
       }
@@ -76,13 +76,13 @@ class ImportPrivateKey extends React.Component {
     this.unlockWallet(false, 5, () => {
       this.hideFunctionIcons();
       this.importingAddress();
-      this.props.setCheckingDaemonStatusPrivKey(true)
-      const method = "importprivkey"
+      this.props.setCheckingDaemonStatusPrivKey(true);
+      const method = "importprivkey";
       const parameters = [this.props.privateKeyValue];
       this.props.wallet.command([{ method, parameters }]).then((result) => {
-        console.log(result)
+        console.log(result);
         if(result[0] == null){
-          console.log("imported address")
+          console.log("imported address");
           this.props.setCheckingDaemonStatusPrivKey(false);
           this.showFunctionIcons();
           this.addressImported();
@@ -92,17 +92,17 @@ class ImportPrivateKey extends React.Component {
           setTimeout(()=> {
             this.importPrivateKey();
           }, 500);
-          
+
         }
         else{
-          console.log("failed to import address")
+          console.log("failed to import address");
           this.failedToImportAddress();
         }
       }).catch((result) => {
         console.log("ERROR IMPORTING ADDRESS: ", result);
         if(result.code == "ECONNREFUSED")
           this.failedToImportAddress();
-        //imported but rescaning 
+        //imported but rescaning
         else if(result.code == "ESOCKETTIMEDOUT"){
           this.checkDaemonStatus();
           TweenMax.to('#importingPrivKey p', 0.5, {autoAlpha: 1});
@@ -148,15 +148,15 @@ class ImportPrivateKey extends React.Component {
     TweenMax.to(['#importingPrivKey','#importAddress'], 0.2, {autoAlpha: 0, scale: 0.5});
     TweenMax.fromTo('#importFailed', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
   }
-   
+
   handleChangePrivateKey(event) {
     let privKey = event.target.value;
     if(privKey.length == 0){
       TweenMax.set('#enterPrivKey', {autoAlpha: 1});
     }
-    else 
+    else
       TweenMax.set('#enterPrivKey', {autoAlpha: 0});
-    console.log(privKey)
+    console.log(privKey);
     this.props.privateKey(privKey);
   }
 
@@ -165,9 +165,9 @@ class ImportPrivateKey extends React.Component {
     if(pw.length == 0){
       TweenMax.set('#enterPassword', {autoAlpha: 1});
     }
-    else 
+    else
       TweenMax.set('#enterPassword', {autoAlpha: 0});
-    console.log(pw)
+    console.log(pw);
     this.props.password(pw);
   }
 
@@ -212,15 +212,15 @@ class ImportPrivateKey extends React.Component {
        fontWeight: "",
        fontSize: "16px",
        paddingTop: "30px"
-      }
+      };
       textStyleFix = {
        fontWeight: "",
        fontSize: "16px"
-      }
+      };
       subTitle = {
         paddingBottom: "30px"
-      }
-      title = <p style={{fontSize: "18px", color:"#b4b7c8", paddingTop: "20px"}}>Import Private Key</p>;
+      };
+      title = <p style={{fontSize: "18px", color:"#b4b7c8", paddingTop: "20px"}}>{ this.props.lang.importPrivateKey }</p>;
     }
 
     return (
@@ -229,11 +229,11 @@ class ImportPrivateKey extends React.Component {
         {title}
         <div id="importAddress" style={textStyle}>
           <p style={subTitle} className= {this.props.notInitialSetup ? "" : "subTitle"}>
-           Write down a private key to import an address
+           { this.props.lang.writeDownAPrivateKeyToImport }
            </p>
-           <Input 
+           <Input
             divStyle={{width: "400px"}}
-              placeholder= "Private Key"
+              placeholder= { this.props.lang.enterPrivKey }
               placeholderId="enterPrivKey"
               placeHolderClassName="inputPlaceholder changePasswordInput"
               value={this.props.privateKeyValue}
@@ -241,9 +241,9 @@ class ImportPrivateKey extends React.Component {
               type="text"
               inputStyle={{marginBottom:"32px", width:"400px"}}
             />
-           <Input 
+           <Input
               divStyle={{width: "400px"}}
-              placeholder= "Enter your password"
+              placeholder= { this.props.lang.enterYourPassword }
               placeholderId="enterPassword"
               placeHolderClassName="inputPlaceholder changePasswordInput"
               value={this.props.passwordVal}
@@ -251,32 +251,32 @@ class ImportPrivateKey extends React.Component {
               type="text"
               inputStyle={{marginBottom:"10px", width:"400px"}}
             />
-          <p id="wrongPassword" className="wrongPassword">Wrong password</p>
+          <p id="wrongPassword" className="wrongPassword">{ this.props.lang.wrongPassword }</p>
           <div onClick={this.importPrivateKey} className= {this.props.notInitialSetup ? "buttonUnlock buttonFixPrivKey" : ""} id= {this.props.notInitialSetup ? "" : "importButton"}>
-               Import   
+            { this.props.lang.import }
            </div>
         </div>
         <div style={textStyleFix} id="importingPrivKey" className={this.props.notInitialSetup ? "importingAddressPopup" : ""}>
-          Importing your address <span className="toAnimate">.</span><span className="toAnimate">.</span><span className="toAnimate">.</span>
-          <p>This process may take a few minutes to finish. Please do not close the application.</p>
+          { this.props.lang.importingAddressPopup } <span className="toAnimate">.</span><span className="toAnimate">.</span><span className="toAnimate">.</span>
+          <p>{ this.props.lang.pleaseWait }</p>
         </div>
         <div style={textStyleFix} id="importedAddress" className={this.props.notInitialSetup ? "importedAddressPopup" : ""}>
-          Imported the address successfully
+          { this.props.lang.importedAddress }
           <div onClick={this.goBackToFirstStep} className= {this.props.notInitialSetup ? "buttonUnlock buttonFixPrivKey buttonIncreaseSize" : "importButtonAddress"} id= {this.props.notInitialSetup ? "" : "importButton"}>
-               Import another address
+            { this.props.lang.importAnotherAddress }
            </div>
         </div>
         <div style={textStyleFix} id="importFailed" className={this.props.notInitialSetup ? "importFailedPopup" : ""}>
-          Invalid address
+          { this.props.lang.invalidFailedAddress }
           <div onClick={this.goBackToFirstStep} className= {this.props.notInitialSetup ? "buttonUnlock buttonFixPrivKey buttonIncreaseSize" : "importButtonAddress"} id= {this.props.notInitialSetup ? "" : "importButton"}>
-               Import another address
+            { this.props.lang.importAnotherAddress }
            </div>
         </div>
       </div>
     )
   }
 
-  render() { 
+  render() {
     var id = "importPrivKey";
     if(this.props.notInitialSetup){
       id="importPrivKeyPopup";
@@ -286,10 +286,11 @@ class ImportPrivateKey extends React.Component {
         {this.toRender()}
       </div>
       );
-    } 
-};
+    }
 
-const mapStateToProps = state => {
+}
+
+ const mapStateToProps = state => {
   return{
     direction: state.setup.direction,
     lang: state.startup.lang,

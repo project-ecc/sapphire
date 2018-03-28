@@ -8,12 +8,12 @@ class ThemeSelector extends React.Component {
  constructor() {
     super();
   }
-  
-  render() { 
+
+  render() {
      return (
       <div>
            <p style={{fontWeight:"300"}} className="subTitle">
-             {this.props.lang.selectTheme}
+             { this.props.lang.selectTheme }
            </p>
          <div id="themes">
           <div className="themeSelector" id="darkTheme">
@@ -23,9 +23,9 @@ class ThemeSelector extends React.Component {
               <div className="divSquare" style={{backgroundColor: "#21242a"}}></div>
               <div className="divSquare" style={{backgroundColor: "#333840"}}></div>
               <div className="divSquare" style={{backgroundColor: "#1e2544"}}></div>
-             </div> 
+             </div>
            </div>
-             <p className="themeName">Dark</p>
+             <p className="themeName">{ this.props.lang.dark }</p>
            </div>
            <div className="themeSelector">
            <div className="themes">
@@ -34,9 +34,9 @@ class ThemeSelector extends React.Component {
               <div className="divSquare" style={{backgroundColor: "#14182f"}}></div>
               <div className="divSquare" style={{backgroundColor: "#c4c4d3"}}></div>
               <div className="divSquare" style={{backgroundColor: "#1e2544"}}></div>
-             </div> 
+             </div>
            </div>
-             <p className="themeName">Default</p>
+             <p className="themeName">{ this.props.lang.default }</p>
            </div>
            <div className="themeSelector" id="lightTheme">
            <div className="themes">
@@ -45,15 +45,16 @@ class ThemeSelector extends React.Component {
               <div className="divSquare" style={{backgroundColor: "#17152a"}}></div>
               <div className="divSquare" style={{backgroundColor: "#de9b2b"}}></div>
               <div className="divSquare" style={{backgroundColor: "#ffffff"}}></div>
-             </div> 
+             </div>
            </div>
-             <p className="themeName">Light</p>
+             <p className="themeName">{ this.props.lang.light }</p>
            </div>
          </div>
       </div>
       );
-    } 
-};
+    }
+
+}
 
 const mapStateToProps = state => {
   return{

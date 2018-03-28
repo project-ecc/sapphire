@@ -41,9 +41,9 @@ class ImportWallet extends React.Component {
     ipcRenderer.removeListener('importStarted', this.sendActionImportStarted);
     ipcRenderer.removeListener('importCancelled', this.sendActionImportCancelled);
   }
-  
+
   openFile() {
-    if(this.props.importing) 
+    if(this.props.importing)
       return;
     this.props.importingWallet();
     ipcRenderer.send('importWallet');
@@ -53,31 +53,32 @@ class ImportWallet extends React.Component {
     return (
       <div>
         <p style={{fontWeight:"300"}} className="subTitle">
-         Import an existing wallet if you have one
+         { this.props.lang.importExistingWallet }
         </p>
         <div id="import">
            <div onClick={this.openFile} id="importButton">
-             Import
+             { this.props.lang.import }
            </div>
         </div>
         <div style={{fontWeight:"300"}} id="importing">
-          Importing your wallet
+          { this.props.lang.importingYourWallet }
         </div>
         <div style={{fontWeight:"300"}} id="imported">
-          Imported your wallet successfully
+          { this.props.lang.imported }
         </div>
       </div>
     )
   }
 
-  render() { 
+  render() {
      return (
       <div>
         {this.toRender()}
       </div>
       );
-    } 
-};
+    }
+
+}
 
 const mapStateToProps = state => {
   return{

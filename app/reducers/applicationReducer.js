@@ -59,7 +59,7 @@ import {
 import Wallet from '../utils/wallet';
 import notificationsInfo from '../utils/notificationsInfo';
 
-const INITIAL_STATE = {wallet: new Wallet(), unlocking: false, password: "", userNameToSend: "", amountSend: "", addressSend: "", sendingEcc: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, newAddressName: "", newAddressAccount: "", friends: [], userAddresses: [], creatingAnsAddress: true, selectedAddress: undefined, creatingAddress: false, newContactName: "", newContactAddress:"", hoveredAddress: undefined, settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, exportingPrivateKeys: false, panelExportPrivateKey: 1, locationToExport: "", filterAllOwnAddresses: true, filterNormalOwnAddresses: false, filterAnsOwnAddresses: false, backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, totalFileStorageRewards: 0, lastWeekFileStorageRewards: 0,lastMonthFileStorageRewards: 0, pendingTransactions: [], importingPrivateKey: false, changingPassword: false, wasStaking: false, newPassword: "", daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], postsPerContainerEccNews: 0, eccPostsArrays: [], eccPostsPage: 1, coinMarketCapStats: {}, showingNews: false, eccNewsSwitchingPage: false, updateApplication:false, selectedPanel: "overview", settingsOptionSelected: "General", showingFunctionIcons: false, genericPanelAnimationOn: false, closingApplication: false, macButtonsHover: false, maximized:false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false}
+const INITIAL_STATE = {wallet: new Wallet(), unlocking: false, password: "", userNameToSend: "", amountSend: "", addressSend: "", sendingEcc: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, newAddressName: "", newAddressAccount: "", friends: [], userAddresses: [], creatingAnsAddress: true, selectedAddress: undefined, creatingAddress: false, newContactName: "", newContactAddress:"", hoveredAddress: undefined, settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, exportingPrivateKeys: false, panelExportPrivateKey: 1, locationToExport: "", filterAllOwnAddresses: true, filterNormalOwnAddresses: false, filterAnsOwnAddresses: false, backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, totalFileStorageRewards: 0, lastWeekFileStorageRewards: 0,lastMonthFileStorageRewards: 0, pendingTransactions: [], importingPrivateKey: false, changingPassword: false, wasStaking: false, newPassword: "", daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], postsPerContainerEccNews: 0, eccPostsArrays: [], eccPostsPage: 1, coinMarketCapStats: {}, showingNews: false, eccNewsSwitchingPage: false, updateApplication:false, selectedPanel: "overview", settingsOptionSelected: "General", showingFunctionIcons: false, genericPanelAnimationOn: false, closingApplication: false, macButtonsHover: false, maximized:false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false};
 
 export default(state = INITIAL_STATE, action) => {
     if(action.type == UNLOCKING){
@@ -114,7 +114,7 @@ export default(state = INITIAL_STATE, action) => {
 		return {...state, eccPostsPage: action.payload}
 	}
 	else if(action.type == POSTS_PER_CONTAINER){
-		let arrays = [], 
+		let arrays = [],
 		size = action.payload,
 		counter = 0,
 		arrayConter = 0,
@@ -167,7 +167,7 @@ export default(state = INITIAL_STATE, action) => {
 				rewardsLastMonth += transaction.amount;
 			if(transaction.time >= timeOneWeekAgo)
 				rewardsLastWeek += transaction.amount;
-		})
+		});
 		return {...state, lastWeekStakingRewards: rewardsLastWeek, lastMonthStakingRewards: rewardsLastMonth};
 	}
 	else if(action.type == STAKING_REWARD){
@@ -185,7 +185,7 @@ export default(state = INITIAL_STATE, action) => {
 				if(transaction.time >= timeOneWeekAgo)
 					rewardsLastWeek += transaction.amount;
 				totalRewards += transaction.amount;
-			})
+			});
 
 			return {...state, stakingRewards: action.payload, totalStakingRewards: totalRewards, lastWeekStakingRewards: rewardsLastWeek, lastMonthStakingRewards: rewardsLastMonth};
 		}
@@ -232,7 +232,7 @@ export default(state = INITIAL_STATE, action) => {
 			filterNormalOwnAddresses = true;
 		else if(action.payload == "ans")
 			filterAnsOwnAddresses = true;
-		
+
 		return {...state, filterAllOwnAddresses: filterAllOwnAddresses, filterNormalOwnAddresses: filterNormalOwnAddresses, filterAnsOwnAddresses: filterAnsOwnAddresses}
 	}
 	else if(action.type == BACKUP_OPERATION_IN_PROGRESS){
@@ -276,7 +276,7 @@ export default(state = INITIAL_STATE, action) => {
 	}
 	else if(action.type == SENDING_ECC){
 		if(!action.payload)
-			return {...state, sendingEcc: action.payload, password: ""}
+			return {...state, sendingEcc: action.payload, password: ""};
 		return {...state, sendingEcc: action.payload}
 	}
 	else if(action.type == TRANSACTIONS_PAGE){

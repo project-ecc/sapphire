@@ -38,7 +38,7 @@ class ThemeSelector extends Component {
           <div className="divSquare" style={{backgroundColor: "#1e2544"}}></div>
          </div> 
        </div>
-         <p className="themeName">Dark</p>
+         <p className="themeName">{ this.props.lang.dark }</p>
        </div>
        <div onMouseEnter={this.onHover.bind(this, "theme-defaultEcc")} onMouseLeave={this.onUnhover.bind(this)} onClick={this.onClickTheme.bind(this, "theme-defaultEcc")} className={this.props.theme == "theme-defaultEcc" ? "themeSelector selectedTheme" : "themeSelector" } id="defaultTheme">
        <div className="themes">
@@ -49,7 +49,7 @@ class ThemeSelector extends Component {
           <div className="divSquare" style={{backgroundColor: "#1e2544"}}></div>
          </div> 
        </div>
-         <p className="themeName">Default</p>
+         <p className="themeName">{ this.props.lang.default }</p>
        </div>
        <div style={{visibility: "hidden"}} className="themeSelector" id="lightTheme">
        <div className="themes">
@@ -60,7 +60,7 @@ class ThemeSelector extends Component {
           <div className="divSquare" style={{backgroundColor: "#ffffff"}}></div>
          </div> 
        </div>
-         <p className="themeName">Light</p>
+         <p className="themeName">{ this.props.lang.light }</p>
        </div>
      </div>
     );

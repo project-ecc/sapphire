@@ -13,6 +13,7 @@ const checksum = require('checksum');
 import Wallet from '../utils/wallet';
 import { getPlatformWalletUri, grabWalletDir, grabEccoinDir, getDaemonDownloadUrl, getPlatformFileName } from '../utils/platform.service';
 import Tools from '../utils/tools';
+import {downloadFile} from "../utils/downloader";
 
 /*
 *	Handles daemon updates and the daemon'state
@@ -229,7 +230,6 @@ class DaemonManager {
   async downloadDaemon() {
     const walletDirectory = grabWalletDir();
 	  const daemonDownloadURL = getDaemonDownloadUrl();
-	  const platformFileName = getPlatformFileName();
 
     this.downloading = true;
     const self = this;
@@ -242,70 +242,27 @@ class DaemonManager {
         url: daemonDownloadURL
       };
 
-      request(opts).then((data) => {
+      request(opts).then(async (data) => {
         const parsed = JSON.parse(data);
         const latestDaemon = parsed.versions[0];
         const zipChecksum = latestDaemon.checksum;
         const downloadUrl = latestDaemon.download_url;
-        console.log(downloadUrl);
 
-        // Download daemon.zip
 
-        const downloadRequestOpts = {
-          url: downloadUrl,
-          encoding: null,
-        };
+        const downloaded = await downloadFile(downloadUrl,walletDirectory,'Eccoind.zip',zipChecksum, true);
 
-        request.get(downloadRequestOpts).then((res) => {
-          fs.writeFileSync(`${walletDirectory}Eccoind.zip`, res);
-          console.log(`${walletDirectory}Eccoind.zip`);
-
-          checksum.file(`${walletDirectory}Eccoind.zip`, (error, sum) => {
-
-            console.log(`checksum from file ${sum}`);
-            console.log(`checksum from server ${zipChecksum}`);
-            console.log('Done downloading verifying');
-
-            if (zipChecksum === sum) {
-
-              // unzip file.
-              extract(`${walletDirectory}Eccoind.zip`, { dir: `${walletDirectory}` }, (err) => {
-                if (err) {
-                  console.log(err);
-                } else {
-                  console.log('unzip successfully.');
-                  if (fs.existsSync(`${walletDirectory}Eccoind.zip`)) {
-                    fs.unlink(`${walletDirectory}Eccoind.zip`, (deleteFileError) => {
-                      if (error) {
-                        console.log(deleteFileError);
-                      } else {
-                        console.log('File successfully deleted');
-                        self.installedVersion = self.currentVersion;
-                        self.saveVersion(self.installedVersion);
-                        self.downloading = false;
-                        resolve(true);
-                      }
-                    });
-                  } else {
-                    resolve(false)
-                    console.log("This file doesn't exist, cannot delete");
-                  }
-                }
-              });
-            } else {
-              resolve(false);
-            }
-          });
-        }).catch((err) => {
-          console.log(err);
+        if (downloaded) {
+          self.installedVersion = self.currentVersion;
+          self.saveVersion(self.installedVersion);
           self.downloading = false;
-          fs.unlink(`${walletDirectory}Eccoind.zip`);
-          resolve(false);
-          console.log(`Error extracting  zip ${err}`);
-        });
+          resolve(true);
+        } else {
+          reject(downloaded);
+        }
+
       }).catch(error => {
         console.log(error);
-        resolve(false);
+        reject(false);
       });
     });
   }

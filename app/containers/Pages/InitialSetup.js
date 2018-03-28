@@ -12,7 +12,7 @@ import TransitionGroup from 'react-transition-group/TransitionGroup';
 const settings = require('electron-settings');
 import { ipcRenderer } from 'electron';
 import TransitionComponent from '../../components/Others/TransitionComponent';
-const Tools = require('../../utils/tools')
+const Tools = require('../../utils/tools');
 
 class InitialSetup extends Component {
   constructor(props) {
@@ -22,16 +22,16 @@ class InitialSetup extends Component {
     this.renderPartialInitialSetup = this.renderPartialInitialSetup.bind(this);
     this.renderInitialSetup = this.renderInitialSetup.bind(this);
   }
-  
+
   componentDidAppear() {
     const el = this.refs.second;
     TweenMax.fromTo(el, 0.5, {opacity: 0}, {opacity:1 ,ease: Linear.easeNone});
   }
-  
+
   componentWillEnter (callback) {
     callback();
   }
-  
+
   componentWillLeave (callback) {
     const el = this.refs.second;
     TweenMax.to(el, 0.3, {opacity:0 ,ease: Linear.easeNone, onComplete: callback});
@@ -40,7 +40,7 @@ class InitialSetup extends Component {
   handleForward() {
     if(this.props.importing || !this.props.stepOverVal || this.props.encrypting || this.props.importingPrivKey) return;
     else if(this.props.setupDoneInternal){
-      console.log("Done with setup!") 
+      console.log("Done with setup!");
       ipcRenderer.send('initialSetup');
       this.props.setSetupDone();
       return;
@@ -60,7 +60,7 @@ class InitialSetup extends Component {
       <div>
         <TransitionGroup key="1" component="article">
         {this.props.step == 1 ?
-          <TransitionComponent 
+          <TransitionComponent
             children= {<LanguageSelector/>}
             animationType= "firstSetupStep"
             animateIn= {Tools.animateStepIn}
@@ -70,51 +70,51 @@ class InitialSetup extends Component {
         </TransitionGroup>
         <TransitionGroup key="2" component="article">
         {this.props.step == 2 ?
-          <TransitionComponent 
+          <TransitionComponent
             children= {<ThemeSelector/>}
             animationType= "setupStep"
             animateIn= {Tools.animateStepIn}
-            animateOut = {Tools.animateStepOut}/> 
+            animateOut = {Tools.animateStepOut}/>
             : null
         }
         </TransitionGroup>
         <TransitionGroup key="3" component="article">
         {this.props.step == 3 ?
-          <TransitionComponent 
+          <TransitionComponent
             children= {<ImportWallet/>}
             animationType= "setupStep"
             animateIn= {Tools.animateStepIn}
-            animateOut = {Tools.animateStepOut}/> 
+            animateOut = {Tools.animateStepOut}/>
             : null
         }
         </TransitionGroup>
         <TransitionGroup key="4" component="article">
         {this.props.step == 4 ?
-          <TransitionComponent 
+          <TransitionComponent
             children= {<EncryptWallet checkEncrypted = {this.props.importedWalletVal}/>}
             animationType= "setupStep"
             animateIn= {Tools.animateStepIn}
-            animateOut = {Tools.animateStepOut}/> 
+            animateOut = {Tools.animateStepOut}/>
             : null
         }
         </TransitionGroup>
         <TransitionGroup key="5" component="article">
         {this.props.step == 5 ?
-          <TransitionComponent 
+          <TransitionComponent
             children= {<ImportPrivateKey notInitialSetup = {false}/>}
             animationType= "setupStep"
             animateIn= {Tools.animateStepIn}
-            animateOut = {Tools.animateStepOut}/> 
+            animateOut = {Tools.animateStepOut}/>
             : null
         }
         </TransitionGroup>
         <TransitionGroup key="6" component="article">
         {this.props.step == 6 ?
-          <TransitionComponent 
+          <TransitionComponent
             children= {<SetupDone />}
             animationType= "setupStep"
             animateIn= {Tools.animateStepIn}
-            animateOut = {Tools.animateStepOut}/> 
+            animateOut = {Tools.animateStepOut}/>
             : null
         }
         </TransitionGroup>
@@ -127,7 +127,7 @@ class InitialSetup extends Component {
       <div>
         <TransitionGroup key="1" component="article">
         {this.props.step == 1 ?
-          <TransitionComponent 
+          <TransitionComponent
             children= {<LanguageSelector/>}
             animationType= "firstSetupStep"
             animateIn= {Tools.animateStepIn}
@@ -137,31 +137,31 @@ class InitialSetup extends Component {
         </TransitionGroup>
         <TransitionGroup key="2" component="article">
         {this.props.step == 2 ?
-          <TransitionComponent 
+          <TransitionComponent
             children= {<ThemeSelector/>}
             animationType= "setupStep"
             animateIn= {Tools.animateStepIn}
-            animateOut = {Tools.animateStepOut}/> 
+            animateOut = {Tools.animateStepOut}/>
             : null
         }
         </TransitionGroup>
         <TransitionGroup key="3" component="article">
         {this.props.step == 3 ?
-          <TransitionComponent 
+          <TransitionComponent
             children= {<EncryptWallet checkEncrypted = {true}/>}
             animationType= "setupStep"
             animateIn= {Tools.animateStepIn}
-            animateOut = {Tools.animateStepOut}/> 
+            animateOut = {Tools.animateStepOut}/>
             : null
         }
         </TransitionGroup>
         <TransitionGroup key="4" component="article">
         {this.props.step == 4 ?
-          <TransitionComponent 
+          <TransitionComponent
             children= {<SetupDone />}
             animationType= "setupStep"
             animateIn= {Tools.animateStepIn}
-            animateOut = {Tools.animateStepOut}/> 
+            animateOut = {Tools.animateStepOut}/>
             : null
         }
         </TransitionGroup>
@@ -174,21 +174,21 @@ class InitialSetup extends Component {
       <div>
         <TransitionGroup key="1" component="article">
         {this.props.step == 1 ?
-          <TransitionComponent 
+          <TransitionComponent
             children= {<EncryptWallet checkEncrypted = {false}/>}
             animationType= "firstSetupStep"
             animateIn= {Tools.animateStepIn}
-            animateOut = {Tools.animateStepOut}/> 
+            animateOut = {Tools.animateStepOut}/>
             : null
         }
         </TransitionGroup>
         <TransitionGroup key="2" component="article">
           {this.props.step == 2 ?
-            <TransitionComponent 
+            <TransitionComponent
               children= {<SetupDone />}
               animationType= "setupStep"
               animateIn= {Tools.animateStepIn}
-              animateOut = {Tools.animateStepOut}/> 
+              animateOut = {Tools.animateStepOut}/>
               : null
           }
         </TransitionGroup>
@@ -216,7 +216,7 @@ class InitialSetup extends Component {
 
     const buttonStyle = {
       cursor: this.props.importing || this.props.encrypting || this.props.importingPrivKey ? 'default' : 'pointer'
-    }
+    };
 
     const logo = require('../../../resources/images/logo_setup.png');
     return (
@@ -227,7 +227,7 @@ class InitialSetup extends Component {
           </div>
           <div className="content">
             <p style={{fontWeight:"200"}} id="welcome">
-             {this.props.lang.welcome}
+             { this.props.lang.welcome }
            </p>
           {this.renderStep()}
           </div>
@@ -235,12 +235,12 @@ class InitialSetup extends Component {
             <div className="button" id="buttonForward" style = {buttonStyle} onClick={this.handleForward}>
               <svg className="arrowRight" viewBox="0 0 256 256">
                 <polyline
-                    fill="none" 
+                    fill="none"
                     stroke=  {this.props.importing || this.props.encrypting || this.props.importingPrivKey ? "#212a4c" : "#d09128"}
-                    strokeWidth="33" 
-                    strokeLinejoin="round" 
-                    strokeLinecap="round" 
-                    points="72,16 184,128 72,240" 
+                    strokeWidth="33"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    points="72,16 184,128 72,240"
                 />
               </svg>
               <svg className="circle" height="35" width="35">

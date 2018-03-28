@@ -59,7 +59,7 @@ class News extends Component {
       setTimeout(() => {
         this.props.setEccPostsPage(this.props.eccPostsPage + 1);
         this.props.setNewsSwitchingPage(false);
-      }, 400)
+      }, 400);
       this.updateArrows(this.props.eccPostsPage);
     }
     else if(direction == "left" && !$('#arrowLeft').hasClass('arrowInactive')){
@@ -69,7 +69,7 @@ class News extends Component {
       setTimeout(() => {
         this.props.setEccPostsPage(this.props.eccPostsPage - 1);
         this.props.setNewsSwitchingPage(false);
-      }, 400)
+      }, 400);
       this.updateArrows(this.props.eccPostsPage-2);
     }
   }
@@ -120,22 +120,22 @@ class News extends Component {
         </div>
         <div id="stats">
           <div className="statsItem" id="rank">
-            <p>Rank</p>
+            <p>{ this.props.lang.rank }</p>
             <p>{this.props.cmcStats.rank}</p>
             <div className="mask"></div>
           </div>
           <div className="statsItem" id="marketCap">
-            <p>Market Cap</p>
+            <p>{ this.props.lang.marketCap }</p>
             <p>{this.props.cmcStats.marketCap}</p>
             <div className="mask"></div>
           </div>
           <div className="statsItem" id="price">
-            <p>Price</p>
+            <p>{ this.props.lang.price }</p>
             <p>{this.props.cmcStats.price}</p>
             <div className="mask"></div>
           </div>
           <div className="statsItem" id="volume">
-            <p>Volume (24h)</p>
+            <p>{ this.props.lang.volume }</p>
             <p>{this.props.cmcStats.volume}</p>
           </div>
         </div>
