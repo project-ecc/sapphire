@@ -28,6 +28,10 @@
     border-right: .75rem solid transparent;
 }
 
+.notificationContainerMac:before{
+	right: 44px !important;
+}
+
 #notificationHeader{
 	@include themify($themes) { 
 		background-color: themed('notificationsHeaderBackgroundColor');  

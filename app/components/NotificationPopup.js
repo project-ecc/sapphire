@@ -4,7 +4,7 @@ import * as actions from '../actions';
 import {TweenMax} from "gsap";
 import $ from 'jquery';
 const Tools = require('../utils/tools');
-
+const os = require('os');
 /*
 * There are notifications for:
 * ECC news (can be deleted) (can be stacked)
@@ -194,7 +194,7 @@ class NotificationPopup extends React.Component {
   render() {
      return (
       <div ref="second">
-        <div id="notificationContainer">
+        <div id="notificationContainer" className={process.platform === 'darwin' ? "notificationContainerMac" : ""}>
           <div id="notificationHeader">
             <div id="notificationsHeaderContent">
             <p>{ this.props.lang.notifications }</p>

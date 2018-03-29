@@ -198,7 +198,8 @@ class Transaction extends Component {
                 if(this.props.type == "generate" && t.amount == 0) return null;
                 counter++;
                 const iTime = new Date(t.time * 1000);
-                let time = Tools.calculateTimeSince(lang, today, iTime);
+                console.log(this.props.lang)
+                let time = Tools.calculateTimeSince(this.props.lang, today, iTime);
 
                 let category = t.category;
                 if (category === 'generate') {

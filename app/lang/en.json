@@ -33,8 +33,7 @@
     "encrypt": "Encrypt",
     
     "loading": "Loading",
-    "mainMessage1": "Hello.",
-    "mainMessage2": "We are getting a few things ready...",
+    "mainMessage1": "Hello. We are getting a few things ready...",
     
     "importPrivateKey": "Import Private Key",
     "writeDownAPrivateKeyToImport": "Enter a private key to import an address",
@@ -104,6 +103,7 @@
     "normalCreateConfirm5": "Note that this address is not recognized by name in the network. Create an",
     "normalCreateConfirm6": "for that functionality",
     "confirmNewAddress": "Confirm New Address",
+    "ansCreateAddress" : "Create ANS Address",
 
     "normalAddress": "Normal Address",
     "accountOptional": "Account (optional)",
@@ -209,7 +209,11 @@
 
     "transactionsDays": "days ago",
     "transactionsDay": "day ago",
-
+    "transactionsMinutes": "minutes ago",
+    "transactionsMinute": "minute ago",
+    "transactionsHour": "hour ago",
+    "transactionsHours": "hours ago",
+    
     "nabBarNetworkInfoSyncing": "Syncing",
     "nabBarNetworkInfoActiveConnections": "Active Connections"
 }
