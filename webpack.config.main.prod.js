@@ -21,6 +21,16 @@ export default merge.smart(baseConfig, {
     filename: './app/main.prod.js'
   },
 
+  module: {
+    rules: [
+      // Common Image Formats
+      {
+        test: /\.(?:ico|gif|png|jpg|jpeg|webp)$/,
+        use: 'url-loader',
+      },
+    ],
+  },
+
   plugins: [
     /**
      * Babli is an ES6+ aware minifier based on the Babel toolchain (beta)
