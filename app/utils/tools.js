@@ -66,108 +66,108 @@ module.exports = {
     const selectedTheme = settings.get('settings.display.theme');
     if(!selectedTheme || selectedTheme === "theme-darkEcc"){
       if(iconName == "wallet" && !hover){
-        return require('../../resources/images/wallet-white.png')
+        return require('file-loader!../../resources/images/wallet-white.png')
       }
       else if(iconName == "wallet" && hover){
-        return require('../../resources/images/wallet-orange-pastel.png')
+        return require('file-loader!../../resources/images/wallet-orange-pastel.png')
       }
       else if(iconName == "fileStorage" && !hover){
-        return require('../../resources/images/fileStorage-white.png')
+        return require('file-loader!../../resources/images/fileStorage-white.png')
       }
       else if(iconName == "fileStorage" && hover){
-        return require('../../resources/images/fileStorage-orange-pastel.png')
+        return require('file-loader!../../resources/images/fileStorage-orange-pastel.png')
       }
       else if(iconName == "messaging" && !hover){
-        return require('../../resources/images/messaging-white.png')
+        return require('file-loader!../../resources/images/messaging-white.png')
       }
       else if(iconName == "messaging" && hover){
-        return require('../../resources/images/messaging-orange-pastel.png')
+        return require('file-loader!../../resources/images/messaging-orange-pastel.png')
       }
       else if(iconName == "contacts" && !hover){
-        return require('../../resources/images/contacts-white.png')
+        return require('file-loader!../../resources/images/contacts-white.png')
       }
       else if(iconName == "contacts" && hover){
-        return require('../../resources/images/contacts-orange-pastel.png')
+        return require('file-loader!../../resources/images/contacts-orange-pastel.png')
       }
       else if(iconName == "overview" && !hover){
-        return require('../../resources/images/overview-white.png')
+        return require('file-loader!../../resources/images/overview-white.png')
       }
       else if(iconName == "overview" && hover){
-        return require('../../resources/images/overview-orange-pastel.png')
+        return require('file-loader!../../resources/images/overview-orange-pastel.png')
       }
       else if(iconName == "send" && !hover){
-        return require('../../resources/images/send-white.png')
+        return require('file-loader!../../resources/images/send-white.png')
       }
       else if(iconName == "send" && hover){
-        return require('../../resources/images/send-orange-pastel.png')
+        return require('file-loader!../../resources/images/send-orange-pastel.png')
       }
       else if(iconName == "addresses" && !hover){
-        return require('../../resources/images/addresses-white.png')
+        return require('file-loader!../../resources/images/addresses-white.png')
       }
       else if(iconName == "addresses" && hover){
-        return require('../../resources/images/addresses-orange-pastel.png')
+        return require('file-loader!../../resources/images/addresses-orange-pastel.png')
       }
       else if(iconName == "transactions" && !hover){
-        return require('../../resources/images/transactions-white.png')
+        return require('file-loader!../../resources/images/transactions-white.png')
       }
       else if(iconName == "transactions" && hover){
-        return require('../../resources/images/transactions-orange-pastel.png')
+        return require('file-loader!../../resources/images/transactions-orange-pastel.png')
       }
       else if(iconName == "search"){
-        return require('../../resources/images/search-icon-dark.png')
+        return require('file-loader!../../resources/images/search-icon-dark.png')
       }
     }
     else if(selectedTheme && selectedTheme === "theme-defaultEcc"){
       if(iconName == "wallet" && !hover){
-        return require('../../resources/images/wallet-blue.png')
+        return require('file-loader!../../resources/images/wallet-blue.png')
       }
       else if(iconName == "wallet" && hover){
-        return require('../../resources/images/wallet-orange.png')
+        return require('file-loader!../../resources/images/wallet-orange.png')
       }
       else if(iconName == "fileStorage" && !hover){
-        return require('../../resources/images/fileStorage-blue.png')
+        return require('file-loader!../../resources/images/fileStorage-blue.png')
       }
       else if(iconName == "fileStorage" && hover){
-        return require('../../resources/images/fileStorage-orange.png')
+        return require('file-loader!../../resources/images/fileStorage-orange.png')
       }
       else if(iconName == "messaging" && !hover){
-        return require('../../resources/images/messaging-blue.png')
+        return require('file-loader!../../resources/images/messaging-blue.png')
       }
       else if(iconName == "messaging" && hover){
-        return require('../../resources/images/messaging-orange.png')
+        return require('file-loader!../../resources/images/messaging-orange.png')
       }
       else if(iconName == "contacts" && !hover){
-        return require('../../resources/images/contacts-blue.png')
+        return require('file-loader!../../resources/images/contacts-blue.png')
       }
       else if(iconName == "contacts" && hover){
-        return require('../../resources/images/contacts-orange.png')
+        return require('file-loader!../../resources/images/contacts-orange.png')
       }
       else if(iconName == "overview" && !hover){
-        return require('../../resources/images/overview-blue.png')
+        return require('file-loader!../../resources/images/overview-blue.png')
       }
       else if(iconName == "overview" && hover){
-        return require('../../resources/images/overview-orange.png')
+        return require('file-loader!../../resources/images/overview-orange.png')
       }
       else if(iconName == "send" && !hover){
-        return require('../../resources/images/send-blue.png')
+        return require('file-loader!../../resources/images/send-blue.png')
       }
       else if(iconName == "send" && hover){
-        return require('../../resources/images/send-orange.png')
+        return require('file-loader!../../resources/images/send-orange.png')
       }
       else if(iconName == "addresses" && !hover){
-        return require('../../resources/images/addresses-blue.png')
+        return require('file-loader!../../resources/images/addresses-blue.png')
       }
       else if(iconName == "addresses" && hover){
-        return require('../../resources/images/addresses-orange.png')
+        return require('file-loader!../../resources/images/addresses-orange.png')
       }
       else if(iconName == "transactions" && !hover){
-        return require('../../resources/images/transactions-blue.png')
+        return require('file-loader!../../resources/images/transactions-blue.png')
       }
       else if(iconName == "transactions" && hover){
-        return require('../../resources/images/transactions-orange.png')
+        return require('file-loader!../../resources/images/transactions-orange.png')
       }
       else if(iconName == "search"){
-        return require('../../resources/images/search-icon-dark.png')
+        return require('file-loader!../../resources/images/search-icon-dark.png')
       }
     }
   },

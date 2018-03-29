@@ -17,7 +17,6 @@ import DaemonManager from './Managers/DaemonManager';
 import GUIManager from './Managers/GUIManager';
 import {grabEccoinDir} from "./utils/platform.service";
 import os from 'os';import { traduction } from './lang/lang';
-var lang = traduction();
 const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote, Notification   } = require('electron');
 const dialog = require('electron').dialog;
 const settings = require('electron-settings');
@@ -38,14 +37,6 @@ let mainWindow = null;
 let guiUpdate = false;
 let daemonUpdate = false;
 let fullScreen = false;
-const selectedTheme = settings.get('settings.display.theme');
-
-function getBackgroundColor(){
-	if(!selectedTheme || selectedTheme === "theme-defaultEcc")
-		return "#181e35";
-	else if(selectedTheme && selectedTheme === "theme-darkEcc")
-		return "#1c1c23";
-}
 
 function sendStatusToWindow(text) {
   mainWindow.webContents.send('message', text);
@@ -79,6 +70,15 @@ const installExtensions = async () => {
 app.on('ready', async () => {
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
     await installExtensions();
+  }
+
+  const selectedTheme = settings.get('settings.display.theme');
+
+  const getBackgroundColor = () => {
+    if(!selectedTheme || selectedTheme === "theme-defaultEcc")
+      return "#181e35";
+    else if(selectedTheme && selectedTheme === "theme-darkEcc")
+      return "#1c1c23";
   }
 
   app.setAppUserModelId("com.github.greg-griffith.lynx");
@@ -166,8 +166,11 @@ app.on('ready', async () => {
 
   if (ds !== undefined && ds.start_at_login !== undefined && ds.start_at_login) {
     autoECCLauncher.enable();
+  } else {
+    autoECCLauncher.disable();
   }
-  else autoECCLauncher.disable();
+
+  setupEventHandlers();
 });
 
 function setupTrayIcon(){
@@ -204,82 +207,146 @@ function setupTrayIcon(){
     });
 }
 
-ipcMain.on('app:ready', (e, args) => {
-	console.log("ELECTRON GOT READY MESSAGE");
-	guiManager = new GUIManager();
-	daemonManager = new DaemonManager();
-});
+function setupEventHandlers() {
+  var lang = traduction();
 
-ipcMain.on('autoStart', (e, autoStart) => {
-	if(autoStart)
-		autoECCLauncher.enable();
-	else autoECCLauncher.disable();
-});
-
-ipcMain.on('show', (e, args) => {
-	mainWindow.show();
-	mainWindow.focus();
-});
-
-ipcMain.on('minimize', (e, args) => {
+  ipcMain.on('app:ready', (e, args) => {
+    console.log("ELECTRON GOT READY MESSAGE");
+    guiManager = new GUIManager();
+    daemonManager = new DaemonManager();
+  });
+  
+  ipcMain.on('autoStart', (e, autoStart) => {
+    if(autoStart)
+      autoECCLauncher.enable();
+    else autoECCLauncher.disable();
+  });
+  
+  ipcMain.on('show', (e, args) => {
+    mainWindow.show();
+    mainWindow.focus();
+  });
+  
+  ipcMain.on('minimize', (e, args) => {
     if(ds !== undefined && ds.minimise_to_tray !== undefined && ds.minimise_to_tray){
       mainWindow.setSkipTaskbar(true);
       mainWindow.hide();
       return;
     }
-	mainWindow.minimize();
-});
-
-ipcMain.on('full-screen', (e, args) => {
-	if(fullScreen)
-		mainWindow.setFullScreen(false);
-	else
-		mainWindow.setFullScreen(true);
-
-	fullScreen = !fullScreen;
-});
-
-ipcMain.on('hideTray', (e, hideTray) => {
-	if(!hideTray)
-		setupTrayIcon();
-	else
-		tray.destroy()
-});
-
-ipcMain.on('reloadSettings', () => {
-	ds = settings.get('settings.display');
-});
-
-ipcMain.on('maximize', (e, args) => {
-	if(!maximized)
-		mainWindow.maximize();
-	else mainWindow.unmaximize();
-
-	maximized = !maximized;
-});
-
-//done with initial setup tell DaemonManager to start
-ipcMain.on('initialSetup', (e, args) => {
-	settings.set('settings.initialSetup', true);
-	daemonManager.startDaemonChecker();
-});
-
-ipcMain.on('close', async (e, args) => {
-    //daemonManager.stopDaemon();
-	if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
-      if (!ds.minimise_to_tray) {
-        mainWindow.minimize();
+    mainWindow.minimize();
+  });
+  
+  ipcMain.on('full-screen', (e, args) => {
+    if(fullScreen)
+      mainWindow.setFullScreen(false);
+    else
+      mainWindow.setFullScreen(true);
+  
+    fullScreen = !fullScreen;
+  });
+  
+  ipcMain.on('hideTray', (e, hideTray) => {
+    if(!hideTray)
+      setupTrayIcon();
+    else
+      tray.destroy()
+  });
+  
+  ipcMain.on('reloadSettings', () => {
+    ds = settings.get('settings.display');
+  });
+  
+  ipcMain.on('maximize', (e, args) => {
+    if(!maximized)
+      mainWindow.maximize();
+    else mainWindow.unmaximize();
+  
+    maximized = !maximized;
+  });
+  
+  //done with initial setup tell DaemonManager to start
+  ipcMain.on('initialSetup', (e, args) => {
+    settings.set('settings.initialSetup', true);
+    daemonManager.startDaemonChecker();
+  });
+  
+  ipcMain.on('close', async (e, args) => {
+      //daemonManager.stopDaemon();
+    if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
+        if (!ds.minimise_to_tray) {
+          mainWindow.minimize();
+        } else {
+          mainWindow.hide();
+        }
       } else {
-        mainWindow.hide();
+        let closedDaemon = false;
+        do{
+          closedDaemon = await daemonManager.stopDaemon();
+        }while(!closedDaemon);
+        app.quit();
       }
-    } else {
-      let closedDaemon = false;
-      do{
-      	closedDaemon = await daemonManager.stopDaemon();
-      }while(!closedDaemon);
-      app.quit();
+  });
+
+  event.on('wallet', (exists, daemonCredentials) => {
+    var initialSetup = settings.has('settings.initialSetup');
+  
+    if(initialSetup && exists){
+      sendMessage("setup_done", daemonCredentials);
     }
-});
+    else if(initialSetup && !exists){
+      sendMessage("import_wallet", daemonCredentials);
+    }
+    else if(!initialSetup && exists){
+      sendMessage("partial_initial_setup", daemonCredentials);
+    }
+    else if(!initialSetup && !exists){
+      sendMessage("initial_setup", daemonCredentials);
+    }
+  });
+  
+  event.on('daemonUpdate', () => {
+    console.log("electron got daemon update message, sending to GUI");
+    daemonUpdate = true;
+    sendMessage('daemonUpdate');
+  });
+  
+  event.on('guiUpdate', () => {
+    console.log("electron got gui update message, sending to GUI");
+    guiUpdate = true;
+    sendMessage('guiUpdate');
+  });
+  
+  event.on('updatedDaemon', () => {
+    sendMessage("daemonUpdated");
+    daemonUpdate = false;
+    if(guiUpdate){
+      event.emit('updateGui');
+    }
+  });
+  
+  event.on('daemonStarted', () => {
+    sendMessage("importedWallet");
+  });
+  
+  ipcMain.on('importWallet', (e, args) => {
+    openFile();
+  });
+  
+  ipcMain.on('update', (e, args) => {
+    console.log("electron got update signal, sending to daemon");
+    console.log(guiUpdate);
+    console.log(daemonUpdate);
+    if(guiUpdate && daemonUpdate){
+      event.emit('updateDaemon', false);
+    }
+    else if(guiUpdate){
+      event.emit('updateGui');
+    }
+    else {
+      event.emit('updateDaemon');
+    }
+  });
+}
 
 app.on('before-quit', async () => {
 
@@ -289,66 +356,6 @@ function sendMessage(type, argument = undefined) {
 	console.log("sending message: ", type);
   mainWindow.webContents.send(type, argument);
 }
-
-event.on('wallet', (exists, daemonCredentials) => {
-	var initialSetup = settings.has('settings.initialSetup');
-
-	if(initialSetup && exists){
-		sendMessage("setup_done", daemonCredentials);
-	}
-	else if(initialSetup && !exists){
-		sendMessage("import_wallet", daemonCredentials);
-	}
-	else if(!initialSetup && exists){
-		sendMessage("partial_initial_setup", daemonCredentials);
-	}
-	else if(!initialSetup && !exists){
-		sendMessage("initial_setup", daemonCredentials);
-	}
-});
-
-event.on('daemonUpdate', () => {
-	console.log("electron got daemon update message, sending to GUI");
-	daemonUpdate = true;
-	sendMessage('daemonUpdate');
-});
-
-event.on('guiUpdate', () => {
-	console.log("electron got gui update message, sending to GUI");
-	guiUpdate = true;
-	sendMessage('guiUpdate');
-});
-
-event.on('updatedDaemon', () => {
-	sendMessage("daemonUpdated");
-	daemonUpdate = false;
-	if(guiUpdate){
-		event.emit('updateGui');
-	}
-});
-
-event.on('daemonStarted', () => {
-	sendMessage("importedWallet");
-});
-
-ipcMain.on('importWallet', (e, args) => {
-	openFile();
-});
-
-ipcMain.on('update', (e, args) => {
-	console.log("electron got update signal, sending to daemon");
-	console.log(guiUpdate);
-	console.log(daemonUpdate);
-	if(guiUpdate && daemonUpdate){
-		event.emit('updateDaemon', false);
-	}
-	else if(guiUpdate){
-		event.emit('updateGui');
-	}
-	else {
-		event.emit('updateDaemon');
-	}
-});
 
 
 function openFile () {
