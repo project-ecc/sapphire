@@ -99,16 +99,6 @@ app.on('ready', async () => {
   mainWindow.loadURL(`file://${__dirname}/version.html#v${app.getVersion()}`);
   mainWindow.loadURL(`file://${__dirname}/app.html`);
 
-  // @TODO: Use 'ready-to-show' event
-  //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
-  mainWindow.webContents.on('did-finish-load', () => {
-    if (!mainWindow) {
-      throw new Error('"mainWindow" is not defined');
-    }
-    mainWindow.show();
-    mainWindow.focus();
-  });
-
   mainWindow.on('show', function (event) {
     mainWindow.setSkipTaskbar(false);
   });
@@ -208,6 +198,18 @@ ipcMain.on('app:ready', (e, args) => {
 	console.log("ELECTRON GOT READY MESSAGE");
 	guiManager = new GUIManager();
 	daemonManager = new DaemonManager();
+});
+
+ipcMain.on('messagingView', (e, args) => {
+	if(args){
+		mainWindow.setMinimumSize(460,600);
+	}
+	else{
+		if(mainWindow.getSize()[0] < 800){
+			mainWindow.setSize(800, mainWindow.getSize()[1]);
+		}
+		mainWindow.setMinimumSize(800,600);
+	}
 });
 
 ipcMain.on('autoStart', (e, autoStart) => {

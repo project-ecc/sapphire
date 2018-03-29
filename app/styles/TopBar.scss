@@ -59,17 +59,24 @@
 }
 
 #topBarCustomTitle{
-  position: fixed;
+  position: relative;
   display: inline-block;
   top: 3px;
   color: #464b5a;
   font-weight: 600;
   font-size: 20px;
-  left: 50%;
-  transform: translate(-50%,0);
+  text-align: center;
   visibility: hidden;
   z-index: -1;
-  position: absolute;
+
+}
+
+.topBarCustomTitleWin{
+  width: calc(100% - 242px);
+}
+
+.topBarCustomTitleMac{
+  width: calc(100% - 212px);
 }
 
 .appButtonMac img{

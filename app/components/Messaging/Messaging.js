@@ -7,6 +7,7 @@ const homedir = require('os').homedir();
 import * as actions from '../../actions';
 import { connect } from 'react-redux';
 const Tools = require('../../utils/tools')
+import { ipcRenderer } from 'electron';
 
 class Messaging extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class Messaging extends Component {
   }
 
   componentDidMount() {
+    ipcRenderer.send('messagingView', true);
     $( window ).on('resize', () => {
       this.updateUI();
     });
@@ -23,6 +25,7 @@ class Messaging extends Component {
   }
 
   componentWillUnmount() {
+    ipcRenderer.send('messagingView', false);
     $( window ).off('resize');
     if(this.props.showingTitleTopBar){
       TweenMax.fromTo($('#topBarCustomTitle'), 0.2, {autoAlpha: 1, y: 0}, { autoAlpha:0, y:20, ease: Linear.easeNone});
@@ -43,7 +46,6 @@ class Messaging extends Component {
       }
     }
     else{
-
       if(this.props.showingTitleTopBar){
         this.props.setShowingMessageTopBar(false);
         TweenMax.fromTo($('#topBarCustomTitle'), 0.2, {autoAlpha: 1, y: 0}, { autoAlpha:0, y:20, ease: Linear.easeNone});
