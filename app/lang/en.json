@@ -33,7 +33,7 @@
     "encrypt": "Encrypt",
     
     "loading": "Loading",
-    "mainMessage1": "Hello. We are getting a few things ready...",
+    "mainMessage": "Hello, we are getting a few things ready...",
     
     "importPrivateKey": "Import Private Key",
     "writeDownAPrivateKeyToImport": "Enter a private key to import an address",
@@ -109,7 +109,7 @@
     "accountOptional": "Account (optional)",
     "createANSAddress": "Create ANS Address",
     "createNormalAddress": "Create Normal Address",
-    "ansCost1": "ANS addresses have a nominal cost of",
+    "ansCost1": "ANS addresses are recognized by name in the network and have a cost of",
     "ansCost2": "per month",
     "yourAddresses": "Your Addresses",
     "allYourNormalAndANS": "All your normal and ANS addresses",
@@ -214,6 +214,15 @@
     "transactionsHour": "hour ago",
     "transactionsHours": "hours ago",
     
-    "nabBarNetworkInfoSyncing": "Syncing",
-    "nabBarNetworkInfoActiveConnections": "Active Connections"
+    "overview": "Overview",
+    "send": "Send",
+    "addresses": "Addresses",
+    "fileStorage": "File Storage",
+    "customer": "Customer",
+    "viewFiles": "View Files",
+    "gallery": "Gallery",
+    "provider": "Provider",
+    "messaging": "Messaging",
+    "syncing": "Syncing",
+    "activeConnections": "Active Connections"
 }

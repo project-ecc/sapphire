@@ -205,32 +205,32 @@ class Sidebar extends Component {
           <img id="sidebarLogo" src={usericon} />
         </div>
         <ul className="sidebar-menu">
-          <li className="have-children"><a href="#" onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="wallet" className={"mainOption" + walletStyle}><div className="arrowMenu"></div><img src={wallet}/><span></span>Wallet</a>
+          <li className="have-children"><a href="#" onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="wallet" className={"mainOption" + walletStyle}><div className="arrowMenu"></div><img src={wallet}/><span></span>{ this.props.lang.wallet }</a> 
             <ul>
-              <li><img className="sidebarImage" src={overview}/> <a className={overviewStyle} onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="overview"> Overview</a></li>
-              <li><img className="sidebarImage" src={send}/> <a onClick={this.handleClicked} className={sendStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="send">Send</a></li>
-              <li><img className="sidebarImage" src={addresses}/> <a onClick={this.handleClicked} className={addressesStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="addresses"><img className="sidebarImage" src={addresses}/> Addresses</a></li>
-              <li><img className="sidebarImage" src={transactions}/>  <a onClick={this.handleClicked} className={transactionsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="transactions">Transactions</a></li>
+              <li><img className="sidebarImage" src={overview}/> <a className={overviewStyle} onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="overview">{ this.props.lang.overview }</a></li>
+              <li><img className="sidebarImage" src={send}/> <a onClick={this.handleClicked} className={sendStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="send">{ this.props.lang.send }</a></li>
+              <li><img className="sidebarImage" src={addresses}/> <a onClick={this.handleClicked} className={addressesStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="addresses"><img className="sidebarImage" src={addresses}/>{ this.props.lang.addresses }</a></li>
+              <li><img className="sidebarImage" src={transactions}/>  <a onClick={this.handleClicked} className={transactionsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="transactions">{ this.props.lang.transactions }</a></li>
             </ul>
           </li>
-          <li className="have-children"><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="fileStorage" className={"mainOption" + fileStorageStyle}><div className="arrowMenu"></div><img src={fileStorage}/><span></span>File Storage</a>
+          <li className="have-children"><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="fileStorage" className={"mainOption" + fileStorageStyle}><div className="arrowMenu"></div><img src={fileStorage}/><span></span>{ this.props.lang.fileStorage }</a>
             <ul>
-              <li><a href="#">Customer</a></li>
-              <li><a href="#">View Files</a></li>
-              <li><a href="#">Gallery</a></li>
-              <li><a href="#">Provider</a></li>
+              <li><a href="#">{ this.props.lang.customer }</a></li>
+              <li><a href="#">{ this.props.lang.viewFiles }</a></li>
+              <li><a href="#">{ this.props.lang.gallery }</a></li>
+              <li><a href="#">{ this.props.lang.provider }</a></li>
             </ul>
           </li>
-          <li><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="messaging" className={"mainOption" + messagingStyle}><img src={messaging}/><span></span>Messaging</a></li>
-          <li><a onClick={this.handleClicked} className={contactsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="contacts"><img style={{marginRight: "20px", position: "relative", top:"-2px"}} src={contacts}/>Contacts</a></li>
+          <li><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="messaging" className={"mainOption" + messagingStyle}><img src={messaging}/><span></span>{ this.props.lang.messaging }</a></li>
+          <li><a onClick={this.handleClicked} className={contactsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="contacts"><img style={{marginRight: "20px", position: "relative", top:"-2px"}} src={contacts}/>{ this.props.lang.contacts }</a></li>
         </ul>
         <div className="connections sidebar-section-container">
         <a onClick={this.handleClicked} data-id="network" style={{textDecoration: "none", cursor:"pointer"}}>
-          <p style={{fontSize: "13px"}}>{`${this.props.lang.nabBarNetworkInfoSyncing} ${progressBar}%`}</p>
+          <p style={{fontSize: "13px"}}>{`${this.props.lang.syncing} ${progressBar}%`}</p>
           <div className="progress">
             <div className="bar" style={{ width: `${progressBar}%`}}></div>
           </div>
-          <p style={{fontSize: "13px"}}>{`${this.props.lang.nabBarNetworkInfoActiveConnections}: ${this.props.connections}`}</p>
+          <p style={{fontSize: "13px"}}>{`${this.props.lang.activeConnections}: ${this.props.connections}`}</p>
           </a>
         </div>
       </div>
