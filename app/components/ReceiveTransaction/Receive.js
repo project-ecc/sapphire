@@ -229,7 +229,7 @@ class Receive extends Component {
           <p className="ansLabel">{ this.props.lang.ansAddresses }</p>
           <div>
             <p id="addressCreatedSuccessfully"> { this.props.lang.addressCreatedSuccessfully }<br></br><span className="ecc" onClick={this.goToBackupPage.bind(this)}>{ this.props.lang.clickToBackupWallet }</span></p>
-            <p id="upgradeAns"> {this.props.selectedAddress && this.props.selectedAddress.ans ? "{ this.props.lang.disableANSSubscription }" : this.props.selectedAddress ? "{ this.props.lang.upgradeToANS }" : ""}</p>
+            <p id="upgradeAns"> {this.props.selectedAddress && this.props.selectedAddress.ans ?  this.props.lang.disableANSSubscription  : this.props.selectedAddress ? this.props.lang.upgradeToANS : ""}</p>
           </div>
         </div>
       </div>
