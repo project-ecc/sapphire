@@ -38,10 +38,12 @@ class InitialSetup extends Component {
   }
 
   handleForward() {
-    if(this.props.importing || !this.props.stepOverVal || this.props.encrypting || this.props.importingPrivKey) return;
-    else if(this.props.setupDoneInternal){
+    if((this.props.importing && !this.props.importingWalletWithSetupDone) || !this.props.stepOverVal || this.props.encrypting || this.props.importingPrivKey) return;
+    else if(this.props.setupDoneInternal || this.props.importingWalletWithSetupDone){
       console.log("Done with setup!");
       ipcRenderer.send('initialSetup');
+      this.props.importedWallet();
+      this.props.setImportingWalletWithSetupDone(false);
       this.props.setSetupDone();
       return;
     }
@@ -196,6 +198,21 @@ class InitialSetup extends Component {
     )
   }
 
+  renderImportWallet(){
+    return(
+      <TransitionGroup key="1" component="article">
+        {this.props.step == 1 ?
+          <TransitionComponent
+            children= {<ImportWallet />}
+            animationType= "firstSetupStep"
+            animateIn= {Tools.animateStepIn}
+            animateOut = {Tools.animateStepOut}/>
+            : null
+        }
+      </TransitionGroup>
+    )
+  }
+
   renderStep(){
     if(this.props.initialSetup){
       return this.renderInitialSetup();
@@ -205,6 +222,9 @@ class InitialSetup extends Component {
     }
     else if(this.props.unencryptedWallet){
       return this.renderUnencryptedWalletSetup();
+    }
+    else if(this.props.shouldImportWallet || this.props.importingWalletWithSetupDone){
+      return this.renderImportWallet();
     }
   }
 
@@ -236,15 +256,15 @@ class InitialSetup extends Component {
               <svg className="arrowRight" viewBox="0 0 256 256">
                 <polyline
                     fill="none"
-                    stroke=  {this.props.importing || this.props.encrypting || this.props.importingPrivKey ? "#212a4c" : "#d09128"}
                     strokeWidth="33"
                     strokeLinejoin="round"
                     strokeLinecap="round"
                     points="72,16 184,128 72,240"
+                    className= {(this.props.importing || this.props.encrypting || this.props.importingPrivKey) && !this.props.importingWalletWithSetupDone  ? "intialSetupButtonInactive" : ""}
                 />
               </svg>
               <svg className="circle" height="35" width="35">
-                <circle cx="17.5" cy="17.5" r="17" stroke = {this.props.importing || this.props.encrypting || this.props.importingPrivKey ? "#212a4c" : "#d09128"} strokeWidth= "1.5" fill="transparent" />
+                <circle className= {(this.props.importing || this.props.encrypting || this.props.importingPrivKey) && !this.props.importingWalletWithSetupDone ? "intialSetupButtonInactive" : ""} cx="17.5" cy="17.5" r="17" strokeWidth= "1.5" fill="transparent" />
               </svg>
             </div>
           </div>
@@ -267,7 +287,9 @@ const mapStateToProps = state => {
     partialInitialSetup: state.startup.partialInitialSetup,
     unencryptedWallet: state.startup.unencryptedWallet,
     setupDoneInternal: state.startup.setupDoneInternal,
-    importingPrivKey: state.application.checkingDaemonStatusPrivateKey
+    importingPrivKey: state.application.checkingDaemonStatusPrivateKey,
+    shouldImportWallet: state.startup.importWallet,
+    importingWalletWithSetupDone: state.startup.importingWalletWithSetupDone
   };
 };
 

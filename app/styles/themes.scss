@@ -73,6 +73,7 @@ $themes: (
     popupBoxShadow: 0px 0px 13px -2px black,
     popupCloseButtonBorder: 2px solid #6a6c75,
     popupCloseButtonHoverBackgroundColor: #0f1223,
+    popupTitleFontWeight: 600,
 
     //NETWORK STATS
     circleTrackColor: #14182f,
@@ -107,6 +108,11 @@ $themes: (
     //TRANSACTIONS FILTER
     transactionsFilterBackgroundColor: #181e35,
     transactionsFilterBorder: 1px solid #22252d,
+
+    //INITIAL SETUP
+    initialSetupButtonStrokeColor: #212a4c,
+    initialSetupButtonActiveStrokeColor: #d09128,
+
   ),
   darkEcc: (
     //BODY
@@ -182,6 +188,7 @@ $themes: (
     popupBoxShadow: 0px 0px 13px -2px black,
     popupCloseButtonBorder: 2px solid #6a6c75,
     popupCloseButtonHoverBackgroundColor: #0f1223,
+    popupTitleFontWeight: 500,
 
     //NETWORK STATS
     circleTrackColor: #16181d,
@@ -216,6 +223,11 @@ $themes: (
     //TRANSACTIONS FILTER
     transactionsFilterBackgroundColor: #15171d,
     transactionsFilterBorder: 1px solid #13151b,
+
+    //INITIAL SETUP
+    initialSetupButtonStrokeColor: #464b5a,
+    initialSetupButtonActiveStrokeColor: #c39c59,
+
   ),
 );
 

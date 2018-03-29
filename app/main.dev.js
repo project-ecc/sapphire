@@ -15,7 +15,7 @@ import path from 'path';
 import MenuBuilder from './menu';
 import DaemonManager from './Managers/DaemonManager';
 import GUIManager from './Managers/GUIManager';
-import {grabWalletDir} from "./utils/platform.service";
+import {grabEccoinDir} from "./utils/platform.service";
 import os from 'os';import { traduction } from './lang/lang';
 var lang = traduction();
 const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote, Notification   } = require('electron');
@@ -370,15 +370,15 @@ console.log("called open file");
         });
    else{
    	sendMessage("importStarted");
-    walletPath = `${grabWalletDir()}wallet.dat`;
+    walletPath = `${grabEccoinDir()}wallet.dat`;
+	console.log(walletPath);
 
-	  console.log(walletPath);
-
-   	copyFile(fileName,walletPath, function(err){
+   	copyFile(fileName, walletPath, function(err){
 		if(err){
 			console.log("error copying wallet: ", err);
 		}
 		else{
+			sendMessage('importedWallet');
 			event.emit('start');
 		}
    	})
@@ -396,7 +396,7 @@ function copyFile(source, target, cb) {
   var wr = fs.createWriteStream(target);
   wr.on("error", function(err) {
   	if(err.indexOf("ENOENT") > -1){
-
+  		done(err);
   	}
     done(err);
   });

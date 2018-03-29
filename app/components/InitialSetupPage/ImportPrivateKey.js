@@ -220,7 +220,7 @@ class ImportPrivateKey extends React.Component {
       subTitle = {
         paddingBottom: "30px"
       };
-      title = <p style={{fontSize: "18px", color:"#b4b7c8", paddingTop: "20px"}}>{ this.props.lang.importPrivateKey }</p>;
+      title = <p className={this.props.notInitialSetup ? "popupTitle" : ""} style={{fontSize: "18px", paddingTop: "20px"}}>{ this.props.lang.importPrivateKey }</p>;
     }
 
     return (
@@ -229,7 +229,7 @@ class ImportPrivateKey extends React.Component {
         {title}
         <div id="importAddress" style={textStyle}>
           <p style={subTitle} className= {this.props.notInitialSetup ? "" : "subTitle"}>
-           { this.props.lang.writeDownAPrivateKeyToImport }
+           { this.props.notInitialSetup ? this.props.lang.writeDownAPrivateKeyToImport : this.props.lang.writeDownAPrivateKeyToImportInitialSetup }
            </p>
            <Input
             divStyle={{width: "400px"}}

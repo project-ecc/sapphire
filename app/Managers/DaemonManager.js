@@ -42,7 +42,8 @@ class DaemonManager {
       this.startDaemon((started) => {
         if (started) {
           event.emit('daemonStarted');
-        }				else event.emit('daemonFailed');
+        }				
+        else event.emit('daemonFailed');
       });
     });
 

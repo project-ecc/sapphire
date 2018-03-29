@@ -13,16 +13,21 @@ import {
   UPDATE_AVAILABLE,
   UNENCRYPTED_WALLET,
   SETUP_DONE_INTERNAL,
-  TELL_USER_OF_UPDATE
+  TELL_USER_OF_UPDATE,
+  IMPORTED_WALLET,
+  IMPORTING_WALLET_SETUP_DONE
 } from '../actions/types';
 
 
-const INITIAL_STATE = {lang: lang, loader: true, initialSetup: false, partialInitialSetup: false, setupDone: false, importWallet: false, loading: false, updatingApp: false, guiUpdate: false, daemonUpdate:false, unencryptedWallet: false, setupDoneInternal: false, toldUserAboutUpdate: false};
+const INITIAL_STATE = {lang: lang, loader: true, initialSetup: false, partialInitialSetup: false, setupDone: false, importWallet: false, loading: false, updatingApp: false, guiUpdate: false, daemonUpdate:false, unencryptedWallet: false, setupDoneInternal: false, toldUserAboutUpdate: false, importingWalletWithSetupDone: false};
 
 export default(state = INITIAL_STATE, action) => {
 	if(action.type == SET_LANGUAGE){
 		lang = traduction();
 		return {...state, lang: lang};
+	}
+	else if(action.type == IMPORTING_WALLET_SETUP_DONE){
+		return {...state, importingWalletWithSetupDone: action.payload}
 	}
 	else if(action.type == UNENCRYPTED_WALLET){
 		return {...state, loader: false, loading: false, unencryptedWallet: action.payload}
@@ -43,6 +48,9 @@ export default(state = INITIAL_STATE, action) => {
 	else if(action.type == PARTIAL_INITIAL_SETUP){
 		console.log("got partial initial setup");
 		return {...state, partialInitialSetup: true, loader: false, loading: false, unencryptedWallet: false};
+	}
+	else if(action.type == IMPORTED_WALLET){
+		return {...state, importWallet: false}
 	}
 	else if(action.type == SETUP_DONE){
 		console.log("got setup done");

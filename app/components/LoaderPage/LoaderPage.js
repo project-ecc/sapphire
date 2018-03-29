@@ -32,6 +32,14 @@ class Loader extends React.Component {
   	  Tools.hideFunctionIcons();
       this.props.setShowingFunctionIcons(false);
   	}
+
+  }
+
+  componentDidMount(){
+  	//fix for when importing a wallet with the setup done, without this the "loading" text doesn't show up, since the prop is already set to true
+  	if(this.props.loading && $(this.refs.blockIndexLoad).css('visibility') == "hidden"){
+  		this.showLoadingBlockIndex();
+  	}
   }
 
   showLoadingBlockIndex(){
@@ -140,7 +148,7 @@ class Loader extends React.Component {
 				</g>
 			</svg>
 			<div id="loaderText" style={{marginTop: "15px"}}>
-				<div id="blockIndexLoad">
+				<div id="blockIndexLoad" ref="blockIndexLoad">
 					<p id="loading" style={{fontSize: "45px", fontWeight: "bold"}}>{ this.props.lang.loading }</p>
 				</div>
 				<p ref="mainMessage" style={{marginTop: "-50px", fontWeight:"300", visibility:"hidden"}} id="gettingReady">{ this.props.lang.mainMessage1 }<br></br>{ this.props.lang.mainMessage2 }</p>

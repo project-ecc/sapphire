@@ -21,6 +21,9 @@ class ImportWallet extends React.Component {
   }
 
   sendActionImportedWallet(){
+    if(this.props.setupDone){
+      this.props.setImportingWalletWithSetupDone(true);
+    }      
     this.props.importedWallet();
     TweenMax.to('#importing', 0.2, {autoAlpha: 0, scale: 0.5});
     TweenMax.fromTo('#imported', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
@@ -84,7 +87,8 @@ const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
     importing: state.setup.importing,
-    importHasStarted: state.setup.importStarted
+    importHasStarted: state.setup.importStarted,
+    setupDone: state.startup.setupDone
   };
 };
 

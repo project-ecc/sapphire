@@ -241,7 +241,7 @@ class Settings extends Component {
         <SettingsToggle
           keyVal={2}
           text= { this.props.lang.operativeSystemNotifications }
-          subText = {this.props.operativeSystemNotifications ? <p className="settingsToggleSubText">{ this.props.lang.operativeSystemNotificationsDisable }</p> : <p className="settingsToggleSubText">{ this.props.lang.operativeSystemNotificationsEnable }</p>}
+          subText = {this.props.operativeSystemNotifications ? <p className="settingsToggleSubText">{ this.props.lang.operativeSystemNotificationDisable }</p> : <p className="settingsToggleSubText">{ this.props.lang.operativeSystemNotificationEnable }</p>}
           handleChange = {this.handleOperativeSystemNotifications}
           checked = {this.props.operativeSystemNotifications}
         />

@@ -37,7 +37,8 @@
     "mainMessage2": "We are getting a few things ready...",
     
     "importPrivateKey": "Import Private Key",
-    "writeDownAPrivateKeyToImport": "Optionally, enter a private key to import an address",
+    "writeDownAPrivateKeyToImport": "Enter a private key to import an address",
+    "writeDownAPrivateKeyToImportInitialSetup": "Optionally, enter a private key to import an address",
     "enterPrivKey": "Private Key",
     "enterYourPassword": "Enter your password",
     "wrongPassword": "Wrong password",
@@ -195,7 +196,7 @@
     "timeCAPS": "TIME",
     "previous": "Previous",
 
-    "unlockWallet": "Unlock your wallet",
+    "unlockWallet": "Unlock Your Wallet",
     "unlockWalletExplanation1": "This process unlocks your wallet for staking.",
     "unlockWalletExplanation2": "You will still be required to enter a password to send",
 

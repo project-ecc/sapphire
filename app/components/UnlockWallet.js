@@ -86,7 +86,7 @@ class UnlockWallet extends React.Component {
       <div className="unlockWallet">
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">{ this.props.lang.unlockWallet }</p>
-        <p style={{fontSize: "16px", color:"#b4b7c8", width: "400px", textAlign: "left", margin: "0 auto", paddingTop: "20px"}}>{ this.props.lang.unlockWalletExplanation1 }<br></br>{ this.props.lang.unlockWalletExplanation2 } <span className="ecc">ECC</span>.</p>
+        <p style={{fontSize: "16px", width: "400px", textAlign: "left", margin: "0 auto", paddingTop: "20px"}}>{this.props.lang.unlockWalletExplanation1 + " " + this.props.lang.unlockWalletExplanation2} <span className="ecc">ECC</span>.</p>
           <Input
             divStyle={{width: "400px"}}
             placeholder= { this.props.lang.password }

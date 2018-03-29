@@ -171,6 +171,7 @@ class EncryptWallet extends React.Component {
               divStyle={{width: "200px"}}
               placeholder= { this.props.lang.enterPassword }
               placeholderId="enterPassword"
+              placeHolderClassName="inputPlaceholder changePasswordInput"
               value={this.props.passwordValue}
               handleChange={this.handlePasswordChange.bind(this)}
               type="password"
@@ -182,6 +183,7 @@ class EncryptWallet extends React.Component {
               divStyle={{marginTop: "20px", paddingBottom: "8px", width: "200px"}}
               placeholder= { this.props.lang.repeatPassword }
               placeholderId="enterPasswordRepeat"
+              placeHolderClassName="inputPlaceholder changePasswordInput"
               value={this.props.passwordConfirmationValue}
               handleChange={this.handleConfirmationPassword.bind(this)}
               type="password"

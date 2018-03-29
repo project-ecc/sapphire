@@ -95,6 +95,13 @@ class App extends Component<Props> {
     this.props.setOperativeSystemNotifications(operativeSystemNotifications);
     this.props.setNewsNotifications(newsNotifications);
     this.props.setStakingNotifications(stakingNotifications);
+
+    //added this as a temporary fix when importing a wallet when initial setup has been done
+    const initialSetup = settings.get('settings.initialSetup');
+    console.log("INITIAL SETUP", initialSetup)
+    if(initialSetup){
+      this.props.setSetupDone(true);
+    }
   }
 
   getPopup(){
@@ -159,23 +166,25 @@ class App extends Component<Props> {
   }
 
   getLoader(){
-    return(
-      <div>
-        <TransitionGroup component="aside">
-          { this.props.loader || this.props.updatingApplication ?
-            <TransitionComponent
-              children={<Loading />}
-              id= "loading-wrapper"
-              animationType= "loader"
-              animateIn= {Tools.animateLoaderIn}
-              animateOut = {Tools.animateLoaderOut}
-              animateLogo = {this.animateLogo.bind(this)}
-              updatingApplication = {this.props.updatingApplication}/>
-              : null
-          }
-        </TransitionGroup>
-      </div>
-    )
+    if(!this.props.importingWalletWithSetupDone){
+      return(
+        <div>
+          <TransitionGroup component="aside">
+            { this.props.loader || this.props.updatingApplication ?
+              <TransitionComponent
+                children={<Loading />}
+                id= "loading-wrapper"
+                animationType= "loader"
+                animateIn= {Tools.animateLoaderIn}
+                animateOut = {Tools.animateLoaderOut}
+                animateLogo = {this.animateLogo.bind(this)}
+                updatingApplication = {this.props.updatingApplication}/>
+                : null
+            }
+          </TransitionGroup>
+        </div>
+      )
+    }
   }
 
   animateLogo(callback){
@@ -211,7 +220,7 @@ class App extends Component<Props> {
   }
 
   getMainApp(){
-    if(!this.props.unencryptedWallet && this.props.setupDone && !this.props.loader && !this.props.updatingApplication && !this.props.settings){
+    if(!this.props.unencryptedWallet && !this.props.shouldImportWallet && this.props.setupDone && !this.props.loader && !this.props.updatingApplication && !this.props.settings && !this.props.importingWalletWithSetupDone){
       return(
           <TransitionGroup component="section">
             <TransitionComponent
@@ -252,7 +261,7 @@ class App extends Component<Props> {
   }
 
   getInitialSetup(){
-    if(!this.props.setupDone && !this.props.loader && !this.props.updatingApplication || this.props.unencryptedWallet){
+    if(!this.props.setupDone && !this.props.loader && !this.props.updatingApplication || this.props.unencryptedWallet || this.props.shouldImportWallet || this.props.importingWalletWithSetupDone){
       return(
         <TransitionGroup>
           <TransitionComponent
@@ -322,7 +331,9 @@ const mapStateToProps = state => {
     notificationPopup: state.notifications.popupEnabled,
     minimizeOnClose: state.application.minimizeOnClose,
     closingApplication: state.application.closingApplication,
-    theme: state.application.theme
+    theme: state.application.theme,
+    shouldImportWallet: state.startup.importWallet,
+    importingWalletWithSetupDone: state.startup.importingWalletWithSetupDone
   };
 };
 

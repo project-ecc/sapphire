@@ -10,7 +10,7 @@
 @import "./styles/Transactions.scss";
 @import "./styles/Settings.scss";
 @import "./styles/Loading.scss";
-@import "./styles/InitialSetup.css";
+@import "./styles/InitialSetup.scss";
 @import "./styles/LanguageSelector.scss";
 @import "./styles/ThemeSelector.css";
 @import "./styles/ImportWallet.scss";
@@ -182,6 +182,7 @@ aside{
 .popupTitle{
   @include themify($themes) { 
     color: themed('bodyParagraphColor');  
+    font-weight: themed('popupTitleFontWeight');  
   } 
   font-size: 18px;
   padding-top: 20px;
