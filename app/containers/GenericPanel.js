@@ -48,10 +48,9 @@ class GenericPanel extends Component {
 
   componentWillMount(){
     if(!this.props.showingFunctionIcons){
-      var self = this;
       setTimeout(() => {
         Tools.showFunctionIcons();
-        self.props.setShowingFunctionIcons(true);
+        this.props.setShowingFunctionIcons(true);
       }, 400)
     }
   }

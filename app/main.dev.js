@@ -202,7 +202,7 @@ function setupEventHandlers() {
 
 	ipcMain.on('messagingView', (e, args) => {
 		if(args){
-			mainWindow.setMinimumSize(460,600);
+			mainWindow.setMinimumSize(400,600);
 		}
 		else{
 			if(mainWindow.getSize()[0] < 800){

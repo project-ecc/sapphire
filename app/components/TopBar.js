@@ -171,7 +171,7 @@ class TopBar extends React.Component {
     return(
       <div>
         <img className="miniButton" src={miniButton}></img>
-        <p id="topBarCustomTitle" className= {process.platform === 'darwin' ? "topBarCustomTitleMac" : "topBarCustomTitleWin"}>Messaging</p>
+        {/*<p id="topBarCustomTitle" className= {process.platform === 'darwin' ? "topBarCustomTitleMac" : "topBarCustomTitleWin"}>Messaging</p>*/}
         <div id="appButtons">
          <div onClick={this.notification} className="appButton functionIcon" id="eccNewsIcon">
             <img src={notification}></img>

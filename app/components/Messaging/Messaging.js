@@ -27,35 +27,39 @@ class Messaging extends Component {
   componentWillUnmount() {
     ipcRenderer.send('messagingView', false);
     $( window ).off('resize');
-    if(this.props.showingTitleTopBar){
+    /*if(this.props.showingTitleTopBar){
       TweenMax.fromTo($('#topBarCustomTitle'), 0.2, {autoAlpha: 1, y: 0}, { autoAlpha:0, y:20, ease: Linear.easeNone});
       this.props.setShowingMessageTopBar(false);
+    }*/
+    if(!this.props.showingFunctionIcons){
+      Tools.showFunctionIcons();
+      this.props.setShowingFunctionIcons(true);
     }
   }
 
   updateUI(){
-    if($( window ).width() <= 1023){
+    if($(window).width() <= 460){
+      if(this.props.showingFunctionIcons){
+        Tools.hideFunctionIcons();
+        this.props.setShowingFunctionIcons(false);
+      }
+    }
+    else if($(window).width() >= 460 && !this.props.showingFunctionIcons){
+      Tools.showFunctionIcons();
+      this.props.setShowingFunctionIcons(true);
+    }
+    /*if($( window ).width() <= 1023){
       if(!this.props.showingTitleTopBar){
         this.props.setShowingMessageTopBar(true);
         TweenMax.fromTo($('#topBarCustomTitle'), 0.2, {autoAlpha: 0, y: 20}, { autoAlpha:1, y:0, ease: Linear.easeNone});
-        $("#messagingContainer").addClass("messagingContainerFullScreen");
-        $("#messagingTable").addClass("messagingTableFullScreen");
-        $("#tableHeader").addClass("tableHeaderHide");
-        $("#contacts").addClass("contactsFullPage");
-        $("#messagingChat").addClass("messagingChatFullScreen");
       }
     }
     else{
       if(this.props.showingTitleTopBar){
         this.props.setShowingMessageTopBar(false);
         TweenMax.fromTo($('#topBarCustomTitle'), 0.2, {autoAlpha: 1, y: 0}, { autoAlpha:0, y:20, ease: Linear.easeNone});
-        $("#messagingContainer").removeClass("messagingContainerFullScreen");
-        $("#messagingTable").removeClass("messagingTableFullScreen");
-        $("#tableHeader").removeClass("tableHeaderHide");
-        $("#contacts").removeClass("contactsFullPage");
-        $("#messagingChat").removeClass("messagingChatFullScreen");
       }
-    }
+    }*/
   }
 
   onItemClick(event) {
@@ -82,7 +86,8 @@ class Messaging extends Component {
 const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
-    showingTitleTopBar: state.messaging.showingTitleTopBar
+    showingTitleTopBar: state.messaging.showingTitleTopBar,
+    showingFunctionIcons: state.application.showingFunctionIcons
   };
 };
 

@@ -6,6 +6,7 @@ import * as actions from '../../actions';
 import { connect } from 'react-redux';
 const Tools = require('../../utils/tools')
 import MessagingSearch from './MessagingSearch';
+import MessagingTopBar from './MessagingTopBar';
 
 class MessagingContacts extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class MessagingContacts extends Component {
     
     return (
       <div id="contacts">
+        <MessagingTopBar />
         <MessagingSearch />
           <div id="contactsList">
           {this.props.chatsPreview.map((t, index) => {

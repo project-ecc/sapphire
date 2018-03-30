@@ -8,11 +8,6 @@
 	overflow: hidden;
 }
 
-.messagingContainerFullScreen{
-	padding-left: 0px !important;
-	padding-right: 0px !important;
-}
-
 #messagingTable{
 	@include themify($themes) { 
 		background-color: themed('homePanelsBackgroundColor');  
@@ -24,19 +19,9 @@
 	transition: all 0.3s;
 }
 
-.messagingTableFullScreen{
-	height: 100% !important;
-	top: 0px !important;
-	box-shadow: none !important;
-}
-
 .tableHeaderAnimated{
 	transition: all 0.5s;
 	overflow-y: hidden;
-}
-
-.tableHeaderHide{
-	height: 0px !important;
 }
 
 #contacts{
@@ -56,9 +41,8 @@
     height: calc(100% - 60px);
 }
 
-.contactsFullPage{
-	height: 100% !important;
-	margin-top: 0px !important;
+.contactsListFullPageWidth{
+	width: 100% !important;
 }
 
 #searchBarMessaging{
@@ -162,10 +146,6 @@
 	transition: all 0.3s;
 }
 
-.messagingChatFullScreen{
-	height: 100% !important;
-}
-
 #messagingInput{
 	width: 100%;
 	position: absolute;
@@ -246,4 +226,72 @@
 #messagingSendButton{
 	position: relative;
 	right: 20px;
+}
+
+#messagingTopBar{
+	height: 80px;
+	width: 100%;
+	height: 0px;
+	transition: all 0.3s;
+}
+
+
+@media screen and (max-width: 1023px) {
+  #messagingContainer {
+	padding-left: 0px;
+	padding-right: 0px;
+  }
+
+  #messagingTable{
+	height: 100%;
+	top: 0px;
+	box-shadow: none;
+  }
+
+  #tableHeader{
+  	height: 0px;
+  }
+
+  #contacts{
+	height: 100%;
+	margin-top: 0px;
+  }
+
+  #messagingChat{
+  	height: 100%;
+  }
+}
+
+@media screen and (max-width: 670px) {
+	#contacts{
+		width: 280px;
+	}
+
+	#messagingChat{
+		width: calc(100% - 280px);
+	}
+
+	#searchInput{
+		width: 232px;
+		left: 31px;
+	}
+
+	#searchIcon{
+		left: 20px;
+	}
+}
+
+@media screen and (max-width: 540px) {
+	#contacts{
+		width: 100%;
+	}
+
+	#messagingChat{
+		width: 100%;
+	}
+
+	#messagingTopBar{
+		height: 40px;
+		box-shadow: 0px 3px 11px -3px #121217;
+	}
 }
