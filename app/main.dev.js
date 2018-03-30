@@ -227,6 +227,7 @@ function setupEventHandlers() {
     console.log("ELECTRON GOT READY MESSAGE");
     guiManager = new GUIManager();
     daemonManager = new DaemonManager();
+    mainWindow.show();
   });
   
   ipcMain.on('autoStart', (e, autoStart) => {
