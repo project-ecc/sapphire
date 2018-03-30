@@ -5,6 +5,7 @@ const { clipboard } = require('electron');
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import $ from 'jquery';
+const Tools = require('../../utils/tools');
 
 class AddressBook extends Component {
   constructor(props) {
@@ -96,7 +97,7 @@ class AddressBook extends Component {
   }
 
   render() {
-    let bin = require('../../../resources/images/delete-contact.ico');
+    let bin = Tools.getIconForTheme("deleteContact", false);
     let rowClassName = "row normalWeight tableRowCustom";
 
     return (

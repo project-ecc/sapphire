@@ -116,6 +116,9 @@ module.exports = {
       else if(iconName == "search"){
         return require('../../resources/images/search-icon-dark.png')
       }
+      else if(iconName == "deleteContact"){
+        return require('../../resources/images/delete_contact-pastel.png')
+      }
     }
     else if(selectedTheme && selectedTheme === "theme-defaultEcc"){
       if(iconName == "wallet" && !hover){
@@ -168,6 +171,9 @@ module.exports = {
       }
       else if(iconName == "search"){
         return require('../../resources/images/search-icon-dark.png')
+      }
+      else if(iconName == "deleteContact"){
+        return require('../../resources/images/delete_contact-orange.png')
       }
     }
   },

@@ -6,7 +6,7 @@ import {TweenMax} from "gsap";
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import $ from 'jquery';
 import Input from '../Others/Input';
-const tools = require('../../utils/tools');
+const Tools = require('../../utils/tools');
 
 class Send extends Component {
   constructor(props) {
@@ -34,21 +34,21 @@ class Send extends Component {
 
   confirmSend() {
     if(this.props.amount == "" || isNaN(this.props.amount) == 1){
-      tools.highlightInput('#inputAmountSend', 1)
+      Tools.highlightInput('#inputAmountSend', 1)
     }
     if(this.props.address == ""){
-      tools.highlightInput('#inputAddressSend', 1)
+      Tools.highlightInput('#inputAddressSend', 1)
     }
     if(this.props.address != "" && this.props.amount != "" && Number(this.props.amount) > 0){
       if(this.props.amount > this.props.balance){
-        tools.showTemporaryMessage('#message', this.props.lang.notEnoughBalance);
-        tools.highlightInput('#inputAmountSend', 2.1)
+        Tools.showTemporaryMessage('#message', this.props.lang.notEnoughBalance);
+        Tools.highlightInput('#inputAmountSend', 2.1)
       }
       else{
         this.props.wallet.validate(this.props.address).then((isAddressValid) => {
         if (!isAddressValid.isvalid) {
-          tools.showTemporaryMessage('#message', this.props.lang.invalidFailedAddress);
-          tools.highlightInput('#inputAddressSend', 2.1)
+          Tools.showTemporaryMessage('#message', this.props.lang.invalidFailedAddress);
+          Tools.highlightInput('#inputAddressSend', 2.1)
         } else {
           this.props.setSendingECC(true);
         }
