@@ -267,7 +267,7 @@ class ExportPrivateKeys extends React.Component {
     ipcRenderer.send('exportPrivateKeys');
     ipcRenderer.on('locationSelected', (event, arg) => {
       if(arg != undefined){
-        $('#exportPrivKeyButton').text('{ this.props.lang.export }');
+        $('#exportPrivKeyButton').text(this.props.lang.export);
         $('#selectedlocation').text(arg);
         if(this.tween !== undefined)
           this.tween.kill();

@@ -45,10 +45,10 @@ class SendConfirmation extends React.Component {
         this.props.setUsernameSend("");
         this.props.setAmountSend("");
         this.props.setAddressSend("");
-        $('#message').text('{ this.props.lang.sentSuccessfully }');
+        $('#message').text(this.props.lang.sentSuccessfully);
         Tools.showTemporaryMessage('#message');
         setTimeout(() => {
-          $('#message').text('{ this.props.lang.addressCopiedBelow }')
+          $('#message').text(this.props.lang.addressCopiedBelow)
         }, 2500)
       }).catch((err) => {
         this.props.setPassword("");

@@ -87,7 +87,7 @@ class Send extends Component {
       <div className="panel">
         <AddressBook sendPanel={true}/>
           <p id="message">{ this.props.lang.addressCopiedBelow }</p>
-          <div style={{width: "632px", margin: "0 auto"}}>
+          <div style={{width: "632px", margin: "0 auto", marginTop: "10px"}}>
             <Input
               divStyle={{display: "inline"}}
               placeholder= { this.props.lang.ansNameOrAddress }
