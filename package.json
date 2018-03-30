@@ -1,7 +1,7 @@
 {
-  "name": "Lynx-Gui",
-  "productName": "Lynx",
-  "version": "0.1.5",
+  "name": "Sapphire-ECC",
+  "productName": "Sapphire",
+  "version": "1.0.0",
   "description": "Electron application providing the graphical user interface for the ECC Wallet",
   "scripts": {
     "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js",
@@ -36,8 +36,8 @@
   },
   "browserslist": "electron 1.8",
   "build": {
-    "productName": "Ecc-GUI",
-    "appId": "com.github.greg-griffith.lynx",
+    "productName": "Sapphire",
+    "appId": "com.github.csmartinsfct.sapphire",
     "files": [
       "dist/",
       "node_modules/",
@@ -49,8 +49,8 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "Greg-Griffith",
-        "repo": "Lynx",
+        "owner": "csmartinsfct",
+        "repo": "Sapphire",
         "vPrefixedTagName": "true",
         "protocol": "https"
       }
@@ -87,16 +87,12 @@
       "buildResources": "resources"
     }
   },
-  "repository": "git+https://github.com/greg-griffith/lynx.git",
-  "author": "Greg Griffith <griffith@cryptounited.com> (https://github.com/greg-griffith)",
+  "repository": "git+https://github.com/csmartinsfct/sapphire.git",
+  "author": "Project ECC",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/greg-griffith/lynx/issues"
-  },
   "keywords": [
     "electron"
   ],
-  "homepage": "https://github.com/greg-griffith/lynx",
   "jest": {
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/internals/mocks/fileMock.js",

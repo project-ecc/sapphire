@@ -1,6 +1,6 @@
 {
   "productName": "Sapphire",
-  "appId": "com.github.greg-griffith.lynx",
+  "appId": "com.github.csmartinsfct.sapphire",
   "files": [
     "./app/dist/",
     "./app/node_modules/",

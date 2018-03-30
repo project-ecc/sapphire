@@ -140,15 +140,15 @@ class Transaction extends Component {
 
   getValue(val){
     switch(val){
-      case "1" : return "Confirmed";
-      case "-1" : return "Orphaned";
-      case "0" : return "Pending";
-      case "all": return "All";
-      case "send" : return "Sent";
+      case "1" : return this.props.lang.confirmed;
+      case "-1" : return this.props.lang.orphaned;
+      case "0" : return this.props.lang.pending;
+      case "all": return this.props.lang.all;
+      case "send" : return this.props.lang.sent;
       case "generate":
         this.props.setEarningsChecked(new Date().getTime());
-        return "Earned";
-      case "receive": return "Received";
+        return this.props.lang.earned;
+      case "receive": return this.props.lang.received;
     }
   }
 
