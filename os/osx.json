@@ -1,6 +1,6 @@
 {
-  "productName": "Lynx",
-  "appId": "com.github.project-ecc.lynx",
+  "productName": "Sapphire",
+  "appId": "com.github.csmartinsfct.sapphire",
   "files": [
     "./app/dist/",
     "./app/node_modules/",
@@ -12,8 +12,8 @@
   "publish": [
     {
       "provider": "github",
-      "owner": "project-ecc",
-      "repo": "Lynx",
+      "owner": "csmartinsfct",
+      "repo": "Sapphire",
       "vPrefixedTagName": "true",
       "protocol": "https"
     }

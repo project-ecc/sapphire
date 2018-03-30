@@ -83,7 +83,7 @@ app.on('ready', async () => {
       return "#1c1c23";
   }
 
-  app.setAppUserModelId("com.github.greg-griffith.lynx");
+  app.setAppUserModelId("com.github.csmartinsfct.sapphire");
 
   mainWindow = new BrowserWindow({
     show: false,
