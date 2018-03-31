@@ -110,3 +110,4 @@ export const CHANGED_THEME = "hovering_theme";
 export const MESSAGING_SHOW_TITLE_TOPBAR = "messaging_show_title_topbar"
 export const MESSAGING_INPUT_VAL = "messaging_input_val";
 export const IMPORTING_WALLET_SETUP_DONE = "importing_wallet_setup_done";
+export const NEW_MESSAGE = "new_message";

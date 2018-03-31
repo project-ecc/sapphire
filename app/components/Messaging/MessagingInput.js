@@ -11,14 +11,33 @@ class MessagingInput extends Component {
     super(props);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.setInputFocus = this.setInputFocus.bind(this);
+    this.handleEnterPressed = this.handleEnterPressed.bind(this);
   }
 
   componentDidMount(){
     this.setSendButtonStyling(this.props.messagingInputValue)
+    window.addEventListener('keypress', this.handleEnterPressed)
+  }
+
+  handleEnterPressed(e){
+    if(e.which == 13) {
+      e.preventDefault();
+        if(this.props.messagingInputValue.length > 0){
+          this.props.addNewMessage({id: 2, message: {body: this.props.messagingInputValue, mine: true, date: "01:52"}});
+          this.props.setMessagingInputVal("");
+          this.setSendButtonStyling("");
+          $('#messagingChatContainer').scrollTop($('#messagingChatContainer')[0].scrollHeight - $('#messagingChatContainer')[0].clientHeight);
+          $("textarea").val('');
+        }
+    }
+  }
+
+  componentWillUnmount(){
+    window.removeEventListener('keypress', this.handleEnterPressed);
   }
 
   setSendButtonStyling(message){
-    if(message.length == 0){
+    if(!message || message.length == 0){
       TweenMax.set('#enterMessage', {autoAlpha: 1});
       $("#messagingInputOptions polyline").removeClass("sendButtonActive");
       $("#messagingInputOptions circle").removeClass("sendButtonActive");
@@ -38,6 +57,7 @@ class MessagingInput extends Component {
 
   handleInputChange(event) {
     let message = event.target.value;
+    if(message.length == 1 && message == "\n" ) return;
     this.setSendButtonStyling(message);
     this.props.setMessagingInputVal(message);
   }

@@ -8,6 +8,7 @@ import * as actions from '../../actions';
 import { connect } from 'react-redux';
 const Tools = require('../../utils/tools')
 import { ipcRenderer } from 'electron';
+import MessagingTopBar from './MessagingTopBar';
 
 class Messaging extends Component {
   constructor(props) {
@@ -42,12 +43,19 @@ class Messaging extends Component {
       if(this.props.showingFunctionIcons){
         Tools.hideFunctionIcons();
         this.props.setShowingFunctionIcons(false);
+        setTimeout(() => {
+          TweenMax.fromTo($('#contacts'), 0.2, { autoAlpha:1, css: {left: "0%"}}, { autoAlpha:0, css: {left: "-100%"}, ease: Linear.easeNone});
+          TweenMax.fromTo($('#messagingChat'), 0.2,{ autoAlpha:0, css: {left: "100%"}}, { autoAlpha:1, css: {left: "0%"}, ease: Linear.easeNone});
+        }, 1000);
       }
     }
-    else if($(window).width() >= 460 && !this.props.showingFunctionIcons){
+    else if($(window).width() >= 540 && !this.props.showingFunctionIcons){
       Tools.showFunctionIcons();
       this.props.setShowingFunctionIcons(true);
+      TweenMax.set($('#contacts'), { autoAlpha:1, css: {left: ""}});
+      TweenMax.set($('#messagingChat'), { autoAlpha:1, css: {left: ""}});
     }
+    $('#messagingChatContainer').scrollTop($('#messagingChatContainer')[0].scrollHeight - $('#messagingChatContainer')[0].clientHeight);
     /*if($( window ).width() <= 1023){
       if(!this.props.showingTitleTopBar){
         this.props.setShowingMessageTopBar(true);
@@ -75,6 +83,7 @@ class Messaging extends Component {
           <div id="tableHeader" className="tableHeaderNormal tableHeaderAnimated">
             <p className="tableHeaderTitle tableHeaderTitleSmall">Messaging</p>
           </div>
+          <MessagingTopBar />
           <MessagingContacts/>
           <MessagingChat/>
         </div>
