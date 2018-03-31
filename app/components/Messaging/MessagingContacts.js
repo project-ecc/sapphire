@@ -12,6 +12,10 @@ class MessagingContacts extends Component {
     super(props);
   }
 
+  handleChatClicked(id){
+
+  }
+
   render() {
     return (
       <div id="contacts">
@@ -21,7 +25,7 @@ class MessagingContacts extends Component {
             let x = t.lastMessage.slice(0, 50);
             console.log(x)
               return(
-              <div className={t.active ? "chatPreview chatPreviewActive" : "chatPreview"} key={t.id}>
+              <div onClick={this.handleChatClicked.bind(this, t.id)} className={t.active && !this.props.mobileView ? "chatPreview chatPreviewActive" : "chatPreview"} key={t.id}>
                 <div className={t.seen ? "borderChatPreview" : "borderChatPreview borderChatPreviewNotRead"}></div>
                 <p className="chatAddress">{t.address}<span className="chatDate">{t.date}</span></p>
                 <p className="chatPreviewMessage">{t.lastMessage}</p>
@@ -38,7 +42,8 @@ class MessagingContacts extends Component {
 const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
-    chatsPreview: state.messaging.chatsPreview
+    chatsPreview: state.messaging.chatsPreview,
+    mobileView: state.messaging.mobileView
   };
 };
 

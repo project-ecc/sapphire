@@ -13,9 +13,13 @@ class MessagingTopBar extends Component {
   }
 
   render() {
+    const userIcon = Tools.getIconForTheme('chatContact', false);
+    const list = Tools.getIconForTheme('chatList', false);
     return (
       <div id="messagingTopBar">
-        
+        <p>Chats</p>
+        <img id="chatContactIcon" src={userIcon}></img>
+        <img id="chatListIcon" src={list}></img>
       </div>
     );
   }

@@ -35,21 +35,24 @@ class Messaging extends Component {
     if(!this.props.showingFunctionIcons){
       Tools.showFunctionIcons();
       this.props.setShowingFunctionIcons(true);
+      this.props.setMobileView(false);
     }
   }
 
   updateUI(){
-    if($(window).width() <= 460){
+    if($(window).width() <= 540){
       if(this.props.showingFunctionIcons){
         Tools.hideFunctionIcons();
         this.props.setShowingFunctionIcons(false);
-        setTimeout(() => {
+        this.props.setMobileView(true);
+        /*setTimeout(() => {
           TweenMax.fromTo($('#contacts'), 0.2, { autoAlpha:1, css: {left: "0%"}}, { autoAlpha:0, css: {left: "-100%"}, ease: Linear.easeNone});
           TweenMax.fromTo($('#messagingChat'), 0.2,{ autoAlpha:0, css: {left: "100%"}}, { autoAlpha:1, css: {left: "0%"}, ease: Linear.easeNone});
-        }, 1000);
+        }, 1000);*/
       }
     }
     else if($(window).width() >= 540 && !this.props.showingFunctionIcons){
+      this.props.setMobileView(false);
       Tools.showFunctionIcons();
       this.props.setShowingFunctionIcons(true);
       TweenMax.set($('#contacts'), { autoAlpha:1, css: {left: ""}});

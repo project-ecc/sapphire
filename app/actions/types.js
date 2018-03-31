@@ -111,3 +111,5 @@ export const MESSAGING_SHOW_TITLE_TOPBAR = "messaging_show_title_topbar"
 export const MESSAGING_INPUT_VAL = "messaging_input_val";
 export const IMPORTING_WALLET_SETUP_DONE = "importing_wallet_setup_done";
 export const NEW_MESSAGE = "new_message";
+export const MESSAGING_MOBILE_VIEW = "messaging_mobile_view";
+export const SHOWING_CHAT_LIST = "showing_chat_list";

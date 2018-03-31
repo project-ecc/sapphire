@@ -119,6 +119,12 @@ module.exports = {
       else if(iconName == "deleteContact"){
         return require('../../resources/images/delete_contact-pastel.png')
       }
+      else if(iconName == "chatContact"){
+        return require('../../resources/images/chat-contact-pastel.png')
+      }
+      else if(iconName == "chatList"){
+        return require('../../resources/images/chat-list-pastel.png')
+      }
     }
     else if(selectedTheme && selectedTheme === "theme-defaultEcc"){
       if(iconName == "wallet" && !hover){
