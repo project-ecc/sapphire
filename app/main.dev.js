@@ -16,14 +16,12 @@ import MenuBuilder from './menu';
 import DaemonManager from './Managers/DaemonManager';
 import GUIManager from './Managers/GUIManager';
 import {grabEccoinDir} from "./utils/platform.service";
-import os from 'os';import { traduction } from './lang/lang';
-const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote, Notification   } = require('electron');
+import os from 'os';
+import { traduction } from './lang/lang';
+const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote, Notification } = require('electron');
 const dialog = require('electron').dialog;
 const settings = require('electron-settings');
 const event = require('./utils/eventhandler');
-const iconPath = nativeImage.createFromPath('./resources/icon.png');
-const trayIconPathDarwinLinux = nativeImage.createFromPath('./resources/images/trayIconTemplate.png');
-const trayIconPathWin = nativeImage.createFromPath('./resources/icon.ico');
 var fs = require('fs');
 var AutoLaunch = require('auto-launch');
 let autoECCLauncher = new AutoLaunch({
@@ -91,8 +89,7 @@ app.on('ready', async () => {
     height: 777,
     minWidth: 800,
     minHeight: 600,
-    icon: iconPath,
-    title: "ECC Wallet",
+    title: "Sapphire",
     backgroundColor: getBackgroundColor(),
     frame: false,
     webPreferences: {backgroundThrottling: false}
@@ -166,6 +163,18 @@ app.on('ready', async () => {
 });
 
 function setupTrayIcon() {
+  var trayImage;  
+  var imageFolder = __dirname + '/dist/assets';
+
+  // Determine appropriate icon for platform
+  if (process.platform === "darwin" || process.platform === "linux") {
+    trayImage = imageFolder + '/trayIconTemplate.png';
+    console.log('traydir', trayImage);
+  } else {
+    trayImage = imageFolder + '/icon.ico';
+  }
+  tray = new Tray(nativeImage.createFromPath(trayImage));
+
 	const defaultMenu = [
     {
       label: 'Quit',
@@ -181,20 +190,13 @@ function setupTrayIcon() {
     }
   ];
 
-	tray = new Tray(iconPath);
-    const contextMenu = Menu.buildFromTemplate(defaultMenu);
-    tray.setToolTip('ECC Wallet');
-    tray.setContextMenu(contextMenu);
-    
-    if (process.platform === "darwin" || process.platform === "linux") {
-      tray.setImage(trayIconPathDarwinLinux);
-    } else if (process.platform.indexOf("win") > -1) {
-      tray.setImage(trayIconPathWin);
-    }
+  const contextMenu = Menu.buildFromTemplate(defaultMenu);
+  tray.setToolTip('ECC Wallet');
+  tray.setContextMenu(contextMenu);
 
-    tray.on('click', () => {
-      mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
-    });
+  tray.on('click', () => {
+    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+  });
 }
 
 function setupEventHandlers() {
