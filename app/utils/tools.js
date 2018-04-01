@@ -125,6 +125,24 @@ module.exports = {
       else if(iconName == "chatList"){
         return require('../../resources/images/chat-list-pastel.png')
       }
+      else if(iconName == "goBackChat"){
+        return require('../../resources/images/go-back-chat-pastel.png')
+      }
+      else if(iconName == "search2" && !hover){
+        return require('../../resources/images/search-icon-dark-2.png')
+      }
+      else if(iconName == "sendEcc" && !hover){
+        return require('../../resources/images/send-ecc-dark.png')
+      }
+      else if(iconName == "disableNotifications" && !hover){
+        return require('../../resources/images/disable-notifications-icon.png')
+      }
+      else if(iconName == "removeChat" && !hover){
+        return require('../../resources/images/remove-chat-dark.png')
+      }
+      else if(iconName == "sendFile" && !hover){
+        return require('../../resources/images/file-icon-dark.png')
+      }
     }
     else if(selectedTheme && selectedTheme === "theme-defaultEcc"){
       if(iconName == "wallet" && !hover){
@@ -187,11 +205,15 @@ module.exports = {
   //Animations
 
   showFunctionIcons: function(element){
+    TweenMax.set('.functionIcon', {css:{display: "inline-block"}});
     TweenMax.staggerFromTo('.functionIcon', 0.4, {x: 20, autoAlpha: 0}, {x: 0, autoAlpha: 1}, -0.2);
   },
 
   hideFunctionIcons: function(element){
     TweenMax.staggerTo('.functionIcon', 0.4, {x: 20, autoAlpha: 0}, -0.2);
+    setTimeout(() => {
+      TweenMax.set('.functionIcon', {css:{display: "none"}});
+    }, 600)
   },
 
   showTemporaryMessage: function (element, text, time=2000) {
