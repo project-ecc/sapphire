@@ -14781,7 +14781,7 @@ hr.on-light {
   overflow-x: hidden;
   font-weight: normal;
   transition: left 0.3s;
-  z-index: 3;
+  z-index: 5;
   margin-top: 40px; }
   .theme-defaultEcc .sidebar {
     background-color: #1c2340;
@@ -16690,17 +16690,21 @@ i.fa.fa-chevron-down {
   top: 13px; }
 
 #topBarCustomTitle {
-  position: fixed;
+  position: relative;
   display: inline-block;
   top: 3px;
   color: #464b5a;
   font-weight: 600;
   font-size: 20px;
-  left: 50%;
-  transform: translate(-50%, 0);
+  text-align: center;
   visibility: hidden;
-  z-index: -1;
-  position: absolute; }
+  z-index: -1; }
+
+.topBarCustomTitleWin {
+  width: calc(100% - 242px); }
+
+.topBarCustomTitleMac {
+  width: calc(100% - 212px); }
 
 .appButtonMac img {
   width: 12px; }
@@ -16847,15 +16851,12 @@ i.fa.fa-chevron-down {
   padding-right: 20px;
   overflow: hidden; }
 
-.messagingContainerFullScreen {
-  padding-left: 0px !important;
-  padding-right: 0px !important; }
-
 #messagingTable {
   height: 95%;
   position: relative;
   top: 25px;
-  transition: all 0.3s; }
+  transition: all 0.3s;
+  overflow: hidden; }
   .theme-defaultEcc #messagingTable {
     background-color: #1c2340;
     box-shadow: 0 4px 11px -6px black; }
@@ -16863,24 +16864,17 @@ i.fa.fa-chevron-down {
     background-color: #191b21;
     box-shadow: 0 4px 11px -6px black; }
 
-.messagingTableFullScreen {
-  height: 100% !important;
-  top: 0px !important;
-  box-shadow: none !important; }
-
 .tableHeaderAnimated {
   transition: all 0.5s;
   overflow-y: hidden; }
-
-.tableHeaderHide {
-  height: 0px !important; }
 
 #contacts {
   width: 350px;
   height: calc(100% - 47px);
   transition: all 0.3s;
   margin-top: 1px;
-  float: left; }
+  position: absolute;
+  z-index: 3; }
   .theme-defaultEcc #contacts {
     background-color: #181e35; }
   .theme-darkEcc #contacts {
@@ -16891,9 +16885,8 @@ i.fa.fa-chevron-down {
   overflow-x: hidden;
   height: calc(100% - 60px); }
 
-.contactsFullPage {
-  height: 100% !important;
-  margin-top: 0px !important; }
+.contactsListFullPageWidth {
+  width: 100% !important; }
 
 #searchBarMessaging {
   height: 60px;
@@ -16979,17 +16972,18 @@ i.fa.fa-chevron-down {
   left: 40px;
   font-size: 13px;
   color: #7d7d7d;
-  font-weight: 600; }
+  font-weight: 600;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: calc(100% - 50px); }
 
 #messagingChat {
   width: calc(100% - 350px);
-  float: left;
   height: calc(100% - 47px);
-  position: relative;
-  transition: all 0.3s; }
-
-.messagingChatFullScreen {
-  height: 100% !important; }
+  position: absolute;
+  transition: all 0.3s;
+  left: 350px; }
 
 #messagingInput {
   width: 100%;
@@ -17060,6 +17054,138 @@ i.fa.fa-chevron-down {
 #messagingSendButton {
   position: relative;
   right: 20px; }
+
+#messagingTopBar {
+  height: 80px;
+  width: 100%;
+  height: 0px;
+  transition: all 0.3s;
+  position: absolute;
+  z-index: 4;
+  overflow: hidden; }
+
+#chatContactIcon {
+  width: 16px;
+  position: absolute;
+  top: 12px;
+  right: 30px;
+  cursor: pointer; }
+
+#chatListIcon {
+  width: 85px;
+  position: absolute;
+  top: -27px;
+  left: 18px; }
+
+#messagingTopBar p {
+  position: relative;
+  font-weight: 500;
+  text-align: center;
+  top: 7px; }
+
+.chatMessageParent {
+  display: flex;
+  justify-content: flex-start; }
+
+.chatMessageParentOwn {
+  justify-content: flex-end; }
+
+.chatMessage {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  max-width: 85%;
+  box-shadow: 0px 1px 8px -7px #0e0f13;
+  font-weight: 500;
+  margin-top: 5px;
+  width: max-content;
+  z-index: 5; }
+
+.ownMessage {
+  border-top-right-radius: 0px;
+  background-color: #292b35;
+  margin-right: 15px; }
+
+.notOwnMessage {
+  border-top-left-radius: 0px;
+  background-color: #1e2027;
+  margin-left: 15px; }
+
+.fixSpacingBubble {
+  margin-top: 10px; }
+
+.chatMessage span {
+  padding-left: 25px;
+  font-size: 11px;
+  font-weight: 600;
+  position: relative;
+  top: 4px;
+  color: #717171; }
+
+#messagingChatContainer {
+  width: 100%;
+  height: calc(100% - 70px - 54px);
+  top: 54px;
+  position: relative;
+  overflow-y: scroll;
+  padding-bottom: 10px;
+  overflow-x: hidden; }
+
+@media screen and (max-width: 1023px) {
+  #messagingContainer {
+    padding-left: 0px;
+    padding-right: 0px; }
+  #messagingTable {
+    height: 100%;
+    top: 0px;
+    box-shadow: none; }
+  #tableHeader {
+    height: 0px; }
+  #contacts {
+    height: 100%;
+    margin-top: 0px; }
+  #messagingChat {
+    height: 100%; } }
+
+@media screen and (max-width: 670px) {
+  #contacts {
+    width: 280px;
+    top: 0px; }
+  #messagingChat {
+    width: calc(100% - 280px);
+    left: 280px;
+    top: 0px; }
+  #searchInput {
+    width: 232px;
+    left: 31px; }
+  #searchIcon {
+    left: 20px; } }
+
+@media screen and (max-width: 540px) {
+  #messagingChat {
+    left: 100%;
+    width: 100%;
+    height: calc(100% - 40px);
+    top: 40px; }
+    .theme-defaultEcc #messagingChat {
+      background-color: #181e35; }
+    .theme-darkEcc #messagingChat {
+      background-color: #1c1c23; }
+  #contacts {
+    width: 100%;
+    height: calc(100% - 40px);
+    top: 40px; }
+  #messagingChatContainer {
+    top: 20px;
+    height: calc(100% - 70px - 20px); }
+  #messagingTopBar {
+    height: 40px;
+    box-shadow: 0px 3px 11px -3px #121217; }
+  .mainSubPanel {
+    overflow: hidden; } }
 
 html,
 body {
@@ -17157,7 +17283,7 @@ aside {
   padding-left: 224px;
   padding-right: 0;
   height: 100vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   transition: padding-left 0.3s;
   z-index: 0;
   padding-top: 40px; }

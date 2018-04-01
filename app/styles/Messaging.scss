@@ -211,18 +211,12 @@
 	}
 }
 
-#arrowMessaging polyline:hover{
-	stroke-width: 10 !important;
-}
-
-#arrowMessaging{
-    position: relative;
-    top: 23px;
-    left: 117px;
+#circleMessaging circle:hover + polyline{
+	stroke-width: 0.55 !important;
 }
 
 #circleMessaging{
-	top: 14px;
+	top: 15px;
 }
 
 .addCursorPointer{
@@ -235,6 +229,9 @@
 }
 
 #messagingTopBar{
+	@include themify($themes) { 
+		background-color: themed('bodyBackgroundColor');  
+	}
 	height: 80px;
 	width: 100%;
 	height: 0px;
@@ -259,6 +256,15 @@
     left: 18px;
 }
 
+#goBackMessageIcon{
+    width: 28px;
+    position: absolute;
+    top: 5px;
+    left: 36px;
+    cursor: pointer;
+    visibility: hidden;
+}
+
 #messagingTopBar p{
 	position: relative;
     font-weight: 500;
@@ -273,6 +279,56 @@
 
 .chatMessageParentOwn{
 	justify-content: flex-end;
+}
+
+#messagingOptions{
+	height: 54px;
+	width: 100%;
+	padding: 0px;
+	padding-top: 10px;
+	visibility: hidden;
+	overflow: hidden;
+}
+
+#messagingOptionsSmall{
+	height: 54px;
+	width: 100%;
+	padding: 0px;
+	padding-top: 10px;
+	visibility: hidden;
+	overflow: hidden;
+}
+
+.messagingOption{
+	cursor: pointer;
+	visibility: hidden;
+}
+
+#optionsButton{
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	cursor: pointer;
+	width: 20px;
+}
+
+#optionsButtonSmallView{
+	position: fixed;
+	width: 20px;
+	top: 47px;
+	right: 18px;
+	z-index: 10;
+	visibility: hidden;
+	cursor: pointer;
+}
+
+.circleOptionsButton{
+	height: 5px;
+    width: 5px;
+    background-color: #313541;
+    border-radius: 50%;
+    margin: 0 auto;
+    margin-top: 3px;
 }
 
 .chatMessage{
@@ -298,7 +354,7 @@
 
 .notOwnMessage{
 	border-top-left-radius: 0px;
-	background-color: #21232b;
+	background-color: #1e2027;
 	margin-left: 15px;
 }
 
@@ -318,10 +374,10 @@
 #messagingChatContainer{
 	width: 100%;
 	height: calc(100% - 70px - 54px);
-	top: 54px;
     position: relative;
     overflow-y: scroll;
     padding-bottom: 10px;
+    overflow-x: hidden;
 }
 
 @media screen and (max-width: 1023px) {
@@ -372,12 +428,15 @@
 	}
 }
 
-@media screen and (max-width: 540px) {
+@media screen and (max-width: 580px) {
 	#messagingChat{
 	    left: 100% ;
 		width: 100%;
 		height: calc(100% - 40px);
 		top: 40px;
+		@include themify($themes) { 
+			background-color: themed('bodyBackgroundColor');  
+		}
 	}
 	#contacts{
 		width: 100%;
@@ -386,8 +445,7 @@
 	}
 
 	#messagingChatContainer{
-		top: 20px;
-		height: calc(100% - 70px - 20px);
+		height: calc(100% - 70px);
 	}
 
 	#messagingTopBar{
@@ -397,5 +455,28 @@
 
 	.mainSubPanel{
 		overflow: hidden;
+	}
+
+	.firstChatMessage{
+		margin-top: 15px;
+	}
+
+	#optionsButton{
+		visibility: hidden;
+	}
+
+	#messagingOptions{
+		display: none;
+	}
+
+	#messagingOptionsSmall{
+		top: 10px;
+	    position: relative;
+	}
+
+	.circleOptionsButton{
+		@include themify($themes) { 
+			background-color: themed('eccTicker') !important;  
+		}
 	}
 }

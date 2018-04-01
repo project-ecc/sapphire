@@ -14,7 +14,6 @@ class Messaging extends Component {
   constructor(props) {
     super(props);
     this.updateUI = this.updateUI.bind(this);
-    this.onItemClick = this.onItemClick.bind(this);
   }
 
   componentDidMount() {
@@ -23,6 +22,7 @@ class Messaging extends Component {
       this.updateUI();
     });
     this.updateUI();
+    this.props.setInMessaging(true);
   }
 
   componentWillUnmount() {
@@ -37,26 +37,36 @@ class Messaging extends Component {
       this.props.setShowingFunctionIcons(true);
       this.props.setMobileView(false);
     }
+    this.props.setInMessaging(false);
   }
 
   updateUI(){
-    if($(window).width() <= 540){
+    if($(window).width() <= 580){
       if(this.props.showingFunctionIcons){
         Tools.hideFunctionIcons();
         this.props.setShowingFunctionIcons(false);
         this.props.setMobileView(true);
+        this.props.setShowingChatListOnly(true);
         /*setTimeout(() => {
           TweenMax.fromTo($('#contacts'), 0.2, { autoAlpha:1, css: {left: "0%"}}, { autoAlpha:0, css: {left: "-100%"}, ease: Linear.easeNone});
           TweenMax.fromTo($('#messagingChat'), 0.2,{ autoAlpha:0, css: {left: "100%"}}, { autoAlpha:1, css: {left: "0%"}, ease: Linear.easeNone});
         }, 1000);*/
       }
     }
-    else if($(window).width() >= 540 && !this.props.showingFunctionIcons){
+    else if($(window).width() >= 580 && !this.props.showingFunctionIcons){
       this.props.setMobileView(false);
       Tools.showFunctionIcons();
       this.props.setShowingFunctionIcons(true);
-      TweenMax.set($('#contacts'), { autoAlpha:1, css: {left: ""}});
-      TweenMax.set($('#messagingChat'), { autoAlpha:1, css: {left: ""}});
+      if(!this.props.showingChatList){
+        TweenMax.fromTo('#chatListIcon', 0.2,{ autoAlpha:0, x:-50}, { autoAlpha:1, x:0, delay: 0.1, ease: Linear.easeNone});
+        TweenMax.fromTo('#goBackMessageIcon', 0.2,{ autoAlpha:1, x:0}, { autoAlpha:0, x:50, delay: 0.1, ease: Linear.easeNone});
+        TweenMax.fromTo('#chatContactIcon', 0.2,{ autoAlpha:0, x:-50}, { autoAlpha:1, x:0, delay: 0.1, ease: Linear.easeNone});
+        TweenMax.fromTo('#optionsButtonSmallView', 0.2,{ autoAlpha:1, x:0}, { autoAlpha:0, x: 50, delay: 0.1, ease: Linear.easeNone});
+      }
+      TweenMax.set('#contacts', { autoAlpha:1, css: {left: ""}});
+      TweenMax.set('#messagingChat', { autoAlpha:1, css: {left: ""}});
+      $('#topBarMessage').text("Chats");
+      this.props.setShowingChatListOnly(false);
     }
     $('#messagingChatContainer').scrollTop($('#messagingChatContainer')[0].scrollHeight - $('#messagingChatContainer')[0].clientHeight);
     /*if($( window ).width() <= 1023){
@@ -72,11 +82,6 @@ class Messaging extends Component {
       }
     }*/
   }
-
-  onItemClick(event) {
-    let type = event.currentTarget.dataset.id;
-  }
-
 
   render() {
     
@@ -99,7 +104,8 @@ const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
     showingTitleTopBar: state.messaging.showingTitleTopBar,
-    showingFunctionIcons: state.application.showingFunctionIcons
+    showingFunctionIcons: state.application.showingFunctionIcons,
+    showingChatList: state.messaging.showingChatList
   };
 };
 
