@@ -151,7 +151,7 @@ class Contacts extends Component {
               inputId="inputAddressSend"
             />
           </div>
-            <div onClick={this.addContact} className="buttonUnlock addContactButton">
+            <div onClick={this.addContact} className="buttonPrimary addContactButton">
             { this.props.lang.addContact }
             </div>
             <p id="ansExplanation" style={{display: "inline-block", fontSize: "14px", position: "relative", top:"15px", width:"660px"}}>{ this.props.lang.ansExplanation1 } <span className="ecc">{ this.props.lang.ansExplanation2 }</span> { this.props.lang.ansExplanation3 }</p>
