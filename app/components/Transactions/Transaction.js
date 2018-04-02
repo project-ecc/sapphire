@@ -54,15 +54,15 @@ class Transaction extends Component {
   renderStatus(opt) {
     if (opt === 0) {
       return (
-        <span className="desc_p">{lang.pending}</span>
+        <span className="desc_p">{ this.props.lang.pending }</span>
       );
     } else if (opt > 0) {
       return (
-        <span className="desc_c ecc">{lang.confirmed}</span>
+        <span className="desc_c ecc">{ this.props.lang.confirmed }</span>
       );
     } else if (opt < 0) {
       return (
-        <span className="desc_o">{lang.orphaned}</span>
+        <span className="desc_o">{ this.props.lang.orphaned }</span>
       );
     }
   }
