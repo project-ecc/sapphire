@@ -38,7 +38,7 @@ class NetworkStats extends Component {
       )
     }
     else return(
-      <text style={{cursor: "pointer"}} onClick={this.processChainClick.bind(this, operation)} className="enableNetwork" fill="#b4b7c8" x="50%" y="50%" dy="-15" dx="-20" textAnchor="middle">{ this.props.lang.enable }</text>
+      <text style={{cursor: "pointer"}} onClick={this.processChainClick.bind(this, operation)} className="enableNetwork" fill="#b4b7c8" x="50%" y="50%" dy="-15" dx="-20" textAnchor="middle">{ this.props.lang.comingSoon }</text>
     )
   }
 
