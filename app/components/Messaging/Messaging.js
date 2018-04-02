@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 const Tools = require('../../utils/tools')
 import { ipcRenderer } from 'electron';
 import MessagingTopBar from './MessagingTopBar';
+import MessagingEnabler from './MessagingEnabler';
 
 class Messaging extends Component {
   constructor(props) {
@@ -17,7 +18,9 @@ class Messaging extends Component {
   }
 
   componentDidMount() {
-    ipcRenderer.send('messagingView', true);
+    if(this.props.enabled){
+      ipcRenderer.send('messagingView', true);
+    }
     $( window ).on('resize', () => {
       this.updateUI();
     });
@@ -47,6 +50,10 @@ class Messaging extends Component {
         this.props.setShowingFunctionIcons(false);
         this.props.setMobileView(true);
         this.props.setShowingChatListOnly(true);
+        if(!this.props.sentMessageAboutFullMessagingMode){
+          Tools.sendMessage(this, "Full on messaging mode!", 1, "Sapphire");
+          this.props.setUserClickedButton("fullMessaging");
+        }
         /*setTimeout(() => {
           TweenMax.fromTo($('#contacts'), 0.2, { autoAlpha:1, css: {left: "0%"}}, { autoAlpha:0, css: {left: "-100%"}, ease: Linear.easeNone});
           TweenMax.fromTo($('#messagingChat'), 0.2,{ autoAlpha:0, css: {left: "100%"}}, { autoAlpha:1, css: {left: "0%"}, ease: Linear.easeNone});
@@ -86,16 +93,17 @@ class Messaging extends Component {
   render() {
     
     return (
-      <div id="messagingContainer">
-        <div id="messagingTable">
-          <div id="tableHeader" className="tableHeaderNormal tableHeaderAnimated">
-            <p className="tableHeaderTitle tableHeaderTitleSmall">Messaging</p>
-          </div>
-          <MessagingTopBar />
-          <MessagingContacts/>
-          <MessagingChat/>
+        <div id="messagingContainer" className={this.props.warning ? "makeFullScreen" : ""}>
+          <MessagingEnabler />
+            <div id="messagingTable">
+              <div id="tableHeader" className="tableHeaderNormal tableHeaderAnimated">
+                <p className="tableHeaderTitle tableHeaderTitleSmall">Messaging</p>
+              </div>
+              <MessagingTopBar />
+              <MessagingContacts/>
+              <MessagingChat/>
+            </div>
         </div>
-      </div>
     );
   }
 }
@@ -105,7 +113,10 @@ const mapStateToProps = state => {
     lang: state.startup.lang,
     showingTitleTopBar: state.messaging.showingTitleTopBar,
     showingFunctionIcons: state.application.showingFunctionIcons,
-    showingChatList: state.messaging.showingChatList
+    showingChatList: state.messaging.showingChatList,
+    warning: state.messaging.warning,
+    enabled: state.messaging.enabled,
+    sentMessageAboutFullMessagingMode: state.messaging.sentMessageAboutFullMessagingMode
   };
 };
 

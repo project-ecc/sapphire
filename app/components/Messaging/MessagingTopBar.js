@@ -13,8 +13,18 @@ class MessagingTopBar extends Component {
     super(props);
   }
 
-  handleDoNothing(){
-    console.log("send message saying it does nothing but looks neat...lol")
+  handleButtonOnClick(type){
+    switch(type){
+      case "chatList": 
+        if(this.props.clickedSearchButton) return;
+        Tools.sendMessage(this, "We are not sure yet what this button will do but it looks good. Right now it represents the chat list.", 1, "Sapphire");
+        break;
+      case "add": 
+        if(this.props.clickedBinButton) return;
+        Tools.sendMessage(this, "This button will allow you to start a new chat with someone", 1, "Sapphire");
+         break;
+    }
+    this.props.setUserClickedButton(type);
   }
 
   handleGoBack(){
@@ -35,8 +45,8 @@ class MessagingTopBar extends Component {
     return (
       <div id="messagingTopBar">
         <p id="topBarMessage">Chats</p>
-        <img id="chatContactIcon" src={userIcon}></img>
-        <img id="chatListIcon" onClick={this.handleDoNothing.bind(this)} src={listIcon}></img>
+        <img onClick={this.handleButtonOnClick.bind(this, "add")} id="chatContactIcon" src={userIcon}></img>
+        <img onClick={this.handleButtonOnClick.bind(this, "chatList")} id="chatListIcon" src={listIcon}></img>
         <img id="goBackMessageIcon" onClick={this.handleGoBack.bind(this)} src={goBackIcon}></img>
         <MessagingOptions id="messagingOptionsSmall"/>
       </div>
@@ -46,7 +56,9 @@ class MessagingTopBar extends Component {
 
 const mapStateToProps = state => {
   return{
-    lang: state.startup.lang
+    lang: state.startup.lang,
+    clickAddContactButton: state.messaging.clickAddContactButton,
+    clickChatListButton: state.messaging.clickChatListButton
   };
 };
 

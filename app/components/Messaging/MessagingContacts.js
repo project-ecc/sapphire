@@ -6,6 +6,8 @@ import * as actions from '../../actions';
 import { connect } from 'react-redux';
 const Tools = require('../../utils/tools')
 import MessagingSearch from './MessagingSearch';
+var moment = require('moment');
+moment.locale('lt');
 
 class MessagingContacts extends Component {
   constructor(props) {
@@ -22,6 +24,9 @@ class MessagingContacts extends Component {
 
   handleChatClicked(id, address){
     this.props.setMessageId(id, address);
+    if(address == "Griffith" && !this.props.userCheckedGriffithChat){
+      this.props.setUserCheckedGriffithChat(true);
+    }
     if(!this.props.mobileView){
       this.focusInput()
     }
@@ -49,13 +54,14 @@ class MessagingContacts extends Component {
         <MessagingSearch />
           <div id="contactsList">
           {this.props.chatsPreview.map((t, index) => {
+            let date = getDate(t.date);
               return(
-              <div onClick={this.handleChatClicked.bind(this, t.id, t.address)} className={t.id == this.props.selectedId && !this.props.mobileView ? "chatPreview chatPreviewActive" : "chatPreview"} key={t.id}>
-                <div className={t.seen ? "borderChatPreview" : "borderChatPreview borderChatPreviewNotRead"}></div>
-                <p className="chatAddress">{t.address}<span className="chatDate">{t.date}</span></p>
-                <p className="chatPreviewMessage">{t.lastMessage}</p>
-              </div>
-            )
+                <div onClick={this.handleChatClicked.bind(this, t.id, t.address)} className={t.id == this.props.selectedId && !this.props.mobileView ? "chatPreview chatPreviewActive" : "chatPreview"} key={t.id}>
+                  <div className={t.seen ? "borderChatPreview" : "borderChatPreview borderChatPreviewNotRead"}></div>
+                  <p className="chatAddress">{t.address}<span className="chatDate">{date}</span></p>
+                  <p className="chatPreviewMessage">{t.lastMessage}</p>
+                </div>
+              )
             })
           }
           </div>
@@ -70,8 +76,19 @@ const mapStateToProps = state => {
     chatsPreview: state.messaging.chatsPreview,
     mobileView: state.messaging.mobileView,
     selectedId: state.messaging.selectedId,
-    activeContactName: state.messaging.activeContactName
+    activeContactName: state.messaging.activeContactName,
+    userHasCheckedGriffithChat: state.messaging.userHasCheckedGriffithChat
   };
 };
 
 export default connect(mapStateToProps, actions)(MessagingContacts);
+
+
+function getDate(date) {
+  console.log(date)
+  const now = new Date();
+  if(date.getMonth() == now.getMonth() && date.getDate() == now.getDate() && date.getYear() == now.getYear()){
+    var x = moment(date).format('HH:mm')
+    return x;
+  }
+}

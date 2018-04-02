@@ -9,6 +9,21 @@ const Tools = require('../../utils/tools')
 class MessagingSearch extends Component {
   constructor(props) {
     super(props);
+    this.handleFocusIn = this.handleFocusIn.bind(this);
+  }
+
+  componentDidMount(){
+    $('#searchInput').on("focusin", this.handleFocusIn);
+  }
+
+  handleFocusIn(){
+    if(this.props.clickedSearchInputButton) return;
+      this.props.setUserClickedButton("searchInput");
+      Tools.sendMessage(this, "This Search option will allow you to search for messages and contacts.", 1, "Sapphire");
+  }
+
+  componentWillUnmount() {
+    $('#searchInput').off('focusin');
   }
 
   render() {
@@ -24,7 +39,8 @@ class MessagingSearch extends Component {
 
 const mapStateToProps = state => {
   return{
-    lang: state.startup.lang
+    lang: state.startup.lang,
+    clickedSearchInputButton: state.messaging.clickedSearchInputButton
   };
 };
 

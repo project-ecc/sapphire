@@ -6,6 +6,7 @@
 	padding-left: 20px;
 	padding-right: 20px;
 	overflow: hidden;
+	position: relative;
 }
 
 #messagingTable{
@@ -310,6 +311,11 @@
 	right: 10px;
 	cursor: pointer;
 	width: 20px;
+	transition: all 0.5s;
+}
+
+.hideElement{
+	opacity: 0;
 }
 
 #optionsButtonSmallView{
@@ -379,6 +385,73 @@
     padding-bottom: 10px;
     overflow-x: hidden;
 }
+
+#warningMessaging{
+	width: 100%;
+    right: 0px;
+    height: 100%;
+    position: absolute;
+    z-index: 1000;
+    //background-image: -webkit-radial-gradient(top, circle cover, rgba(31, 30, 39, 0.85) 0%, rgba(12, 12, 12, 0.85) 80%);
+    text-align: center;
+    color: #b0b0b0;
+}
+
+#warningMessaging #popup{
+	//background: linear-gradient(to bottom, #191a20 0%,#18191f 22%,#201f23 37%,#2b2929 46%,#3b3631 55%,#726550 78%,#7e6f55 84%,#7f6f56 100%);
+	height: 495px;
+	width: 270px;
+	position: relative;
+	top: 10%;
+	margin: 0 auto;
+    border-radius: 35px;
+    //box-shadow: 0px 0px 6px 4px #121217;
+    overflow: hidden;
+}
+
+#warningMessaging img{
+	margin: 0 auto;
+	display: block;
+}
+
+#messageIconPopupConfirm{
+	position: relative;
+	top: 73px;
+	cursor: pointer;
+	width: 46px;
+}
+
+#warningMessagingTitle{
+	font-size: 26px;
+	font-weight: 300;
+}
+
+#warningMessagingSubtitle{
+	font-size: 19px;
+	margin-top: 20px;
+	font-weight: 500;
+}
+
+.messagingWarningDesc{
+	font-size: 13px;
+    width: 210px;
+    margin: 0 auto;
+    margin-top: 28px;
+}
+
+.kind{
+	margin-top: 10px;
+}
+
+#warningMessagingSubtitle span{
+	color: #6d6d6d;
+}
+
+.disableWarningMessaging{
+	height: 0px !important;
+	overflow: hidden;
+}
+
 
 @media screen and (max-width: 1023px) {
   #messagingContainer {

@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 const Tools = require('../../utils/tools')
 import MessagingInput from './MessagingInput';
 import MessagingOptions from './MessagingOptions';
+var moment = require('moment');
+import jstz from 'jstz';
 
 class MessagingChat extends Component {
   constructor(props) {
@@ -46,11 +48,20 @@ class MessagingChat extends Component {
   }
 
   handleOptionsMouseEnter(){
-    TweenMax.staggerTo('.circleOptionsButton', 0.01, {backgroundColor: "#c39c59"}, -0.01);
+    if(!this.props.userHoveredOptionsIcon){
+      this.props.setUserHoveredOptionsButton(true);
+      this.props.addNewMessage({id: 1, message: {body: "Go ahead and click that Options icon button.", mine: false, date: new Date()}, activeContactName: "Sapphire"});
+    }
+    TweenMax.staggerTo('.circleOptionsButton', 0.02, {backgroundColor: "#c39c59"}, -0.02);
   }
 
   handleOptionsMouseLeave(){
-    TweenMax.staggerTo('.circleOptionsButton', 0.01, {backgroundColor: "#313541"}, 0.01);
+    TweenMax.staggerTo('.circleOptionsButton', 0.02, {backgroundColor: "#313541"}, 0.02);
+  }
+
+  renderChat(){
+    if(this.props.messages.length == 0) return null;
+
   }
 
   render() {
@@ -58,7 +69,7 @@ class MessagingChat extends Component {
     return (
       <div id="messagingChat">
         <MessagingOptions id="messagingOptions"/>
-        <div onClick={this.handleOptionsClicked.bind(this)} onMouseEnter={this.handleOptionsMouseEnter.bind(this)} onMouseLeave={this.handleOptionsMouseLeave.bind(this)} id="optionsButton">
+        <div onClick={this.handleOptionsClicked.bind(this)} onMouseEnter={this.handleOptionsMouseEnter.bind(this)} onMouseLeave={this.handleOptionsMouseLeave.bind(this)} className={this.props.userHasCheckedGriffithChat ? "" : "hideElement"} id="optionsButton">
           <div className="circleOptionsButton"></div>
           <div className="circleOptionsButton"></div>
           <div className="circleOptionsButton"></div>
@@ -69,7 +80,7 @@ class MessagingChat extends Component {
           <div className="circleOptionsButton"></div>
         </div>
         <div id="messagingChatContainer">
-          {this.props.messages[this.props.selectedId].map((text, index) => {
+          {Object.keys(this.props.messages).length > 0 && this.props.messages[this.props.selectedId].map((text, index) => {
             let messageClass = text.mine ? "ownMessage chatMessage" : "notOwnMessage chatMessage";
             let divClass = text.mine ? "chatMessageParent chatMessageParentOwn" : "chatMessageParent";
             if(index == 0) divClass += " firstChatMessage";
@@ -83,7 +94,7 @@ class MessagingChat extends Component {
 
             return(
               <div className={divClass} key={index}>
-                <p className={messageClass}>{text.body}<span>{text.date}</span></p>
+                <p className={messageClass}>{text.body}<span>{moment(text.date).format('HH:mm')}</span></p>
               </div>
             )
           })}
@@ -98,7 +109,9 @@ const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
     messages: state.messaging.messages,
-    selectedId: state.messaging.selectedId
+    selectedId: state.messaging.selectedId,
+    userHasCheckedGriffithChat: state.messaging.userHasCheckedGriffithChat,
+    userHoveredOptionsIcon: state.messaging.userHoveredOptionsIcon
   };
 };
 

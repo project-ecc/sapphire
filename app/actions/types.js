@@ -115,3 +115,7 @@ export const MESSAGING_MOBILE_VIEW = "messaging_mobile_view";
 export const SHOWING_CHAT_LIST_ONLY = "showing_chat_list_only";
 export const MESSAGE_ID = "message_id";
 export const IN_MESSAGING = "in_messaging";
+export const MESSAGING_ENABLED = "messaging_enabled";
+export const USER_CHECKED_GRIFFITH_CHAT = "user_checked_griffith_chat";
+export const USER_HAS_HOVERED_OPTIONS_ICON = "user_has_hovered_options_icon";
+export const USER_HAS_CLICKED_BUTTON = "user_has_clicked_button";

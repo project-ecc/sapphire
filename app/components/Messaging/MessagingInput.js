@@ -18,12 +18,13 @@ class MessagingInput extends Component {
   componentDidMount(){
     this.setSendButtonStyling(this.props.messagingInputValue)
     window.addEventListener('keypress', this.handleEnterPressed)
-    this.setInputFocus();
+    if(this.props.enabled)
+      this.setInputFocus();
   }
 
   sendMessage(){
     if(this.props.messagingInputValue.length > 0){
-      this.props.addNewMessage({id: this.props.selectedId, message: {body: this.props.messagingInputValue, mine: true, date: "01:52"}, activeContactName: this.props.activeContactName});
+      this.props.addNewMessage({id: this.props.selectedId, message: {body: this.props.messagingInputValue, mine: true, date: new Date()}, activeContactName: this.props.activeContactName});
       this.props.setMessagingInputVal("");
       this.setSendButtonStyling("");
       $('#messagingChatContainer').scrollTop($('#messagingChatContainer')[0].scrollHeight - $('#messagingChatContainer')[0].clientHeight);
@@ -93,7 +94,8 @@ const mapStateToProps = state => {
     lang: state.startup.lang,
     messagingInputValue: state.messaging.inputValue,
     selectedId: state.messaging.selectedId,
-    activeContactName: state.messaging.activeContactName
+    activeContactName: state.messaging.activeContactName,
+    enabled: state.messaging.enabled
   };
 };
 

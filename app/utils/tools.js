@@ -10,6 +10,16 @@ const settings = require('electron-settings');
 
 module.exports = {
 
+  //MESSAGING PREVIEW
+
+  sendMessage: function(context, message, id, address, delay = 0){
+    setTimeout(() => {
+      context.props.addNewMessage({id: id, message: {body: message, mine: false, date: new Date()}, activeContactName: address})
+    }, delay)
+    
+  },
+
+  //MISC
   sendOSNotification: function(body, callback){
       let myNotification = new Notification('Sapphire', {
         body: body
@@ -142,6 +152,12 @@ module.exports = {
       }
       else if(iconName == "sendFile" && !hover){
         return require('../../resources/images/file-icon-dark.png')
+      }
+      else if(iconName == "messagingIconPopup"){
+        return require('../../resources/images/messaging-icon-popup-pastel.png')
+      }
+      else if(iconName == "messagingIconPopupConfirm"){
+        return require('../../resources/images/messaging-confirm-button-light-blue.png')
       }
     }
     else if(selectedTheme && selectedTheme === "theme-defaultEcc"){
