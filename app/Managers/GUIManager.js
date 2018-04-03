@@ -51,7 +51,7 @@ class GUIManager{
 
 	      })
 	      .catch(error => {
-	      	console.log(error);
+	      	// console.log(error);
 
 	      });
 	      setTimeout(this.getLatestVersion.bind(this), 60000);

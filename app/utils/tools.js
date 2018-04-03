@@ -16,7 +16,7 @@ module.exports = {
     setTimeout(() => {
       context.props.addNewMessage({id: id, message: {body: message, mine: false, date: new Date()}, activeContactName: address})
     }, delay)
-    
+
   },
 
   //MISC
@@ -305,22 +305,29 @@ module.exports = {
   //Animations end
 
   updateConfig: function(staking){
+
     return new Promise((resolve, reject) => {
-      if(fs.existsSync(getConfUri())){
-        fs.readFile(getConfUri(), 'utf8', (err, data) => {
+      const confFile = getConfUri();
+      console.log(confFile)
+
+      if(fs.existsSync(confFile)){
+        fs.readFile(confFile, 'utf8', (err, data) => {
           if (err) {
             console.log("readFile error: ", err);
             reject(false);
           }
           if (/staking=[0-9]/g.test(data)) {
-            const result = data.replace(/staking=[0-9]/g, 'staking='+staking);
+            const result = data.replace(/staking=[0-9]/g, 'staking=' + staking);
 
-            fs.writeFileSync(getConfUri(), result, 'utf8', (err) => {
-              if (err) {
-                console.log("writeFileSync error: ", err);
+
+            fs.writeFile(confFile, result, 'utf8', (error) => {
+              console.log('in the writer')
+              if (error) {
+                console.log("writeFileSync error: ", error);
                 reject(false);
               }
               else{
+                console.log('done')
                 console.log("done updating config");
                 resolve(true);
               }
@@ -328,7 +335,7 @@ module.exports = {
 
           } else {
 
-            fs.appendFileSync(getConfUri(), os.EOL + 'staking='+staking, 'utf8', (err) => {
+            fs.appendFile(confFile, os.EOL + 'staking=' + staking, 'utf8', (err) => {
               if (err) {
                 console.log("appendFile error: ", err);
                 reject(false);
@@ -338,7 +345,6 @@ module.exports = {
           }
         });
       }
-
     });
   },
 
