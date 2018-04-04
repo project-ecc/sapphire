@@ -39,7 +39,9 @@ export function downloadFile(srcUrl, destFolder, destFileName, cs = null, unzip 
 
     }).catch((err) => {
       console.log(`Error extracting  zip ${err}`);
-      fs.unlink(destFileName);
+      if(fs.existsSync(destFileName)){
+        fs.unlink(destFileName);
+      }
       resolve(err);
     });
   });
