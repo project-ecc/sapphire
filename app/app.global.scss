@@ -204,6 +204,28 @@ aside{
   text-align: center;
 }
 
+.buttonPrimary {
+  @include themify($themes) { 
+    border: themed('buttonBorder');  
+  }
+  position: absolute;
+  height: 36px;
+  width: 125px;
+  border-radius: 14px;
+  font-size: 12px;
+  line-height: 34px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+}
+
+.buttonPrimary:hover {
+  @include themify($themes) { 
+    background-color: themed('buttonBorderedHoverColor');
+    color: themed('buttonBorderedFontColor');
+  }
+}
+
 #unlockPanel{
   @include themify($themes) { 
     background-color: themed('popupBackgroundColor');  
