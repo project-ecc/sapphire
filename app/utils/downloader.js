@@ -19,6 +19,10 @@ export function downloadFile(srcUrl, destFolder, destFileName, cs = null, unzip 
 
     const fileName = destFolder + destFileName;
 
+    if(!fs.existsSync(destFolder)){
+      fs.mkdirSync(destFolder);
+    }
+
     request.get(downloadRequestOpts).then(async (res) => {
       fs.writeFileSync(fileName, res);
 

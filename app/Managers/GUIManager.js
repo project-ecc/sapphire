@@ -81,7 +81,6 @@ class GUIManager{
         const zipChecksum = latestDaemon.checksum;
         const downloadUrl = latestDaemon.download_url;
 
-
         const downloaded = await downloadFile(downloadUrl, walletDirectory,'Sapphire.zip', zipChecksum, true);
 
         if (downloaded) {
