@@ -215,6 +215,42 @@ module.exports = {
       else if(iconName == "deleteContact"){
         return require('../../resources/images/delete_contact-orange.png')
       }
+      else if(iconName == "search"){
+        return require('../../resources/images/search-icon-dark.png')
+      }
+      else if(iconName == "deleteContact"){
+        return require('../../resources/images/delete_contact-pastel.png')
+      }
+      else if(iconName == "chatContact"){
+        return require('../../resources/images/chat-contact-orange.png')
+      }
+      else if(iconName == "chatList"){
+        return require('../../resources/images/chat-list-orange.png')
+      }
+      else if(iconName == "goBackChat"){
+        return require('../../resources/images/go-back-chat-orange.png')
+      }
+      else if(iconName == "search2" && !hover){
+        return require('../../resources/images/search-icon-light-blue-2.png')
+      }
+      else if(iconName == "sendEcc" && !hover){
+        return require('../../resources/images/send-ecc-light-blue.png')
+      }
+      else if(iconName == "disableNotifications" && !hover){
+        return require('../../resources/images/disable-notifications-light-blue-icon.png')
+      }
+      else if(iconName == "removeChat" && !hover){
+        return require('../../resources/images/remove-chat-light-blue.png')
+      }
+      else if(iconName == "sendFile" && !hover){
+        return require('../../resources/images/file-icon-light-blue.png')
+      }
+      else if(iconName == "messagingIconPopup"){
+        return require('../../resources/images/messaging-icon-popup--orange.png')
+      }
+      else if(iconName == "messagingIconPopupConfirm"){
+        return require('../../resources/images/messaging-confirm-button-light-blue.png')
+      }
     }
   },
 

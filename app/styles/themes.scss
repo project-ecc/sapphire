@@ -113,6 +113,14 @@ $themes: (
     initialSetupButtonStrokeColor: #212a4c,
     initialSetupButtonActiveStrokeColor: #d09128,
 
+    //MESSAGING
+    ownMessagingBackgroundColor: #2b365f,
+    notOwnMessagingBackgroundColor: #202846,
+    chatPreviewActiveBackgroundColor: #161c31,
+    chatPreviewColor: #b4b7c8,
+    messageTimeColor: #b4b7c8,
+    popupColor: #cecece,
+    popupSpanColor: #989898,
   ),
   darkEcc: (
     //BODY
@@ -228,6 +236,14 @@ $themes: (
     initialSetupButtonStrokeColor: #464b5a,
     initialSetupButtonActiveStrokeColor: #c39c59,
 
+    //MESSAGING
+    ownMessagingBackgroundColor: #292b35,
+    notOwnMessagingBackgroundColor: #1e2027,
+    chatPreviewActiveBackgroundColor: #191b21,
+    chatPreviewColor: #7d7d7d,
+    messageTimeColor: #b4b7c8,
+    popupColor: #b0b0b0,
+    popupSpanColor: #6d6d6d,
   ),
 );
 

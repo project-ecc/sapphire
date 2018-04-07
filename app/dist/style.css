@@ -16849,7 +16849,8 @@ i.fa.fa-chevron-down {
   width: 100%;
   padding-left: 20px;
   padding-right: 20px;
-  overflow: hidden; }
+  overflow: hidden;
+  position: relative; }
 
 #messagingTable {
   height: 95%;
@@ -17122,7 +17123,11 @@ i.fa.fa-chevron-down {
   top: 10px;
   right: 10px;
   cursor: pointer;
-  width: 20px; }
+  width: 20px;
+  transition: all 0.5s; }
+
+.hideElement {
+  opacity: 0; }
 
 #optionsButtonSmallView {
   position: fixed;
@@ -17182,6 +17187,59 @@ i.fa.fa-chevron-down {
   overflow-y: scroll;
   padding-bottom: 10px;
   overflow-x: hidden; }
+
+#warningMessaging {
+  width: 100%;
+  right: 0px;
+  height: 100%;
+  position: absolute;
+  z-index: 1000;
+  text-align: center;
+  color: #b0b0b0; }
+
+#warningMessaging #popup {
+  height: 495px;
+  width: 270px;
+  position: relative;
+  top: 10%;
+  margin: 0 auto;
+  border-radius: 35px;
+  overflow: hidden; }
+
+#warningMessaging img {
+  margin: 0 auto;
+  display: block; }
+
+#messageIconPopupConfirm {
+  position: relative;
+  top: 73px;
+  cursor: pointer;
+  width: 46px; }
+
+#warningMessagingTitle {
+  font-size: 26px;
+  font-weight: 300; }
+
+#warningMessagingSubtitle {
+  font-size: 19px;
+  margin-top: 20px;
+  font-weight: 500; }
+
+.messagingWarningDesc {
+  font-size: 13px;
+  width: 210px;
+  margin: 0 auto;
+  margin-top: 28px; }
+
+.kind {
+  margin-top: 10px; }
+
+#warningMessagingSubtitle span {
+  color: #6d6d6d; }
+
+.disableWarningMessaging {
+  height: 0px !important;
+  overflow: hidden; }
 
 @media screen and (max-width: 1023px) {
   #messagingContainer {
