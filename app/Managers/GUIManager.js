@@ -51,7 +51,7 @@ class GUIManager{
 
 	      })
 	      .catch(error => {
-	      	console.log(error);
+	      	// console.log(error);
 
 	      });
 	      setTimeout(this.getLatestVersion.bind(this), 60000);
@@ -80,7 +80,6 @@ class GUIManager{
         const latestDaemon = parsed.versions[0];
         const zipChecksum = latestDaemon.checksum;
         const downloadUrl = latestDaemon.download_url;
-
 
         const downloaded = await downloadFile(downloadUrl, walletDirectory,'Sapphire.zip', zipChecksum, true);
 

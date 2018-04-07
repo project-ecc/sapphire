@@ -111,7 +111,7 @@ class Send extends Component {
               inputStyle={{top: "30px", width: "80%", textAlign: "left"}}
               inputId="inputAmountSend"
             />
-            <div onClick={this.confirmSend} className="buttonUnlock sendButton">
+            <div onClick={this.confirmSend} className="buttonPrimary sendButton">
               Send
             </div>
           </div>

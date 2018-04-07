@@ -19,6 +19,10 @@ export function downloadFile(srcUrl, destFolder, destFileName, cs = null, unzip 
 
     const fileName = destFolder + destFileName;
 
+    if(!fs.existsSync(destFolder)){
+      fs.mkdirSync(destFolder);
+    }
+
     request.get(downloadRequestOpts).then(async (res) => {
       fs.writeFileSync(fileName, res);
 
@@ -35,7 +39,9 @@ export function downloadFile(srcUrl, destFolder, destFileName, cs = null, unzip 
 
     }).catch((err) => {
       console.log(`Error extracting  zip ${err}`);
-      fs.unlink(destFileName);
+      if(fs.existsSync(destFileName)){
+        fs.unlink(destFileName);
+      }
       resolve(err);
     });
   });

@@ -31,46 +31,31 @@ class Home extends Component {
     else this.lockWallet();
   }
 
-  lockWallet(){
-    tools.updateConfig(0).then((updated) => {
-      if(updated) {
+  async lockWallet(){
+    const updated = await tools.updateConfig(0);
+    if (updated){
 
-        var batch = [];
-        var obj = {
-          method: 'reloadconfig', parameters: ["staking"],
-          method: 'walletlock', parameters: []
-        };
-        batch.push(obj);
+      var batch = [];
+      var obj = {
+        method: 'reloadconfig', parameters: ["staking"],
+        method: 'walletlock', parameters: []
+      };
+      batch.push(obj);
 
-        this.props.wallet.command(batch).then((data) => {
-          console.log("data: ", data);
-          data = data[0];
-          if (data !== null && data.code === 'ECONNREFUSED') {
-            console.log("daemon not working?")
-          } else if (data === null) {
-            this.props.setStaking(false);
-          } else {
-            console.log("error unlocking wallet: ", data)
-          }
-        }).catch((err) => {
-          console.log("err unlocking wallet: ", err);
-        });
-      }
-    });
-
-  }
-
-  lockWallet(){
-    var self = this;
-    this.props.wallet.walletlock().then((data) => {
-        if (data === null) {
-          self.props.setStaking(false);
+      this.props.wallet.command(batch).then((data) => {
+        console.log("data: ", data);
+        data = data[0];
+        if (data !== null && data.code === 'ECONNREFUSED') {
+          console.log("daemon not working?")
+        } else if (data === null) {
+          this.props.setStaking(false);
         } else {
-          console.log("error unlocking: ", data)
+          console.log("error unlocking wallet: ", data)
         }
       }).catch((err) => {
-        console.log("exception unlocking: ", err)
+        console.log("err unlocking wallet: ", err);
       });
+    }
   }
 
   earningsFilterClicked(filter){

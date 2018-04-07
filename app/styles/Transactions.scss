@@ -36,7 +36,8 @@
 
 .buttonTransaction:hover{
   @include themify($themes) { 
-    background-color: themed('buttonBorderedHoverColor');  
+    background-color: themed('buttonBorderedHoverColor');
+    color: themed('buttonBorderedFontColor');
   }
 }
 
