@@ -1,4 +1,4 @@
-import Client from 'bitcoin-core';
+import Client from 'eccoin-js';
 import shell from 'node-powershell';
 import {getPlatformWalletUri} from "./platform.service";
 
@@ -11,7 +11,8 @@ export default class Wallet {
   constructor(username = "yourusername", password = "yourpassword"){
     client = new Client({
       host: '127.0.0.1',
-      port: 19119,
+      //network: 'testnet',
+      port: 30001,
       username: username,
       password: password
     });
@@ -49,6 +50,16 @@ export default class Wallet {
   getAddressesByAccount(account) {
     return new Promise((resolve, reject) => {
       client.getAddressesByAccount(account).then((addresses) => {
+        return resolve(addresses);
+      }).catch((err) => {
+        return reject(err);
+      });
+    });
+  }
+
+  getAllAddresses() {
+    return new Promise((resolve, reject) => {
+      client.listAddressGroupings().then((addresses) => {
         return resolve(addresses);
       }).catch((err) => {
         return reject(err);
@@ -118,6 +129,11 @@ export default class Wallet {
     } else {
       newAddress = await client.getNewAddress(name);
     }
+    return newAddress;
+  }
+
+  async createNewANSAddress(address, name) {
+    const newAddress = await client.getANSAddress(address, name);
     return newAddress;
   }
 
