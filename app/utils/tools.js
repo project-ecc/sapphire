@@ -316,6 +316,32 @@ module.exports = {
 
   //Animations
 
+  animateMessagingFunctionIconsIn: function(){
+    TweenMax.set('#messagingOptions', {autoAlpha: 1});
+    TweenMax.staggerFromTo('.messagingOption', 0.1, {y: -60, autoAlpha: 0}, {y: 0, autoAlpha: 1}, -0.05);
+  },
+
+  animateMessagingFunctionIconsOut: function(){
+    TweenMax.staggerFromTo('.messagingOption', 0.1, {y: 0, autoAlpha: 1}, {y: -60, autoAlpha: 0}, 0.05);
+    setTimeout(() => {
+      TweenMax.set('#messagingOptions', {autoAlpha: 0})
+    }, 400)
+  },
+
+  animateMessagingSmallFunctionIconsIn: function(){
+      $('#messagingTopBar').css('height',"82px");
+      TweenMax.set('#messagingOptionsSmall', {autoAlpha: 1});
+      TweenMax.staggerFromTo('.messagingOption', 0.1, {y: -60, autoAlpha: 0}, {y: 0, autoAlpha: 1}, -0.05);
+  },
+
+  animateMessagingSmallFunctionIconsOut: function(){
+      TweenMax.staggerFromTo('.messagingOption', 0.1, {y: 0, autoAlpha: 1}, {y: -60, autoAlpha: 0}, 0.05);
+      setTimeout(() => {
+        TweenMax.set('#messagingOptionsSmall', {autoAlpha: 0})
+        $('#messagingTopBar').css("height","");
+      }, 400)
+  },
+
   showFunctionIcons: function(element){
     TweenMax.set('.functionIcon', {css:{display: "inline-block"}});
     TweenMax.staggerFromTo('.functionIcon', 0.4, {x: 20, autoAlpha: 0}, {x: 0, autoAlpha: 1}, -0.2);

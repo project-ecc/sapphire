@@ -22,29 +22,19 @@ class MessagingChat extends Component {
 
   handleOptionsClicked(){
     if($('#messagingOptions').css("visibility") == "hidden"){
-      TweenMax.set('#messagingOptions', {autoAlpha: 1});
-      TweenMax.staggerFromTo('.messagingOption', 0.1, {y: -60, autoAlpha: 0}, {y: 0, autoAlpha: 1}, -0.05);
+      Tools.animateMessagingFunctionIconsIn();
     }
     else{
-      TweenMax.staggerFromTo('.messagingOption', 0.1, {y: 0, autoAlpha: 1}, {y: -60, autoAlpha: 0}, 0.05);
-      setTimeout(() => {
-        TweenMax.set('#messagingOptions', {autoAlpha: 0})
-      }, 400)
+      Tools.animateMessagingFunctionIconsOut();
     }
   }
 
   handleOptionsSmallClicked(){
     if($('#messagingOptionsSmall').css("visibility") == "hidden"){
-      $('#messagingTopBar').css('height',"82px");
-      TweenMax.set('#messagingOptionsSmall', {autoAlpha: 1});
-      TweenMax.staggerFromTo('.messagingOption', 0.1, {y: -60, autoAlpha: 0}, {y: 0, autoAlpha: 1}, -0.05);
+      Tools.animateMessagingSmallFunctionIconsIn();
     }
     else{
-      TweenMax.staggerFromTo('.messagingOption', 0.1, {y: 0, autoAlpha: 1}, {y: -60, autoAlpha: 0}, 0.05);
-      setTimeout(() => {
-        TweenMax.set('#messagingOptionsSmall', {autoAlpha: 0})
-        $('#messagingTopBar').css("height","");
-      }, 400)
+      Tools.animateMessagingSmallFunctionIconsOut();
     }
   }
 

@@ -36,6 +36,9 @@ class MessagingTopBar extends Component {
     TweenMax.fromTo($('#optionsButtonSmallView'), 0.2,{ autoAlpha:1, x:0}, { autoAlpha:0, x: 50, delay: 0.1, ease: Linear.easeNone});
     $('#topBarMessage').text("Chats");
     this.props.setShowingChatListOnly(true);
+    if($('#messagingOptionsSmall').css("visibility") != "hidden"){
+      Tools.animateMessagingSmallFunctionIconsOut();
+    }
   }
 
   render() {

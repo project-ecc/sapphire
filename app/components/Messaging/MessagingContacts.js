@@ -24,6 +24,9 @@ class MessagingContacts extends Component {
   }
 
   handleChatClicked(id, address){
+    if($('#messagingOptions').css("visibility") != "hidden" && address != this.props.activeContactName){
+      Tools.animateMessagingFunctionIconsOut();
+    }
     this.props.setMessageId(id, address);
     if(address == "Griffith" && !this.props.userCheckedGriffithChat){
       this.props.setUserCheckedGriffithChat(true);
