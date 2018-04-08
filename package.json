@@ -220,6 +220,7 @@
     "react-hot-loader": "3.0.0-beta.6",
     "react-loading": "^0.1.4",
     "react-redux": "^5.0.5",
+    "react-render-html": "^0.6.0",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
     "react-router-redux": "^5.0.0-alpha.6",
@@ -229,7 +230,8 @@
     "redux-thunk": "^2.2.0",
     "rss-to-json": "^1.0.4",
     "source-map-support": "^0.4.15",
-    "sqlite3": "^3.1.13"
+    "sqlite3": "^3.1.13",
+    "twemoji-awesome": "^1.0.6"
   },
   "devEngines": {
     "node": ">=6.x",

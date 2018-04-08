@@ -9,6 +9,7 @@ import MessagingInput from './MessagingInput';
 import MessagingOptions from './MessagingOptions';
 var moment = require('moment');
 import jstz from 'jstz';
+import renderHTML from 'react-render-html';
 
 class MessagingChat extends Component {
   constructor(props) {
@@ -92,11 +93,20 @@ class MessagingChat extends Component {
               ownLastMessage = text.mine;
             }
 
-            return(
-              <div className={divClass} key={index}>
-                <p className={messageClass}>{text.body}<span>{moment(text.date).format('HH:mm')}</span></p>
-              </div>
-            )
+            if(text.emoji){
+              return(
+                <div className={divClass} key={index}>
+                  <p className={messageClass}>{renderHTML('<i className=\"twa twa-2665\"></i>')}<span>{moment(text.date).format('HH:mm')}</span></p>
+                </div>
+              )
+            }
+            else{
+              return(
+                <div className={divClass} key={index}>
+                  <p className={messageClass}>{text.body}<span>{moment(text.date).format('HH:mm')}</span></p>
+                </div>
+              )
+            }
           })}
         </div>
         <MessagingInput/>

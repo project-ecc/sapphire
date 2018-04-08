@@ -12,9 +12,9 @@ module.exports = {
 
   //MESSAGING PREVIEW
 
-  sendMessage: function(context, message, id, address, delay = 0){
+  sendMessage: function(context, message, id, address, delay = 0, emoji = false){
     setTimeout(() => {
-      context.props.addNewMessage({id: id, message: {body: message, mine: false, date: new Date()}, activeContactName: address})
+      context.props.addNewMessage({id: id, message: {body: message, mine: false, date: new Date(), emoji: emoji}, activeContactName: address})
     }, delay)
 
   },
