@@ -72,8 +72,8 @@ module.exports = {
 
   //Theme Support
 
-  getIconForTheme: function(iconName, hover){
-    const selectedTheme = settings.get('settings.display.theme');
+  getIconForTheme: function(iconName, hover, theme = undefined){
+    const selectedTheme = !theme ? settings.get('settings.display.theme') : theme;
     if(!selectedTheme || selectedTheme === "theme-darkEcc"){
       if(iconName == "wallet" && !hover){
         return require('../../resources/images/wallet-white.png')
@@ -158,6 +158,36 @@ module.exports = {
       }
       else if(iconName == "messagingIconPopupConfirm"){
         return require('../../resources/images/messaging-confirm-button-light-blue.png')
+      }
+      else if(iconName == "facebook" && !hover){
+        return require('../../resources/images/facebook-icon-dark.png')
+      }
+      else if(iconName == "facebook" && hover){
+        return require('../../resources/images/facebook-icon-pastel.png')
+      }
+      else if(iconName == "slack" && !hover){
+        return require('../../resources/images/slack-icon-dark.png')
+      }
+      else if(iconName == "slack" && hover){
+        return require('../../resources/images/slack-icon-pastel.png')
+      }
+      else if(iconName == "reddit" && !hover){
+        return require('../../resources/images/reddit-icon-dark.png')
+      }
+      else if(iconName == "reddit" && hover){
+        return require('../../resources/images/reddit-icon-pastel.png')
+      }
+      else if(iconName == "medium" && !hover){
+        return require('../../resources/images/medium-icon-dark.png')
+      }
+      else if(iconName == "medium" && hover){
+        return require('../../resources/images/medium-icon-pastel.png')
+      }
+      else if(iconName == "twitter" && !hover){
+        return require('../../resources/images/twitter-icon-dark.png')
+      }
+      else if(iconName == "twitter" && hover){
+        return require('../../resources/images/twitter-icon-pastel.png')
       }
     }
     else if(selectedTheme && selectedTheme === "theme-defaultEcc"){
@@ -250,6 +280,36 @@ module.exports = {
       }
       else if(iconName == "messagingIconPopupConfirm"){
         return require('../../resources/images/messaging-confirm-button-light-blue.png')
+      }
+      else if(iconName == "facebook" && !hover){
+        return require('../../resources/images/facebook-icon-dark-blue.png')
+      }
+      else if(iconName == "facebook" && hover){
+        return require('../../resources/images/facebook-icon-orange.png')
+      }
+      else if(iconName == "slack" && !hover){
+        return require('../../resources/images/slack-icon-dark-blue.png')
+      }
+      else if(iconName == "slack" && hover){
+        return require('../../resources/images/slack-icon-orange.png')
+      }
+      else if(iconName == "reddit" && !hover){
+        return require('../../resources/images/reddit-icon-dark-blue.png')
+      }
+      else if(iconName == "reddit" && hover){
+        return require('../../resources/images/reddit-icon-orange.png')
+      }
+      else if(iconName == "medium" && !hover){
+        return require('../../resources/images/medium-icon-dark-blue.png')
+      }
+      else if(iconName == "medium" && hover){
+        return require('../../resources/images/medium-icon-orange.png')
+      }
+      else if(iconName == "twitter" && !hover){
+        return require('../../resources/images/twitter-icon-dark-blue.png')
+      }
+      else if(iconName == "twitter" && hover){
+        return require('../../resources/images/twitter-icon-orange.png')
       }
     }
   },
