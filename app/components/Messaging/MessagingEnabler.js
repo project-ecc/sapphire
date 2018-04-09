@@ -31,7 +31,9 @@ class MessagingEnabler extends Component {
     Tools.sendMessage(this, "Hey! Welcome to the preview of ECC's own Secure Messaging service.", 1, "Sapphire", 2000);
     Tools.sendMessage(this, "Part of the functionality does not work yet, but I will make sure to tell you once you try to use it.", 1, "Sapphire", 4000);
     Tools.sendMessage(this, "Please share any feedback you may have with the guys that made me. I still think I can be improved and won't take it the wrong way if you feel like I need some tweaking.", 1, "Sapphire", 6000);
-    Tools.sendMessage(this, "Yes, do tell us. Also I'm kinda busy, don't try to chat too much. But thanks for trying the preview!", 2, "Griffith", 11000);
+    Tools.sendMessage(this, "Also, yes, emojis will be supported. Just not in this preview.", 2, "Griffith", 11000);
+    Tools.sendMessage(this, "Thanks for trying the preview!", 2, "Griffith", 13000);
+    Tools.sendMessage(this, "<i className=\"twa twa-2665\"></i>", 2, "Griffith", 14500, true)
   }
 
 

@@ -226,6 +226,17 @@
 	margin-top: 50px;
 }
 
+#socialIcons{
+	width: 100%;
+	margin-top: 30px;
+	margin-left: 10px;
+}
+
+#socialIcons img{
+	margin-right: 15px;
+	cursor: pointer;
+}
+
 .settingsToggleSubText{
 	@include themify($themes) { 
 		color: themed('settingsToggleDescriptionColor') !important;  

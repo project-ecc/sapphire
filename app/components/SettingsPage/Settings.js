@@ -15,6 +15,7 @@ const app = remote.app;
 const settings = require('electron-settings');
 const homedir = require('os').homedir();
 var open = require("open");
+const Tools = require('../../utils/tools');
 
 class Settings extends Component {
   constructor(props) {
@@ -262,8 +263,8 @@ class Settings extends Component {
     )
   }
 
-  goToTranslationPlatform(){
-    open("https://poeditor.com/join/project/p7WYAsLDSj");
+  goToUrl(url){
+    open(url);
   }
 
   getLanguageSettings(){
@@ -271,7 +272,7 @@ class Settings extends Component {
       <div className="container removePadding">
         <div id="languageRectangle">
           <p id="languageHelp">{ this.props.lang.helpTranslate1 }</p>
-          <p id="languageHelpDesc">{ this.props.lang.helpTranslate2 } <span onClick={this.goToTranslationPlatform}>{ this.props.lang.helpTranslate3 }.</span></p>
+          <p id="languageHelpDesc">{ this.props.lang.helpTranslate2 } <span onClick={this.goToUrl.bind(this,"https://poeditor.com/join/project/p7WYAsLDSj")}>{ this.props.lang.helpTranslate3 }.</span></p>
         </div>
         <div className="row" id="settingsLanguageSelector">
           <div className="col-sm-4 text-left">
@@ -285,11 +286,15 @@ class Settings extends Component {
     )
   }
 
+  forceSettingsUpdate(){
+    this.forceUpdate();
+  }
+
   getAppearanceSettings(){
     return(
       <div>
         <p id="walletBackup">{ this.props.lang.theme }</p>
-        <ThemeSelector />
+        <ThemeSelector forceUpdate={this.forceSettingsUpdate.bind(this)} />
       </div>
     )
   }
@@ -304,7 +309,49 @@ class Settings extends Component {
     }
   }
 
+  handleIconHover(name){
+    this.props.setHoveredSettingsSocialIcon(name);
+  }
+
+  handleIconUnhover(){
+    this.props.setHoveredSettingsSocialIcon(undefined);
+  }
+
+  shouldComponentUpdate(props){
+    console.log(props.theme)
+    console.log(this.props.theme)
+    if(props.theme != this.props.theme){
+      console.log("Forcing update.")
+      this.forceUpdate()
+    }
+    return true;
+  }
+
   render() {
+    let twitter = Tools.getIconForTheme("twitter", false, this.props.theme);
+    let facebook = Tools.getIconForTheme("facebook", false, this.props.theme);
+    let medium = Tools.getIconForTheme("medium", false, this.props.theme);
+    let reddit = Tools.getIconForTheme("reddit", false, this.props.theme);
+    let slack = Tools.getIconForTheme("slack", false, this.props.theme);
+
+    const hoveredIcon = this.props.hoveredIcon;
+
+    if(hoveredIcon && hoveredIcon == "twitter"){
+      twitter = Tools.getIconForTheme("twitter", true);
+    }
+    else if(hoveredIcon && hoveredIcon == "facebook"){
+      facebook = Tools.getIconForTheme("facebook", true);
+    }
+    else if(hoveredIcon && hoveredIcon == "medium"){
+      medium = Tools.getIconForTheme("medium", true);
+    }
+    else if(hoveredIcon && hoveredIcon == "reddit"){
+      reddit = Tools.getIconForTheme("reddit", true);
+    }
+    else if(hoveredIcon && hoveredIcon == "slack"){
+      slack = Tools.getIconForTheme("slack", true);
+    }
+
     return (
       <div>
         <div id="brigher">
@@ -320,6 +367,13 @@ class Settings extends Component {
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Notifications")} selected={this.props.settingsOptionSelected == "Notifications" ? true : false} text={ this.props.lang.notifications } />
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Appearance")} selected={this.props.settingsOptionSelected == "Appearance" ? true : false} text={ this.props.lang.appearance } />
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Language")} selected={this.props.settingsOptionSelected == "Language" ? true : false} text={ this.props.lang.language } />
+              <div id="socialIcons">
+                <img onMouseEnter={this.handleIconHover.bind(this, "twitter")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://twitter.com/project_ecc")} src={twitter} />
+                <img onMouseEnter={this.handleIconHover.bind(this, "facebook")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://www.facebook.com/projectECC/")} src={facebook} />
+                <img onMouseEnter={this.handleIconHover.bind(this, "medium")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://medium.com/@project_ecc")} src={medium} />
+                <img onMouseEnter={this.handleIconHover.bind(this, "reddit")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://www.reddit.com/r/ecc/")} src={reddit} />
+                <img onMouseEnter={this.handleIconHover.bind(this, "slack")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://ecc.network/#join-slack")} src={slack} />
+              </div>
             </div>
             <div className="subSettings">
               {this.getSettings()}
@@ -346,7 +400,9 @@ const mapStateToProps = state => {
     settingsOptionSelected: state.application.settingsOptionSelected,
     operativeSystemNotifications: state.notifications.operativeSystemNotificationsEnabled,
     newsNotifications: state.notifications.newsNotificationsEnabled,
-    stakingNotifications: state.notifications.stakingNotificationsEnabled
+    stakingNotifications: state.notifications.stakingNotificationsEnabled,
+    hoveredIcon: state.application.settingsHoveredSocialIcon,
+    theme: state.application.theme,
   };
 };
 
