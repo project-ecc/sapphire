@@ -21,47 +21,40 @@ export function getPlatformFileName() {
   }
 }
 
-export function getExecutableExtension(){
-  if(this.os === 'win32') return '.exe';
-  else if(this.os === 'linux') return '';
-  else return '.app';
-
-}
-
 export function getDaemonDownloadUrl() {
 
-  serverUrl += daemonConfig.daemon_url;
+  let url = serverUrl + daemonConfig.daemon_url;
 
   if (process.platform === 'linux') {
-
-    return serverUrl += os.arch() === 'x32' ? daemonConfig.linux32 : daemonConfig.linux64;
+    url += os.arch() === 'x32' ? daemonConfig.linux32 : daemonConfig.linux64;
+    return url;
 
   } else if (process.platform === 'darwin') {
-
-    serverUrl += daemonConfig.osx;
-    return serverUrl;
+    url += daemonConfig.osx;
+    return url;
 
   } else if (process.platform.indexOf('win') > -1) {
-
-    return serverUrl += os.arch() === 'x32' ? daemonConfig.win32 : daemonConfig.win64;
+    url += os.arch() === 'x32' ? daemonConfig.win32 : daemonConfig.win64;
+    return url;
   }
 }
 
 export function getSapphireDownloadUrl() {
-  serverUrl += sapphireConfig.daemon_url;
+
+  let url = serverUrl + sapphireConfig.sapphire_url;
 
   if (process.platform === 'linux') {
-
-    return serverUrl += os.arch() === 'x32' ? sapphireConfig.linux32 : sapphireConfig.linux64;
+    url += os.arch() === 'x32' ? sapphireConfig.linux32 : sapphireConfig.linux64;
+    return url;
 
   } else if (process.platform === 'darwin') {
-
-    serverUrl += sapphireConfig.osx;
-    return serverUrl;
+    url += sapphireConfig.osx;
+    return url;
 
   } else if (process.platform.indexOf('win') > -1) {
 
-    return serverUrl += os.arch() === 'x32' ? sapphireConfig.win32 : sapphireConfig.win64;
+    url += os.arch() === 'x32' ? sapphireConfig.win32 : sapphireConfig.win64;
+    return url;
   }
 }
 

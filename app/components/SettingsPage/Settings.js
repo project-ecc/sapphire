@@ -186,7 +186,7 @@ class Settings extends Component {
         <div className="row settingsToggle">
           <div className="col-sm-6 text-left removePadding">
             <p>{ this.props.lang.applicationVersion }</p>
-            <p id="applicationVersion">v0.1.4g & v1.1.2d</p>
+            <p id="applicationVersion">v{process.env.npm_package_version}g & v1.1.2d</p>
           </div>
           <div className="col-sm-6 text-right removePadding">
             <p onClick={this.handleUpdateApplication.bind(this)} id={this.props.updateAvailable ? "updateAvailable" : "updateUnavailable"}>{this.props.updateAvailable ? this.props.lang.installUpdate : this.props.lang.noUpdateAvailable }</p>

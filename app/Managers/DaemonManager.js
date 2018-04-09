@@ -13,7 +13,7 @@ const checksum = require('checksum');
 import Wallet from '../utils/wallet';
 import { getPlatformWalletUri, grabWalletDir, grabEccoinDir, getDaemonDownloadUrl, getPlatformFileName } from '../utils/platform.service';
 import Tools from '../utils/tools';
-import {downloadFile} from "../utils/downloader";
+import {downloadFile} from '../utils/downloader';
 
 /*
 *	Handles daemon updates and the daemon'state
@@ -42,7 +42,7 @@ class DaemonManager {
       this.startDaemon((started) => {
         if (started) {
           event.emit('daemonStarted');
-        }				
+        }
         else event.emit('daemonFailed');
       });
     });
@@ -83,7 +83,8 @@ class DaemonManager {
      	do {
      		console.log('getting latest version');
      		await this.getLatestVersion();
-     	} while (this.currentVersion != -1);
+     	} while (this.currentVersion !== -1);
+     	console.log(this.currentVersion)
 	     console.log('got latest version');
 	    if (this.installedVersion == -1) {
 	    	do {
@@ -91,7 +92,7 @@ class DaemonManager {
 	    	} while (this.installedVersion == -1);
 	    	console.log('telling electron about wallet.dat');
 	    	event.emit('wallet', this.walletDat);
-	    } else			{ event.emit('wallet', this.walletDat); }
+	    } else{ event.emit('wallet', this.walletDat); }
 
 		// if there is a wallet then start the daemon
     if (this.walletDat) { this.startDaemonChecker(); }
@@ -181,14 +182,15 @@ class DaemonManager {
   async checkIfDaemonExists() {
     if (fs.existsSync(getPlatformWalletUri())) {
 		    try {
-	    		var data = fs.readFileSync(this.versionPath, 'utf8');
-    } catch (e) {
-      console.log('daemon.txt does not exist');
-      return -1;
-    }
-      console.log('daemon exists, version: ', data);
-      return data.split(' ')[1];
-    }		else if (!fs.existsSync(this.path) && fs.mkdirSync(this.path)) {
+	    		const data = fs.readFileSync(this.versionPath, 'utf8');
+          console.log('daemon exists, version: ', data);
+	    		return data;
+        } catch (e) {
+          console.log('daemon.txt does not exist');
+          return -1;
+        }
+
+    }	else if (!fs.existsSync(this.path) && fs.mkdirSync(this.path)) {
       console.log('daemon does not exist');
       return -1;
     }
@@ -210,59 +212,66 @@ class DaemonManager {
   }
 
   async getLatestVersion() {
-    const opts = {
-		  url: 'https://api.github.com/repos/Greg-Griffith/eccoin/releases/latest',
-      headers: {
-        'User-Agent': 'request'
-      }
-    };
+
+    console.log('checking for latest daemon version');
+
+    const daemonDownloadURL = getDaemonDownloadUrl();
+    console.log(getDaemonDownloadUrl())
     const self = this;
-    request(opts)
-	      .then((response) => {
-        const parsed = JSON.parse(response);
-        const githubVersion = parsed.name.split(' ')[1];
-        self.currentVersion = githubVersion;
-        self.checkForUpdates();
-	      })
-	      .catch(error => {
-	      	console.log(error);
-	      });
+    // download latest daemon info from server
+    const opts = {
+      url: daemonDownloadURL
+    };
+
+    request(opts).then((data) => {
+      const parsed = JSON.parse(data);
+      this.currentVersion = parsed.versions[0].name.substring(1);
+      console.log(this.currentVersion);
+      self.checkForUpdates();
+    }).catch(error => {
+      console.log(error);
+    });
   }
+
   async downloadDaemon() {
     const walletDirectory = grabWalletDir();
 	  const daemonDownloadURL = getDaemonDownloadUrl();
+	  console.log(daemonDownloadURL)
 
     this.downloading = true;
     const self = this;
 
     return new Promise((resolve, reject) => {
-      console.log('downloading daemon');
+      console.log('downloading latest daemon');
 
       // download latest daemon info from server
       const opts = {
         url: daemonDownloadURL
       };
+      console.log(opts);
 
       request(opts).then(async (data) => {
+        console.log(data)
         const parsed = JSON.parse(data);
-        const latestDaemon = parsed.versions[0];
+        const latestDaemon = parsed.versions[0].name.substring(1);
         const zipChecksum = latestDaemon.checksum;
         const downloadUrl = latestDaemon.download_url;
+        console.log(downloadUrl);
 
-
-        const downloaded = await downloadFile(downloadUrl,walletDirectory,'Eccoind.zip',zipChecksum, true);
+        const downloaded = await downloadFile(downloadUrl, walletDirectory, 'Eccoind.zip', zipChecksum, true);
 
         if (downloaded) {
-          self.installedVersion = self.currentVersion;
+          self.installedVersion = latestDaemon;
           self.saveVersion(self.installedVersion);
           self.downloading = false;
           resolve(true);
         } else {
+          console.log(downloaded)
           reject(downloaded);
         }
 
       }).catch(error => {
-        console.log(error);
+        console.log("Error " + error);
         reject(false);
       });
     });
