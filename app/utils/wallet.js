@@ -12,7 +12,7 @@ export default class Wallet {
     client = new Client({
       host: '127.0.0.1',
       //network: 'testnet',
-      port: 30003,
+      port: 30001,
       username: username,
       password: password
     });
