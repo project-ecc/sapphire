@@ -138,22 +138,25 @@ class ExportPrivateKeys extends React.Component {
     let accounts = await this.getAccounts();
     let addresses = await this.getAddressesOfAccounts(accounts);
     let batch = [];
-    for(let i = 0; i < addresses[0].length; i++){
+    let addressesArray = [];
+    for(let key in Object.keys(addresses)){
       batch.push({
-        method: 'dumpprivkey', parameters: [addresses[0][i]]
+        method: 'dumpprivkey', parameters: [addresses[key]]
       });
+      addressesArray.push(addresses[key]);
     }
-    let privKeys = await this.getPrivateKeys(batch);
 
+    let privKeys = await this.getPrivateKeys(batch);
     let counter = 1;
     let aux = [];
-    for(let i = 0; i < addresses[0].length; i++){
 
-      aux.push(addresses[0][i]);
+    for(let i = 0; i < addressesArray.length; i++){
+
+      aux.push(addressesArray[i]);
       aux.push(privKeys[i]);
       aux.push("");
       counter++;
-      if(counter == 24 || i == addresses[0].length - 1 ){
+      if(counter == 24 || i == addressesArray.length - 1 ){
         this.toPrint.push([]);
         for(let j = 0; j < aux.length; j++)
           this.toPrint[this.toPrint.length-1].push(aux[j]);
@@ -201,7 +204,7 @@ class ExportPrivateKeys extends React.Component {
     doc.save('printMe.pdf');
     this.toPrint = [];
     this.props.setExportingPrivateKeys(false);
-    this.props.setBackupOperationCompleted(true);
+    //this.props.setBackupOperationCompleted(true);
   }
 
   getPrivateKeys(batch){
