@@ -8,6 +8,7 @@ const Tools = require('../../utils/tools')
 import MessagingSearch from './MessagingSearch';
 var moment = require('moment');
 moment.locale('lt');
+import renderHTML from 'react-render-html';
 
 class MessagingContacts extends Component {
   constructor(props) {
@@ -23,6 +24,9 @@ class MessagingContacts extends Component {
   }
 
   handleChatClicked(id, address){
+    if($('#messagingOptions').css("visibility") != "hidden" && address != this.props.activeContactName){
+      Tools.animateMessagingFunctionIconsOut();
+    }
     this.props.setMessageId(id, address);
     if(address == "Griffith" && !this.props.userCheckedGriffithChat){
       this.props.setUserCheckedGriffithChat(true);
@@ -59,7 +63,7 @@ class MessagingContacts extends Component {
                 <div onClick={this.handleChatClicked.bind(this, t.id, t.address)} className={t.id == this.props.selectedId && !this.props.mobileView ? "chatPreview chatPreviewActive" : "chatPreview"} key={t.id}>
                   <div className={t.seen ? "borderChatPreview" : "borderChatPreview borderChatPreviewNotRead"}></div>
                   <p className="chatAddress">{t.address}<span className="chatDate">{date}</span></p>
-                  <p className="chatPreviewMessage">{t.lastMessage}</p>
+                  <p className="chatPreviewMessage">{t.emoji ? renderHTML('<i className=\"twa twa-2665\"></i>') : t.lastMessage}</p>
                 </div>
               )
             })

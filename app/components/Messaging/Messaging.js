@@ -54,6 +54,9 @@ class Messaging extends Component {
           Tools.sendMessage(this, "Full on messaging mode!", 1, "Sapphire");
           this.props.setUserClickedButton("fullMessaging");
         }
+        if($('#messagingOptions').css("visibility") != "hidden"){
+          Tools.animateMessagingFunctionIconsOut();
+        }
         /*setTimeout(() => {
           TweenMax.fromTo($('#contacts'), 0.2, { autoAlpha:1, css: {left: "0%"}}, { autoAlpha:0, css: {left: "-100%"}, ease: Linear.easeNone});
           TweenMax.fromTo($('#messagingChat'), 0.2,{ autoAlpha:0, css: {left: "100%"}}, { autoAlpha:1, css: {left: "0%"}, ease: Linear.easeNone});
@@ -61,6 +64,9 @@ class Messaging extends Component {
       }
     }
     else if($(window).width() >= 580 && !this.props.showingFunctionIcons){
+      if($('#messagingOptionsSmall').css("visibility") != "hidden"){
+        Tools.animateMessagingSmallFunctionIconsOut();
+      }
       this.props.setMobileView(false);
       Tools.showFunctionIcons();
       this.props.setShowingFunctionIcons(true);

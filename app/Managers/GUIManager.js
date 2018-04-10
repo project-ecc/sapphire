@@ -15,6 +15,7 @@ import {version} from './../../package.json';
 var cp = require('child_process');
 var checksum = require('checksum');
 import {downloadFile} from "../utils/downloader";
+import {getSapphireDownloadUrl} from "../utils/platform.service";
 
 
 class GUIManager{
@@ -37,51 +38,55 @@ class GUIManager{
 	}
 
 	getLatestVersion(){
-		const opts = { url: 'http://1b519385.ngrok.io/walletinfo'};
-		request(opts)
-	      .then((response) => {
-				const parsed = JSON.parse(response);
-                const githubVersion = parsed.name;
-                this.currentVersion = githubVersion;
-                console.log(this.currentVersion);
-                if(this.currentVersion != this.installedVersion && !this.upgrading && !this.toldUserAboutUpdate){
-					this.toldUserAboutUpdate = true;
-					event.emit('guiUpdate');
-                }
+    console.log('checking for latest gui version');
 
-	      })
-	      .catch(error => {
-	      	// console.log(error);
+    const guiDownloadURL = getSapphireDownloadUrl();
+    // download latest daemon info from server
+    const opts = {
+      url: guiDownloadURL
+    };
 
-	      });
-	      setTimeout(this.getLatestVersion.bind(this), 60000);
+    request(opts).then((data) => {
+      const parsed = JSON.parse(data);
+      this.currentVersion = parsed.versions[0].name.substring(1);
+      if(this.currentVersion !== this.installedVersion && !this.upgrading && !this.toldUserAboutUpdate){
+        this.toldUserAboutUpdate = true;
+        event.emit('guiUpdate');
+      }
+      setTimeout(this.getLatestVersion.bind(this), 60000);
+    }).catch(error => {
+      console.log(error);
+    });
 	}
 
 
 	downloadGUI() {
 
     const walletDirectory = grabWalletDir();
-    const daemonDownloadURL = getDaemonDownloadUrl();
+    const guiDownloadURL = getSapphireDownloadUrl();
 
 		console.log("going to download GUI");
 		this.upgrading = true;
 		const self = this;
 
     return new Promise((resolve, reject) => {
-      console.log('downloading daemon');
+      console.log('downloading GUI');
 
       // download latest daemon info from server
       const opts = {
-        url: daemonDownloadURL
+        url: guiDownloadURL
       };
 
       request(opts).then(async (data) => {
+        console.log('gui response' + data)
         const parsed = JSON.parse(data);
-        const latestDaemon = parsed.versions[0];
-        const zipChecksum = latestDaemon.checksum;
-        const downloadUrl = latestDaemon.download_url;
+        const latestGui = parsed.versions[0];
+        const zipChecksum = latestGui.checksum;
+        const downloadUrl = latestGui.download_url;
+        console.log('download URL:' +downloadUrl)
 
-        const downloaded = await downloadFile(downloadUrl, walletDirectory,'Sapphire.zip', zipChecksum, true);
+        const downloaded = await downloadFile(downloadUrl, walletDirectory,'Sapphire.zip', zipChecksum, true)
+          .catch(error => console.log(error));;
 
         if (downloaded) {
           console.log("Done downloading gui");

@@ -12,11 +12,17 @@ class ThemeSelector extends Component {
     this.props.setTheme(name);
     this.props.setChangedTheme(true);
     settings.set('settings.display.theme', name);
+    if(this.props.forceUpdate){
+      this.props.forceUpdate();
+    }
   }
 
   onHover(name){
     this.props.setThemeBackup(this.props.theme);
     this.props.setTheme(name);
+    if(this.props.forceUpdate){
+      this.props.forceUpdate();
+    }
   }
 
   onUnhover(){
@@ -24,6 +30,9 @@ class ThemeSelector extends Component {
       this.props.setTheme(this.props.backupTheme);
     }
     this.props.setChangedTheme(false);
+    if(this.props.forceUpdate){
+      this.props.forceUpdate();
+    }
   }
 
   render() {

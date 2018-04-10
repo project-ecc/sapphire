@@ -88,14 +88,14 @@
     cursor: pointer;
     &:hover{
 		@include themify($themes) { 
-			background-color: themed('homePanelsBackgroundColor');
+			background-color: themed('chatPreviewActiveBackgroundColor');
 		}
     }
 }
 
 .chatPreviewActive{
 	@include themify($themes) { 
-		background-color: themed('homePanelsBackgroundColor') !important;
+		background-color: themed('chatPreviewActiveBackgroundColor') !important;
 	}
 }
 
@@ -114,9 +114,6 @@
 }
 
 .chatAddress{
-	@include themify($themes) { 
-		color: themed('bodyParagraphColor');
-	}
 	width: 100%;
     position: relative;
     padding-left: 40px;
@@ -133,11 +130,13 @@
 }
 
 .chatPreviewMessage{
+	@include themify($themes) { 
+		color: themed('chatPreviewColor');
+	}
     position: relative;
     top: 19px;
     left: 40px;
     font-size: 13px;
-    color: #7d7d7d;
     font-weight: 600;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -353,14 +352,18 @@
 }
 
 .ownMessage{
+	@include themify($themes) { 
+		background-color: themed('ownMessagingBackgroundColor');  
+	}
 	border-top-right-radius: 0px;
-	background-color: #292b35;
 	margin-right: 15px;
 }
 
 .notOwnMessage{
+	@include themify($themes) { 
+		background-color: themed('notOwnMessagingBackgroundColor');  
+	}
 	border-top-left-radius: 0px;
-	background-color: #1e2027;
 	margin-left: 15px;
 }
 
@@ -369,12 +372,14 @@
 }
 
 .chatMessage span{
+	@include themify($themes) { 
+		color: themed('messageTimeColor');  
+	}
 	padding-left: 25px;
     font-size: 11px;
     font-weight: 600;
     position: relative;
     top: 4px;
-    color: #717171;
 }
 
 #messagingChatContainer{
@@ -387,6 +392,9 @@
 }
 
 #warningMessaging{
+	@include themify($themes) { 
+		color: themed('popupColor');  
+	}
 	width: 100%;
     right: 0px;
     height: 100%;
@@ -394,7 +402,6 @@
     z-index: 1000;
     //background-image: -webkit-radial-gradient(top, circle cover, rgba(31, 30, 39, 0.85) 0%, rgba(12, 12, 12, 0.85) 80%);
     text-align: center;
-    color: #b0b0b0;
 }
 
 #warningMessaging #popup{
@@ -427,6 +434,7 @@
 }
 
 #warningMessagingSubtitle{
+
 	font-size: 19px;
 	margin-top: 20px;
 	font-weight: 500;
@@ -444,7 +452,9 @@
 }
 
 #warningMessagingSubtitle span{
-	color: #6d6d6d;
+	@include themify($themes) { 
+		color: themed('popupSpanColor');  
+	}
 }
 
 .disableWarningMessaging{

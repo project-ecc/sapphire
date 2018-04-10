@@ -112,6 +112,7 @@ export default(state = INITIAL_STATE, action) => {
 			preview.seen = false;
 		}
 
+		preview.emoji = action.payload.message.emoji;
 		preview.lastMessage	= action.payload.message.body;
 		preview.date = action.payload.message.date;
 

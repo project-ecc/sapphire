@@ -11,6 +11,8 @@
   @include themify($themes) { 
     box-shadow: themed('tableHeaderBoxShadow'); 
   }
+  position: relative;
+  z-index: 4;
 }
 
 .tableHeaderBig{

@@ -119,3 +119,4 @@ export const MESSAGING_ENABLED = "messaging_enabled";
 export const USER_CHECKED_GRIFFITH_CHAT = "user_checked_griffith_chat";
 export const USER_HAS_HOVERED_OPTIONS_ICON = "user_has_hovered_options_icon";
 export const USER_HAS_CLICKED_BUTTON = "user_has_clicked_button";
+export const HOVERED_SETTINGS_SOCIAL_ICON = "hovered_settings_social_icon";

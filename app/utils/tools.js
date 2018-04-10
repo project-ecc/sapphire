@@ -12,9 +12,9 @@ module.exports = {
 
   //MESSAGING PREVIEW
 
-  sendMessage: function(context, message, id, address, delay = 0){
+  sendMessage: function(context, message, id, address, delay = 0, emoji = false){
     setTimeout(() => {
-      context.props.addNewMessage({id: id, message: {body: message, mine: false, date: new Date()}, activeContactName: address})
+      context.props.addNewMessage({id: id, message: {body: message, mine: false, date: new Date(), emoji: emoji}, activeContactName: address})
     }, delay)
 
   },
@@ -72,8 +72,8 @@ module.exports = {
 
   //Theme Support
 
-  getIconForTheme: function(iconName, hover){
-    const selectedTheme = settings.get('settings.display.theme');
+  getIconForTheme: function(iconName, hover, theme = undefined){
+    const selectedTheme = !theme ? settings.get('settings.display.theme') : theme;
     if(!selectedTheme || selectedTheme === "theme-darkEcc"){
       if(iconName == "wallet" && !hover){
         return require('../../resources/images/wallet-white.png')
@@ -159,6 +159,36 @@ module.exports = {
       else if(iconName == "messagingIconPopupConfirm"){
         return require('../../resources/images/messaging-confirm-button-light-blue.png')
       }
+      else if(iconName == "facebook" && !hover){
+        return require('../../resources/images/facebook-icon-dark.png')
+      }
+      else if(iconName == "facebook" && hover){
+        return require('../../resources/images/facebook-icon-pastel.png')
+      }
+      else if(iconName == "slack" && !hover){
+        return require('../../resources/images/slack-icon-dark.png')
+      }
+      else if(iconName == "slack" && hover){
+        return require('../../resources/images/slack-icon-pastel.png')
+      }
+      else if(iconName == "reddit" && !hover){
+        return require('../../resources/images/reddit-icon-dark.png')
+      }
+      else if(iconName == "reddit" && hover){
+        return require('../../resources/images/reddit-icon-pastel.png')
+      }
+      else if(iconName == "medium" && !hover){
+        return require('../../resources/images/medium-icon-dark.png')
+      }
+      else if(iconName == "medium" && hover){
+        return require('../../resources/images/medium-icon-pastel.png')
+      }
+      else if(iconName == "twitter" && !hover){
+        return require('../../resources/images/twitter-icon-dark.png')
+      }
+      else if(iconName == "twitter" && hover){
+        return require('../../resources/images/twitter-icon-pastel.png')
+      }
     }
     else if(selectedTheme && selectedTheme === "theme-defaultEcc"){
       if(iconName == "wallet" && !hover){
@@ -215,10 +245,102 @@ module.exports = {
       else if(iconName == "deleteContact"){
         return require('../../resources/images/delete_contact-orange.png')
       }
+      else if(iconName == "search"){
+        return require('../../resources/images/search-icon-dark.png')
+      }
+      else if(iconName == "deleteContact"){
+        return require('../../resources/images/delete_contact-pastel.png')
+      }
+      else if(iconName == "chatContact"){
+        return require('../../resources/images/chat-contact-orange.png')
+      }
+      else if(iconName == "chatList"){
+        return require('../../resources/images/chat-list-orange.png')
+      }
+      else if(iconName == "goBackChat"){
+        return require('../../resources/images/go-back-chat-orange.png')
+      }
+      else if(iconName == "search2" && !hover){
+        return require('../../resources/images/search-icon-light-blue-2.png')
+      }
+      else if(iconName == "sendEcc" && !hover){
+        return require('../../resources/images/send-ecc-light-blue.png')
+      }
+      else if(iconName == "disableNotifications" && !hover){
+        return require('../../resources/images/disable-notifications-light-blue-icon.png')
+      }
+      else if(iconName == "removeChat" && !hover){
+        return require('../../resources/images/remove-chat-light-blue.png')
+      }
+      else if(iconName == "sendFile" && !hover){
+        return require('../../resources/images/file-icon-light-blue.png')
+      }
+      else if(iconName == "messagingIconPopup"){
+        return require('../../resources/images/messaging-icon-popup--orange.png')
+      }
+      else if(iconName == "messagingIconPopupConfirm"){
+        return require('../../resources/images/messaging-confirm-button-light-blue.png')
+      }
+      else if(iconName == "facebook" && !hover){
+        return require('../../resources/images/facebook-icon-dark-blue.png')
+      }
+      else if(iconName == "facebook" && hover){
+        return require('../../resources/images/facebook-icon-orange.png')
+      }
+      else if(iconName == "slack" && !hover){
+        return require('../../resources/images/slack-icon-dark-blue.png')
+      }
+      else if(iconName == "slack" && hover){
+        return require('../../resources/images/slack-icon-orange.png')
+      }
+      else if(iconName == "reddit" && !hover){
+        return require('../../resources/images/reddit-icon-dark-blue.png')
+      }
+      else if(iconName == "reddit" && hover){
+        return require('../../resources/images/reddit-icon-orange.png')
+      }
+      else if(iconName == "medium" && !hover){
+        return require('../../resources/images/medium-icon-dark-blue.png')
+      }
+      else if(iconName == "medium" && hover){
+        return require('../../resources/images/medium-icon-orange.png')
+      }
+      else if(iconName == "twitter" && !hover){
+        return require('../../resources/images/twitter-icon-dark-blue.png')
+      }
+      else if(iconName == "twitter" && hover){
+        return require('../../resources/images/twitter-icon-orange.png')
+      }
     }
   },
 
   //Animations
+
+  animateMessagingFunctionIconsIn: function(){
+    TweenMax.set('#messagingOptions', {autoAlpha: 1});
+    TweenMax.staggerFromTo('.messagingOption', 0.1, {y: -60, autoAlpha: 0}, {y: 0, autoAlpha: 1}, -0.05);
+  },
+
+  animateMessagingFunctionIconsOut: function(){
+    TweenMax.staggerFromTo('.messagingOption', 0.1, {y: 0, autoAlpha: 1}, {y: -60, autoAlpha: 0}, 0.05);
+    setTimeout(() => {
+      TweenMax.set('#messagingOptions', {autoAlpha: 0})
+    }, 400)
+  },
+
+  animateMessagingSmallFunctionIconsIn: function(){
+      $('#messagingTopBar').css('height',"82px");
+      TweenMax.set('#messagingOptionsSmall', {autoAlpha: 1});
+      TweenMax.staggerFromTo('.messagingOption', 0.1, {y: -60, autoAlpha: 0}, {y: 0, autoAlpha: 1}, -0.05);
+  },
+
+  animateMessagingSmallFunctionIconsOut: function(){
+      TweenMax.staggerFromTo('.messagingOption', 0.1, {y: 0, autoAlpha: 1}, {y: -60, autoAlpha: 0}, 0.05);
+      setTimeout(() => {
+        TweenMax.set('#messagingOptionsSmall', {autoAlpha: 0})
+        $('#messagingTopBar').css("height","");
+      }, 400)
+  },
 
   showFunctionIcons: function(element){
     TweenMax.set('.functionIcon', {css:{display: "inline-block"}});

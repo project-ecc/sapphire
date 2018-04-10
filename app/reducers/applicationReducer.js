@@ -53,17 +53,21 @@ import {
 	APP_MAXIMIZED,
 	SELECTED_THEME,
 	SELECTED_THEME_BACKUP,
-	CHANGED_THEME
+	CHANGED_THEME,
+	HOVERED_SETTINGS_SOCIAL_ICON
 } from '../actions/types';
 
 import Wallet from '../utils/wallet';
 import notificationsInfo from '../utils/notificationsInfo';
 
-const INITIAL_STATE = {wallet: new Wallet(), unlocking: false, password: "", userNameToSend: "", amountSend: "", addressSend: "", sendingEcc: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, newAddressName: "", newAddressAccount: "", friends: [], userAddresses: [], creatingAnsAddress: true, selectedAddress: undefined, creatingAddress: false, newContactName: "", newContactAddress:"", hoveredAddress: undefined, settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, exportingPrivateKeys: false, panelExportPrivateKey: 1, locationToExport: "", filterAllOwnAddresses: true, filterNormalOwnAddresses: false, filterAnsOwnAddresses: false, backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, totalFileStorageRewards: 0, lastWeekFileStorageRewards: 0,lastMonthFileStorageRewards: 0, pendingTransactions: [], importingPrivateKey: false, changingPassword: false, wasStaking: false, newPassword: "", daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], postsPerContainerEccNews: 0, eccPostsArrays: [], eccPostsPage: 1, coinMarketCapStats: {}, showingNews: false, eccNewsSwitchingPage: false, updateApplication:false, selectedPanel: "overview", settingsOptionSelected: "General", showingFunctionIcons: false, genericPanelAnimationOn: false, closingApplication: false, macButtonsHover: false, maximized:false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false};
+const INITIAL_STATE = {wallet: new Wallet(), unlocking: false, password: "", userNameToSend: "", amountSend: "", addressSend: "", sendingEcc: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, newAddressName: "", newAddressAccount: "", friends: [], userAddresses: [], creatingAnsAddress: true, selectedAddress: undefined, creatingAddress: false, newContactName: "", newContactAddress:"", hoveredAddress: undefined, settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, exportingPrivateKeys: false, panelExportPrivateKey: 1, locationToExport: "", filterAllOwnAddresses: true, filterNormalOwnAddresses: false, filterAnsOwnAddresses: false, backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, totalFileStorageRewards: 0, lastWeekFileStorageRewards: 0,lastMonthFileStorageRewards: 0, pendingTransactions: [], importingPrivateKey: false, changingPassword: false, wasStaking: false, newPassword: "", daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], postsPerContainerEccNews: 0, eccPostsArrays: [], eccPostsPage: 1, coinMarketCapStats: {}, showingNews: false, eccNewsSwitchingPage: false, updateApplication:false, selectedPanel: "overview", settingsOptionSelected: "General", showingFunctionIcons: false, genericPanelAnimationOn: false, closingApplication: false, macButtonsHover: false, maximized:false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false, settingsHoveredSocialIcon: undefined};
 
 export default(state = INITIAL_STATE, action) => {
     if(action.type == UNLOCKING){
 		return {...state, unlocking: action.payload}
+	}
+	else if(action.type == HOVERED_SETTINGS_SOCIAL_ICON){
+		return {...state, settingsHoveredSocialIcon: action.payload}
 	}
 	else if(action.type == CHANGED_THEME){
 		return {...state, changedTheme: action.payload}

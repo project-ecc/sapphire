@@ -19,7 +19,7 @@ class TransitionComponent extends React.Component {
       this.props.animateIn(this.refs.animate, callback);
     }
     else if(this.props.animationType == "settings"){
-      this.props.animateIn(this.refs.animate, this.props.resetWillChange.bind(this),  callback, 2.5);
+      this.props.animateIn(this.refs.animate, this.props.resetWillChange.bind(this),  callback, 1.5);
       this.props.setGenericAnimationToTrue();
     }
     else if(this.props.animationType == "genericPanel"){
@@ -56,7 +56,7 @@ class TransitionComponent extends React.Component {
       this.props.animateOut(this.refs.animate, this.props.resetWillChange.bind(this), callback, 1);
     }
     else if(this.props.animationType == "settings"){
-      this.props.animateOut(this.refs.animate, this.props.resetWillChange.bind(this), callback, 2.5);
+      this.props.animateOut(this.refs.animate, this.props.resetWillChange.bind(this), callback, 1.5);
     }
     else if(this.props.animationType == "loader" || this.props.animationType == "initialSetup"){
       callback()
