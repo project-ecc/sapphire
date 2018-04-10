@@ -12,7 +12,7 @@ export default class Wallet {
     client = new Client({
       host: '127.0.0.1',
       //network: 'testnet',
-      port: 30001,
+      port: 30003,
       username: username,
       password: password
     });
@@ -121,6 +121,16 @@ export default class Wallet {
     });
   }
 
+  getANSRecord(address) {
+    return new Promise((resolve, reject) => {
+      client.getANSRecord(address).then(record => {
+        return resolve(record);
+      }).catch(err => {
+        return reject(err);
+      })
+    });
+  }
+
   async createNewAddress(nameOpt) {
     const name = nameOpt || null;
     let newAddress;
@@ -133,7 +143,7 @@ export default class Wallet {
   }
 
   async createNewANSAddress(address, name) {
-    const newAddress = await client.getANSAddress(address, name);
+    const newAddress = await client.registerANS(address, name);
     return newAddress;
   }
 

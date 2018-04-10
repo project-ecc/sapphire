@@ -193,7 +193,7 @@
     "bunyan": "^1.8.12",
     "child_process": "^1.0.2",
     "devtron": "^1.4.0",
-    "eccoin-js": "~1.0.1",
+    "eccoin-js": "~1.0.2",
     "electron-debug": "^1.2.0",
     "electron-dl": "^1.10.0",
     "electron-settings": "^3.1.1",

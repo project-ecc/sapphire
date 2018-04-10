@@ -35,7 +35,7 @@ class ConfirmNewAddress extends React.Component {
       .then(address => {
         console.log(address);
         newAddress = address;
-        return this.props.wallet.sendMoney(newAddress, 1.01);
+        return this.props.wallet.sendMoney(newAddress, 51);
       })
       .then(() => {
         return this.props.wallet.createNewANSAddress(newAddress, this.props.username);
