@@ -253,15 +253,15 @@ class DaemonManager {
       request(opts).then(async (data) => {
         console.log(data)
         const parsed = JSON.parse(data);
-        const latestDaemon = parsed.versions[0].name.substring(1);
+        const latestDaemon = parsed.versions[0];
+        const latestVersion = latestDaemon.name.substring(1);
         const zipChecksum = latestDaemon.checksum;
         const downloadUrl = latestDaemon.download_url;
-        console.log(downloadUrl);
 
         const downloaded = await downloadFile(downloadUrl, walletDirectory, 'Eccoind.zip', zipChecksum, true);
 
         if (downloaded) {
-          self.installedVersion = latestDaemon;
+          self.installedVersion = latestVersion;
           self.saveVersion(self.installedVersion);
           self.downloading = false;
           resolve(true);

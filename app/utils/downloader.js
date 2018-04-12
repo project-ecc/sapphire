@@ -9,7 +9,8 @@ const event = require('../utils/eventhandler');
  * @param srcUrl
  * @param destFolder
  * @param destFileName
- * @param cs
+ * @param csgit pull
+ *
  * @param unzip
  */
 export function downloadFile(srcUrl, destFolder, destFileName, cs = null, unzip = false) {
