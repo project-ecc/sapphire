@@ -19,7 +19,7 @@ class MessagingSearch extends Component {
   handleFocusIn(){
     if(this.props.clickedSearchInputButton) return;
       this.props.setUserClickedButton("searchInput");
-      Tools.sendMessage(this, "This Search option will allow you to search for messages and contacts.", 1, "Sapphire");
+      Tools.sendMessage(this, this.props.lang.sapphireMessage19, 1, "Sapphire");
   }
 
   componentWillUnmount() {
@@ -31,7 +31,7 @@ class MessagingSearch extends Component {
     return (
       <div id="searchBarMessaging">
         <img id="searchIcon" src={searchImage}/>
-        <input id="searchInput" value="Search for contacts or messages"></input>
+        <input id="searchInput" value={this.props.lang.searchForMsgOrContacts}></input>
       </div>
     );
   }

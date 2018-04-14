@@ -4,6 +4,7 @@
   @include themify($themes) { 
     color: themed('bodySecondaryParagraphColor');  
   }
+  font-weight: 600;
 }
 
 #transactionAddresses{

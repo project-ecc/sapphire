@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 var open = require("open");
 const Tools = require('../../utils/tools')
+import * as actions from '../../actions';
+import { connect } from 'react-redux';
 
 class FileStorage extends Component {
   constructor(props) {
@@ -17,13 +19,20 @@ class FileStorage extends Component {
       <div className="fileStorage">
         <img className="fileStorage__image
         " src={fileStorageIcon} />
-        <p className="fileStorage__title">File Storage Service</p>
-        <p className="fileStorage__coming-soon">Coming soon</p>
-        <p className="fileStorage__read-about-it">Read about it in our <span onClick={this.handleOnClick.bind(this, "https://ecc.network/services/file_storage")}>website</span></p>
-        <p className="fileStorage__preview">*A preview of this service will be made available soon*</p> 
+        <p className="fileStorage__title">{this.props.lang.fileStorageService}</p>
+        <p className="fileStorage__coming-soon">{this.props.lang.fileStorageComingSoon}</p>
+        <p className="fileStorage__read-about-it">{this.props.lang.fileStorageReadAbout} <span onClick={this.handleOnClick.bind(this, "https://ecc.network/services/file_storage")}>{this.props.lang.fileStorageWebsite}</span></p>
+        <p className="fileStorage__preview">{this.props.lang.fileStoragePreview}</p> 
       </div>
     );
   }
 }
 
-export default FileStorage;
+const mapStateToProps = state => {
+  return{
+    lang: state.startup.lang
+  };
+};
+
+
+export default connect(mapStateToProps, actions)(FileStorage);

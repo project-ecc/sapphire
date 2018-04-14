@@ -17,11 +17,11 @@ class MessagingTopBar extends Component {
     switch(type){
       case "chatList": 
         if(this.props.clickedSearchButton) return;
-        Tools.sendMessage(this, "We are not sure yet what this button will do but it looks good. Right now it represents the chat list.", 1, "Sapphire");
+        Tools.sendMessage(this, this.props.lang.sapphireMessage20, 1, "Sapphire");
         break;
       case "add": 
         if(this.props.clickedBinButton) return;
-        Tools.sendMessage(this, "This button will allow you to start a new chat with someone", 1, "Sapphire");
+        Tools.sendMessage(this, this.props.lang.sapphireMessage21, 1, "Sapphire");
          break;
     }
     this.props.setUserClickedButton(type);
@@ -34,7 +34,7 @@ class MessagingTopBar extends Component {
     TweenMax.fromTo($('#goBackMessageIcon'), 0.2,{ autoAlpha:1, x:0}, { autoAlpha:0, x:50, delay: 0.1, ease: Linear.easeNone});
     TweenMax.fromTo($('#chatContactIcon'), 0.2,{ autoAlpha:0, x:-50}, { autoAlpha:1, x:0, delay: 0.1, ease: Linear.easeNone});
     TweenMax.fromTo($('#optionsButtonSmallView'), 0.2,{ autoAlpha:1, x:0}, { autoAlpha:0, x: 50, delay: 0.1, ease: Linear.easeNone});
-    $('#topBarMessage').text("Chats");
+    $('#topBarMessage').text(this.props.lang.chats);
     this.props.setShowingChatListOnly(true);
     if($('#messagingOptionsSmall').css("visibility") != "hidden"){
       Tools.animateMessagingSmallFunctionIconsOut();
