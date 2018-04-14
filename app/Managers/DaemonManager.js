@@ -216,7 +216,6 @@ class DaemonManager {
     console.log('checking for latest daemon version');
 
     const daemonDownloadURL = getDaemonDownloadUrl();
-    console.log(getDaemonDownloadUrl())
     const self = this;
     // download latest daemon info from server
     const opts = {
@@ -231,6 +230,7 @@ class DaemonManager {
     }).catch(error => {
       console.log(error);
     });
+    setTimeout(this.getLatestVersion.bind(this), 60000);
   }
 
   async downloadDaemon() {

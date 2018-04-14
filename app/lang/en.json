@@ -19,7 +19,7 @@
     "lastMonth": "Last Month",
     "expenses": "Expenses",
     "nextPayment": "Next Payments",
-    
+
     "checkingWallet": "Checking if your wallet is encrypted...",
     "walletEncrypted1": "Your wallet is encrypted. Well done!",
     "walletEncrypted2": "Please write your password down now.",
@@ -31,10 +31,10 @@
     "passwordsDoNotMatch": "Passwords do not match...",
     "passwordCantBeEmpty": "Password can't be empty...",
     "encrypt": "Encrypt",
-    
+
     "loading": "Loading",
     "mainMessage": "Hello, we are getting a few things ready...",
-    
+
     "importPrivateKey": "Import Private Key",
     "writeDownAPrivateKeyToImport": "Enter a private key to import an address",
     "writeDownAPrivateKeyToImportInitialSetup": "Optionally, enter a private key to import an address",
@@ -145,10 +145,11 @@
     "currentPassword": "Current Password",
     "newPassword": "New Password",
 
-    "exportWarning": "After exporting your private keys, print the document for your archives then delete it immediately. Do NOT keep it on your computer.",
+    "exportWarning": "Do not disclose your keys to anyone! keep them in a safe place where only you have access",
     "generatingFile": "Generating file",
     "export": "Export",
     "exportFormat": "The exported PDF has all of your public and private keys in this format",
+    "howToExport": "How would you like to export your keys?",
     "exportPrivateKeys": "Export Private Keys",
     "next": "Next",
 
@@ -214,7 +215,7 @@
     "transactionsMinute": "minute ago",
     "transactionsHour": "hour ago",
     "transactionsHours": "hours ago",
-    
+
     "overview": "Overview",
     "send": "Send",
     "addresses": "Addresses",
