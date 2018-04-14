@@ -189,6 +189,21 @@ module.exports = {
       else if(iconName == "twitter" && hover){
         return require('../../resources/images/twitter-icon-pastel.png')
       }
+      else if(iconName == "fileStorageBig"){
+        return require('../../resources/images/file-storage-message-pastel.png')
+      }
+      else if(iconName == "messagingNotSelected"){
+        return require('../../resources/images/messaging-default-not-selected.png')
+      }
+      else if(iconName == "messagingSelected"){
+        return require('../../resources/images/messaging-blue-selected.png')
+      }
+      else if(iconName == "fileStorageNotSelected"){
+        return require('../../resources/images/file-storage-default-not-selected.png')
+      }
+      else if(iconName == "fileStorageSelected"){
+        return require('../../resources/images/file-storage-blue-selected.png')
+      }
     }
     else if(selectedTheme && selectedTheme === "theme-defaultEcc"){
       if(iconName == "wallet" && !hover){
@@ -310,6 +325,21 @@ module.exports = {
       }
       else if(iconName == "twitter" && hover){
         return require('../../resources/images/twitter-icon-orange.png')
+      }
+      else if(iconName == "fileStorageBig"){
+        return require('../../resources/images/file-storage-message-orange.png')
+      }
+      else if(iconName == "messagingNotSelected"){
+        return require('../../resources/images/messaging-dark-not-selected.png')
+      }
+      else if(iconName == "messagingSelected"){
+        return require('../../resources/images/messaging-blue-selected-dark.png')
+      }
+      else if(iconName == "fileStorageNotSelected"){
+        return require('../../resources/images/file-storage-dark-not-selected.png')
+      }
+      else if(iconName == "fileStorageSelected"){
+        return require('../../resources/images/file-storage-blue-selected-dark.png')
       }
     }
   },

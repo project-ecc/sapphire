@@ -84,7 +84,7 @@ class NetworkStats extends Component {
 
   render() {
     let messaging = require('../../../resources/images/messaging-green.png');
-    let fileStorage = require('../../../resources/images/file-storage-blue.ico');
+    let fileStorage = require('../../../resources/images/file-storage-blue.png');
     let connectionsOrange = require('../../../resources/images/connections-orange.png');
 
     return (
