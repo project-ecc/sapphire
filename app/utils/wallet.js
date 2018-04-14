@@ -132,6 +132,10 @@ export default class Wallet {
     });
   }
 
+  setGenerate() {
+    return client.setGenerate();
+  }
+
   async createNewAddress(nameOpt) {
     const name = nameOpt || null;
     let newAddress;
