@@ -291,7 +291,7 @@ module.exports = {
         return require('../../resources/images/file-icon-light-blue.png')
       }
       else if(iconName == "messagingIconPopup"){
-        return require('../../resources/images/messaging-icon-popup--orange.png')
+        return require('../../resources/images/messaging-icon-popup-orange.png')
       }
       else if(iconName == "messagingIconPopupConfirm"){
         return require('../../resources/images/messaging-confirm-button-light-blue.png')
