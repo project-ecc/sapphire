@@ -24,6 +24,7 @@ const settings = require('electron-settings');
 const event = require('./utils/eventhandler');
 var fs = require('fs');
 var AutoLaunch = require('auto-launch');
+var lang = traduction();
 let autoECCLauncher = new AutoLaunch({
 	name: 'Sapphire'
 });
@@ -169,7 +170,6 @@ function setupTrayIcon() {
   // Determine appropriate icon for platform
   if (process.platform === "darwin" || process.platform === "linux") {
     trayImage = imageFolder + '/trayIconTemplate.png';
-    console.log('traydir', trayImage);
   } else {
     trayImage = imageFolder + '/icon.ico';
   }
@@ -200,7 +200,6 @@ function setupTrayIcon() {
 }
 
 function setupEventHandlers() {
-  var lang = traduction();
 
 	ipcMain.on('messagingView', (e, args) => {
 		if(args){
