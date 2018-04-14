@@ -151,7 +151,6 @@ class ExportPrivateKeys extends React.Component {
     let aux = [];
 
     for(let i = 0; i < addressesArray.length; i++){
-
       aux.push(addressesArray[i]);
       aux.push(privKeys[i]);
       aux.push("");
@@ -194,6 +193,7 @@ class ExportPrivateKeys extends React.Component {
   }
 
   generatePDF(){
+    console.log("Here")
     let doc = new jsPDF();
     doc.setFontSize(10);
     doc.text(this.toPrint[0], 10, 10);
