@@ -4,7 +4,8 @@ const { exec } = require('child_process');
 
 function installGUI(){
 	console.log("installing GUI...");
-    const path = `${homedir}/.eccoin-wallet/Sapphire`;
+    const path = `"${homedir}/.eccoin-wallet/Sapphire Setup 1.0.1"`;
+    console.log(path)
     if (process.platform === 'linux') {
      runExec(`chmod +x ${path} && ${path}`, 1000).then(() => {
         process.exit();
