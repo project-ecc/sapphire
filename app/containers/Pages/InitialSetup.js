@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ImportWallet from    '../../components/InitialSetupPage/ImportWallet';
 import LanguageSelector from     '../../components/InitialSetupPage/LanguageSelector';
-import ThemeSelector from '../../components/InitialSetupPage/ThemeSelector';
+import ThemeSelectorStep from '../../components/InitialSetupPage/ThemeSelectorStep';
 import ImportPrivateKey from '../../components/InitialSetupPage/ImportPrivateKey';
 import EncryptWallet from '../../components/InitialSetupPage/EncryptWallet';
 import SetupDone from '../../components/InitialSetupPage/SetupDone';
@@ -73,7 +73,7 @@ class InitialSetup extends Component {
         <TransitionGroup key="2" component="article">
         {this.props.step == 2 ?
           <TransitionComponent
-            children= {<ThemeSelector/>}
+            children= {<ThemeSelectorStep/>}
             animationType= "setupStep"
             animateIn= {Tools.animateStepIn}
             animateOut = {Tools.animateStepOut}/>
@@ -140,7 +140,7 @@ class InitialSetup extends Component {
         <TransitionGroup key="2" component="article">
         {this.props.step == 2 ?
           <TransitionComponent
-            children= {<ThemeSelector/>}
+            children= {<ThemeSelectorStep/>}
             animationType= "setupStep"
             animateIn= {Tools.animateStepIn}
             animateOut = {Tools.animateStepOut}/>
