@@ -10,6 +10,9 @@ const lang = traduction();
 const { clipboard } = require('electron');
 const ansAddresImage = require('../../../resources/images/ans_address.png');
 
+// This is temporary until ANS is enabled
+const ansEnabled = false;
+
 class Receive extends Component {
 
   constructor(props) {
@@ -83,9 +86,15 @@ class Receive extends Component {
         </div>
       )
     } else {
-      return (
-        <p id="upgradeAns" onClick={this.handleUpgradeAddress.bind(this)}>{this.props.lang.upgradeToANS}</p>
-      )
+      if (ansEnabled) {
+        return (
+          <p id="upgradeAns" onClick={this.handleUpgradeAddress.bind(this)}>{this.props.lang.upgradeToANS}</p>
+        )
+      } else {
+        return (
+          <p></p>
+        )
+      }
     }
   }
 

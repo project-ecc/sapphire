@@ -225,5 +225,7 @@
     "provider": "Provider",
     "messaging": "Messaging",
     "syncing": "Syncing",
-    "activeConnections": "Active Connections"
+    "activeConnections": "Active Connections",
+
+    "ansComingSoon": "ANS is not yet available. Stay tuned for updates."
 }
