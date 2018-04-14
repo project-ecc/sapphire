@@ -76,10 +76,10 @@ app.on('ready', async () => {
   const selectedTheme = settings.get('settings.display.theme');
 
   const getBackgroundColor = () => {
-    if(!selectedTheme || selectedTheme === "theme-defaultEcc")
-      return "#181e35";
-    else if(selectedTheme && selectedTheme === "theme-darkEcc")
+    if(!selectedTheme || selectedTheme === "theme-darkEcc")
       return "#1c1c23";
+    else if(selectedTheme && selectedTheme === "theme-defaultEcc")
+      return "#181e35";
   }
 
   app.setAppUserModelId("com.github.csmartinsfct.sapphire");
