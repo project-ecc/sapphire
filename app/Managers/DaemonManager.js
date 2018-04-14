@@ -157,7 +157,7 @@ class DaemonManager {
       console.log('installed: ', this.installedVersion);
       console.log('current: ', this.currentVersion);
       this.toldUserAboutUpdate = true;
-      //event.emit('daemonUpdate');
+      event.emit('daemonUpdate');
     }
   }
 
