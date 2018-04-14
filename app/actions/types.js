@@ -40,6 +40,7 @@ export const USER_ADDRESSES = "user_addresses";
 export const ADDRESS_CREATE_ANS = "address_create_ans";
 export const SELECTED_ADDRESS = "selected_address";
 export const CREATING_ADDRESS = "creating_address";
+export const UPGRADING_ADDRESS = "upgrading_address";
 export const NEW_ADDRESS_ACCOUNT = "new_address_account";
 export const NEW_CONTACT_NAME = "new_contact_name";
 export const NEW_CONTACT_ADDRESS = "new_contact_address";

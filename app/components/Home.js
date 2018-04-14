@@ -161,9 +161,9 @@ class Home extends Component {
               </div>
               <div className="col-sm-4"  style={{padding: "0 0"}}>
                 <p className="normalWeight homePanelTitleOne" id="balance" style={{fontSize: "20px"}}>{ this.props.lang.balance }</p>
-                <p className="normalWeight" style={{fontSize: "20px"}}>{tools.formatNumber(parseFloat(this.props.balance))} <span className="ecc">ecc</span></p>
+                <p className="normalWeight" style={{fontSize: "20px"}}>{this.props.balance} <span className="ecc">ecc</span></p>
                 <p className="totalBalance homePanelTitleTwo">{ this.props.lang.total }</p>
-                <p className="normalWeight">{tools.formatNumber(parseFloat(this.props.balance))} <span className="ecc">ecc</span></p>
+                <p className="normalWeight">{this.props.balance} <span className="ecc">ecc</span></p>
               </div>
               <div className="col-sm-4"  style={{padding: "0 0"}}>
                 <p className="unconfirmedBalance homePanelTitleTwo">{ this.props.lang.unconfirmed }</p>

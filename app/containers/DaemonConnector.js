@@ -729,23 +729,26 @@ class DaemonConnector {
   //MISC METHODS
 
   async getAddresses(){
+    const allReceived = await this.wallet.listAllAccounts();
     const allAddresses = await this.wallet.getAllAddresses();
     const normalAddresses = [].concat.apply([], allAddresses).map(group => {
       return {
         account: group.length > 2 ? group[2] : null,
         address: group[0],
+        normalAddress: group[0],
         amount: tools.formatNumber(parseFloat(group[1])),
         ans: false,
       }
     });
 
-    const toReturn = await Promise.all(normalAddresses.map(async (address) => {
+    const allAddressesWithANS = await Promise.all(normalAddresses.map(async (address) => {
       let retval;
       const ansRecord = await this.wallet.getANSRecord(address.address);
       if (ansRecord.Name) {
         retval = {
           account: address.account,
           address: ansRecord.Name,
+          normalAddress: address.address,
           amount: address.amount,
           ans: true,
         }
@@ -755,6 +758,20 @@ class DaemonConnector {
 
       return retval;
     }));
+
+    const toAppend = allReceived
+                      .filter(address => address.amount === 0)
+                      .map(address => {
+                        return {
+                          account: address.account || null,
+                          address: address.address,
+                          normalAddress: address.address,
+                          amount: 0,
+                          ans: false,
+                        }
+                      });
+
+    const toReturn = allAddressesWithANS.concat(toAppend);
 
     this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
     //We need to have the addresses loaded to be able to index transactions
