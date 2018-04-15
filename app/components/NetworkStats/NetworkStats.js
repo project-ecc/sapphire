@@ -11,10 +11,10 @@ class NetworkStats extends Component {
   }
 
   getPercentage(percentage){
-    if(percentage == 100) return 2000;
+    if(percentage == 100) return 1130;
     else if(percentage == 0) return 0;
-
-    return Math.round((percentage * 2000) / 100);
+    console.log((percentage * 1130) / 100)
+    return Math.round((percentage * 1130) / 100);
   }
 
   getOffset(percentage){
@@ -59,7 +59,7 @@ class NetworkStats extends Component {
             </feMerge>
           </filter>
         </defs>
-        <circle filter="url(#sofGlow)" className="js-circle score-circle" transform="rotate(-90 175 175)" cx="175" cy="175" r="180" strokeDasharray="2000" strokeWidth="5px" strokeDashoffset={this.getPercentage(100-percentage)} fill="none" stroke={color}></circle>
+        <circle filter="url(#sofGlow)" className="js-circle score-circle" transform="rotate(-90 175 175)" cx="175" cy="175" r="180" strokeDasharray="1130" strokeWidth="5px" strokeDashoffset={this.getPercentage(100-percentage)} fill="none" stroke={color}></circle>
         {this.getText(enabled, percentage, operation)}
 
         </svg>
