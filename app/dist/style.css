@@ -15363,11 +15363,12 @@ li.active.have-children span::after {
   .theme-darkEcc .labelAmountSend {
     color: #cecece; }
 
-.theme-defaultEcc .transactionInfoTitle {
-  color: #555d77; }
-
-.theme-darkEcc .transactionInfoTitle {
-  color: #464b5a; }
+.transactionInfoTitle {
+  font-weight: 600; }
+  .theme-defaultEcc .transactionInfoTitle {
+    color: #555d77; }
+  .theme-darkEcc .transactionInfoTitle {
+    color: #464b5a; }
 
 .theme-defaultEcc #transactionAddresses {
   background-color: #1c2340;
@@ -17314,6 +17315,40 @@ i.fa.fa-chevron-down {
     background-color: #d09128 !important; }
   .theme-darkEcc .circleOptionsButton {
     background-color: #c39c59 !important; } }
+
+.fileStorage {
+  text-align: center;
+  top: 20%;
+  position: relative; }
+  .theme-defaultEcc .fileStorage {
+    color: #cecece; }
+  .theme-darkEcc .fileStorage {
+    color: #b0b0b0; }
+  .fileStorage .fileStorage__image {
+    position: relative;
+    top: -30px; }
+  .fileStorage .fileStorage__title {
+    font-size: 26px;
+    font-weight: 300; }
+  .fileStorage .fileStorage__coming-soon {
+    font-size: 19px;
+    font-weight: 600;
+    margin-top: 15px; }
+  .fileStorage .fileStorage__read-about-it {
+    font-size: 18px;
+    margin-top: 20px;
+    font-weight: 500; }
+    .fileStorage .fileStorage__read-about-it span {
+      text-decoration: underline;
+      cursor: pointer; }
+      .theme-defaultEcc .fileStorage .fileStorage__read-about-it span {
+        color: #989898; }
+      .theme-darkEcc .fileStorage .fileStorage__read-about-it span {
+        color: #989898; }
+  .fileStorage .fileStorage__preview {
+    font-size: 13px;
+    margin: 0 auto;
+    margin-top: 28px; }
 
 html,
 body {
