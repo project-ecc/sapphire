@@ -91,7 +91,7 @@ class NotificationPopup extends React.Component {
   }
 
   getAnsIncomingPayments(){
-    if(this.props.notifications["ansPayments"]["payments"].count == 0){
+    if(this.props.notifications["ansPayments"]["payments"].length == 0){
       return null;
     }
     let earnings = require('../../resources/images/overview-blue.png');
