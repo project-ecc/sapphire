@@ -168,12 +168,19 @@ class TopBar extends React.Component {
        news = require('../../resources/images/news-orange.png');
     }
 
+    let numberOfNotifications = this.props.notifications["total"];
+    if(this.props.updateAvailable)
+      numberOfNotifications+=1;
+
     return(
       <div>
         <img className="miniButton" src={miniButton}></img>
         {/*<p id="topBarCustomTitle" className= {process.platform === 'darwin' ? "topBarCustomTitleMac" : "topBarCustomTitleWin"}>Messaging</p>*/}
         <div id="appButtons">
          <div onClick={this.notification} className="appButton functionIcon" id="eccNewsIcon">
+            <div className="appButtons__notifications-counter-holder">
+              <p className="appButtons__notifications-total">{numberOfNotifications > 0 ? numberOfNotifications : ""}</p>
+            </div>
             <img src={notification}></img>
           </div>
          <div onClick={this.news} className="appButton functionIcon" id="eccNewsIcon">
@@ -222,7 +229,9 @@ const mapStateToProps = state => {
     macButtonsHover: state.application.macButtonsHover,
     genericPanelAnimationOn: state.application.genericPanelAnimationOn,
     notificationPopup: state.notifications.popupEnabled,
-    appMaximized: state.application.maximized
+    appMaximized: state.application.maximized,
+    notifications: state.notifications.entries,
+    updateAvailable: state.startup.guiUpdate || state.startup.daemonUpdate
   };
 };
 

@@ -112,6 +112,18 @@
   cursor: pointer;
 }
 
+.appButtons__notifications-total{
+    font-size: 12px;
+}
+
+.appButtons__notifications-counter-holder{
+    position: absolute;
+    width: 50px;
+    left: -40px;
+    text-align: right;
+    top: 6px;
+}
+
 .appButtonHover{
     @include themify($themes) { 
         background-color: themed('topBarFunctionIconHover');  
