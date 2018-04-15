@@ -12,6 +12,7 @@ import {
 	ADDRESS_CREATE_ANS,
 	SELECTED_ADDRESS,
 	CREATING_ADDRESS,
+	UPGRADING_ADDRESS,
 	NEW_ADDRESS_ACCOUNT,
 	NEW_CONTACT_NAME,
 	NEW_CONTACT_ADDRESS,
@@ -297,6 +298,9 @@ export default(state = INITIAL_STATE, action) => {
 	}
 	else if(action.type == CREATING_ADDRESS){
 		return {...state, creatingAddress: action.payload}
+	}
+	else if(action.type == UPGRADING_ADDRESS){
+		return {...state, upgradingAddress: action.payload}
 	}
 	else if(action.type == NEW_ADDRESS_ACCOUNT){
 		return {...state, newAddressAccount: action.payload}

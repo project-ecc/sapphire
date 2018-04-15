@@ -74,31 +74,33 @@ class Home extends Component {
     this.props.setFilterExpensesType(filter);
   }
 
-  getEarnings(){
-    //filter all
-    if(this.props.allTimeEarningsSelected && this.props.allEarningsSelected)
-      return this.props.fileStorageAllTimeEarnings + this.props.stakingAllTimeEarnings;
-    else if(this.props.monthEarningsSelected && this.props.allEarningsSelected)
-      return this.props.fileStorageMonthEarnings + this.props.stakingMonthEarnings;
-    else if(this.props.weekEarningsSelected && this.props.allEarningsSelected)
-      return this.props.fileStorageWeekEarnings + this.props.stakingWeekEarnings;
-    //filter file storage
-    else if(this.props.fileStorageEarningsSelected && this.props.allTimeEarningsSelected)
-      return this.props.fileStorageAllTimeEarnings;
-    else if(this.props.fileStorageEarningsSelected && this.props.monthEarningsSelected)
-      return this.props.fileStorageMonthEarnings;
-    else if(this.props.fileStorageEarningsSelected && this.props.weekEarningsSelected)
-      return this.props.fileStorageWeekEarnings;
-    //filter staking
-    else if(this.props.stakingEarningsSelected && this.props.allTimeEarningsSelected)
-      return this.props.stakingAllTimeEarnings;
-    else if(this.props.stakingEarningsSelected && this.props.monthEarningsSelected)
-      return this.props.stakingMonthEarnings;
-    else if(this.props.stakingEarningsSelected && this.props.weekEarningsSelected)
-      return this.props.stakingWeekEarnings;
+  buildFilterObject(modifier, val) {
+    return {
+      modifier,
+      val,
+    }
   }
 
-  getExpenses(){
+  getEarnings() {
+    // Getting clever
+    const timeFilter = [
+      this.buildFilterObject('AllTime', this.props.allTimeEarningsSelected),
+      this.buildFilterObject('Month', this.props.monthEarningsSelected),
+      this.buildFilterObject('Week', this.props.weekEarningsSelected),
+    ].filter(f => f.val)[0];
+     
+    const typeFilter = [
+      this.buildFilterObject(['fileStorage', 'staking'], this.props.allEarningsSelected),
+      this.buildFilterObject(['fileStorage'], this.props.fileStorageEarningsSelected),
+      this.buildFilterObject(['staking'], this.props.stakingEarningsSelected),
+    ].filter(f => f.val)[0];
+
+    return typeFilter.modifier
+                  .map(modifier => `${modifier}${timeFilter.modifier}Earnings`)
+                  .reduce((accumulator, val) => accumulator + parseFloat(this.props[val]), 0);
+  }
+
+  getExpenses() {
     //filter all
     if(this.props.allTimeExpensesSelected && this.props.allExpensesSelected)
       return this.props.fileStorageAllTimeExpenses + this.props.messagingAllTimeExpenses + this.props.ansAllTimeExpenses;

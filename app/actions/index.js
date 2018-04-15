@@ -257,6 +257,13 @@ export const setCreatingAddress = (val) =>{
 	}
 };
 
+export const setUpgradingAddress = (val) =>{
+	return{
+		type: UPGRADING_ADDRESS,
+		payload: val
+	}
+};
+
 export const setNewContactName = (val) => {
 	return{
 		type: NEW_CONTACT_NAME,
