@@ -1,6 +1,6 @@
 import Wallet from '../utils/wallet';
 import { ipcRenderer } from 'electron';
-import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS, SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE, SELECTED_THEME } from '../actions/types';
+import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS, SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE, SELECTED_THEME, SET_DAEMON_VERSION } from '../actions/types';
 const event = require('../utils/eventhandler');
 const tools = require('../utils/tools');
 const sqlite3 = require('sqlite3');
@@ -209,11 +209,16 @@ class DaemonConnector {
   }
 
   getWalletInfo(){
-    this.wallet.command([{method: "getwalletinfo"}]).then((data) => {
+    this.wallet.command([{method: "getinfo"}]).then((data) => {
       //this.store.dispatch({type: SELECTED_THEME, payload: !this.store.getState().application.theme});
 
       if(data.length > 0){
+        // Set wallet balance
         this.store.dispatch({type: WALLET_INFO, payload: {balance: data[0].balance, unconfirmedBalance: data[0].unconfirmed_balance}});
+
+        // Set daemon version
+        this.store.dispatch({type: SET_DAEMON_VERSION, payload: tools.formatVersion(data[0].version)});
+
         if((this.store.getState().startup.daemonUpdate || this.store.getState().startup.guiUpdate) && !this.store.getState().startup.toldUserAboutUpdate && !this.store.getState().startup.loader){
           this.notifyUserOfApplicationUpdate();
         }

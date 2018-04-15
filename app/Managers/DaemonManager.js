@@ -212,6 +212,7 @@ class DaemonManager {
   }
 
   async getLatestVersion() {
+    setTimeout(this.getLatestVersion.bind(this), 60000);
 
     console.log('checking for latest daemon version');
 
@@ -224,13 +225,15 @@ class DaemonManager {
 
     request(opts).then((data) => {
       const parsed = JSON.parse(data);
-      this.currentVersion = parsed.versions[0].name.substring(1);
-      console.log(this.currentVersion);
-      self.checkForUpdates();
+      if(parsed.success === true){
+        this.currentVersion = parsed.versions[0].name.substring(1);
+        console.log(this.currentVersion);
+        self.checkForUpdates();
+      }
     }).catch(error => {
       console.log(error);
     });
-    setTimeout(this.getLatestVersion.bind(this), 60000);
+
   }
 
   async downloadDaemon() {

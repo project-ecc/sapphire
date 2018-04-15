@@ -144,7 +144,7 @@ class ExportPrivateKeys extends React.Component {
     }
     this.unlockWallet(false, 5, async () => {
       TweenMax.to('#passwordPanel', 0.3, {x: "-100%"});
-      TweenMax.to('#exportOptions', 0.3, {x: "0%"});
+      TweenMax.to('#exportOptions', 0.3, {x: "-0%"});
 
       this.props.setPanelExportingPrivateKeys(this.props.panelNumber+1);
 
