@@ -5,11 +5,12 @@ import {
 		STAKING,
 		WALLET_INFO,
 		CHAIN_INFO,
-		TRANSACTIONS_DATA
+		TRANSACTIONS_DATA,
+    SET_DAEMON_VERSION
 } from '../actions/types';
 
 
-const INITIAL_STATE = {paymentChainSync: 0, loadingBlockIndexPayment: false, blockPayment: 0, headersPayment:0, connectionsPayment: 0, isStaking: false, stakingConfig: false, staking: 0, balance: 0, transactionsData: [], connections: 0, transactionsType: "all", messagingChain: false, fileStorageChain:false, unconfirmedBalance: 0};
+const INITIAL_STATE = {paymentChainSync: 0, loadingBlockIndexPayment: false, blockPayment: 0, headersPayment:0, connectionsPayment: 0, isStaking: false, stakingConfig: false, staking: 0, balance: 0, transactionsData: [], connections: 0, transactionsType: "all", messagingChain: false, fileStorageChain:false, unconfirmedBalance: 0, daemonVersion: 0.0};
 
 export default(state = INITIAL_STATE, action) => {
    if(action.type == BLOCK_INDEX_PAYMENT){
@@ -34,5 +35,8 @@ export default(state = INITIAL_STATE, action) => {
 		var data = action.payload.data;
 		return {...state, transactionsData: action.payload.data, transactionsType: action.payload.type}
 	}
+	else if(action.type == SET_DAEMON_VERSION){
+	  return {...state, daemonVersion: action.payload}
+   }
 	return state;
 }

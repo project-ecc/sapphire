@@ -40,6 +40,8 @@ class App extends Component<Props> {
 
     this.loadSettingsToRedux();
 
+
+
     ipcRenderer.on('closing_daemon', () => {
       this.processCloseRequest();
     });
@@ -59,7 +61,7 @@ class App extends Component<Props> {
     let startAtLogin = false;
     let minimizeToTray = false;
     let minimizeOnClose = false;
-    let theme = "theme-defaultEcc";
+    let theme = "theme-darkEcc";
     const ds = settings.get('settings.display');
 
     if(ds && ds.minimise_to_tray !== undefined && ds.minimise_to_tray)

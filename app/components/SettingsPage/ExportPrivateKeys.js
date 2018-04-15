@@ -23,6 +23,7 @@ class ExportPrivateKeys extends React.Component {
     this.generatePDF = this.generatePDF.bind(this);
     this.tween = undefined;
     this.toPrint = [];
+    this.displayConfirm = true;
   }
 
   showWrongPassword(){
@@ -48,16 +49,25 @@ class ExportPrivateKeys extends React.Component {
 
   handlePanels(){
     if(this.props.panelNumber == 1){
+      this.displayConfirm = false;
       this.handleConfirm();
     }
     else if(this.props.panelNumber == 2){
-      this.export();
+      this.handleExportOptions();
+      this.displayConfirm = true;
       /*$('#selectedlocation').text("No location selected");
       $('#selectedlocation').css("visibility", "visible");
       $('#selectedlocation').css("color", "#d09128");
       TweenMax.fromTo('#selectedlocation', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
       this.tween = TweenMax.to('#selectedlocation', 0.2, {scale: 0.5, autoAlpha: 0, delay: 3})
       TweenMax.set('#selectedlocation',{scale: 1, delay: 3.2})*/
+    }
+    else if(this.props.panelNumber == 3){
+      this.displayConfirm = true;
+      this.export();
+    }
+    else if(this.props.panelNumber == 4){
+      this.handleDisplayKeys()
     }
     /*else if(this.props.panelNumber == 2){
       TweenMax.to('#setLocationPanel', 0.3, {x: "-200%"})
@@ -101,13 +111,29 @@ class ExportPrivateKeys extends React.Component {
     )
   }
 
-  getExportingPanel(){
-    return(
-      <div id="exportingPanel" style={{position: "absolute", left: "200%", width: "100%", top: "70px"}}>
-        <p style={{marginTop:"30px"}}>{ this.props.lang.generatingFile }</p>
-        <span style={{visibility: "visible", fontSize: "40px", opacity:"0.2"}} className="ecc" id="firstDot">.</span><span style={{visibility: "visible", fontSize: "40px", opacity:"0.2"}} className="ecc" id="secondDot">.</span><span style={{visibility: "visible", fontSize: "40px", opacity:"0.2"}} className="ecc" id="thirdDot">.</span>
-      </div>
-    )
+  // getExportingPanel(){
+  //   return(
+  //     <div id="exportingPanel" style={{position: "absolute", left: "200%", width: "100%", top: "70px"}}>
+  //       <p style={{marginTop:"30px"}}>{ this.props.lang.generatingFile }</p>
+  //       <span style={{visibility: "visible", fontSize: "40px", opacity:"0.2"}} className="ecc" id="firstDot">.</span><span style={{visibility: "visible", fontSize: "40px", opacity:"0.2"}} className="ecc" id="secondDot">.</span><span style={{visibility: "visible", fontSize: "40px", opacity:"0.2"}} className="ecc" id="thirdDot">.</span>
+  //     </div>
+  //   )
+  // }
+
+  async handleExportOptions(){
+    $('#exportPrivKeyButton').text( this.props.lang.export);
+    TweenMax.to('#exportOptions', 0.3, {x: "-100%"});
+
+    TweenMax.to('#setLocationPanel', 0.3, {x: "-0%"});
+    this.props.setPanelExportingPrivateKeys(this.props.panelNumber+1)
+    await this.getDataToExport();
+  }
+
+  handleDisplayKeys(){
+    TweenMax.to('#exportOptions', 0.3, {x: "-100%"});
+    TweenMax.to('#displayKeys', 0.3, {x: "-0%"});
+
+    this.props.setPanelExportingPrivateKeys(this.props.panelNumber+2)
   }
 
   handleConfirm(){
@@ -118,16 +144,13 @@ class ExportPrivateKeys extends React.Component {
     }
     this.unlockWallet(false, 5, async () => {
       TweenMax.to('#passwordPanel', 0.3, {x: "-100%"});
-      TweenMax.to('#setLocationPanel', 0.3, {x: "-100%"});
+      TweenMax.to('#exportOptions', 0.3, {x: "0%"});
+
       this.props.setPanelExportingPrivateKeys(this.props.panelNumber+1);
-      $('#exportPrivKeyButton').text( this.props.lang.export );
-      await this.getDataToExport();
 
       if(wasStaking){
-          this.unlockWallet(true, 31556926, () => {
-         });
-      }
-      else{
+          this.unlockWallet(true, 31556926, () => {});
+      } else {
         this.props.setStaking(false);
       }
       this.props.setPassword("");
@@ -151,7 +174,6 @@ class ExportPrivateKeys extends React.Component {
     let aux = [];
 
     for(let i = 0; i < addressesArray.length; i++){
-
       aux.push(addressesArray[i]);
       aux.push(privKeys[i]);
       aux.push("");
@@ -194,6 +216,7 @@ class ExportPrivateKeys extends React.Component {
   }
 
   generatePDF(){
+    console.log("Here")
     let doc = new jsPDF();
     doc.setFontSize(10);
     doc.text(this.toPrint[0], 10, 10);
@@ -295,15 +318,48 @@ class ExportPrivateKeys extends React.Component {
     )
   }
 
+  renderExportOptions(){
+    return(
+      <div id="exportOptions" style={{position: "absolute", left:"100%", width: "100%", top: "52px"}}>
+        <p style={{fontSize: "16px", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"25px", textAlign: "left"}}>
+          { this.props.lang.exportFormat }:
+        </p>
+        <div className="row">
+          <div className="col-md-6 left">
+            <button  className="buttonPrimary" onClick={this.handleDisplayKeys}>View Keys</button>
+          </div>
+          <div className="col-md-6 left">
+            <button  className="buttonPrimary" onClick={this.handlePanels}>Export Keys To Pdf</button>
+          </div>
+        </div>
+
+      </div>
+    )
+  }
+
+  renderdisplayKeys(){
+    return(
+      <div id="displayKeys" style={{position: "absolute", left:"100%", width: "100%", top: "52px"}}>
+        <p style={{fontSize: "16px", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"25px", textAlign: "left"}}>
+          { this.props.lang.exportFormat }:
+        </p>
+        <p>Keys will display here.</p>
+
+      </div>
+    )
+  }
+
   render() {
      return (
       <div id="exportPrivKey">
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">{ this.props.lang.exportPrivateKeys }</p>
         {this.getPasswordPanel()}
+        {this.renderExportOptions()}
         {this.getLocationToExportPanel()}
-        {this.getExportingPanel()}
-        <ConfirmButtonPopup buttonId="exportPrivKeyButton" handleConfirm={this.handlePanels} text={ this.props.lang.next }/>
+        {this.renderdisplayKeys()}
+
+        <div onClick={this.handlePanels} id= "confirmButtonPopup" className="buttonPrimary" style={{bottom: "10px", left:"205px"}}>{this.props.lang.next}</div>
       </div>
       );
     }

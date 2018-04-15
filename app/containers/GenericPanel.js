@@ -12,6 +12,7 @@ import SettingsPage from './Pages/SettingsPage';
 import ContactsPage from './Pages/ContactsPage';
 import NetworkStatsPage from './Pages/NetworkStatsPage';
 import NewsPage from './Pages/NewsPage';
+import FileStoragePage from './Pages/FileStoragePage';
 import {TweenMax} from "gsap";
 const Tools = require('../utils/tools');
 
@@ -38,6 +39,8 @@ class GenericPanel extends Component {
         return(<ContactsPage/>)
       case "messaging": 
         return(<MessagingPage/>)
+      case "fileStorage": 
+        return(<FileStoragePage/>)
     }
   }
 

@@ -51,7 +51,7 @@ class Messaging extends Component {
         this.props.setMobileView(true);
         this.props.setShowingChatListOnly(true);
         if(!this.props.sentMessageAboutFullMessagingMode){
-          Tools.sendMessage(this, "Full on messaging mode!", 1, "Sapphire");
+          Tools.sendMessage(this, this.props.lang.fullMessaging, 1, "Sapphire");
           this.props.setUserClickedButton("fullMessaging");
         }
         if($('#messagingOptions').css("visibility") != "hidden"){
@@ -78,7 +78,7 @@ class Messaging extends Component {
       }
       TweenMax.set('#contacts', { autoAlpha:1, css: {left: ""}});
       TweenMax.set('#messagingChat', { autoAlpha:1, css: {left: ""}});
-      $('#topBarMessage').text("Chats");
+      $('#topBarMessage').text(this.props.lang.chats);
       this.props.setShowingChatListOnly(false);
     }
     $('#messagingChatContainer').scrollTop($('#messagingChatContainer')[0].scrollHeight - $('#messagingChatContainer')[0].clientHeight);
@@ -103,7 +103,7 @@ class Messaging extends Component {
           <MessagingEnabler />
             <div id="messagingTable">
               <div id="tableHeader" className="tableHeaderNormal tableHeaderAnimated">
-                <p className="tableHeaderTitle tableHeaderTitleSmall">Messaging</p>
+                <p className="tableHeaderTitle tableHeaderTitleSmall">{this.props.lang.messaging}</p>
               </div>
               <MessagingTopBar />
               <MessagingContacts/>

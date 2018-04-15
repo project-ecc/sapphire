@@ -15,6 +15,7 @@ import path from 'path';
 import MenuBuilder from './menu';
 import DaemonManager from './Managers/DaemonManager';
 import GUIManager from './Managers/GUIManager';
+import {moveToApplications} from 'electron-lets-move';
 import {grabEccoinDir} from "./utils/platform.service";
 import os from 'os';
 import { traduction } from './lang/lang';
@@ -22,6 +23,7 @@ const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote, Notificati
 const dialog = require('electron').dialog;
 const settings = require('electron-settings');
 const event = require('./utils/eventhandler');
+
 var fs = require('fs');
 var AutoLaunch = require('auto-launch');
 var lang = traduction();
@@ -69,6 +71,20 @@ const installExtensions = async () => {
 };
 
 app.on('ready', async () => {
+
+  try {
+    const moved = await moveToApplications();
+    if (!moved) {
+      console.log('user chose not too move the application')
+      // the user asked not to move the app, it's up to the parent application
+      // to store this information and not hassle them again.
+    }
+  } catch (err) {
+    console.log('could not move application to application folder' + err)
+    // log error, something went wrong whilst moving the app.
+  }
+
+
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
     await installExtensions();
   }
@@ -76,18 +92,18 @@ app.on('ready', async () => {
   const selectedTheme = settings.get('settings.display.theme');
 
   const getBackgroundColor = () => {
-    if(!selectedTheme || selectedTheme === "theme-defaultEcc")
-      return "#181e35";
-    else if(selectedTheme && selectedTheme === "theme-darkEcc")
+    if(!selectedTheme || selectedTheme === "theme-darkEcc")
       return "#1c1c23";
+    else if(selectedTheme && selectedTheme === "theme-defaultEcc")
+      return "#181e35";
   }
 
   app.setAppUserModelId("com.github.csmartinsfct.sapphire");
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1271,
-    height: 777,
+    width: 1367,
+    height: 768,
     minWidth: 800,
     minHeight: 600,
     title: "Sapphire",
@@ -164,7 +180,7 @@ app.on('ready', async () => {
 });
 
 function setupTrayIcon() {
-  var trayImage;  
+  var trayImage;
   var imageFolder = __dirname + '/dist/assets';
 
   // Determine appropriate icon for platform
@@ -230,18 +246,18 @@ function setupEventHandlers() {
     daemonManager = new DaemonManager();
     mainWindow.show();
   });
-  
+
   ipcMain.on('autoStart', (e, autoStart) => {
     if(autoStart)
       autoECCLauncher.enable();
     else autoECCLauncher.disable();
   });
-  
+
   ipcMain.on('show', (e, args) => {
     mainWindow.show();
     mainWindow.focus();
   });
-  
+
   ipcMain.on('minimize', (e, args) => {
     if(ds !== undefined && ds.minimise_to_tray !== undefined && ds.minimise_to_tray){
       mainWindow.setSkipTaskbar(true);
@@ -250,41 +266,41 @@ function setupEventHandlers() {
     }
     mainWindow.minimize();
   });
-  
+
   ipcMain.on('full-screen', (e, args) => {
     if(fullScreen)
       mainWindow.setFullScreen(false);
     else
       mainWindow.setFullScreen(true);
-  
+
     fullScreen = !fullScreen;
   });
-  
+
   ipcMain.on('hideTray', (e, hideTray) => {
     if(!hideTray)
       setupTrayIcon();
     else
       tray.destroy()
   });
-  
+
   ipcMain.on('reloadSettings', () => {
     ds = settings.get('settings.display');
   });
-  
+
   ipcMain.on('maximize', (e, args) => {
     if(!maximized)
       mainWindow.maximize();
     else mainWindow.unmaximize();
-  
+
     maximized = !maximized;
   });
-  
+
   //done with initial setup tell DaemonManager to start
   ipcMain.on('initialSetup', (e, args) => {
     settings.set('settings.initialSetup', true);
     daemonManager.startDaemonChecker();
   });
-  
+
   ipcMain.on('close', async (e, args) => {
       //daemonManager.stopDaemon();
     if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
@@ -304,7 +320,7 @@ function setupEventHandlers() {
 
   event.on('wallet', (exists, daemonCredentials) => {
     var initialSetup = settings.has('settings.initialSetup');
-  
+
     if(initialSetup && exists){
       sendMessage("setup_done", daemonCredentials);
     }
@@ -318,19 +334,19 @@ function setupEventHandlers() {
       sendMessage("initial_setup", daemonCredentials);
     }
   });
-  
+
   event.on('daemonUpdate', () => {
     console.log("electron got daemon update message, sending to GUI");
     daemonUpdate = true;
     sendMessage('daemonUpdate');
   });
-  
+
   event.on('guiUpdate', () => {
     console.log("electron got gui update message, sending to GUI");
     guiUpdate = true;
     sendMessage('guiUpdate');
   });
-  
+
   event.on('updatedDaemon', () => {
     sendMessage("daemonUpdated");
     daemonUpdate = false;
@@ -338,15 +354,15 @@ function setupEventHandlers() {
       event.emit('updateGui');
     }
   });
-  
+
   event.on('daemonStarted', () => {
     sendMessage("importedWallet");
   });
-  
+
   ipcMain.on('importWallet', (e, args) => {
     openFile();
   });
-  
+
   ipcMain.on('update', (e, args) => {
     console.log("electron got update signal, sending to daemon");
     console.log(guiUpdate);

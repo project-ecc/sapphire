@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import ToggleButton from 'react-toggle';
 import * as actions from '../actions';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
-const tools = require('../utils/tools');
+const Tools = require('../utils/tools');
 
 class Home extends Component {
   constructor(props) {
@@ -32,7 +32,7 @@ class Home extends Component {
   }
 
   async lockWallet(){
-    const updated = await tools.updateConfig(0);
+    const updated = await Tools.updateConfig(0);
     if (updated){
 
       var batch = [];
@@ -132,17 +132,17 @@ class Home extends Component {
   }
 
   render() {
-    let fileStorageEarnings = require('../../resources/images/fileStorage-default.png');
+    let fileStorageEarnings = Tools.getIconForTheme("fileStorageNotSelected", false);
     if(this.props.fileStorageEarningsSelected)
-      fileStorageEarnings = require('../../resources/images/fileStorage-blue.png');
+      fileStorageEarnings = Tools.getIconForTheme("fileStorageSelected", false);
 
-    let fileStorageExpenses = require('../../resources/images/fileStorage-default.png');
+    let fileStorageExpenses = Tools.getIconForTheme("fileStorageNotSelected", false);
     if(this.props.fileStorageExpensesSelected)
-      fileStorageExpenses = require('../../resources/images/fileStorage-blue.png');
+      fileStorageExpenses = Tools.getIconForTheme("fileStorageSelected", false);
 
-    let messaging = require('../../resources/images/messaging-default.png');
+    let messaging = Tools.getIconForTheme("messagingNotSelected", false);
     if(this.props.messagingExpensesSelected)
-      messaging = require('../../resources/images/messaging-blue.png');
+      messaging = Tools.getIconForTheme("messagingSelected", false);
 
     return (
         <div id ="homeSections">
@@ -185,7 +185,7 @@ class Home extends Component {
                 </div>
               </div>
               <div className="col-sm-4 text-center"  style={{padding: "0 0"}}>
-                <p className="normalWeight" style={{fontSize: "20px", position: "relative", top: "60px"}}>{tools.formatNumber(this.getEarnings())} <span className="ecc">ecc</span></p>
+                <p className="normalWeight" style={{fontSize: "20px", position: "relative", top: "60px"}}>{Tools.formatNumber(this.getEarnings())} <span className="ecc">ecc</span></p>
                 <p onClick={this.earningsFilterClicked.bind(this, "week")} className= {this.props.weekEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>{ this.props.lang.lastWeek }</p>
                 <p onClick={this.earningsFilterClicked.bind(this, "month")} className= {this.props.monthEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>{ this.props.lang.lastMonth }</p>
                 <p onClick={this.earningsFilterClicked.bind(this, "allTime")} className= {this.props.allTimeEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}> { this.props.lang.all }</p>
@@ -226,7 +226,7 @@ const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
     staking: state.chains.isStaking,
-    balance: tools.formatNumber(state.chains.balance + state.chains.staking),
+    balance: Tools.formatNumber(state.chains.balance + state.chains.staking),
     stakingVal: state.chains.staking,
 
     //Earnings stuff
