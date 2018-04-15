@@ -106,7 +106,7 @@ class NetworkStats extends Component {
             </div>
           </div>
         </div>
-        <div className="container" style={{marginTop: "50px", width:"100%"}}>
+        <div className="container" style={{margin: "0 auto", padding:"0px 0px", marginTop: "50px", width:"100%", maxWidth: "1140px"}}>
           <div className="row">
             <div className="col-sm-4 text-center">
               <p className="networkStatsChainTitle">{ this.props.lang.messagingChain }</p>
