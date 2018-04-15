@@ -6,11 +6,11 @@ class ConfirmButtonPopup extends Component {
   }
 
   render() {
-    return (
-      <div onClick={this.props.handleConfirm} id={this.props.buttonId ? this.props.buttonId : "confirmButtonPopup"} className="buttonPrimary" style={this.props.style? this.props.style : {bottom: "10px", left:"205px"}}>
-        {this.props.text}
-      </div>
-    );
+      return (
+        <div onClick={this.props.handleConfirm} id={this.props.buttonId ? this.props.buttonId : "confirmButtonPopup"} className="buttonPrimary" style={this.props.style? this.props.style : {bottom: "10px", left:"205px"}}>
+          {this.props.text}
+        </div>
+      );
   }
 }
 

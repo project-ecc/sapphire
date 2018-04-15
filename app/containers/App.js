@@ -40,6 +40,8 @@ class App extends Component<Props> {
 
     this.loadSettingsToRedux();
 
+
+
     ipcRenderer.on('closing_daemon', () => {
       this.processCloseRequest();
     });
