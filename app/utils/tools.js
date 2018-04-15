@@ -397,8 +397,10 @@ module.exports = {
   },
 
   highlightInput: function(element, duration){
-      TweenMax.to(element, 0.3, {css:{borderBottom: "2px solid #d09128"}});
-      TweenMax.to(element, 0.3, {css:{borderBottom: "2px solid #1c2340"}, delay: duration});
+      $(element).addClass('inputCustomHighlight');
+      setTimeout(() => {
+         $(element).removeClass('inputCustomHighlight');
+      }, duration);
   },
 
   animateGeneralPanelIn: function(element, callback, f , scaleStart){

@@ -179,6 +179,13 @@ aside{
   border: none;
   text-align: center;
   position: relative;
+  transition: border-bottom .3s;
+}
+
+.inputCustomHighlight{
+  @include themify($themes) { 
+    border-bottom: themed('inputBorderBottomHighlight') !important;
+  }
 }
 
 .popupTitle{

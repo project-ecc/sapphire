@@ -34,21 +34,21 @@ class Send extends Component {
 
   confirmSend() {
     if(this.props.amount == "" || isNaN(this.props.amount) == 1){
-      Tools.highlightInput('#inputAmountSend', 1)
+      Tools.highlightInput('#inputAmountSend', 1000)
     }
     if(this.props.address == ""){
-      Tools.highlightInput('#inputAddressSend', 1)
+      Tools.highlightInput('#inputAddressSend', 1000)
     }
     if(this.props.address != "" && this.props.amount != "" && Number(this.props.amount) > 0){
       if(this.props.amount > this.props.balance){
         Tools.showTemporaryMessage('#message', this.props.lang.notEnoughBalance);
-        Tools.highlightInput('#inputAmountSend', 2.1)
+        Tools.highlightInput('#inputAmountSend', 2100)
       }
       else{
         this.props.wallet.validate(this.props.address).then((isAddressValid) => {
         if (!isAddressValid.isvalid) {
           Tools.showTemporaryMessage('#message', this.props.lang.invalidFailedAddress);
-          Tools.highlightInput('#inputAddressSend', 2.1)
+          Tools.highlightInput('#inputAddressSend', 2100)
         } else {
           this.props.setSendingECC(true);
         }

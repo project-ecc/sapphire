@@ -136,7 +136,7 @@ class ConfirmNewAddress extends React.Component {
   getConfirmationText(){
     if (this.props.ansAddress && !ansEnabled) {
       return (
-        <p className="confirmationText">{ this.props.lang.ansComingSoon }</p>
+        <p className="confirmationText" style={{textAlign:"center"}}>{ this.props.lang.ansComingSoon }</p>
       )
     } else if(this.props.ansAddress && !this.props.upgradingAddress) {
   		return(
