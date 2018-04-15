@@ -53,10 +53,10 @@ class GUIManager{
         this.toldUserAboutUpdate = true;
         event.emit('guiUpdate');
       }
-      setTimeout(this.getLatestVersion.bind(this), 60000);
     }).catch(error => {
       console.log(error);
     });
+    setTimeout(this.getLatestVersion.bind(this), 60000);
 	}
 
 
@@ -85,15 +85,18 @@ class GUIManager{
         const downloadUrl = latestGui.download_url;
         console.log('download URL:' +downloadUrl)
 
+        // const child = cp.fork("./app/Managers/UpdateGUI", {detached:true, env:{version:self.installedVersion}});
+        // app.quit();
+
         const downloaded = await downloadFile(downloadUrl, walletDirectory,'Sapphire.zip', zipChecksum, true)
-          .catch(error => console.log(error));;
+          .catch(error => console.log(error));
 
         if (downloaded) {
           console.log("Done downloading gui");
           try{
             self.downloading = false;
             self.installedVersion = self.currentVersion;
-            const child = cp.fork("./app/Managers/UpdateGUI", {detached:true});
+            const child = cp.fork("./app/Managers/UpdateGUI", {detached:true, env:{version:self.installedVersion}});
             app.quit();
           }catch(e){
             console.log(e);

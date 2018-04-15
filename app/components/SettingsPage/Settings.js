@@ -15,7 +15,9 @@ const app = remote.app;
 const settings = require('electron-settings');
 const homedir = require('os').homedir();
 var open = require("open");
+import {version} from './../../../package.json';
 const Tools = require('../../utils/tools');
+const guiVersion = version;
 
 class Settings extends Component {
   constructor(props) {
@@ -187,7 +189,7 @@ class Settings extends Component {
         <div className="row settingsToggle">
           <div className="col-sm-6 text-left removePadding">
             <p>{ this.props.lang.applicationVersion }</p>
-            <p id="applicationVersion">v{process.env.npm_package_version}g & v1.1.2d</p>
+            <p id="applicationVersion">v{guiVersion}g & v{this.props.daemonVersion}d</p>
           </div>
           <div className="col-sm-6 text-right removePadding">
             <p onClick={this.handleUpdateApplication.bind(this)} id={this.props.updateAvailable ? "updateAvailable" : "updateUnavailable"}>{this.props.updateAvailable ? this.props.lang.installUpdate : this.props.lang.noUpdateAvailable }</p>
@@ -403,6 +405,7 @@ const mapStateToProps = state => {
     stakingNotifications: state.notifications.stakingNotificationsEnabled,
     hoveredIcon: state.application.settingsHoveredSocialIcon,
     theme: state.application.theme,
+    daemonVersion: state.chains.daemonVersion
   };
 };
 
