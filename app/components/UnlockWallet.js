@@ -22,7 +22,6 @@ class UnlockWallet extends React.Component {
     if (updated){
         let batch = [];
         let obj = {
-          method: 'reloadconfig', parameters: ["staking"],
           method: 'walletpassphrase', parameters: [this.props.passwordVal, 31556926, true]
         };
         batch.push(obj);
@@ -37,9 +36,6 @@ class UnlockWallet extends React.Component {
           } else if (data === null) {
             this.props.setPassword("");
             this.props.setUnlocking(false);
-            setTimeout(() => {
-              this.props.setStaking(true);
-            }, 300)
           } else {
             console.log("error unlocking wallet: ", data)
           }
@@ -70,7 +66,11 @@ class UnlockWallet extends React.Component {
       this.props.setPassword("");
       return;
     }
-    this.unlockWallet();
+    this.unlockWallet().then(() => {
+      return this.props.wallet.setGenerate().then(() => {
+        this.props.setStaking(true);
+      });
+    });
   }
 
   handleCancel(){
