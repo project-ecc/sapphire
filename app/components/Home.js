@@ -17,6 +17,7 @@ class Home extends Component {
     this.processStakingClicked = this.processStakingClicked.bind(this);
     this.lockWallet = this.lockWallet.bind(this);
     this.getEarnings = this.getEarnings.bind(this);
+    this.getUpcomingPayments = this.getUpcomingPayments.bind(this);
   }
 
   componentDidMount() {
@@ -131,6 +132,42 @@ class Home extends Component {
       return this.props.ansWeekExpenses;
   }
 
+  handleHoverAnsPayments(element){
+    //TweenMax.fromTo(element, 0.3, {autoAlpha:0, scale:0.5}, {autoAlpha: 1, scale:1})
+  }
+
+  handleHoverOutAnsPayments(element){
+    //TweenMax.fromTo(element, 0.3, {autoAlpha:1, scale: 1}, {autoAlpha: 0, scale:0.5})
+  }
+
+  getUpcomingPayments(){
+    if(this.props.notifications["ansPayments"]["payments"].length == 0)
+      return (<p className="noIcomingPayments">{this.props.lang.noUpcomingPayments}</p>)
+    else{
+      const payments = this.props.notifications["ansPayments"]["payments"];
+      const today = new Date();
+      return(
+        <div>
+          {payments.map((payment, index) => {
+            let time = Tools.calculateTimeTo(this.props.lang, today, new Date(payment["dueDate"]));
+            let amount = payment["cost"];
+            return(
+              <div onMouseEnter={this.handleHoverAnsPayments.bind(this, "#payAns" + index)} onMouseLeave={this.handleHoverOutAnsPayments.bind(this, "#payAns" + index)} className="home__ans-payment">
+                <div className="payAns" id={"payAns" + index}>
+                  <p>{this.props.lang.extendANSSubscription }</p>
+                </div>
+                <p className="home__ans-payment-time">{time}</p>
+                <span className="home__ans-payment-ans">ANS </span> <span className="home__ans-payment-amount">{amount}</span><span className="ecc"> ecc</span>
+              </div>
+            )
+          }
+
+          )}
+        </div>
+      )
+    }
+  }
+
   render() {
     let fileStorageEarnings = Tools.getIconForTheme("fileStorageNotSelected", false);
     if(this.props.fileStorageEarningsSelected)
@@ -147,7 +184,7 @@ class Home extends Component {
     return (
         <div id ="homeSections">
           <div className="homeSection text-center" id="balanceInfo">
-            <div className="row">
+            <div className="row" style={{margin: "0px 0px"}}>
               <div className="col-sm-4"  style={{padding: "0 0"}}>
                 <p className="homePanelTitleTwo stakingBalance">{ this.props.lang.staking }</p>
                 <p className="normalWeight">{this.props.stakingVal} <span className="ecc">ecc</span></p>
@@ -193,14 +230,14 @@ class Home extends Component {
             </div>
           </div>
           <div className="homeSection" id="expenses">
-            <div className="row">
+            <div className="row" style={{margin: "0px 0px"}}>
               <div className="col-sm-4 align-self-left"  style={{padding: "0 0"}}>
                 <div id="earningsOptions">
-                  <div className="arrowHome arrowExpenses"></div>
-                  <div id="earningsFirst">
+                  <div className="arrowHome arrowExpenses" style={{left: "0px"}}></div>
+                  <div id="earningsFirst" style={{paddingLeft: "50px"}}>
                     <p className="normalWeight homePanelTitleOne" style={{fontSize: "20px"}}>{ this.props.lang.expenses }</p>
                   </div>
-                    <img onClick={this.expensesTypeFilterClicked.bind(this, "messaging")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={messaging}/>
+                    <img onClick={this.expensesTypeFilterClicked.bind(this, "messaging")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"5px", position:"relative", top: "103px", left: "12px"}} src={messaging}/>
                     <img onClick={this.expensesTypeFilterClicked.bind(this, "fileStorage")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={fileStorageExpenses}/>
                     <p onClick={this.expensesTypeFilterClicked.bind(this, "ans")} style = {{color: this.props.ansExpensesSelected ? "#aeacf3" : "#85899e"}} className={this.props.ansExpensesSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> ANS </p>
                     <p onClick={this.expensesTypeFilterClicked.bind(this, "all")} style = {{color: this.props.allExpensesSelected ? "#aeacf3" : "#85899e"}} className={this.props.allExpensesSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> { this.props.lang.all }</p>
@@ -214,6 +251,7 @@ class Home extends Component {
               </div>
               <div className="col-sm-4  text-center"  style={{padding: "0 0"}}>
                   <p className="normalWeight homePanelTitleOne" style={{fontSize: "16px", paddingTop: "15px"}}>{ this.props.lang.nextPayments }</p>
+                  {this.getUpcomingPayments()}
               </div>
             </div>
           </div>
@@ -268,7 +306,8 @@ const mapStateToProps = state => {
     ansWeekExpenses: state.application.lastWeekAnsExpenses,
     ansMonthExpenses: state.application.lastMonthAnsExpenses,
 
-    wallet: state.application.wallet
+    wallet: state.application.wallet,
+    notifications: state.notifications.entries,
   };
 };
 

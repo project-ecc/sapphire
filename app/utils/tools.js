@@ -70,6 +70,42 @@ module.exports = {
     return time;
   },
 
+  calculateTimeTo: function(lang, today, iTime){
+    let delta = Math.abs(iTime.getTime() - today.getTime()) / 1000;
+    const days = Math.floor(delta / 86400);
+    delta -= days * 86400;
+    const hours = Math.floor(delta / 3600) % 24;
+    delta -= hours * 3600;
+    const minutes = Math.floor(delta / 60) % 60;
+
+
+    let time = lang.in + " ";
+    if (settings.get('settings.lang') === 'fr') {
+      time = `${lang.translationExclusiveForFrench} `;
+    }
+    if (days > 0) {
+      time += `${days} `;
+      if (days === 1) {
+        time += lang.paymentsDay;
+      } else {
+        time += lang.paymentsDays;
+      }
+    } else if (hours > 0) {
+      time += `${hours} `;
+      if (hours === 1) {
+        time += lang.paymentsHour;
+      } else {
+        time += lang.paymentsHours;
+      }
+    } else if (minutes === 1) {
+      time += `${minutes} ${lang.paymentsMinute}`;
+    } else {
+      time += `${minutes} ${lang.paymentsMinutes}`;
+    }
+    return time;
+  },
+
+
   //Theme Support
 
   getIconForTheme: function(iconName, hover, theme = undefined){

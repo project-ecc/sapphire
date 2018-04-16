@@ -236,3 +236,33 @@
   font-size: 14px; 
   top: 107px;
 }
+
+.noIcomingPayments{
+  font-size: 15px;
+  text-align: center; 
+  color: #40424c;
+  position: relative;
+  top: 26px;
+}
+
+
+.home__ans-payment{
+  margin-top: 22px;
+  font-size: 13px;
+  cursor: pointer;
+  width: 100%;
+  position: relative;
+}
+
+.home__ans-payment-time{
+  font-size: 14px;
+  font-weight: 700;
+  @include themify($themes) { 
+    color: themed('bodySecondaryParagraphColor');  
+  }
+  cursor: pointer;
+}
+
+.home__ans-payment-ans{
+
+}

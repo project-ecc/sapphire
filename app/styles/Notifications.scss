@@ -198,7 +198,7 @@
 	border-bottom-right-radius: 16px;
 }
 
-#payAns{
+.payAns{
 	@include themify($themes) { 
 		background-color: themed('notificationsPayServiceBackgroundColor');  
 	}
@@ -219,7 +219,7 @@
 	}
 }
 
-#payAns p{
+.payAns p{
 	@include themify($themes) { 
 		border: themed('notificationsPayServiceButtonBorder');
 		background-color: themed('notificationsHeaderBackgroundColor');  
@@ -236,7 +236,7 @@
     cursor: pointer;
 }
 
-#payAns p:hover{
+.payAns p:hover{
 	@include themify($themes) { 
 		background-color: themed('homePanelsBackgroundColor');  
 	}

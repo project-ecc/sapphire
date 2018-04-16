@@ -100,7 +100,7 @@ class NotificationPopup extends React.Component {
     let date = ansPaymentsObject["firstDueDate"];
     let body = <p id="mediumPosts">{ this.props.lang.ansPayment } - {Tools.formatNumber(ansPaymentsObject["payments"][0]["cost"])} <span className="ecc">ECC</span></p>;
     const today = new Date();
-    let time = Tools.calculateTimeSince(this.props.lang, today, new Date(date));
+    let time = Tools.calculateTimeTo(this.props.lang, today, new Date(date));
     if(totalAnsPayments > 1)
      body = <p id="mediumPosts">{totalAnsPayments} { this.props.lang.ansPayments } - {Tools.formatNumber(ansPaymentsObject["payments"][0]["cost"])} <span className="ecc">ECC</span></p>;
     return(
@@ -110,9 +110,9 @@ class NotificationPopup extends React.Component {
           handleMouseIn={this.props.handleHoverPayments}
           image = {earnings}
           body = {body}
-          time = { this.props.lang.in4Days }
+          time = {time}
           class = {this.props.last == "incomingStakingPayments" && !this.props.updateAvailable ? "notificationItem newsItemRoundCorners resetCursor" : "notificationItem newsItemBorder resetCursor" }/>
-          <div id="payAns">
+          <div className="payAns" id="payAns">
             <p>{totalAnsPayments > 1 ? this.props.lang.extendANSSubscriptions : this.props.lang.extendANSSubscription }</p>
           </div>
         </div>
