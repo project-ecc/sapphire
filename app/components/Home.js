@@ -27,9 +27,15 @@ class Home extends Component {
   }
 
   processStakingClicked(){
-    if(!this.props.staking)
+    if(!this.props.staking) {
       this.props.setUnlocking(true);
-    else this.lockWallet();
+    } else {
+      this.lockWallet().then(() => {
+        this.props.wallet.setGenerate().then(() => {
+          this.props.setStaking(false);
+        });
+      });
+    }
   }
 
   async lockWallet(){
@@ -38,7 +44,6 @@ class Home extends Component {
 
       var batch = [];
       var obj = {
-        method: 'reloadconfig', parameters: ["staking"],
         method: 'walletlock', parameters: []
       };
       batch.push(obj);
@@ -48,9 +53,7 @@ class Home extends Component {
         data = data[0];
         if (data !== null && data.code === 'ECONNREFUSED') {
           console.log("daemon not working?")
-        } else if (data === null) {
-          this.props.setStaking(false);
-        } else {
+        } else if (data !== null) {
           console.log("error unlocking wallet: ", data)
         }
       }).catch((err) => {
