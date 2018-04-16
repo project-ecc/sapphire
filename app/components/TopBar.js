@@ -25,12 +25,16 @@ class TopBar extends React.Component {
 
     if (process.platform === 'darwin'){
       ipcRenderer.on('full-screen', () => {this.fullScreenMac(true)});
+      ipcRenderer.on("unfocused", () => {this.props.setMacButtonsFocus(false);});
+      ipcRenderer.on("focused", () => {this.props.setMacButtonsFocus(true);});
     }
   }
 
   componentWillUnmount(){
     $('#appButtonsMac').off('mouseenter');
     $('#appButtonsMac').off('mouseleave');
+    //ipcRenderer.off("unfocused");
+    //ipcRenderer.off("focused");
   }
 
   minimize(){
@@ -113,6 +117,13 @@ class TopBar extends React.Component {
       maximize = require('../../resources/images/mac-fullscreen-active.png');
       close = require('../../resources/images/mac-close-active.png');
     }
+
+    if(!this.props.macButtonsFocus){
+      minimize = require('../../resources/images/mac-unfocused.png');
+      maximize = require('../../resources/images/mac-unfocused.png');
+      close = require('../../resources/images/mac-unfocused.png');
+    }
+
     const miniButton = require('../../resources/images/logo_setup.png');
     let settings = require('../../resources/images/settings-white.png');
     let notification = require('../../resources/images/notification-white.png');
@@ -227,6 +238,7 @@ const mapStateToProps = state => {
     settings: state.application.settings,
     news: state.application.selectedPanel == "news" ? true : false,
     macButtonsHover: state.application.macButtonsHover,
+    macButtonsFocus: state.application.macButtonsFocus,
     genericPanelAnimationOn: state.application.genericPanelAnimationOn,
     notificationPopup: state.notifications.popupEnabled,
     appMaximized: state.application.maximized,

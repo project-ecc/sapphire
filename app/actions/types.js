@@ -104,6 +104,7 @@ export const GENERIC_PANEL_ANIMATION_ON = "generic_panel_animation_on";
 export const TELL_USER_OF_UPDATE = "tell_user_of_update";
 export const CLOSING_APPLICATION = "closing_application";
 export const MAC_BUTTONS_HOVER = "mac_buttons_hover";
+export const MAC_BUTTONS_FOCUS = "mac_buttons_focus";
 export const APP_MAXIMIZED = "app_maximized";
 export const SELECTED_THEME = "selected_theme";
 export const SELECTED_THEME_BACKUP = "selected_theme_backup";

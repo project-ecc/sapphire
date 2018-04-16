@@ -123,6 +123,10 @@ app.on('ready', async () => {
   	sendMessage("focused");
   });
 
+  mainWindow.on('blur', function (event) {
+    sendMessage("unfocused");
+  });
+
   mainWindow.on('leave-full-screen', function(event){
   if (process.platform === 'darwin'){
   		sendMessage("full-screen");
