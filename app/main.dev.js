@@ -71,17 +71,19 @@ const installExtensions = async () => {
 
 app.on('ready', async () => {
 
-  try {
-    const moved = await moveToApplications();
-    if (!moved) {
-      console.log('user chose not too move the application')
-      // the user asked not to move the app, it's up to the parent application
-      // to store this information and not hassle them again.
-    }
-  } catch (err) {
-    console.log('could not move application to application folder' + err)
-    // log error, something went wrong whilst moving the app.
-  }
+  //TODO: Revise this.
+
+  // try {
+  //   const moved = await moveToApplications();
+  //   if (!moved) {
+  //     console.log('user chose not too move the application')
+  //     // the user asked not to move the app, it's up to the parent application
+  //     // to store this information and not hassle them again.
+  //   }
+  // } catch (err) {
+  //   console.log('could not move application to application folder' + err)
+  //   // log error, something went wrong whilst moving the app.
+  // }
 
 
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
