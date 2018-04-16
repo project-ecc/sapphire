@@ -152,7 +152,7 @@ class Home extends Component {
             let time = Tools.calculateTimeTo(this.props.lang, today, new Date(payment["dueDate"]));
             let amount = payment["cost"];
             return(
-              <div onMouseEnter={this.handleHoverAnsPayments.bind(this, "#payAns" + index)} onMouseLeave={this.handleHoverOutAnsPayments.bind(this, "#payAns" + index)} className="home__ans-payment">
+              <div key={amount + index} onMouseEnter={this.handleHoverAnsPayments.bind(this, "#payAns" + index)} onMouseLeave={this.handleHoverOutAnsPayments.bind(this, "#payAns" + index)} className="home__ans-payment">
                 <div className="payAns" id={"payAns" + index}>
                   <p>{this.props.lang.extendANSSubscription }</p>
                 </div>

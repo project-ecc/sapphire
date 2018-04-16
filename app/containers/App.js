@@ -243,7 +243,7 @@ class App extends Component<Props> {
   }
 
   getSettings(){
-    if(this.props.settings){
+    if(this.props.settings && !this.props.updatingApplication){
       return(
         <TransitionGroup component="section">
           <TransitionComponent
