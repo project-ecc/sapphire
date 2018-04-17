@@ -57,7 +57,7 @@ class GUIManager{
         }
       }
     }).catch(error => {
-      console.log(error);
+      console.log(error.message);
     });
 	}
 

@@ -231,7 +231,7 @@ class DaemonManager {
         self.checkForUpdates();
       }
     }).catch(error => {
-      console.log(error);
+      console.log(error.message);
     });
 
   }
@@ -275,7 +275,7 @@ class DaemonManager {
 
       }).catch(error => {
         console.log("Error " + error);
-        reject(false);
+        reject(error);
       });
     });
   }
