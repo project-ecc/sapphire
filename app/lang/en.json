@@ -201,7 +201,8 @@
     "unlockWalletExplanation2": "You will still be required to enter a password to send",
 
     "welcome": "Welcome to your ECC wallet",
-    "selectTheme": "Now select a theme",
+    "nowSelectTheme": "Now select a theme",
+    "selectTheme": "Select a theme",
 
     "selectAFileNamed": "Select a file named wallet.dat",
     "wrongFileSelected": "ECC - Wrong file selected",

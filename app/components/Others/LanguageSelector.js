@@ -34,9 +34,10 @@ class LanguangeSelector extends Component {
       <div className="dropdownLanguageSelector" onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
         <div className="selectLanguageSelector">
           <p style={{fontWeight:"normal"}}>{language()}</p>
-          <i className="fa fa-chevron-down"></i>
+          {/*<i className="fa fa-chevron-down"></i>*/}
         </div>
         <input type="hidden" name="language"></input>
+        {/*
         <ul style={{fontWeight:"normal"}} className="dropdown-menuLanguageSelector">
             <li onClick={this.onItemClick} data-id="bg">български (Bulgarian)</li>
             <li onClick={this.onItemClick} data-id="zh_cn">简体中文—中国 (Chinese - CN)</li>
@@ -54,7 +55,7 @@ class LanguangeSelector extends Component {
             <li onClick={this.onItemClick} data-id="es">Español (Spanish)</li>
             <li onClick={this.onItemClick} data-id="tr">Türkçe (Turkish)</li>
             <li onClick={this.onItemClick} data-id="vn">Tiếng việt (Vietnamese)</li>
-        </ul>
+        </ul>*/}
       </div>
     );
   }
