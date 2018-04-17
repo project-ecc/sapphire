@@ -243,7 +243,8 @@ const mapStateToProps = state => {
     notificationPopup: state.notifications.popupEnabled,
     appMaximized: state.application.maximized,
     notifications: state.notifications.entries,
-    updateAvailable: state.startup.guiUpdate || state.startup.daemonUpdate
+    updateAvailable: state.startup.guiUpdate || state.startup.daemonUpdate,
+    minimizeOnClose: state.application.minimizeOnClose
   };
 };
 

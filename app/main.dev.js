@@ -35,7 +35,7 @@ let tray = null;
 let daemonManager = null;
 let guiManager = null;
 let maximized = false;
-let ds = undefined;
+let ds = settings.get('settings.display');;
 let mainWindow = null;
 let guiUpdate = false;
 let daemonUpdate = false;
@@ -142,6 +142,7 @@ app.on('ready', async () => {
   });
 
   mainWindow.on('close', function (event) {
+    console.log(ds.minimise_on_close)
     if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
       event.preventDefault();
       if (!ds.minimise_to_tray) {
