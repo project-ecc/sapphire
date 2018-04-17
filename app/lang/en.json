@@ -117,7 +117,6 @@
     "allYourNormalAndANS": "All your normal and ANS addresses",
     "ansAddresses": "ANS Addresses",
     "normalAddresses": "Normal Addresses",
-    "amountCAPS": "AMOUNT",
     "addressCreatedSuccessfully": "Address Created Successfully!",
     "clickToBackupWallet": "Click here to backup your wallet",
     "disableANSSubscription": "Disable ANS subscription",
@@ -127,8 +126,6 @@
     "selectAContactToSend1": "Select a contact to send",
     "selectAContactToSend2": "to",
     "contacts": "Contacts",
-    "nameCAPS": "NAME",
-    "addressCAPS": "ADDRESS",
 
     "notEnoughBalance": "Balance too low",
     "ansNameOrAddress": "ANS Name / Address",
@@ -146,7 +143,7 @@
     "currentPassword": "Current Password",
     "newPassword": "New Password",
 
-    "exportWarning": "Do not disclose your keys to anyone! keep them in a safe place where only you have access",
+    "exportWarning": "Do not disclose your keys to anyone! keep them in a safe place where only you have access.",
     "generatingFile": "Generating file",
     "export": "Export",
     "exportFormat": "The exported PDF has all of your public and private keys in this format",

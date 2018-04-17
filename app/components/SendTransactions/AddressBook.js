@@ -108,8 +108,8 @@ class AddressBook extends Component {
         </div>
         <div className="tableContainer">
             <div className="row rowDynamic">
-              <div className="col-sm-4 headerAddresses tableColumContactFix tableRowHeader">{ this.props.lang.nameCAPS }</div>
-              <div id="addressHeader" className="col-sm-7 headerAddresses tableRowHeader">{ this.props.lang.addressCAPS }</div>
+              <div className="col-sm-4 headerAddresses tableColumContactFix tableRowHeader">{ this.props.lang.name }</div>
+              <div id="addressHeader" className="col-sm-7 headerAddresses tableRowHeader">{ this.props.lang.address }</div>
               <div className="col-sm-1 headerAddresses"></div>
             </div>
           <div id="rows" style={{width: "100%", padding: "0 0"}}>

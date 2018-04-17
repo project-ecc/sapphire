@@ -224,8 +224,8 @@ class Receive extends Component {
           <div className="tableContainer">
               <div className="row rowDynamic">
                 <div className="col-sm-3 headerAddresses headerAddressFix tableRowHeader">{this.props.filterAll ? "" : this.props.filterNormal ? "" : "NAME"}</div>
-                <div id="addressHeader" className="col-sm-6 headerAddresses tableRowHeader">{this.props.filterAll ? "ADDRESS / NAME" : "ADDRESS"}</div>
-                <div id="addressHeader" className="col-sm-3 headerAddresses tableRowHeader">{ this.props.lang.amountCAPS }</div>
+                <div id="addressHeader" className="col-sm-6 headerAddresses tableRowHeader">{this.props.filterAll ? this.props.lang.address + " / " + this.props.lang.name : this.props.lang.address}</div>
+                <div id="addressHeader" className="col-sm-3 headerAddresses tableRowHeader">{ this.props.lang.amount }</div>
               </div>
             <div id="rows">
             {this.props.userAddresses.map((address, index) => {

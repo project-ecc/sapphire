@@ -183,7 +183,7 @@ class Transaction extends Component {
           <div style={{width: "100%", marginTop: "5px", padding: "0 0"}}>
             <div className="row rowDynamic">
               <div className="col-sm-6 headerAddresses tableRowHeader" style={{paddingLeft: "4%"}}>{ this.props.lang.typeCAPS }</div>
-              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.amountCAPS }</div>
+              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.amount }</div>
               <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.statusCAPS }</div>
               <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.timeCAPS }</div>
             </div>
