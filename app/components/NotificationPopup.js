@@ -196,7 +196,7 @@ class NotificationPopup extends React.Component {
       <div ref="second">
         <div id="notificationContainer" className={process.platform === 'darwin' ? "notificationContainerMac" : ""}>
           <div id="notificationHeader">
-            <div id="notificationsHeaderContent">
+            <div id="notificationsHeaderContent" style={{top: this.props.notifications["total"] == 0 ? "6px" : "0px"}}>
             <p>{ this.props.lang.notifications }</p>
             {this.getNotificationsCounter()}
           </div>
