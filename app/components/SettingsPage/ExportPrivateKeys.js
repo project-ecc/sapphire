@@ -75,7 +75,7 @@ class ExportPrivateKeys extends React.Component {
       TweenMax.set('#selectedlocation',{scale: 1, delay: 3.2})*/
     }
     else if(this.props.panelNumber == 3){
-      console.log(this.toPrint)
+      // console.log(this.toPrint)
       //this.displayConfirm = true;
       this.export();
     }
@@ -184,7 +184,7 @@ class ExportPrivateKeys extends React.Component {
 
     let counter = 1;
     let aux = [];
-    let keys = {};
+    let keys = [];
 
     for(let i = 0; i < addressesArray.length; i++){
       aux.push(addressesArray[i]);
@@ -201,9 +201,9 @@ class ExportPrivateKeys extends React.Component {
         aux.length = 0;
         counter=1;
       }
-      this.setState({ toDisplay: keys });
-      console.log(this.state.toDisplay)
     }
+    this.setState({ toDisplay: keys });
+    // console.log(this.state.toDisplay)
   }
 
   unlockWallet(flag, time, callback){
@@ -356,17 +356,17 @@ class ExportPrivateKeys extends React.Component {
   }
 
   renderdisplayKeys(){
-    console.log(this.state.items)
-    if(this.state.items == null){
+    console.log(this.state.toDisplay)
+    if(this.state.toDisplay == null){
       return
     }
-    const keys = Object.keys(this.state.items).map((key) =>
-      <li key={key}>{this.state.items[key].publicKey}</li>
+    const keys = Object.keys(this.state.toDisplay).map((key) =>
+      <li key={key}>{this.state.toDisplay[key].publicKey}<br/> {this.state.toDisplay[key].privateKey}</li>
     );
     console.log(keys)
     return(
-      <div id="displayKeys" style={{position: "absolute", left:"100%", width: "100%", top: "52px"}}>
-        <p style={{fontSize: "16px", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"25px", textAlign: "left", height:"250px"}}>
+      <div id="displayKeys" style={{position: "absolute", left:"100%", width: "100%", top: "52px", height:"250px"}}>
+        <p style={{fontSize: "16px", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"25px", textAlign: "left"}}>
           { this.props.lang.exportFormat }:
         </p>
         <ul>
