@@ -15,6 +15,14 @@ class UnlockWallet extends React.Component {
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.unlockWallet = this.unlockWallet.bind(this);
+    // this._handleKeyPress = this._handleKeyPress.bind(this);
+  }
+
+  _handleKeyPress = (e) => {
+   console.log(e)
+    if (e.key === 'Enter') {
+      this.handleConfirm();
+    }
   }
 
   async unlockWallet(){
@@ -92,6 +100,7 @@ class UnlockWallet extends React.Component {
             handleChange={this.handleChange.bind(this)}
             type="password"
             inputStyle={{width: "400px", top: "20px", marginBottom: "30px"}}
+            onKeyPress={this._handleKeyPress}
           />
         <div>
           <p id="wrongPassword" className="wrongPassword">{ this.props.lang.wrongPassword }</p>
