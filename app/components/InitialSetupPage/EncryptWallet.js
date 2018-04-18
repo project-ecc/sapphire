@@ -153,7 +153,7 @@ class EncryptWallet extends React.Component {
            </p>
         </div>
         <div id="walletEncrypted">
-          <p className="centerText" style={{width: "500px", left: "50%", marginLeft: "-250px", fontWeight:"300"}}>
+          <p className="centerText" style={{width: "500px", left: "50%", marginLeft: "-250px", fontWeight:"300", paddingTop: "25px"}}>
             { this.props.lang.walletEncrypted1 }<br></br><br></br>{ this.props.lang.walletEncrypted2 }<br></br>{ this.props.lang.walletEncrypted3 }
            </p>
         </div>

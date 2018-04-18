@@ -10,6 +10,8 @@ import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
 const Tools = require('../../utils/tools');
+const { clipboard } = require('electron');
+const os = require('os');
 
 class ExportPrivateKeys extends React.Component {
   constructor() {
@@ -21,6 +23,7 @@ class ExportPrivateKeys extends React.Component {
     this.handlePanels = this.handlePanels.bind(this);
     this.handleExportClick = this.handleExportClick.bind(this);
     this.generatePDF = this.generatePDF.bind(this);
+    this.handleDisplayKeys = this.handleDisplayKeys.bind(this);
 
     this.tween = undefined;
     this.toPrint = [];
@@ -29,6 +32,7 @@ class ExportPrivateKeys extends React.Component {
     this.state = {
       toDisplay: {}
     };
+    this.addressesToCopy = "";
   }
 
   showWrongPassword(){
@@ -37,7 +41,9 @@ class ExportPrivateKeys extends React.Component {
 
   componentWillUnmount(){
     this.toPrint = null;
+    this.addressesToCopy = "";
     this.props.setPanelExportingPrivateKeys(1);
+    this.tween = undefined;
   }
 
   componentWillMount(){
@@ -77,6 +83,9 @@ class ExportPrivateKeys extends React.Component {
     else if(this.props.panelNumber == 3){
       //this.displayConfirm = true;
       this.export();
+    }
+    else if(this.props.panelNumber == 4){
+      clipboard.writeText(this.addressesToCopy);
     }
     /*else if(this.props.panelNumber == 2){
       TweenMax.to('#setLocationPanel', 0.3, {x: "-200%"})
@@ -134,14 +143,23 @@ class ExportPrivateKeys extends React.Component {
     TweenMax.to('#exportOptions', 0.3, {css:{left: "-100%"}});
     TweenMax.to('#setLocationPanel', 0.3, {css:{left: "0%"}});
     $('#confirmButtonPopup').text(this.props.lang.export);
-    TweenMax.to('#confirmButtonPopup', 2, {autoAlpha: 1, delay: 0.3});
+    TweenMax.to('#confirmButtonPopup', 0.3, {autoAlpha: 1, delay: 0.8});
 
     this.props.setPanelExportingPrivateKeys(this.props.panelNumber+1);
   }
 
   handleDisplayKeys(){
+    let height = Object.keys(this.state.toDisplay).length == 1 ? 300 : 400;
     TweenMax.to('#exportOptions', 0.3, {css:{left: "-100%"}});
-    TweenMax.to('#displayKeys', 0.3, {css:{left: "0%"}})
+    TweenMax.to('#displayKeys', 0.3, {css:{left: "0%", width: "570px"}})
+    TweenMax.to('#unlockPanel', 0.2, {css:{height: height +"px", top: "19%", minWidth:"570px", marginLeft:"-274px"}})
+    TweenMax.to('#exportPrivKey', 0.2, {css:{height: height+"px"}})
+    $('#confirmButtonPopup').text(this.props.lang.copyAll);
+    TweenMax.set('#confirmButtonPopup', {css:{left: "218px"}})
+    TweenMax.to('#confirmButtonPopup', 0.3, {autoAlpha: 1, delay: 0.8})
+    TweenMax.set('#displayKeys p', {width: "450px"})
+    console.log(Object.keys(this.state.toDisplay).length)
+    this.props.setPanelExportingPrivateKeys(this.props.panelNumber+2);
   }
 
   handleConfirm(){
@@ -153,8 +171,10 @@ class ExportPrivateKeys extends React.Component {
     this.unlockWallet(false, 5, async () => {
       TweenMax.to('#passwordPanel', 0.3, {x: "-100%"});
       TweenMax.to('#exportOptions', 0.3, {css: {left:"0%"}});
-      TweenMax.to('#confirmButtonPopup', 0.3, {autoAlpha: 0});
-
+      TweenMax.to('#confirmButtonPopup', 0.3, {x: "-450px", autoAlpha: 0});
+      setTimeout(() => {
+        TweenMax.set('#confirmButtonPopup', {x: "0px"});
+      }, 300)
       this.props.setPanelExportingPrivateKeys(this.props.panelNumber+1);
 
       if(wasStaking){
@@ -178,9 +198,9 @@ class ExportPrivateKeys extends React.Component {
       });
       addressesArray.push(addresses[key]);
     }
-
+    console.log(batch)
     let privKeys = await this.getPrivateKeys(batch);
-
+    console.log(privKeys)
     let counter = 1;
     let aux = [];
     let keys = [];
@@ -329,9 +349,9 @@ class ExportPrivateKeys extends React.Component {
         <p style={{fontSize: "16px", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"25px", textAlign: "left"}}>
           { this.props.lang.exportFormat }:
         </p>
-        <p className="pdfExample">{`<Public Address>`}</p>
-        <p className="pdfExample">{`<Private Key>`}</p>
-        <p className="pdfExample">{`<Line Break>`}</p>
+        <p className="pdfExample">{`<${this.props.lang.publicAddress}>`}</p>
+        <p className="pdfExample">{`<${this.props.lang.privateKey}>`}</p>
+        <p className="pdfExample">{`<${this.props.lang.lineBreak}>`}</p>
       </div>
     )
   }
@@ -340,19 +360,27 @@ class ExportPrivateKeys extends React.Component {
     return(
       <div id="exportOptions" style={{position: "absolute", left:"100%", width: "100%", top: "52px"}}>
         <p style={{fontSize: "16px", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"25px", textAlign: "left"}}>
-          { this.props.lang.exportFormat }:
+          {this.props.lang.exportPrivKeyDesc}
         </p>
-        <div className="row">
-          <div className="col-md-6 left">
-            <button  className="buttonPrimary" onClick={this.handleDisplayKeys}>View Keys</button>
-          </div>
-          <div className="col-md-6 left">
-            <button  className="buttonPrimary" onClick={this.handlePanels}>Export Keys To Pdf</button>
-          </div>
-        </div>
-
+        <div onClick={this.handleDisplayKeys}  className="buttonPrimary" style={{top: "130px", left:"115px"}}>{this.props.lang.viewOnScreen}</div>
+        <div onClick={this.handlePanels} className="buttonPrimary" style={{top: "130px", left:"293px"}}>{this.props.lang.exportToPdf}</div>
       </div>
     )
+  }
+  
+  handleMouseEnterAddress(id){
+    TweenMax.set(id, {autoAlpha: 1});
+  }
+
+  handleMouseLeaveAddress(id){
+    TweenMax.set(id, {autoAlpha: 0});
+  }
+
+  handleCopyAddressClicked(publicAddress, privateAddress, element){
+    let toCopy = publicAddress + os.EOL + privateAddress;
+    clipboard.writeText(toCopy);
+    TweenMax.to(element, 0.1, {scale: 1.1})
+    TweenMax.to(element, 0.1, {scale: 1, delay: 0.1})
   }
 
   renderdisplayKeys(){
@@ -360,19 +388,34 @@ class ExportPrivateKeys extends React.Component {
     if(this.state.toDisplay == null){
       return
     }
-    const keys = Object.keys(this.state.toDisplay).map((key) =>
-      <li key={key}>{this.state.toDisplay[key].publicKey}<br/> {this.state.toDisplay[key].privateKey}</li>
+    let counter = 0;
+    const keys = Object.keys(this.state.toDisplay).map((key) => {
+      let pubKey = this.state.toDisplay[key].publicKey;
+      let privKey = this.state.toDisplay[key].privateKey
+      this.addressesToCopy += pubKey + os.EOL;
+      this.addressesToCopy += privKey + os.EOL;
+      this.addressesToCopy += os.EOL;
+      counter+=1;
+      return(
+        <div onMouseEnter={this.handleMouseEnterAddress.bind(this, "#copyPrivKey" + counter)} onMouseLeave={this.handleMouseLeaveAddress.bind(this, "#copyPrivKey" + counter)} className="keysItem" key={key}>
+          <p onClick={this.handleCopyAddressClicked.bind(this, pubKey, privKey, "#copyPrivKey" + counter)} id={"copyPrivKey" + counter} className="copyPrivKey">copy</p>
+          <p>{pubKey}</p>
+          <p>{privKey}</p>
+        </div>
+      )
+      }
     );
     console.log(keys)
     return(
-      <div id="displayKeys" style={{position: "absolute", left:"100%", width: "100%", top: "52px", height:"250px"}}>
-        <p style={{fontSize: "16px", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"25px", textAlign: "left"}}>
-          { this.props.lang.exportFormat }:
+      <div id="displayKeys" style={{position: "relative", left:"100%", width: "535px"}}>
+        <p style={{fontSize: "16px", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"20px", textAlign: "left"}}>
+          {`${this.props.lang.listing} ${keys.length}  ${keys.length == 1 ? this.props.lang.addressInFormat : this.props.lang.addressesInFormat}:`}
+          <p style={{paddingTop: "15px"}} className="pdfExample">{`<${this.props.lang.publicAddress}>`}</p>
+          <p className="pdfExample">{`<${this.props.lang.privateKey}>`}</p>
         </p>
-        <ul>
+        <div className="keysHolder">
           {keys}
-        </ul>
-
+        </div>
       </div>
     )
   }

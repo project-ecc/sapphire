@@ -33,6 +33,16 @@
     "encrypt": "Encrypt",
     "in": "In",
 
+    "exportPrivKeyDesc": "Please select how you want to export your keys. You can either chose to view them on-screen individually or export them all to a PDF.",
+    "viewOnScreen": "View On-screen",
+    "exportToPdf": "Export to PDF",
+    "copyAll": "Copy All",
+    "publicAddress": "Public Address",
+    "lineBreak": "Line Break",
+    "listing" :"Listing",
+    "addressInFormat": "address in this format",
+    "addressesInFormat": "addresses in this format",
+
     "loading": "Loading",
     "mainMessage": "Hello, we are getting a few things ready...",
 
