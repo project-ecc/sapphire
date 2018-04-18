@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import ToggleButton from 'react-toggle';
 import * as actions from '../actions';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
-const tools = require('../utils/tools');
+const Tools = require('../utils/tools');
 
 class Home extends Component {
   constructor(props) {
@@ -17,6 +17,7 @@ class Home extends Component {
     this.processStakingClicked = this.processStakingClicked.bind(this);
     this.lockWallet = this.lockWallet.bind(this);
     this.getEarnings = this.getEarnings.bind(this);
+    this.getUpcomingPayments = this.getUpcomingPayments.bind(this);
   }
 
   componentDidMount() {
@@ -26,18 +27,23 @@ class Home extends Component {
   }
 
   processStakingClicked(){
-    if(!this.props.staking)
+    if(!this.props.staking) {
       this.props.setUnlocking(true);
-    else this.lockWallet();
+    } else {
+      this.lockWallet().then(() => {
+        this.props.wallet.setGenerate().then(() => {
+          this.props.setStaking(false);
+        });
+      });
+    }
   }
 
   async lockWallet(){
-    const updated = await tools.updateConfig(0);
+    const updated = await Tools.updateConfig(0);
     if (updated){
 
       var batch = [];
       var obj = {
-        method: 'reloadconfig', parameters: ["staking"],
         method: 'walletlock', parameters: []
       };
       batch.push(obj);
@@ -47,9 +53,7 @@ class Home extends Component {
         data = data[0];
         if (data !== null && data.code === 'ECONNREFUSED') {
           console.log("daemon not working?")
-        } else if (data === null) {
-          this.props.setStaking(false);
-        } else {
+        } else if (data !== null) {
           console.log("error unlocking wallet: ", data)
         }
       }).catch((err) => {
@@ -74,31 +78,33 @@ class Home extends Component {
     this.props.setFilterExpensesType(filter);
   }
 
-  getEarnings(){
-    //filter all
-    if(this.props.allTimeEarningsSelected && this.props.allEarningsSelected)
-      return this.props.fileStorageAllTimeEarnings + this.props.stakingAllTimeEarnings;
-    else if(this.props.monthEarningsSelected && this.props.allEarningsSelected)
-      return this.props.fileStorageMonthEarnings + this.props.stakingMonthEarnings;
-    else if(this.props.weekEarningsSelected && this.props.allEarningsSelected)
-      return this.props.fileStorageWeekEarnings + this.props.stakingWeekEarnings;
-    //filter file storage
-    else if(this.props.fileStorageEarningsSelected && this.props.allTimeEarningsSelected)
-      return this.props.fileStorageAllTimeEarnings;
-    else if(this.props.fileStorageEarningsSelected && this.props.monthEarningsSelected)
-      return this.props.fileStorageMonthEarnings;
-    else if(this.props.fileStorageEarningsSelected && this.props.weekEarningsSelected)
-      return this.props.fileStorageWeekEarnings;
-    //filter staking
-    else if(this.props.stakingEarningsSelected && this.props.allTimeEarningsSelected)
-      return this.props.stakingAllTimeEarnings;
-    else if(this.props.stakingEarningsSelected && this.props.monthEarningsSelected)
-      return this.props.stakingMonthEarnings;
-    else if(this.props.stakingEarningsSelected && this.props.weekEarningsSelected)
-      return this.props.stakingWeekEarnings;
+  buildFilterObject(modifier, val) {
+    return {
+      modifier,
+      val,
+    }
   }
 
-  getExpenses(){
+  getEarnings() {
+    // Getting clever
+    const timeFilter = [
+      this.buildFilterObject('AllTime', this.props.allTimeEarningsSelected),
+      this.buildFilterObject('Month', this.props.monthEarningsSelected),
+      this.buildFilterObject('Week', this.props.weekEarningsSelected),
+    ].filter(f => f.val)[0];
+     
+    const typeFilter = [
+      this.buildFilterObject(['fileStorage', 'staking'], this.props.allEarningsSelected),
+      this.buildFilterObject(['fileStorage'], this.props.fileStorageEarningsSelected),
+      this.buildFilterObject(['staking'], this.props.stakingEarningsSelected),
+    ].filter(f => f.val)[0];
+
+    return typeFilter.modifier
+                  .map(modifier => `${modifier}${timeFilter.modifier}Earnings`)
+                  .reduce((accumulator, val) => accumulator + parseFloat(this.props[val]), 0);
+  }
+
+  getExpenses() {
     //filter all
     if(this.props.allTimeExpensesSelected && this.props.allExpensesSelected)
       return this.props.fileStorageAllTimeExpenses + this.props.messagingAllTimeExpenses + this.props.ansAllTimeExpenses;
@@ -129,23 +135,59 @@ class Home extends Component {
       return this.props.ansWeekExpenses;
   }
 
+  handleHoverAnsPayments(element){
+    //TweenMax.fromTo(element, 0.3, {autoAlpha:0, scale:0.5}, {autoAlpha: 1, scale:1})
+  }
+
+  handleHoverOutAnsPayments(element){
+    //TweenMax.fromTo(element, 0.3, {autoAlpha:1, scale: 1}, {autoAlpha: 0, scale:0.5})
+  }
+
+  getUpcomingPayments(){
+    if(this.props.notifications["ansPayments"]["payments"].length == 0)
+      return (<p className="noIcomingPayments">{this.props.lang.noUpcomingPayments}</p>)
+    else{
+      const payments = this.props.notifications["ansPayments"]["payments"];
+      const today = new Date();
+      return(
+        <div>
+          {payments.map((payment, index) => {
+            let time = Tools.calculateTimeTo(this.props.lang, today, new Date(payment["dueDate"]));
+            let amount = payment["cost"];
+            return(
+              <div key={amount + index} onMouseEnter={this.handleHoverAnsPayments.bind(this, "#payAns" + index)} onMouseLeave={this.handleHoverOutAnsPayments.bind(this, "#payAns" + index)} className="home__ans-payment">
+                <div className="payAns" id={"payAns" + index}>
+                  <p>{this.props.lang.extendANSSubscription }</p>
+                </div>
+                <p className="home__ans-payment-time">{time}</p>
+                <span className="home__ans-payment-ans">ANS </span> <span className="home__ans-payment-amount">{amount}</span><span className="ecc"> ecc</span>
+              </div>
+            )
+          }
+
+          )}
+        </div>
+      )
+    }
+  }
+
   render() {
-    let fileStorageEarnings = require('../../resources/images/fileStorage-default.png');
+    let fileStorageEarnings = Tools.getIconForTheme("fileStorageNotSelected", false);
     if(this.props.fileStorageEarningsSelected)
-      fileStorageEarnings = require('../../resources/images/fileStorage-blue.png');
+      fileStorageEarnings = Tools.getIconForTheme("fileStorageSelected", false);
 
-    let fileStorageExpenses = require('../../resources/images/fileStorage-default.png');
+    let fileStorageExpenses = Tools.getIconForTheme("fileStorageNotSelected", false);
     if(this.props.fileStorageExpensesSelected)
-      fileStorageExpenses = require('../../resources/images/fileStorage-blue.png');
+      fileStorageExpenses = Tools.getIconForTheme("fileStorageSelected", false);
 
-    let messaging = require('../../resources/images/messaging-default.png');
+    let messaging = Tools.getIconForTheme("messagingNotSelected", false);
     if(this.props.messagingExpensesSelected)
-      messaging = require('../../resources/images/messaging-blue.png');
+      messaging = Tools.getIconForTheme("messagingSelected", false);
 
     return (
         <div id ="homeSections">
           <div className="homeSection text-center" id="balanceInfo">
-            <div className="row">
+            <div className="row" style={{margin: "0px 0px"}}>
               <div className="col-sm-4"  style={{padding: "0 0"}}>
                 <p className="homePanelTitleTwo stakingBalance">{ this.props.lang.staking }</p>
                 <p className="normalWeight">{this.props.stakingVal} <span className="ecc">ecc</span></p>
@@ -183,7 +225,7 @@ class Home extends Component {
                 </div>
               </div>
               <div className="col-sm-4 text-center"  style={{padding: "0 0"}}>
-                <p className="normalWeight" style={{fontSize: "20px", position: "relative", top: "60px"}}>{tools.formatNumber(this.getEarnings())} <span className="ecc">ecc</span></p>
+                <p className="normalWeight" style={{fontSize: "20px", position: "relative", top: "60px"}}>{Tools.formatNumber(this.getEarnings())} <span className="ecc">ecc</span></p>
                 <p onClick={this.earningsFilterClicked.bind(this, "week")} className= {this.props.weekEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>{ this.props.lang.lastWeek }</p>
                 <p onClick={this.earningsFilterClicked.bind(this, "month")} className= {this.props.monthEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}>{ this.props.lang.lastMonth }</p>
                 <p onClick={this.earningsFilterClicked.bind(this, "allTime")} className= {this.props.allTimeEarningsSelected ? "earningsFiltersDate textSelected" : "earningsFiltersDate textSelectableHome"}> { this.props.lang.all }</p>
@@ -191,14 +233,14 @@ class Home extends Component {
             </div>
           </div>
           <div className="homeSection" id="expenses">
-            <div className="row">
+            <div className="row" style={{margin: "0px 0px"}}>
               <div className="col-sm-4 align-self-left"  style={{padding: "0 0"}}>
                 <div id="earningsOptions">
-                  <div className="arrowHome arrowExpenses"></div>
-                  <div id="earningsFirst">
+                  <div className="arrowHome arrowExpenses" style={{left: "0px"}}></div>
+                  <div id="earningsFirst" style={{paddingLeft: "50px"}}>
                     <p className="normalWeight homePanelTitleOne" style={{fontSize: "20px"}}>{ this.props.lang.expenses }</p>
                   </div>
-                    <img onClick={this.expensesTypeFilterClicked.bind(this, "messaging")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={messaging}/>
+                    <img onClick={this.expensesTypeFilterClicked.bind(this, "messaging")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"5px", position:"relative", top: "103px", left: "12px"}} src={messaging}/>
                     <img onClick={this.expensesTypeFilterClicked.bind(this, "fileStorage")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={fileStorageExpenses}/>
                     <p onClick={this.expensesTypeFilterClicked.bind(this, "ans")} style = {{color: this.props.ansExpensesSelected ? "#aeacf3" : "#85899e"}} className={this.props.ansExpensesSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> ANS </p>
                     <p onClick={this.expensesTypeFilterClicked.bind(this, "all")} style = {{color: this.props.allExpensesSelected ? "#aeacf3" : "#85899e"}} className={this.props.allExpensesSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> { this.props.lang.all }</p>
@@ -212,6 +254,7 @@ class Home extends Component {
               </div>
               <div className="col-sm-4  text-center"  style={{padding: "0 0"}}>
                   <p className="normalWeight homePanelTitleOne" style={{fontSize: "16px", paddingTop: "15px"}}>{ this.props.lang.nextPayments }</p>
+                  {this.getUpcomingPayments()}
               </div>
             </div>
           </div>
@@ -224,7 +267,7 @@ const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
     staking: state.chains.isStaking,
-    balance: tools.formatNumber(state.chains.balance + state.chains.staking),
+    balance: Tools.formatNumber(state.chains.balance + state.chains.staking),
     stakingVal: state.chains.staking,
 
     //Earnings stuff
@@ -266,7 +309,8 @@ const mapStateToProps = state => {
     ansWeekExpenses: state.application.lastWeekAnsExpenses,
     ansMonthExpenses: state.application.lastMonthAnsExpenses,
 
-    wallet: state.application.wallet
+    wallet: state.application.wallet,
+    notifications: state.notifications.entries,
   };
 };
 

@@ -61,7 +61,7 @@ class App extends Component<Props> {
     let startAtLogin = false;
     let minimizeToTray = false;
     let minimizeOnClose = false;
-    let theme = "theme-defaultEcc";
+    let theme = "theme-darkEcc";
     const ds = settings.get('settings.display');
 
     if(ds && ds.minimise_to_tray !== undefined && ds.minimise_to_tray)
@@ -243,7 +243,7 @@ class App extends Component<Props> {
   }
 
   getSettings(){
-    if(this.props.settings){
+    if(this.props.settings && !this.props.updatingApplication){
       return(
         <TransitionGroup component="section">
           <TransitionComponent

@@ -11,10 +11,10 @@ class NetworkStats extends Component {
   }
 
   getPercentage(percentage){
-    if(percentage == 100) return 2000;
+    if(percentage == 100) return 1130;
     else if(percentage == 0) return 0;
-
-    return Math.round((percentage * 2000) / 100);
+    console.log((percentage * 1130) / 100)
+    return Math.round((percentage * 1130) / 100);
   }
 
   getOffset(percentage){
@@ -59,7 +59,7 @@ class NetworkStats extends Component {
             </feMerge>
           </filter>
         </defs>
-        <circle filter="url(#sofGlow)" className="js-circle score-circle" transform="rotate(-90 175 175)" cx="175" cy="175" r="180" strokeDasharray="2000" strokeWidth="5px" strokeDashoffset={this.getPercentage(100-percentage)} fill="none" stroke={color}></circle>
+        <circle filter="url(#sofGlow)" className="js-circle score-circle" transform="rotate(-90 175 175)" cx="175" cy="175" r="180" strokeDasharray="1130" strokeWidth="5px" strokeDashoffset={this.getPercentage(100-percentage)} fill="none" stroke={color}></circle>
         {this.getText(enabled, percentage, operation)}
 
         </svg>
@@ -84,7 +84,7 @@ class NetworkStats extends Component {
 
   render() {
     let messaging = require('../../../resources/images/messaging-green.png');
-    let fileStorage = require('../../../resources/images/file-storage-blue.ico');
+    let fileStorage = require('../../../resources/images/file-storage-blue.png');
     let connectionsOrange = require('../../../resources/images/connections-orange.png');
 
     return (
@@ -106,7 +106,7 @@ class NetworkStats extends Component {
             </div>
           </div>
         </div>
-        <div className="container" style={{marginTop: "50px", width:"100%"}}>
+        <div className="container" style={{margin: "0 auto", padding:"0px 0px", marginTop: "50px", width:"100%", maxWidth: "1140px"}}>
           <div className="row">
             <div className="col-sm-4 text-center">
               <p className="networkStatsChainTitle">{ this.props.lang.messagingChain }</p>

@@ -64,6 +64,7 @@
 .tableRowHeader{
   @include themify($themes) { 
     color: themed('tableRowHeaderColor'); 
+    text-transform: uppercase;
   }
 }
 

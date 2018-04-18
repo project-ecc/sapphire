@@ -70,6 +70,42 @@ module.exports = {
     return time;
   },
 
+  calculateTimeTo: function(lang, today, iTime){
+    let delta = Math.abs(iTime.getTime() - today.getTime()) / 1000;
+    const days = Math.floor(delta / 86400);
+    delta -= days * 86400;
+    const hours = Math.floor(delta / 3600) % 24;
+    delta -= hours * 3600;
+    const minutes = Math.floor(delta / 60) % 60;
+
+
+    let time = lang.in + " ";
+    if (settings.get('settings.lang') === 'fr') {
+      time = `${lang.translationExclusiveForFrench} `;
+    }
+    if (days > 0) {
+      time += `${days} `;
+      if (days === 1) {
+        time += lang.paymentsDay;
+      } else {
+        time += lang.paymentsDays;
+      }
+    } else if (hours > 0) {
+      time += `${hours} `;
+      if (hours === 1) {
+        time += lang.paymentsHour;
+      } else {
+        time += lang.paymentsHours;
+      }
+    } else if (minutes === 1) {
+      time += `${minutes} ${lang.paymentsMinute}`;
+    } else {
+      time += `${minutes} ${lang.paymentsMinutes}`;
+    }
+    return time;
+  },
+
+
   //Theme Support
 
   getIconForTheme: function(iconName, hover, theme = undefined){
@@ -189,6 +225,21 @@ module.exports = {
       else if(iconName == "twitter" && hover){
         return require('../../resources/images/twitter-icon-pastel.png')
       }
+      else if(iconName == "fileStorageBig"){
+        return require('../../resources/images/file-storage-message-pastel.png')
+      }
+      else if(iconName == "messagingNotSelected"){
+        return require('../../resources/images/messaging-default-not-selected.png')
+      }
+      else if(iconName == "messagingSelected"){
+        return require('../../resources/images/messaging-blue-selected.png')
+      }
+      else if(iconName == "fileStorageNotSelected"){
+        return require('../../resources/images/file-storage-default-not-selected.png')
+      }
+      else if(iconName == "fileStorageSelected"){
+        return require('../../resources/images/file-storage-blue-selected.png')
+      }
     }
     else if(selectedTheme && selectedTheme === "theme-defaultEcc"){
       if(iconName == "wallet" && !hover){
@@ -276,7 +327,7 @@ module.exports = {
         return require('../../resources/images/file-icon-light-blue.png')
       }
       else if(iconName == "messagingIconPopup"){
-        return require('../../resources/images/messaging-icon-popup--orange.png')
+        return require('../../resources/images/messaging-icon-popup-orange.png')
       }
       else if(iconName == "messagingIconPopupConfirm"){
         return require('../../resources/images/messaging-confirm-button-light-blue.png')
@@ -310,6 +361,21 @@ module.exports = {
       }
       else if(iconName == "twitter" && hover){
         return require('../../resources/images/twitter-icon-orange.png')
+      }
+      else if(iconName == "fileStorageBig"){
+        return require('../../resources/images/file-storage-message-orange.png')
+      }
+      else if(iconName == "messagingNotSelected"){
+        return require('../../resources/images/messaging-dark-not-selected.png')
+      }
+      else if(iconName == "messagingSelected"){
+        return require('../../resources/images/messaging-blue-selected-dark.png')
+      }
+      else if(iconName == "fileStorageNotSelected"){
+        return require('../../resources/images/file-storage-dark-not-selected.png')
+      }
+      else if(iconName == "fileStorageSelected"){
+        return require('../../resources/images/file-storage-blue-selected-dark.png')
       }
     }
   },
@@ -367,8 +433,10 @@ module.exports = {
   },
 
   highlightInput: function(element, duration){
-      TweenMax.to(element, 0.3, {css:{borderBottom: "2px solid #d09128"}});
-      TweenMax.to(element, 0.3, {css:{borderBottom: "2px solid #1c2340"}, delay: duration});
+      $(element).addClass('inputCustomHighlight');
+      setTimeout(() => {
+         $(element).removeClass('inputCustomHighlight');
+      }, duration);
   },
 
   animateGeneralPanelIn: function(element, callback, f , scaleStart){

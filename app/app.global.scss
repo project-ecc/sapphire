@@ -25,6 +25,7 @@
 @import "./styles/Table.scss";
 @import "./styles/ExportPrivateKeys.scss";
 @import "./styles/Messaging.scss";
+@import "./styles/FileStorage.scss";
 @import "./styles/themes.scss";
 
 html,
@@ -178,6 +179,13 @@ aside{
   border: none;
   text-align: center;
   position: relative;
+  transition: border-bottom .3s;
+}
+
+.inputCustomHighlight{
+  @include themify($themes) { 
+    border-bottom: themed('inputBorderBottomHighlight') !important;
+  }
 }
 
 .popupTitle{

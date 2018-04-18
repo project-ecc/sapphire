@@ -26,6 +26,7 @@ const event = require('./utils/eventhandler');
 
 var fs = require('fs');
 var AutoLaunch = require('auto-launch');
+var lang = traduction();
 let autoECCLauncher = new AutoLaunch({
 	name: 'Sapphire'
 });
@@ -34,7 +35,7 @@ let tray = null;
 let daemonManager = null;
 let guiManager = null;
 let maximized = false;
-let ds = undefined;
+let ds = settings.get('settings.display');;
 let mainWindow = null;
 let guiUpdate = false;
 let daemonUpdate = false;
@@ -93,18 +94,18 @@ app.on('ready', async () => {
   const selectedTheme = settings.get('settings.display.theme');
 
   const getBackgroundColor = () => {
-    if(!selectedTheme || selectedTheme === "theme-defaultEcc")
-      return "#181e35";
-    else if(selectedTheme && selectedTheme === "theme-darkEcc")
+    if(!selectedTheme || selectedTheme === "theme-darkEcc")
       return "#1c1c23";
+    else if(selectedTheme && selectedTheme === "theme-defaultEcc")
+      return "#181e35";
   }
 
   app.setAppUserModelId("com.github.csmartinsfct.sapphire");
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1271,
-    height: 777,
+    width: 1367,
+    height: 768,
     minWidth: 800,
     minHeight: 600,
     title: "Sapphire",
@@ -124,6 +125,10 @@ app.on('ready', async () => {
   	sendMessage("focused");
   });
 
+  mainWindow.on('blur', function (event) {
+    sendMessage("unfocused");
+  });
+
   mainWindow.on('leave-full-screen', function(event){
   if (process.platform === 'darwin'){
   		sendMessage("full-screen");
@@ -139,6 +144,7 @@ app.on('ready', async () => {
   });
 
   mainWindow.on('close', function (event) {
+    console.log(ds.minimise_on_close)
     if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
       event.preventDefault();
       if (!ds.minimise_to_tray) {
@@ -187,7 +193,6 @@ function setupTrayIcon() {
   // Determine appropriate icon for platform
   if (process.platform === "darwin" || process.platform === "linux") {
     trayImage = imageFolder + '/trayIconTemplate.png';
-    console.log('traydir', trayImage);
   } else {
     trayImage = imageFolder + '/icon.ico';
   }
@@ -218,7 +223,6 @@ function setupTrayIcon() {
 }
 
 function setupEventHandlers() {
-  var lang = traduction();
 
 	ipcMain.on('messagingView', (e, args) => {
 		if(args){

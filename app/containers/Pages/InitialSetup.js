@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ImportWallet from    '../../components/InitialSetupPage/ImportWallet';
 import LanguageSelector from     '../../components/InitialSetupPage/LanguageSelector';
-import ThemeSelector from '../../components/InitialSetupPage/ThemeSelector';
+import ThemeSelectorStep from '../../components/InitialSetupPage/ThemeSelectorStep';
 import ImportPrivateKey from '../../components/InitialSetupPage/ImportPrivateKey';
 import EncryptWallet from '../../components/InitialSetupPage/EncryptWallet';
 import SetupDone from '../../components/InitialSetupPage/SetupDone';
@@ -60,7 +60,7 @@ class InitialSetup extends Component {
   renderInitialSetup(){
     return(
       <div>
-        <TransitionGroup key="1" component="article">
+        {/*<TransitionGroup key="1" component="article">
         {this.props.step == 1 ?
           <TransitionComponent
             children= {<LanguageSelector/>}
@@ -69,11 +69,11 @@ class InitialSetup extends Component {
             animateOut = {Tools.animateStepOut}/>
             : null
         }
-        </TransitionGroup>
+        </TransitionGroup>*/}
         <TransitionGroup key="2" component="article">
-        {this.props.step == 2 ?
+        {this.props.step == 1 ?
           <TransitionComponent
-            children= {<ThemeSelector/>}
+            children= {<ThemeSelectorStep/>}
             animationType= "setupStep"
             animateIn= {Tools.animateStepIn}
             animateOut = {Tools.animateStepOut}/>
@@ -81,7 +81,7 @@ class InitialSetup extends Component {
         }
         </TransitionGroup>
         <TransitionGroup key="3" component="article">
-        {this.props.step == 3 ?
+        {this.props.step == 2 ?
           <TransitionComponent
             children= {<ImportWallet/>}
             animationType= "setupStep"
@@ -91,7 +91,7 @@ class InitialSetup extends Component {
         }
         </TransitionGroup>
         <TransitionGroup key="4" component="article">
-        {this.props.step == 4 ?
+        {this.props.step == 3 ?
           <TransitionComponent
             children= {<EncryptWallet checkEncrypted = {this.props.importedWalletVal}/>}
             animationType= "setupStep"
@@ -101,7 +101,7 @@ class InitialSetup extends Component {
         }
         </TransitionGroup>
         <TransitionGroup key="5" component="article">
-        {this.props.step == 5 ?
+        {this.props.step == 4 ?
           <TransitionComponent
             children= {<ImportPrivateKey notInitialSetup = {false}/>}
             animationType= "setupStep"
@@ -111,7 +111,7 @@ class InitialSetup extends Component {
         }
         </TransitionGroup>
         <TransitionGroup key="6" component="article">
-        {this.props.step == 6 ?
+        {this.props.step == 5 ?
           <TransitionComponent
             children= {<SetupDone />}
             animationType= "setupStep"
@@ -127,7 +127,7 @@ class InitialSetup extends Component {
   renderPartialInitialSetup(){
     return(
       <div>
-        <TransitionGroup key="1" component="article">
+        {/*<TransitionGroup key="1" component="article">
         {this.props.step == 1 ?
           <TransitionComponent
             children= {<LanguageSelector/>}
@@ -136,11 +136,11 @@ class InitialSetup extends Component {
             animateOut = {Tools.animateStepOut}/>
             : null
         }
-        </TransitionGroup>
+        </TransitionGroup>*/}
         <TransitionGroup key="2" component="article">
-        {this.props.step == 2 ?
+        {this.props.step == 1 ?
           <TransitionComponent
-            children= {<ThemeSelector/>}
+            children= {<ThemeSelectorStep/>}
             animationType= "setupStep"
             animateIn= {Tools.animateStepIn}
             animateOut = {Tools.animateStepOut}/>
@@ -148,7 +148,7 @@ class InitialSetup extends Component {
         }
         </TransitionGroup>
         <TransitionGroup key="3" component="article">
-        {this.props.step == 3 ?
+        {this.props.step == 2 ?
           <TransitionComponent
             children= {<EncryptWallet checkEncrypted = {true}/>}
             animationType= "setupStep"
@@ -158,7 +158,7 @@ class InitialSetup extends Component {
         }
         </TransitionGroup>
         <TransitionGroup key="4" component="article">
-        {this.props.step == 4 ?
+        {this.props.step == 3 ?
           <TransitionComponent
             children= {<SetupDone />}
             animationType= "setupStep"

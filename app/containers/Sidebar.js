@@ -66,7 +66,7 @@ class Sidebar extends Component {
           $(this).next().slideToggle();
           $(".sidebar-menu li").removeClass("active");
           $(this).parent().addClass("active");
-          $($($(this).parent().siblings().children()[0]).children()[0]).css("transform", "rotate(135deg)");
+          //$($($(this).parent().siblings().children()[0]).children()[0]).css("transform", "rotate(135deg)");
           $($(this).children()[0]).css("transform", "rotate(315deg)");
         }
         else{
@@ -124,7 +124,7 @@ class Sidebar extends Component {
   handleClicked(e){
     const page = e.currentTarget.dataset.id;
     const parent = e.currentTarget.dataset.parent;
-    if(page == "wallet" || page == "fileStorage") return;
+    if(page == "wallet") return;
     if(this.props.settings)
       this.props.setSettings(false);
     this.props.selectedSideBar(this.getParent(page), page);
@@ -213,14 +213,15 @@ class Sidebar extends Component {
               <li><img className="sidebarImage" src={transactions}/>  <a onClick={this.handleClicked} className={transactionsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="transactions">{ this.props.lang.transactions }</a></li>
             </ul>
           </li>
-          <li className="have-children"><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="fileStorage" className={"mainOption" + fileStorageStyle}><div className="arrowMenu"></div><img src={fileStorage}/><span></span>{ this.props.lang.fileStorage }</a>
+          {/*<li className="have-children"><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="fileStorage" className={"mainOption" + fileStorageStyle}><div className="arrowMenu"></div><img src={fileStorage}/><span></span>{ this.props.lang.fileStorage }</a>
             <ul>
               <li><a href="#">{ this.props.lang.customer }</a></li>
               <li><a href="#">{ this.props.lang.viewFiles }</a></li>
               <li><a href="#">{ this.props.lang.gallery }</a></li>
               <li><a href="#">{ this.props.lang.provider }</a></li>
             </ul>
-          </li>
+          </li>*/}
+          <li><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="fileStorage" className={"mainOption" + fileStorageStyle}><img src={fileStorage}/><span></span>{ this.props.lang.fileStorage }</a></li>
           <li><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="messaging" className={"mainOption" + messagingStyle}><img src={messaging}/><span></span>{ this.props.lang.messaging }</a></li>
           <li><a onClick={this.handleClicked} className={contactsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="contacts"><img style={{marginRight: "20px", position: "relative", top:"-2px"}} src={contacts}/>{ this.props.lang.contacts }</a></li>
         </ul>

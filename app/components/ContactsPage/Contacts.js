@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import AddressBook from '../SendTransactions/AddressBook';
 import low from '../../utils/low';
 import Input from '../Others/Input';
+const Tools = require('../../utils/tools');
 
 class Contacts extends Component {
   constructor(props) {
@@ -48,8 +49,7 @@ class Contacts extends Component {
 
   addContact(){
     if(this.props.newContactName == "" && this.props.newContactAddress == ""){
-      TweenMax.to('#newContactAddress', 0.3, {css:{borderBottom: "2px solid #d09128"}});
-      TweenMax.to('#newContactAddress', 0.3, {css:{borderBottom: "2px solid #1c2340"}, delay: 1});
+      Tools.highlightInput("#inputName, #inputAddressVal", 1000)
     }
     else if(this.props.newContactAddress != ""){
       //normal address
@@ -137,7 +137,7 @@ class Contacts extends Component {
               handleChange={this.handleChangeNewContactName.bind(this)}
               type="text"
               inputStyle={{textAlign: "left", margin: "0 0", width:"100%"}}
-              inputId="inputAddressSend"
+              inputId="inputName"
             />
             <Input
               divStyle={{position: "relative",  marginTop: "10px"}}
@@ -148,7 +148,7 @@ class Contacts extends Component {
               handleChange={this.handleChangeNewContactAddress.bind(this)}
               type="text"
               inputStyle={{textAlign: "left", margin: "0 0", width:"100%"}}
-              inputId="inputAddressSend"
+              inputId="inputAddressVal"
             />
           </div>
             <div onClick={this.addContact} className="buttonPrimary addContactButton">

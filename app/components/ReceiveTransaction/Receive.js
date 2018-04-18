@@ -8,7 +8,10 @@ import Input from '../Others/Input';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 const lang = traduction();
 const { clipboard } = require('electron');
+const ansAddresImage = require('../../../resources/images/ans_address.png');
 
+// This is temporary until ANS is enabled
+const ansEnabled = false;
 
 class Receive extends Component {
 
@@ -65,26 +68,49 @@ class Receive extends Component {
     let sizeOfContainer = $('.tableCustom').height()-128;
     let sizeOfContainerWidth = $('.tableCustom').width();
     $('.rowDynamic').css("width", sizeOfContainerWidth);
+    
     if(sizeOfContainer < totalSize){
       $('#rows').css("overflow-y", "auto");
       $('.headerAddresses').css("left", "-3px");
-    }
-    else{
+    } else{
       $(rows).css("overflow-y", "hidden");
       $('.headerAddresses').css("left", "0px");
     }
   }
 
-
-  handleCreateNewAddress() {
-      if(this.props.ansAddress && this.props.newAddressName == ""){
-        //animate line
+  getAddressDiplay(address) {
+    if (address.ans) {
+      return (
+        <div>
+          <img src={ansAddresImage} />
+        </div>
+      )
+    } else {
+      if (ansEnabled) {
+        return (
+          <p id="upgradeAns" onClick={this.handleUpgradeAddress.bind(this)}>{this.props.lang.upgradeToANS}</p>
+        )
+      } else {
+        return (
+          <p></p>
+        )
       }
-      else{
-        this.props.setCreatingAddress(true);
-      }
+    }
   }
 
+  handleCreateNewAddress(skipCheck) {
+    if(this.props.ansAddress && this.props.newAddressName == "" && !skipCheck){
+      //animate line
+    } else{
+      this.props.setCreatingAddress(true);
+    }
+  }
+
+  handleUpgradeAddress() {
+    this.props.setUpgradingAddress(true);
+    this.props.setCreateAddressAns(true);
+    this.handleCreateNewAddress(true);
+  }
 
   rowClicked(address){
     this.props.setSelectedAddress(address);
@@ -122,10 +148,11 @@ class Receive extends Component {
 
   handleChangeNameAddress(event){
     const name = event.target.value;
-    if(name.length == 0)
+    if(name.length == 0) {
       TweenMax.set('#addressNamePlaceHolder', {autoAlpha: 1});
-    else
+    } else {
       TweenMax.set('#addressNamePlaceHolder', {autoAlpha: 0});
+    }
 
     this.props.setNewAddressName(name);
   }
@@ -146,7 +173,6 @@ class Receive extends Component {
   }
 
   render() {
-    let ansAddresImage = require('../../../resources/images/ans_address.png');
     let counter = 0;
     let rowClassName = "row normalWeight tableRowCustom";
     return (
@@ -197,9 +223,9 @@ class Receive extends Component {
           </div>
           <div className="tableContainer">
               <div className="row rowDynamic">
-                <div className="col-sm-3 headerAddresses headerAddressFix tableRowHeader">{this.props.filterAll ? "ACCOUNT" : this.props.filterNormal ? "ACCOUNT" : "NAME"}</div>
-                <div id="addressHeader" className="col-sm-6 headerAddresses tableRowHeader">{this.props.filterAll ? "ADDRESS / NAME" : "ADDRESS"}</div>
-                <div id="addressHeader" className="col-sm-3 headerAddresses tableRowHeader">{ this.props.lang.amountCAPS }</div>
+                <div className="col-sm-3 headerAddresses headerAddressFix tableRowHeader">{this.props.filterAll ? "" : this.props.filterNormal ? "" : "NAME"}</div>
+                <div id="addressHeader" className="col-sm-6 headerAddresses tableRowHeader">{this.props.filterAll ? this.props.lang.address + " / " + this.props.lang.name : this.props.lang.address}</div>
+                <div id="addressHeader" className="col-sm-3 headerAddresses tableRowHeader">{ this.props.lang.amount }</div>
               </div>
             <div id="rows">
             {this.props.userAddresses.map((address, index) => {
@@ -208,10 +234,10 @@ class Receive extends Component {
                 return (
                   <div className= {this.props.selectedAddress && address.address == this.props.selectedAddress.address ? rowClassName + " tableRowSelected" : counter % 2 != 0 ? rowClassName : rowClassName + " tableRowEven"} key={`address_${index}`}>
                     <div className="col-sm-3 tableColumn tableColumnFixReceive" onClick={this.rowClicked.bind(this, address)}>
-                      {address.account}
+                      {this.props.filterAns ? address.address : this.getAddressDiplay(address)}
                     </div>
                     <div className="col-sm-6 tableColumn" onClick={this.rowClicked.bind(this, address)}>
-                      {address.address}
+                      {this.props.filterAns ? address.normalAddress : address.address}
                     </div>
                     <div className="col-sm-3 tableColumn" onClick={this.rowClicked.bind(this, address)}>
                       {address.amount}
@@ -229,7 +255,6 @@ class Receive extends Component {
           <p className="ansLabel">{ this.props.lang.ansAddresses }</p>
           <div>
             <p id="addressCreatedSuccessfully"> { this.props.lang.addressCreatedSuccessfully }<br></br><span className="ecc" onClick={this.goToBackupPage.bind(this)}>{ this.props.lang.clickToBackupWallet }</span></p>
-            <p id="upgradeAns"> {this.props.selectedAddress && this.props.selectedAddress.ans ?  this.props.lang.disableANSSubscription  : this.props.selectedAddress ? this.props.lang.upgradeToANS : ""}</p>
           </div>
         </div>
       </div>

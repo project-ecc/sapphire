@@ -74,7 +74,7 @@ class MessagingInput extends Component {
       <div id="messagingInput">
         <div id="messagingInputDiv">
           <textarea type="text" value={this.props.messagingInputValue} onChange={this.handleInputChange}></textarea>
-          <p onClick={this.setInputFocus} className="inputPlaceholder" id="enterMessage">Type your message</p>
+          <p onClick={this.setInputFocus} className="inputPlaceholder" id="enterMessage">{this.props.lang.typeYourMessage}</p>
         </div>
         <div id="messagingInputOptions">
           <div id="messagingSendButton">

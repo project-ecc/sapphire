@@ -9,7 +9,7 @@ const event = require('../utils/eventhandler');
 const os = require('os');
 const psList = require('ps-list');
 const { exec } = require('child_process');
-import Client from 'bitcoin-core';
+import Client from 'eccoin-js';
 import {grabWalletDir} from "../utils/platform.service";
 import {version} from './../../package.json';
 var cp = require('child_process');

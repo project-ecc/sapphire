@@ -5,6 +5,7 @@ function installGUI(){
 	console.log("installing GUI...");
 	const guiVersion = process.env.version;
     const path = `${homedir}/.eccoin-wallet/Sapphire`;
+
     if (process.platform === 'linux') {
      runExec(`chmod +x ${path} && ${path}`, 1000).then(() => {
         process.exit();

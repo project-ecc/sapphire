@@ -41,7 +41,7 @@ class MessagingChat extends Component {
   handleOptionsMouseEnter(){
     if(!this.props.userHoveredOptionsIcon){
       this.props.setUserHoveredOptionsButton(true);
-      this.props.addNewMessage({id: 1, message: {body: "Go ahead and click that Options icon button.", mine: false, date: new Date()}, activeContactName: "Sapphire"});
+      this.props.addNewMessage({id: 1, message: {body: this.props.lang.sapphireMessage1, mine: false, date: new Date()}, activeContactName: "Sapphire"});
     }
     TweenMax.staggerTo('.circleOptionsButton', 0.02, {backgroundColor: "#c39c59"}, -0.02);
   }
