@@ -33,7 +33,7 @@
     "encrypt": "Encrypt",
     "in": "In",
 
-    "exportPrivKeyDesc": "Please select how you want to export your keys. You can either chose to view them on-screen individually or export them all to a PDF.",
+    "exportPrivKeyDesc": "Please choose a method for exporting your private keys. You can either view them individually on-screen, or export them all at once to a PDF.",
     "viewOnScreen": "View On-screen",
     "exportToPdf": "Export to PDF",
     "copyAll": "Copy All",

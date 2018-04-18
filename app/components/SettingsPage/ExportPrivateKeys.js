@@ -143,7 +143,7 @@ class ExportPrivateKeys extends React.Component {
     TweenMax.to('#exportOptions', 0.3, {css:{left: "-100%"}});
     TweenMax.to('#setLocationPanel', 0.3, {css:{left: "0%"}});
     $('#confirmButtonPopup').text(this.props.lang.export);
-    TweenMax.to('#confirmButtonPopup', 0.3, {autoAlpha: 1, delay: 0.8});
+    TweenMax.to('#confirmButtonPopup', 0.3, {autoAlpha: 1, delay: 0.3});
 
     this.props.setPanelExportingPrivateKeys(this.props.panelNumber+1);
   }
@@ -359,7 +359,7 @@ class ExportPrivateKeys extends React.Component {
   renderExportOptions(){
     return(
       <div id="exportOptions" style={{position: "absolute", left:"100%", width: "100%", top: "52px"}}>
-        <p style={{fontSize: "16px", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"25px", textAlign: "left"}}>
+        <p style={{fontSize: "16px", width: "440px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"25px", textAlign: "left"}}>
           {this.props.lang.exportPrivKeyDesc}
         </p>
         <div onClick={this.handleDisplayKeys}  className="buttonPrimary" style={{top: "130px", left:"115px"}}>{this.props.lang.viewOnScreen}</div>
