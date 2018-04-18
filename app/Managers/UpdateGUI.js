@@ -20,7 +20,7 @@ function installGUI(){
       process.exit();
     })
     .catch(() => {
-
+      process.exit();
     });
   }
   else if(process.platform === 'darwin'){

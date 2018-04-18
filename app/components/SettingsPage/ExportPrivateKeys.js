@@ -75,7 +75,6 @@ class ExportPrivateKeys extends React.Component {
       TweenMax.set('#selectedlocation',{scale: 1, delay: 3.2})*/
     }
     else if(this.props.panelNumber == 3){
-      // console.log(this.toPrint)
       //this.displayConfirm = true;
       this.export();
     }
@@ -185,6 +184,7 @@ class ExportPrivateKeys extends React.Component {
     let counter = 1;
     let aux = [];
     let keys = [];
+
 
     for(let i = 0; i < addressesArray.length; i++){
       aux.push(addressesArray[i]);
