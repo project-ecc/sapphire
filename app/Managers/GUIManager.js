@@ -38,6 +38,7 @@ class GUIManager{
 	}
 
 	getLatestVersion(){
+    setTimeout(this.getLatestVersion.bind(this), 60000);
     console.log('checking for latest gui version');
 
     const guiDownloadURL = getSapphireDownloadUrl();
@@ -48,15 +49,16 @@ class GUIManager{
 
     request(opts).then((data) => {
       const parsed = JSON.parse(data);
-      this.currentVersion = parsed.versions[0].name.substring(1);
-      if(this.currentVersion !== this.installedVersion && !this.upgrading && !this.toldUserAboutUpdate){
-        this.toldUserAboutUpdate = true;
-        event.emit('guiUpdate');
+      if(parsed.success === true){
+        this.currentVersion = parsed.versions[0].name.substring(1);
+        if(this.currentVersion !== this.installedVersion && !this.upgrading && !this.toldUserAboutUpdate){
+          this.toldUserAboutUpdate = true;
+          event.emit('guiUpdate');
+        }
       }
     }).catch(error => {
-      console.log(error);
+      console.log(error.message);
     });
-    setTimeout(this.getLatestVersion.bind(this), 60000);
 	}
 
 
@@ -83,10 +85,6 @@ class GUIManager{
         const latestGui = parsed.versions[0];
         const zipChecksum = latestGui.checksum;
         const downloadUrl = latestGui.download_url;
-        console.log('download URL:' +downloadUrl)
-
-        // const child = cp.fork("./app/Managers/UpdateGUI", {detached:true, env:{version:self.installedVersion}});
-        // app.quit();
 
         const downloaded = await downloadFile(downloadUrl, walletDirectory,'Sapphire.zip', zipChecksum, true)
           .catch(error => console.log(error));
@@ -96,7 +94,7 @@ class GUIManager{
           try{
             self.downloading = false;
             self.installedVersion = self.currentVersion;
-            const child = cp.fork("./app/Managers/UpdateGUI", {detached:true, env:{version:self.installedVersion}});
+            cp.fork("./app/Managers/UpdateGUI", {detached:true, env:{version:self.installedVersion}});
             app.quit();
           }catch(e){
             console.log(e);

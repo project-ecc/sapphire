@@ -15,16 +15,13 @@ function installGUI(){
       });
     }
     else if(process.platform === 'darwin'){
-      const walletPath =`${homedir}/Library/Application\\ Support/.eccoin-wallet/`;
-      const path = '/Users/dylanaird/Library/Application\\ Support/.eccoin-wallet/Sapphire.app';
-      console.log(path)
+      const path = `"${homedir}/Library/Application\ Support/.eccoin-wallet/Sapphire-${guiVersion}.dmg"`;
 
-      exec(`open  ${path}`, (error, stdout, stderr) => {
-        if (error) {
-          reject(error);
-        } else {
-          console.log(stdout)
-        }
+      runExec(`open ${path}`, 1000).then(() => {
+        process.exit();
+      })
+      .catch(() => {
+        process.exit();
       });
 
     } else if (process.platform.indexOf('win') > -1) {

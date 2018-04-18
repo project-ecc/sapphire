@@ -638,5 +638,35 @@ module.exports = {
       })
     });
   },
+  formatVersion(unformattedVersion){
+    let version = String(unformattedVersion).split('');
+    let formattedString = "";
+    while (true){
+      let sb = ["."];
+      while(sb.length < 3 && version.length > 0){
+        sb.push(version.pop());
+      }
+      if(sb.length > 1){
+        let tempSB = "";
+        for(var i = sb.length-1; i > 0; i--){
+          tempSB = tempSB + String(sb[i]);
+        }
+        tempSB = String(parseInt(tempSB));
+        tempSB = String(sb[0]) + tempSB;
+        formattedString = String(tempSB) + formattedString;
+      }
+      //console.log(formattedString);
+      if(formattedString.match(/\./g).length < 4 && version.length === 0){
+        formattedString = String("0") + String(formattedString);
+        break;
+      }
+      if(formattedString.match(/\./g).length >= 4 && version.length === 0){
+        formattedString = formattedString.substr(1);
+        break;
+      }
+    }
+    //console.log(formattedString)
+    return formattedString;
+  }
 };
 
