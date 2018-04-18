@@ -14,7 +14,7 @@ function installGUI(){
 
     const fileName = 'Sapphire';
     const architecture = os.arch() === 'x32' ? 'linux32' : 'linux64';
-    const fullPath = walletDir + fileName + '-' + architecture + '-' + guiVersion;
+    const fullPath = walletDir + fileName + '-v' + guiVersion + '-' + architecture;
 
     runExec(`chmod +x ${fullPath} && ${fullPath}`, 1000).then(() => {
       process.exit();
@@ -26,7 +26,7 @@ function installGUI(){
   else if(process.platform === 'darwin'){
 
     const fileName = 'Sapphire';
-    const fullpath = walletDir + fileName + '-' + guiVersion + '.dmg';
+    const fullpath = walletDir + fileName + '-v' + guiVersion + '.dmg';
 
     runExec(`open ${fullpath}`, 1000).then(() => {
       process.exit();
@@ -40,7 +40,7 @@ function installGUI(){
 
     const fileName = 'Sapphire';
     const architecture = os.arch() === 'x32' ? 'win32' : 'win64';
-    const fullPath = walletDir + fileName + '-' + architecture + '-' + guiVersion + '.exe';
+    const fullPath = walletDir + fileName + '-v' + guiVersion + '-' + architecture + '.exe';
 
     runExec(`${fullPath}.exe`, 1000).then(() => {
       process.exit();
