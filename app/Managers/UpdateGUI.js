@@ -1,16 +1,22 @@
+import {grabWalletDir} from "../utils/platform.service";
+
 const homedir = require('os').homedir();
 const { exec, execFile } = require('child_process');
+const os = require('os');
 
 function installGUI(){
 	console.log("installing GUI...");
 
-
-
 	const guiVersion = process.env.version;
-  const path = `${homedir}/.eccoin-wallet/Sapphire`;
+	const walletDir = grabWalletDir();
 
   if (process.platform === 'linux') {
-   runExec(`chmod +x ${path} && ${path}`, 1000).then(() => {
+
+    const fileName = 'Sapphire';
+    const architecture = os.arch() === 'x32' ? 'linux32' : 'linux64';
+    const fullPath = walletDir + fileName + '-' + architecture + '-' + guiVersion;
+
+    runExec(`chmod +x ${fullPath} && ${fullPath}`, 1000).then(() => {
       process.exit();
     })
     .catch(() => {
@@ -18,9 +24,11 @@ function installGUI(){
     });
   }
   else if(process.platform === 'darwin'){
-    const path = `"${homedir}/Library/Application\ Support/.eccoin-wallet/Sapphire-${guiVersion}.dmg"`;
 
-    runExec(`open ${path}`, 1000).then(() => {
+    const fileName = 'Sapphire';
+    const fullpath = walletDir + fileName + '-' + guiVersion + '.dmg';
+
+    runExec(`open ${fullpath}`, 1000).then(() => {
       process.exit();
     })
     .catch(() => {
@@ -29,7 +37,12 @@ function installGUI(){
 
   }
   else if (process.platform.indexOf('win') > -1) {
-    runExec(`${path}.exe`, 1000).then(() => {
+
+    const fileName = 'Sapphire';
+    const architecture = os.arch() === 'x32' ? 'win32' : 'win64';
+    const fullPath = walletDir + fileName + '-' + architecture + '-' + guiVersion + '.exe';
+
+    runExec(`${fullPath}.exe`, 1000).then(() => {
       process.exit();
     })
     .catch(() => {
