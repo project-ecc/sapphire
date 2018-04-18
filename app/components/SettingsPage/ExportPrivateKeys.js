@@ -202,7 +202,7 @@ class ExportPrivateKeys extends React.Component {
         counter=1;
       }
       this.setState({ toDisplay: keys });
-      console.log(this.toPrint)
+      console.log(this.state.toDisplay)
     }
   }
 
@@ -356,8 +356,9 @@ class ExportPrivateKeys extends React.Component {
   }
 
   renderdisplayKeys(){
-    if(this.state.items.length === 0){
-      return false //return false or a <Loader/> when you don't have anything in your message[]
+    console.log(this.state.items)
+    if(this.state.items == null){
+      return
     }
     const keys = Object.keys(this.state.items).map((key) =>
       <li key={key}>{this.state.items[key].publicKey}</li>
