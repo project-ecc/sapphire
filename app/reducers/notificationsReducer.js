@@ -45,6 +45,7 @@ export default(state = INITIAL_STATE, action) => {
 		entries["stakingEarnings"].count = 0;
 		entries["stakingEarnings"].total = 0;
 		entries["differentKinds"] = entries["differentKinds"] - 1;
+		if(entries["differentKinds"] < 0) entries["differentKinds"] = 0;
 		if(entries["last"] == "earnings"){
 			entries["last"] = "news";
 		}
@@ -53,10 +54,14 @@ export default(state = INITIAL_STATE, action) => {
 	}
 	else if(action.type == NEWS_CHECKED){
 		let entries = Object.assign({}, state.entries);
-		let differentKinds = entries["differentKinds"];
-		entries["total"] = entries["total"] - entries["news"].total;
-		entries["news"].total = 0;
-		entries["differentKinds"] = differentKinds - 1;
+		if(entries["news"].total != 0){
+			let differentKinds = entries["differentKinds"];
+			entries["total"] = entries["total"] - entries["news"].total;
+			entries["news"].total = 0;
+			entries["differentKinds"] = differentKinds - 1;
+			//there is a bug where it goes negative, this is a temporary fix
+			if(entries["differentKinds"] < 0) entries["differentKinds"] = 0;
+		}
 
 		UpdateNotificationInfo(action.payload, state.lastCheckedEarnings, entries: entries);
     	return {...state, lastCheckedNews: action.payload, entries: entries}
