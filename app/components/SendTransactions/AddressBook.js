@@ -94,6 +94,7 @@ class AddressBook extends Component {
     low.get('friends').remove({ address: friend.address }).write();
     const friendList = low.get('friends').value();
     this.props.setContacts(friendList);
+    this.forceUpdate();
   }
 
   render() {
@@ -116,10 +117,10 @@ class AddressBook extends Component {
           {this.props.friends.map((friend, index) => {
             return (
               <div className= {index % 2 != 0 ? rowClassName : rowClassName + " tableRowEven"} onClick={this.rowClicked.bind(this, friend)} onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default"}} key={`friend_${index}`}>
-                <div className="col-sm-4 tableColumn tableColumContactFix">
+                <div className="col-sm-4 tableColumn tableColumContactFix selectableText">
                   {friend.name}
                 </div>
-                <div className="col-sm-7 tableColumn">
+                <div className="col-sm-7 tableColumn selectableText">
                   {friend.address}
                 </div>
                 <div className="col-sm-1 tableColumn">
