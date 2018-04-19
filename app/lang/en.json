@@ -45,6 +45,7 @@
 
     "loading": "Loading",
     "mainMessage": "Hello, we are getting a few things ready...",
+    "updateAvailableNotif": "Application update available",
 
     "importPrivateKey": "Import Private Key",
     "writeDownAPrivateKeyToImport": "Enter a private key to import an address",
@@ -188,6 +189,7 @@
     "general": "General",
     "wallet": "Wallet",
     "appearance": "Appearance",
+    "eccNews": "ECC News",
 
     "updateRequiresRestart": "This update requires a restart",
     "updateDoesNotRequireRestart": "This update does not require a restart",

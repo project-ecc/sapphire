@@ -7,7 +7,6 @@ import $ from 'jquery';
 var fsPath = require('fs-path');
 const settings = require('electron-settings');
 
-
 module.exports = {
 
   //MESSAGING PREVIEW
@@ -22,7 +21,8 @@ module.exports = {
   //MISC
   sendOSNotification: function(body, callback){
       let myNotification = new Notification('Sapphire', {
-        body: body
+        body: body,
+        icon: require('../../resources/icons/128x128.png')
       });
 
       myNotification.onclick = () => {

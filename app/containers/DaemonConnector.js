@@ -174,7 +174,7 @@ class DaemonConnector {
   }
 
   notifyUserOfApplicationUpdate(){
-    Tools.sendOSNotification("Application update available", () => {
+    Tools.sendOSNotification(this.store.getState().startup.lang.updateAvailableNotif, () => {
       this.store.dispatch({type: SETTINGS, payload: true});
       this.store.dispatch({type: SETTINGS_OPTION_SELECTED, payload: "General"})
     });
@@ -294,7 +294,7 @@ class DaemonConnector {
       const today = new Date();
       let parser = new FeedMe();
       let totalNews = 0;
-      let title = "New ECC News";
+      let title = this.store.getState().startup.lang.eccNews;
       parser.on('end', () => {
         if(totalNews == 0 || !this.store.getState().notifications.newsNotificationsEnabled) return;
         Tools.sendOSNotification(totalNews == 1 ? title : `${totalNews} ${title}`, () => {
@@ -412,7 +412,7 @@ class DaemonConnector {
   }
 
   closeDb(){
-    if(this.db.open)
+    if(this.db && this.db.open)
       this.db.close();
   }
 
@@ -746,7 +746,7 @@ class DaemonConnector {
       }
     });
 
-    const allAddressesWithANS = await Promise.all(normalAddresses.map(async (address) => {
+    /*const allAddressesWithANS = await Promise.all(normalAddresses.map(async (address) => {
       let retval;
       const ansRecord = await this.wallet.getANSRecord(address.address);
       if (ansRecord.Name) {
@@ -762,7 +762,7 @@ class DaemonConnector {
       }
 
       return retval;
-    }));
+    }));*/
 
     const toAppend = allReceived
                       .filter(address => address.amount === 0)
@@ -776,7 +776,8 @@ class DaemonConnector {
                         }
                       });
 
-    const toReturn = allAddressesWithANS.concat(toAppend);
+    //const toReturn = allAddressesWithANS.concat(toAppend);
+    const toReturn = toAppend;
 
     this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
     //We need to have the addresses loaded to be able to index transactions

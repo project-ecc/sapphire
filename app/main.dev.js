@@ -19,7 +19,7 @@ import {moveToApplications} from 'electron-lets-move';
 import {grabEccoinDir} from "./utils/platform.service";
 import os from 'os';
 import { traduction } from './lang/lang';
-const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote, Notification } = require('electron');
+const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote } = require('electron');
 const dialog = require('electron').dialog;
 const settings = require('electron-settings');
 const event = require('./utils/eventhandler');

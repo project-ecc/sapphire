@@ -84,7 +84,7 @@ class News extends Component {
 
     return (
       <div className="panel">
-        <p id="eccNews">ECC News</p>
+        <p id="eccNews">{this.props.lang.eccNews}</p>
         <div id="panelHolder">
         {this.props.eccPostsArrays.map((array, indexArray) => {
           return(
