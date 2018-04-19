@@ -334,6 +334,38 @@
     border-radius: 50%;
     margin: 0 auto;
     margin-top: 3px;
+	transition-property: background-position;
+  	transition-duration: 0.02s;
+  	transition-timing-function: ease;
+  	background-position: 0 -100%;
+  	background-size: 100% 200%;
+	@include themify($themes) { 
+		background-image: themed('optionsHoverEffectBackgroundColor');  
+	}
+}
+
+.circleOptionsButton { 
+  transition-delay: 0ms;
+}
+.circleOptionsButton:nth-child(2) { 
+  transition-delay: 40ms;
+}
+.circleOptionsButton:nth-child(3) { 
+  transition-delay: 80ms;
+}
+
+#optionsButton:hover > .circleOptionsButton {
+  background-position: 0 0%;
+}
+
+#optionsButton:hover > .circleOptionsButton { 
+  transition-delay: 80ms;
+}
+#optionsButton:hover > .circleOptionsButton:nth-child(2) { 
+  transition-delay: 40ms;
+}
+#optionsButton:hover > .circleOptionsButton:nth-child(3) { 
+  transition-delay:0ms;
 }
 
 .chatMessage{

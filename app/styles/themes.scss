@@ -39,7 +39,7 @@ $themes: (
     sidebarSubOptionRectangleBackgroundColor: #181e35,
     sidebarArrowBorder: 1px solid #6f7a97,
     sidebarProgressBarBackgroundColor: #d09128,
-    sidebarProgressBarBoxShadow: 0px 0px 7px 0px #d09128,
+    sidebarProgressBarBoxShadow: 0px 0px 9px -2px #d09128,
     sidebarProgressBarFirstBackgroundColor: rgba(0, 0, 0, 0.35),
 
     //NEWS PANEL
@@ -126,6 +126,7 @@ $themes: (
     messageTimeColor: #b4b7c8,
     popupColor: #cecece,
     popupSpanColor: #989898,
+    optionsHoverEffectBackgroundColor: linear-gradient(to bottom, #d09128 50%, rgb(49,53,65) 50%),
 
   ),
   darkEcc: (
@@ -166,7 +167,7 @@ $themes: (
     sidebarSubOptionRectangleBackgroundColor: #1a1c23,
     sidebarArrowBorder: 1px solid #cecece,
     sidebarProgressBarBackgroundColor: #c39c59,
-    sidebarProgressBarBoxShadow: 0px 0px 7px 0px #c39c59,
+    sidebarProgressBarBoxShadow: 0px 0px 9px -2px #c39c59,
     sidebarProgressBarFirstBackgroundColor: rgba(0, 0, 0, 0.35),
 
     //NEWS PANEL
@@ -253,6 +254,7 @@ $themes: (
     messageTimeColor: #6d6d6d,
     popupColor: #b0b0b0,
     popupSpanColor: #989898,
+    optionsHoverEffectBackgroundColor: linear-gradient(to bottom, #c39c59 50%, rgb(49,53,65) 50%),
   ),
 );
 

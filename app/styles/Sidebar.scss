@@ -170,7 +170,7 @@ li.active.have-children span::after {
       background-color: themed('sidebarProgressBarFirstBackgroundColor'); 
     }
     margin: 10px;
-    height: 8px;
+    height: 6px;
     border-radius: 5px;
     overflow: visible;
     width: 162px;
@@ -184,7 +184,7 @@ li.active.have-children span::after {
       background-color: themed('sidebarProgressBarBackgroundColor'); 
       box-shadow: themed('sidebarProgressBarBoxShadow');
     }
-    height: 7px;
+    height: 6px;
     border-radius: 5px;
     border-bottom-right-radius: 5px;
 }

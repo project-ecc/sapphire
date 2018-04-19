@@ -43,11 +43,6 @@ class MessagingChat extends Component {
       this.props.setUserHoveredOptionsButton(true);
       this.props.addNewMessage({id: 1, message: {body: this.props.lang.sapphireMessage1, mine: false, date: new Date()}, activeContactName: "Sapphire"});
     }
-    TweenMax.staggerTo('.circleOptionsButton', 0.02, {backgroundColor: "#c39c59"}, -0.02);
-  }
-
-  handleOptionsMouseLeave(){
-    TweenMax.staggerTo('.circleOptionsButton', 0.02, {backgroundColor: "#313541"}, 0.02);
   }
 
   renderChat(){
@@ -60,7 +55,7 @@ class MessagingChat extends Component {
     return (
       <div id="messagingChat">
         <MessagingOptions id="messagingOptions"/>
-        <div onClick={this.handleOptionsClicked.bind(this)} onMouseEnter={this.handleOptionsMouseEnter.bind(this)} onMouseLeave={this.handleOptionsMouseLeave.bind(this)} className={this.props.userHasCheckedGriffithChat ? "" : "hideElement"} id="optionsButton">
+        <div onClick={this.handleOptionsClicked.bind(this)} onMouseEnter={this.handleOptionsMouseEnter.bind(this)} className={this.props.userHasCheckedGriffithChat ? "" : "hideElement"} id="optionsButton">
           <div className="circleOptionsButton"></div>
           <div className="circleOptionsButton"></div>
           <div className="circleOptionsButton"></div>
