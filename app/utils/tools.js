@@ -20,15 +20,32 @@ module.exports = {
 
   //MISC
   sendOSNotification: function(body, callback){
-      let myNotification = new Notification('Sapphire', {
-        body: body,
-        icon: require('../../resources/icons/128x128.png')
-      });
+    if (Notification.permission !== "granted"){
+      Notification.requestPermission(function (permission) {
+        if (permission === "granted") {
+            let myNotification = new Notification('', {
+            body: body,
+            icon: require('../../resources/icons/128x128.png')
+          });
 
-      myNotification.onclick = () => {
-        callback();
-        ipcRenderer.send('show');
-      }
+          myNotification.onclick = () => {
+            callback();
+            ipcRenderer.send('show');
+          }
+        }
+      });
+    }
+    else {
+        let myNotification = new Notification('', {
+          body: body,
+          icon: require('../../resources/icons/128x128.png')
+        });
+
+        myNotification.onclick = () => {
+          callback();
+          ipcRenderer.send('show');
+        }
+    }
   },
 
   formatNumber: function (number) {
