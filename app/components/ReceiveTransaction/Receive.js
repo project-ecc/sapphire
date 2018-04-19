@@ -233,13 +233,13 @@ class Receive extends Component {
                 counter++;
                 return (
                   <div className= {this.props.selectedAddress && address.address == this.props.selectedAddress.address ? rowClassName + " tableRowSelected" : counter % 2 != 0 ? rowClassName : rowClassName + " tableRowEven"} key={`address_${index}`}>
-                    <div className="col-sm-3 tableColumn tableColumnFixReceive" onClick={this.rowClicked.bind(this, address)}>
+                    <div className="col-sm-3 tableColumn tableColumnFixReceive selectableText" onClick={this.rowClicked.bind(this, address)}>
                       {this.props.filterAns ? address.address : this.getAddressDiplay(address)}
                     </div>
-                    <div className="col-sm-6 tableColumn" onClick={this.rowClicked.bind(this, address)}>
+                    <div className="col-sm-6 tableColumn selectableText" onClick={this.rowClicked.bind(this, address)}>
                       {this.props.filterAns ? address.normalAddress : address.address}
                     </div>
-                    <div className="col-sm-3 tableColumn" onClick={this.rowClicked.bind(this, address)}>
+                    <div className="col-sm-3 tableColumn selectableText" onClick={this.rowClicked.bind(this, address)}>
                       {address.amount}
                     </div>
                   </div>
