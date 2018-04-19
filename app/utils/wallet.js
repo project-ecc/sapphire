@@ -78,6 +78,16 @@ export default class Wallet {
     });
   }
 
+  dumpPrivKey(address){
+    return new Promise((resolve, reject) => {
+      client.dumpPrivKey(address).then((privKey) => {
+        return resolve(privKey);
+      }).catch((err) => {
+        return reject(err);
+      });
+    });
+  }
+
   command(batch) {
     return new Promise((resolve, reject) => {
       client.command(batch).then((responses) => {

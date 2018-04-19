@@ -189,18 +189,28 @@ class ExportPrivateKeys extends React.Component {
   async getDataToExport(){
     let accounts = await this.getAccounts();
     let addresses = await this.getAddressesOfAccounts(accounts);
-    let batch = [];
+    console.log("addresses:", addresses)
+      let batch = [];
     let addressesArray = [];
-    console.log(addresses)
-    for(let key in Object.keys(addresses)){
-      batch.push({
-        method: 'dumpprivkey', parameters: [addresses[key]]
-      });
-      addressesArray.push(addresses[key]);
+    if(addresses[0] && addresses[0].constructor === Array){
+      addresses = addresses[0];
+      addresses.map((address) => {
+        batch.push({
+          method: 'dumpprivkey', parameters: [address]
+        });
+        addressesArray.push(address);
+      })
+
     }
-    console.log(batch)
+    else{
+      for(let key in Object.keys(addresses)){
+        batch.push({
+          method: 'dumpprivkey', parameters: [addresses[key]]
+        });
+        addressesArray.push(addresses[key]);
+      }
+    }
     let privKeys = await this.getPrivateKeys(batch);
-    console.log(privKeys)
     let counter = 1;
     let aux = [];
     let keys = [];
@@ -254,7 +264,6 @@ class ExportPrivateKeys extends React.Component {
   }
 
   generatePDF(){
-    console.log("Here")
     let doc = new jsPDF();
     doc.setFontSize(10);
     doc.text(this.toPrint[0], 10, 10);
@@ -271,6 +280,7 @@ class ExportPrivateKeys extends React.Component {
   getPrivateKeys(batch){
     return new Promise((resolve, reject) => {
       this.props.wallet.command(batch).then((data) => {
+        console.log(data)
         resolve(data);
       }).catch((err) => {
         reject(null);
@@ -319,6 +329,7 @@ class ExportPrivateKeys extends React.Component {
   getAddress(account){
     return new Promise((resolve, reject) => {
       this.props.wallet.getAddressesByAccount(account).then((address) => {
+        console.log(address)
         resolve(address);
       }).catch((err) => {
         console.log("error getting address of account ", err);
@@ -384,7 +395,6 @@ class ExportPrivateKeys extends React.Component {
   }
 
   renderdisplayKeys(){
-    console.log(this.state.toDisplay)
     if(this.state.toDisplay == null){
       return
     }
