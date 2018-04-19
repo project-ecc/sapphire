@@ -14901,7 +14901,7 @@ li.active.have-children span::after {
 
 .sidebarImage {
   position: absolute;
-  top: 16px;
+  top: 19px;
   left: 45px; }
 
 .progress {
@@ -15145,6 +15145,29 @@ li.active.have-children span::after {
   font-size: 14px;
   top: 107px; }
 
+.noIcomingPayments {
+  font-size: 15px;
+  text-align: center;
+  color: #40424c;
+  position: relative;
+  top: 26px; }
+
+.home__ans-payment {
+  margin-top: 22px;
+  font-size: 13px;
+  cursor: pointer;
+  width: 100%;
+  position: relative; }
+
+.home__ans-payment-time {
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer; }
+  .theme-defaultEcc .home__ans-payment-time {
+    color: #555d77; }
+  .theme-darkEcc .home__ans-payment-time {
+    color: #464b5a; }
+
 .inputPlaceholderReceive {
   z-index: 0;
   text-align: left !important;
@@ -15246,10 +15269,6 @@ li.active.have-children span::after {
 #upgradeAns {
   font-size: 13px;
   display: inline-block;
-  margin-left: 10px;
-  position: absolute;
-  top: 2px;
-  right: 0px;
   cursor: pointer; }
   .theme-defaultEcc #upgradeAns {
     color: #aeacf3; }
@@ -15403,7 +15422,8 @@ li.active.have-children span::after {
   color: #ffffff; }
 
 .theme-darkEcc .buttonTransaction:hover {
-  background-color: #15171d; }
+  background-color: #c39c59;
+  color: #ffffff; }
 
 .dropdownFilterSelector {
   width: 300px;
@@ -15706,7 +15726,8 @@ i.fa.fa-chevron-down {
 
 #languageHelpDesc span {
   font-weight: 800;
-  cursor: pointer; }
+  cursor: pointer;
+  text-decoration: underline; }
 
 #settingsLanguageSelector {
   margin-top: 50px; }
@@ -16108,7 +16129,7 @@ i.fa.fa-chevron-down {
   margin: 0 auto; }
 
 .buttonIncreaseSize {
-  width: 180px;
+  width: 180px !important;
   top: 70px; }
 
 .theme-defaultEcc #passwordError {
@@ -16238,7 +16259,11 @@ i.fa.fa-chevron-down {
 .newsItemTitle {
   font-size: 19px;
   font-weight: 500;
-  padding-bottom: 10px; }
+  padding-bottom: 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: calc(100% - 50px); }
 
 #panelHolder {
   position: relative;
@@ -16480,11 +16505,10 @@ i.fa.fa-chevron-down {
 .notificationItem img {
   display: inline-block;
   padding-left: 20px;
-  padding-right: 20px;
-  width: 60px; }
+  padding-right: 20px; }
 
 .timeNews {
-  padding-left: 60px;
+  padding-left: 55px;
   font-weight: 700;
   display: block;
   font-size: 14px; }
@@ -16514,7 +16538,8 @@ i.fa.fa-chevron-down {
 
 #notificationsHeaderContent {
   margin: 0 auto;
-  width: max-content; }
+  width: max-content;
+  position: relative; }
 
 .notificationsHeaderContentFix p {
   top: 7px; }
@@ -16585,15 +16610,15 @@ i.fa.fa-chevron-down {
   .theme-darkEcc .applicationUpdateOnlyNotif:hover {
     background-color: #1c1c23; }
 
-#payAns {
+.payAns {
   visibility: hidden;
   position: absolute;
   width: 100%;
   height: 74px;
   top: 1px; }
-  .theme-defaultEcc #payAns {
+  .theme-defaultEcc .payAns {
     background-color: rgba(20, 24, 47, 0.9); }
-  .theme-darkEcc #payAns {
+  .theme-darkEcc .payAns {
     background-color: rgba(28, 28, 35, 0.6); }
 
 .resetCursor {
@@ -16605,7 +16630,7 @@ i.fa.fa-chevron-down {
 .theme-darkEcc .resetCursor:hover {
   background-color: #17171d; }
 
-#payAns p {
+.payAns p {
   position: absolute;
   top: 25px;
   margin: 0 auto;
@@ -16616,17 +16641,17 @@ i.fa.fa-chevron-down {
   border-radius: 20px;
   font-size: 14px;
   cursor: pointer; }
-  .theme-defaultEcc #payAns p {
+  .theme-defaultEcc .payAns p {
     border: 1px solid #d09128;
     background-color: #121529; }
-  .theme-darkEcc #payAns p {
+  .theme-darkEcc .payAns p {
     border: 1px solid #c39c59;
     background-color: #121212; }
 
-.theme-defaultEcc #payAns p:hover {
+.theme-defaultEcc .payAns p:hover {
   background-color: #1c2340; }
 
-.theme-darkEcc #payAns p:hover {
+.theme-darkEcc .payAns p:hover {
   background-color: #191b21; }
 
 #topBar {
@@ -16728,6 +16753,24 @@ i.fa.fa-chevron-down {
   height: 100%;
   cursor: pointer; }
 
+.appButtons__notifications-total {
+  font-size: 12px;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 0px 4px 0px 4px;
+  border-radius: 5px; }
+  .theme-defaultEcc .appButtons__notifications-total {
+    background-color: rgba(0, 0, 0, 0.65); }
+  .theme-darkEcc .appButtons__notifications-total {
+    background-color: rgba(0, 0, 0, 0.6); }
+
+.appButtons__notifications-counter-holder {
+  position: absolute;
+  left: 2px;
+  text-align: right;
+  top: 6px;
+  z-index: 1; }
+
 .theme-defaultEcc .appButtonHover {
   background-color: #b4b7c8; }
 
@@ -16793,10 +16836,12 @@ i.fa.fa-chevron-down {
   height: auto; }
 
 .theme-defaultEcc .tableRowHeader {
-  color: #555d77; }
+  color: #555d77;
+  text-transform: uppercase; }
 
 .theme-darkEcc .tableRowHeader {
-  color: #464b5a; }
+  color: #464b5a;
+  text-transform: uppercase; }
 
 .headerDescription {
   padding-top: 1px;
@@ -16839,6 +16884,44 @@ i.fa.fa-chevron-down {
 
 .theme-darkEcc .pdfExample {
   color: #464b5a; }
+
+.keysItem {
+  width: 484px;
+  margin: 0 auto;
+  text-align: left;
+  font-size: 13px;
+  padding-bottom: 15px;
+  padding-top: 11px;
+  margin-left: 5px;
+  position: relative; }
+
+.copyPrivKey {
+  position: absolute;
+  right: 10px;
+  width: max-content !important;
+  cursor: pointer;
+  top: 17px;
+  visibility: hidden;
+  font-weight: 700; }
+  .theme-defaultEcc .copyPrivKey {
+    color: #d09128; }
+  .theme-darkEcc .copyPrivKey {
+    color: #c39c59; }
+
+#displayKeys {
+  height: calc(100% - 100px); }
+
+.keysHolder {
+  width: 497px;
+  height: calc(100% - 151px);
+  overflow: auto;
+  /* box-shadow: inset 7px 6px 10px -5px #000; */
+  margin: 0 auto;
+  border-radius: 14px; }
+  .theme-defaultEcc .keysHolder {
+    background-color: #1c2340; }
+  .theme-darkEcc .keysHolder {
+    background-color: #191b21; }
 
 #messagingContainer {
   height: 100%;
@@ -17392,11 +17475,16 @@ aside {
   font-family: Muli, sans-serif;
   font-size: 17px;
   overflow: hidden;
-  font-weight: 600; }
+  font-weight: 600;
+  /* Disables text selection globally so it doesn't feel like a web page. Enable text for copying with selectableText style class */
+  user-select: none;
+  cursor: default; }
   .theme-defaultEcc #main {
+    background: #181e35;
     background-color: #181e35;
     color: #b4b7c8; }
   .theme-darkEcc #main {
+    background: #1c1c23;
     background-color: #1c1c23;
     color: #cecece; }
 
@@ -17480,13 +17568,20 @@ aside {
   background-color: transparent;
   border: none;
   text-align: center;
-  position: relative; }
+  position: relative;
+  transition: border-bottom .3s; }
   .theme-defaultEcc .inputCustom {
     color: #555d77;
     border-bottom: 2px solid #1c2340; }
   .theme-darkEcc .inputCustom {
     color: #cecece;
     border-bottom: 2px solid #22252d; }
+
+.theme-defaultEcc .inputCustomHighlight {
+  border-bottom: 2px solid #d09128 !important; }
+
+.theme-darkEcc .inputCustomHighlight {
+  border-bottom: 2px solid #c39c59 !important; }
 
 .popupTitle {
   font-size: 18px;
@@ -17535,7 +17630,8 @@ aside {
   color: #ffffff; }
 
 .theme-darkEcc .buttonPrimary:hover {
-  background-color: #15171d; }
+  background-color: #c39c59;
+  color: #ffffff; }
 
 #unlockPanel {
   min-width: 535px;
@@ -17545,7 +17641,7 @@ aside {
   left: 50%;
   margin-left: -267px;
   border-radius: 4px;
-  overflow-x: hidden; }
+  overflow: hidden; }
   .theme-defaultEcc #unlockPanel {
     background-color: #14182f;
     box-shadow: 0px 0px 13px -2px black; }
@@ -17591,6 +17687,10 @@ aside {
 
 .normalWeight {
   font-weight: normal; }
+
+.selectableText {
+  user-select: all;
+  cursor: pointer; }
 
 .mancha {
   position: fixed;
