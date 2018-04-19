@@ -5,3 +5,41 @@
     	color: themed('bodySecondaryParagraphColor');  
   	}
 }
+
+.keysItem{
+	width: 484px;
+	margin: 0 auto;
+	text-align: left;
+    font-size: 13px;
+    padding-bottom: 15px;
+    padding-top: 11px;
+    margin-left: 5px;
+    position: relative;
+}
+
+.copyPrivKey{
+	position: absolute;
+    right: 10px;
+    width: max-content !important;
+    cursor: pointer;
+    top: 17px;
+    visibility: hidden;
+    font-weight: 700;
+	@include themify($themes) { 
+    	color: themed('eccTicker'); 
+  	}
+}
+
+#displayKeys{
+	height: calc(100% - 100px);
+}
+
+.keysHolder{
+	width: 497px;
+    height: calc(100% - 151px);
+    overflow: auto;
+    /* box-shadow: inset 7px 6px 10px -5px #000; */
+    margin: 0 auto;
+    background-color: #1d1e25;
+    border-radius: 14px;
+}
