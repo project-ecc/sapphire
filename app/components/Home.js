@@ -39,8 +39,8 @@ class Home extends Component {
   }
 
   async lockWallet(){
-    const updated = await Tools.updateConfig(0);
-    if (updated){
+    //const updated = await Tools.updateConfig(0);
+    //if (updated){
 
       var batch = [];
       var obj = {
@@ -59,7 +59,7 @@ class Home extends Component {
       }).catch((err) => {
         console.log("err unlocking wallet: ", err);
       });
-    }
+    //}
   }
 
   earningsFilterClicked(filter){

@@ -26,8 +26,8 @@ class UnlockWallet extends React.Component {
   }
 
   async unlockWallet(){
-    const updated = await Tools.updateConfig(1);
-    if (updated){
+    //const updated = await Tools.updateConfig(1);
+    //if (updated){
         let batch = [];
         let obj = {
           method: 'walletpassphrase', parameters: [this.props.passwordVal, 31556926, true]
@@ -50,7 +50,7 @@ class UnlockWallet extends React.Component {
         }).catch((err) => {
           console.log("err unlocking wallet: ", err);
         });
-      }
+     // }
   }
 
   componentWillUnmount()
