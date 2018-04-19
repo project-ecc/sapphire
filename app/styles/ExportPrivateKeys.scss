@@ -40,6 +40,8 @@
     overflow: auto;
     /* box-shadow: inset 7px 6px 10px -5px #000; */
     margin: 0 auto;
-    background-color: #1d1e25;
     border-radius: 14px;
+    @include themify($themes) { 
+        background-color: themed('homePanelsBackgroundColor'); 
+    }
 }

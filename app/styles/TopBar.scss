@@ -114,14 +114,21 @@
 
 .appButtons__notifications-total{
     font-size: 12px;
+    font-size: 9px;
+    font-weight: 800;
+      @include themify($themes) { 
+        background-color: themed('topBarNotificationCounterBackgroundColor');  
+    }
+    padding: 0px 4px 0px 4px;
+    border-radius: 5px;
 }
 
 .appButtons__notifications-counter-holder{
-    position: absolute;
-    width: 50px;
-    left: -40px;
+  position: absolute;
+    left: 2px;
     text-align: right;
     top: 6px;
+    z-index: 1;
 }
 
 .appButtonHover{
