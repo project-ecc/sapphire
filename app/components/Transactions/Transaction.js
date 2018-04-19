@@ -242,7 +242,7 @@ class Transaction extends Component {
                       </div>
                       <div className="col-sm-8">
                         <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.transactionId}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 transactionId">{t.txid}</span></p>
+                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 transactionId selectableText">{t.txid}</span></p>
                       </div>
                       <div className="col-sm-4">
                         <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.transactionFee}</span></p>

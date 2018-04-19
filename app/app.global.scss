@@ -71,16 +71,21 @@ aside{
 }
 
 #main{
-    @include themify($themes) { 
-      background-color: themed('bodyBackgroundColor');  
-      color: themed('bodyParagraphColor'); ;
-    }
-    width: 100%;
-    height: 100vh;
-    font-family: Muli, sans-serif;
-    font-size: 17px;
-    overflow: hidden;
-    font-weight: 600;
+  @include themify($themes) {
+    background: themed('bodyBackgroundColor');
+    background-color: themed('bodyBackgroundColor');
+    color: themed('bodyParagraphColor'); ;
+  }
+  width: 100%;
+  height: 100vh;
+  font-family: Muli, sans-serif;
+  font-size: 17px;
+  overflow: hidden;
+  font-weight: 600;
+  
+  /* Disables text selection globally so it doesn't feel like a web page. Enable text for copying with selectableText style class */
+  user-select: none;
+  cursor: default;
 }
 
 .ecc{
@@ -287,8 +292,13 @@ aside{
   top: -1px;
   position: relative;
 }
+
 .normalWeight{
   font-weight: normal;
+}
+
+.selectableText{
+  user-select: all;
 }
 
 .mancha {

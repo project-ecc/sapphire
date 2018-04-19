@@ -158,6 +158,20 @@ app.on('ready', async () => {
     return false;
   });
 
+  /*
+  TODO: fix this. this doesn't work.
+  
+  mainWindow.on('dragover', function (event) {
+    event.preventDefault();
+    return false;
+  }, false);
+  
+  mainWindow.on('drop', (event) => {
+    event.preventDefault();
+    return false;
+  }, false);
+  */
+
 	mainWindow.webContents.on('before-input-event', async function (event, input) {
 		if ((input.key === 'q' || input.key === "Q" || input.key === "w" || input.key === "W") && input.control) {
 			event.preventDefault();
@@ -243,7 +257,7 @@ function setupEventHandlers() {
 	});
 
 	ipcMain.on('show', (e, args) => {
-		mainWindow.show();
+    mainWindow.show()
 		mainWindow.focus();
 	});
 
@@ -251,7 +265,9 @@ function setupEventHandlers() {
     console.log("ELECTRON GOT READY MESSAGE");
     guiManager = new GUIManager();
     daemonManager = new DaemonManager();
-    mainWindow.show();
+    mainWindow.once('ready-to-show', () => {
+      mainWindow.show()
+    });
   });
 
   ipcMain.on('autoStart', (e, autoStart) => {
@@ -259,12 +275,7 @@ function setupEventHandlers() {
       autoECCLauncher.enable();
     else autoECCLauncher.disable();
   });
-
-  ipcMain.on('show', (e, args) => {
-    mainWindow.show();
-    mainWindow.focus();
-  });
-
+  
   ipcMain.on('minimize', (e, args) => {
     if(ds !== undefined && ds.minimise_to_tray !== undefined && ds.minimise_to_tray){
       mainWindow.setSkipTaskbar(true);

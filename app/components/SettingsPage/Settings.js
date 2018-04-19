@@ -174,18 +174,23 @@ class Settings extends Component {
           handleChange = {this.setTrayIcon}
           checked = {this.props.hideTrayIcon}
         />
-        <SettingsToggle
-          keyVal={6}
-          text= { this.props.lang.minimizeToTray }
-          handleChange = {this.handleMinimizeToTray}
-          checked = {this.props.minimizeToTray}
-        />
-        <SettingsToggle
-          keyVal={7}
-          text= { this.props.lang.minimizeOnClose }
-          handleChange = {this.handleMinimizeOnClose}
-          checked = {this.props.minimizeOnClose}
-        />
+        {
+          process.platform !== "darwin" &&
+          <div>
+            <SettingsToggle
+              keyVal={6}
+              text= { this.props.lang.minimizeToTray }
+              handleChange = {this.handleMinimizeToTray}
+              checked = {this.props.minimizeToTray}
+            />
+            <SettingsToggle
+              keyVal={7}
+              text= { this.props.lang.minimizeOnClose }
+              handleChange = {this.handleMinimizeOnClose}
+              checked = {this.props.minimizeOnClose}
+            />
+          </div>
+        }
         <div className="row settingsToggle">
           <div className="col-sm-6 text-left removePadding">
             <p>{ this.props.lang.applicationVersion }</p>
