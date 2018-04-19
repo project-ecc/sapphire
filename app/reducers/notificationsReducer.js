@@ -58,8 +58,8 @@ export default(state = INITIAL_STATE, action) => {
 		entries["news"].total = 0;
 		entries["differentKinds"] -= 1;
 
-UpdateNotificationInfo(action.payload, state.lastCheckedEarnings, entries: entries);
-    return {...state, lastCheckedNews: action.payload, entries: entries}
+		UpdateNotificationInfo(action.payload, state.lastCheckedEarnings, entries: entries);
+    	return {...state, lastCheckedNews: action.payload, entries: entries}
 	}
 	else if(action.type == NEWS_NOTIFICATION){
 		let entries = Object.assign({}, state.entries);
@@ -88,6 +88,7 @@ UpdateNotificationInfo(action.payload, state.lastCheckedEarnings, entries: entri
 		entries["stakingEarnings"].count = entries["stakingEarnings"].count+=1;
 		entries["stakingEarnings"].total = entries["stakingEarnings"].total+=action.payload.earnings;
 		if(action.payload.date > entries["stakingEarnings"].date){
+			console.log(entries["stakingEarnings"].date)
 			entries["stakingEarnings"].date = action.payload.date;
 		}
 		return {...state, entries: entries}

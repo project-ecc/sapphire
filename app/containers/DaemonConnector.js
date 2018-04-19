@@ -579,6 +579,7 @@ class DaemonConnector {
     let shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
     for (let i = 0; i < entries.length; i++) {
       let entry = entries[i];
+      entry.time = entry.time * 1000;
       statement += `INSERT INTO transactions VALUES('${entry.txId}', ${entry.time}, ${entry.amount}, '${entry.category}', '${entry.address}', ${entry.fee}, '${entry.confirmations}');`;
       if(Number(entry.confirmations) < 30){
           statement += `INSERT INTO pendingtransactions VALUES('${entry.txId}');`;
@@ -588,7 +589,7 @@ class DaemonConnector {
       if(this.transactionsIndexed){
         this.store.dispatch({type: STAKING_REWARD, payload: entries[i]})
       }
-      if(entry.time * 1000 > lastCheckedEarnings && shouldNotifyEarnings){
+      if(entry.time > lastCheckedEarnings && shouldNotifyEarnings){
         this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: entry.amount, date: entry.time}});
         earningsCountNotif++;
         earningsTotalNotif += entry.amount;
@@ -697,7 +698,7 @@ class DaemonConnector {
       let earningsTotalNotif = 0;
       let shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
       rows.map((transaction) => {
-        let time = transaction.time*1000;
+        let time = transaction.time;
         let amount = transaction.amount;
         if(time > lastCheckedEarnings && shouldNotifyEarnings){
           this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}});
