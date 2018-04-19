@@ -82,14 +82,13 @@
 	display: inline-block;
 	padding-left: 20px;
 	padding-right: 20px;
-	width: 60px;
 }
 
 .timeNews{
 	@include themify($themes) { 
 		color: themed('inputPlaceHolderColor');  
 	}
-	padding-left: 60px;
+	padding-left: 55px;
 	font-weight: 700;
 	display: block;
 	font-size: 14px;

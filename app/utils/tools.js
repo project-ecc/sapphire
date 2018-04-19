@@ -257,6 +257,9 @@ module.exports = {
       else if(iconName == "fileStorageSelected"){
         return require('../../resources/images/file-storage-blue-selected.png')
       }
+      else if(iconName == "eccNewsNotif"){
+        return require('../../resources/images/news-white-notif.png')
+      }
     }
     else if(selectedTheme && selectedTheme === "theme-defaultEcc"){
       if(iconName == "wallet" && !hover){
@@ -393,6 +396,9 @@ module.exports = {
       }
       else if(iconName == "fileStorageSelected"){
         return require('../../resources/images/file-storage-blue-selected-dark.png')
+      }
+      else if(iconName == "eccNewsNotif"){
+        return require('../../resources/images/news-blue-notif.png')
       }
     }
   },

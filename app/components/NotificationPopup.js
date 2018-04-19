@@ -94,7 +94,7 @@ class NotificationPopup extends React.Component {
     if(this.props.notifications["ansPayments"]["payments"].length == 0){
       return null;
     }
-    let earnings = require('../../resources/images/overview-blue.png');
+    let earnings = Tools.getIconForTheme("overview", false);
     let ansPaymentsObject = this.props.notifications["ansPayments"];
     let totalAnsPayments = ansPaymentsObject["payments"].count;
     let date = ansPaymentsObject["firstDueDate"];
@@ -139,7 +139,7 @@ class NotificationPopup extends React.Component {
     if(this.props.notifications["stakingEarnings"].total == 0){
       return null;
     }
-    let earnings = require('../../resources/images/overview-blue.png');
+    let earnings = Tools.getIconForTheme("overview", false);
     let earningsObject = this.props.notifications["stakingEarnings"];
     let totalEarnings = earningsObject.count;
     let date = earningsObject.date;
@@ -162,7 +162,7 @@ class NotificationPopup extends React.Component {
     if(this.props.notifications["news"].total == 0){
       return null;
     }
-    let news = require('../../resources/images/news-white.png');
+    let news = Tools.getIconForTheme("eccNewsNotif", false);
     let totalNews = this.props.notifications["news"].total;
     let date = this.props.notifications["news"].date;
     let newsBody = <p id="mediumPosts">{ this.props.lang.newMediumPost }</p>;
