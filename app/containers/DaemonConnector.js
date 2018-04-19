@@ -777,7 +777,7 @@ class DaemonConnector {
                       });
 
     //const toReturn = allAddressesWithANS.concat(toAppend);
-    const toReturn = toAppend;
+    const toReturn = normalAddresses.concat(toAppend);
 
     this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
     //We need to have the addresses loaded to be able to index transactions
