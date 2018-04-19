@@ -97,11 +97,14 @@ class ImportPrivateKey extends React.Component {
         else{
           console.log("failed to import address");
           this.failedToImportAddress();
+          this.props.setCheckingDaemonStatusPrivKey(false);
         }
       }).catch((result) => {
         console.log("ERROR IMPORTING ADDRESS: ", result);
-        if(result.code == "ECONNREFUSED")
+        if(result.code == "ECONNREFUSED"){
           this.failedToImportAddress();
+          this.props.setCheckingDaemonStatusPrivKey(false);
+        }
         //imported but rescaning
         else if(result.code == "ESOCKETTIMEDOUT"){
           this.checkDaemonStatus();
@@ -147,6 +150,7 @@ class ImportPrivateKey extends React.Component {
   failedToImportAddress(){
     TweenMax.to(['#importingPrivKey','#importAddress'], 0.2, {autoAlpha: 0, scale: 0.5});
     TweenMax.fromTo('#importFailed', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
+
   }
 
   handleChangePrivateKey(event) {
@@ -184,8 +188,9 @@ class ImportPrivateKey extends React.Component {
 
   handleClose()
   {
-    if(!this.props.checkingDaemonStatusPrivateKey)
+    if(!this.props.checkingDaemonStatusPrivateKey){
       this.props.setImportingPrivateKey(false);
+    }
   }
 
   getCloseButton(){
