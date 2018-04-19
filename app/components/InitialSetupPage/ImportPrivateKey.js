@@ -98,12 +98,15 @@ class ImportPrivateKey extends React.Component {
           console.log("failed to import address");
           this.failedToImportAddress();
           this.props.setCheckingDaemonStatusPrivKey(false);
+          setTimeout(() =>
+          this.showFunctionIcons(), 600)
         }
       }).catch((result) => {
         console.log("ERROR IMPORTING ADDRESS: ", result);
         if(result.code == "ECONNREFUSED"){
           this.failedToImportAddress();
           this.props.setCheckingDaemonStatusPrivKey(false);
+          this.showFunctionIcons();
         }
         //imported but rescaning
         else if(result.code == "ESOCKETTIMEDOUT"){
@@ -253,7 +256,7 @@ class ImportPrivateKey extends React.Component {
               placeHolderClassName="inputPlaceholder changePasswordInput"
               value={this.props.passwordVal}
               handleChange={this.handleChangePassword.bind(this)}
-              type="text"
+              type="password"
               inputStyle={{marginBottom:"10px", width:"400px"}}
             />
           <p id="wrongPassword" className="wrongPassword">{ this.props.lang.wrongPassword }</p>
