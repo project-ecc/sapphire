@@ -20,8 +20,8 @@ const INITIAL_STATE = {popupEnabled: false, lastCheckedNews: notificationsInfo.g
     messaging: {messages: [], date: GetOldDate()},
 	news: {total: 0, date: GetOldDate()},
 	stakingEarnings: {total: 0, count: 0, date: GetOldDate()},
-	ansPayments: {total: 0.00001, firstDueDate: new Date().setDate(31), payments: [{cost:0.00001, dueDate: new Date().setDate(31)}, {cost:0.00010, dueDate: new Date().setDate(28)}]},
-	//ansPayments:{payments: []},
+	//ansPayments: {total: 0.00001, firstDueDate: new Date().setDate(31), payments: [{cost:0.00001, dueDate: new Date().setDate(31)}, {cost:0.00010, dueDate: new Date().setDate(28)}]},
+	ansPayments:{payments: []},
 	warnings: []
 	}
 };
@@ -44,7 +44,7 @@ export default(state = INITIAL_STATE, action) => {
 		entries["total"] = entries["total"] - entries["stakingEarnings"].count;
 		entries["stakingEarnings"].count = 0;
 		entries["stakingEarnings"].total = 0;
-		entries["differentKinds"] -= 1;
+		entries["differentKinds"] = entries["differentKinds"] - 1;
 		if(entries["last"] == "earnings"){
 			entries["last"] = "news";
 		}
@@ -56,15 +56,15 @@ export default(state = INITIAL_STATE, action) => {
 		let differentKinds = entries["differentKinds"];
 		entries["total"] = entries["total"] - entries["news"].total;
 		entries["news"].total = 0;
-		entries["differentKinds"] -= 1;
+		entries["differentKinds"] = differentKinds - 1;
 
-UpdateNotificationInfo(action.payload, state.lastCheckedEarnings, entries: entries);
-    return {...state, lastCheckedNews: action.payload, entries: entries}
+		UpdateNotificationInfo(action.payload, state.lastCheckedEarnings, entries: entries);
+    	return {...state, lastCheckedNews: action.payload, entries: entries}
 	}
 	else if(action.type == NEWS_NOTIFICATION){
 		let entries = Object.assign({}, state.entries);
 		if(entries["news"].total == 0){
-			entries["differentKinds"] += 1;
+			entries["differentKinds"] = entries["differentKinds"] + 1;
 			if(entries["last"] == "")
 				entries["last"] = "news";
 		}
@@ -80,7 +80,7 @@ UpdateNotificationInfo(action.payload, state.lastCheckedEarnings, entries: entri
 		let entries = Object.assign({}, state.entries);
 		let differentKinds = entries["differentKinds"];
 		if(entries["stakingEarnings"].count == 0){
-			entries["differentKinds"] += 1;
+			entries["differentKinds"] = differentKinds + 1;
 			if(entries["last"] == "" || entries["last"] == "news")
 				entries["last"] = "earnings";
 		}
@@ -88,6 +88,7 @@ UpdateNotificationInfo(action.payload, state.lastCheckedEarnings, entries: entri
 		entries["stakingEarnings"].count = entries["stakingEarnings"].count+=1;
 		entries["stakingEarnings"].total = entries["stakingEarnings"].total+=action.payload.earnings;
 		if(action.payload.date > entries["stakingEarnings"].date){
+			console.log(entries["stakingEarnings"].date)
 			entries["stakingEarnings"].date = action.payload.date;
 		}
 		return {...state, entries: entries}
