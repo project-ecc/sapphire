@@ -36,7 +36,7 @@ let tray = null;
 let daemonManager = null;
 let guiManager = null;
 let maximized = false;
-let ds = settings.get('settings.display');;
+let ds = null;
 let mainWindow = null;
 let guiUpdate = false;
 let daemonUpdate = false;
@@ -73,7 +73,7 @@ const installExtensions = async () => {
 
 app.on('ready', async () => {
 
-
+  ds = settings.get('settings.display');
   const walletDir = grabWalletDir();
   const fileName = 'sapphire';
   let fullPath = ''
