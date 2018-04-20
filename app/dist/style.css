@@ -15143,7 +15143,7 @@ li.active.have-children span::after {
   cursor: pointer;
   position: relative;
   font-size: 14px;
-  top: 107px; }
+  top: 112px; }
 
 .noIcomingPayments {
   font-size: 15px;
@@ -15279,7 +15279,7 @@ li.active.have-children span::after {
   font-size: 16px;
   width: 90%;
   margin: 0 auto;
-  text-align: justify;
+  text-align: center;
   font-weight: 500;
   margin-top: 30px;
   margin-bottom: 70px; }
@@ -15424,6 +15424,9 @@ li.active.have-children span::after {
 .theme-darkEcc .buttonTransaction:hover {
   background-color: #c39c59;
   color: #ffffff; }
+
+.columnPaddingFixAns {
+  padding-left: 35px; }
 
 .dropdownFilterSelector {
   width: 300px;
@@ -16211,6 +16214,24 @@ i.fa.fa-chevron-down {
 .theme-darkEcc .score-empty {
   stroke: #16181d; }
 
+.theme-defaultEcc #paymentChainCircle {
+  stroke: #d09128; }
+
+.theme-darkEcc #paymentChainCircle {
+  stroke: #c39c59; }
+
+.theme-defaultEcc #messagingChainCircle {
+  stroke: #346142; }
+
+.theme-darkEcc #messagingChainCircle {
+  stroke: #346142; }
+
+.theme-defaultEcc #fileStorageChainCircle {
+  stroke: #20729c; }
+
+.theme-darkEcc #fileStorageChainCircle {
+  stroke: #20729c; }
+
 @media screen and (max-width: 1250px) {
   .networkStatsChainTitle {
     font-size: 23px;
@@ -16239,12 +16260,6 @@ i.fa.fa-chevron-down {
     color: #d09128; }
   .theme-darkEcc .contactsMessage {
     color: #c39c59; }
-
-.theme-defaultEcc #ansExplanation {
-  color: #555d77; }
-
-.theme-darkEcc #ansExplanation {
-  color: #464b5a; }
 
 #eccNews {
   font-size: 70px;
@@ -17676,11 +17691,9 @@ aside {
   border-radius: 4px;
   overflow: hidden; }
   .theme-defaultEcc #unlockPanel {
-    background-color: #14182f;
-    box-shadow: 0px 0px 13px -2px black; }
+    background-color: #14182f; }
   .theme-darkEcc #unlockPanel {
-    background-color: #15161b;
-    box-shadow: 0px 0px 13px -2px black; }
+    background-color: #15161b; }
 
 .unlockWallet {
   height: 265px; }
