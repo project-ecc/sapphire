@@ -87,7 +87,6 @@ app.on('ready', async () => {
   else if(process.platform === 'darwin'){
 
     fullPath = walletDir + fileName + '-v' + version + '.dmg';
-
   }
   else if (process.platform.indexOf('win') > -1) {
 
