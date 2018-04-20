@@ -63,12 +63,21 @@ class Settings extends Component {
   }
 
   setTrayIcon(){
+    if(this.props.minimizeToTray){
+      this.reloadSettings('display.minimise_to_tray', false);
+      this.props.setMinimizeToTray(false);
+    }
     ipcRenderer.send('hideTray', !this.props.hideTrayIcon);
     this.reloadSettings('display.hide_tray_icon', !this.props.hideTrayIcon);
     this.props.setTray(!this.props.hideTrayIcon);
   }
 
   handleMinimizeToTray(){
+    if(this.props.hideTrayIcon){
+      ipcRenderer.send('hideTray', false);
+      this.reloadSettings('display.hide_tray_icon', false);
+      this.props.setTray(false);
+    }
     this.reloadSettings('display.minimise_to_tray', !this.props.minimizeToTray);
     this.props.setMinimizeToTray(!this.props.minimizeToTray);
   }
