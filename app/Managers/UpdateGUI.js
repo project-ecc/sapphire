@@ -25,7 +25,7 @@ function installGUI(){
 
     const walletDir =`${homedir}/Library/Application Support/.eccoin-wallet/`;
     const fileName = 'sapphire';
-    let fullPath = walletDir + fileName + '-v' + guiVersion + '.dmg';
+    let fullPath = walletDir + fileName + '-v' + guiVersion + '-mac.dmg';
 
     // This must be added to escape the space.
     fullPath = `"${fullPath}"`;
