@@ -92,6 +92,7 @@ class Transaction extends Component {
       transactionBottom.slideUp();
       transactionBottom.attr('sd', 'false');
     }
+
   }
 
   rowClickedFixMisSlideUp(event){
@@ -107,6 +108,7 @@ class Transaction extends Component {
   }
 
   shouldComponentUpdate(state){
+    console.log(this.rowExpanded)
     if(this.props.page == state.page && this.props.page > 0 && this.props.type == state.type) return false;
     return true;
   }
@@ -132,7 +134,6 @@ class Transaction extends Component {
 
   onItemClick(event) {
     let type = event.currentTarget.dataset.id;
-    console.log(type);
     if(type == this.props.type) return;
     let data = this.props.data;
     this.props.setTransactionsData(data, type);

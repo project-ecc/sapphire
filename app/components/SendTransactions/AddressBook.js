@@ -117,10 +117,10 @@ class AddressBook extends Component {
           {this.props.friends.map((friend, index) => {
             return (
               <div className= {index % 2 != 0 ? rowClassName : rowClassName + " tableRowEven"} onClick={this.rowClicked.bind(this, friend)} onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default"}} key={`friend_${index}`}>
-                <div className="col-sm-4 tableColumn tableColumContactFix selectableText">
+                <div className={this.props.sendPanel ? "col-sm-4 tableColumn tableColumContactFix" : "col-sm-4 tableColumn tableColumContactFix selectableText"}>
                   {friend.name}
                 </div>
-                <div className="col-sm-7 tableColumn selectableText">
+                <div className={this.props.sendPanel ? "col-sm-7 tableColumn" : "col-sm-7 tableColumn selectableText"}>
                   {friend.address}
                 </div>
                 <div className="col-sm-1 tableColumn">
