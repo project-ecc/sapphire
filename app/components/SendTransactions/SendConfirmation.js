@@ -49,6 +49,7 @@ class SendConfirmation extends React.Component {
         else{
           this.props.setStaking(false);
         }
+        this.props.setTemporaryBalance(balance - this.props.amount)
         this.props.setPassword("");
         this.props.setSendingECC(false);
         this.props.setUsernameSend("");
@@ -165,7 +166,8 @@ const mapStateToProps = state => {
     address: state.application.addressSend,
     username: state.application.userNameToSend,
     staking: state.chains.staking,
-    wallet: state.application.wallet
+    wallet: state.application.wallet,
+    balance: state.chains.balance
   };
 };
 

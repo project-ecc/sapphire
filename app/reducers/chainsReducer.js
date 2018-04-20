@@ -6,7 +6,8 @@ import {
 		WALLET_INFO,
 		CHAIN_INFO,
 		TRANSACTIONS_DATA,
-    SET_DAEMON_VERSION
+    	SET_DAEMON_VERSION,
+    	SET_TEMPORARY_BALANCE
 } from '../actions/types';
 
 
@@ -37,6 +38,9 @@ export default(state = INITIAL_STATE, action) => {
 	}
 	else if(action.type == SET_DAEMON_VERSION){
 	  return {...state, daemonVersion: action.payload}
-   }
+   	}
+   	else if(action.type == SET_TEMPORARY_BALANCE){
+   		return {...state, balance: action.payload}
+   	}
 	return state;
 }

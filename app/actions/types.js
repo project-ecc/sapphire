@@ -123,3 +123,4 @@ export const USER_HAS_HOVERED_OPTIONS_ICON = "user_has_hovered_options_icon";
 export const USER_HAS_CLICKED_BUTTON = "user_has_clicked_button";
 export const HOVERED_SETTINGS_SOCIAL_ICON = "hovered_settings_social_icon";
 export const SET_DAEMON_VERSION = "SET_DAEMON_VERSION";
+export const SET_TEMPORARY_BALANCE = "set_temporary_balace";
