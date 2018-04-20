@@ -88,6 +88,10 @@ class DaemonConnector {
     }, 120000);
     this.stakingRewardsCountNotif = 0;
     this.stakingRewardsTotalEarnedNotif = 0;
+    this.queuedNotifications = [];
+    this.checkQueuedNotificationsInterval;
+    this.checkQueuedNotifications = this.checkQueuedNotifications.bind(this);
+    this.queueOrSendNotification = this.queueOrSendNotification.bind(this);
 	}
 
   subscribeToEvents(){
@@ -97,6 +101,21 @@ class DaemonConnector {
     setInterval(() => {
       this.store.dispatch({type: STAKING_REWARD_UPDATE})
     }, 30 * 60 * 1000)
+    this.checkQueuedNotificationsInterval = setInterval(() => this.checkQueuedNotifications(), 5000);
+  }
+
+  checkQueuedNotifications(){
+    if(!this.store.getState().startup.loading && !this.store.getState().startup.loader && this.store.getState().startup.setupDone && this.queuedNotifications.length >= 0){
+
+      if(this.queuedNotifications.length == 0){
+        clearInterval(this.checkQueuedNotificationsInterval);
+        return;
+      }else{
+        let notification = this.queuedNotifications[0];
+        this.queuedNotifications.splice(0, 1);
+        Tools.sendOSNotification(notification.body, notification.callback);
+      }
+    }
   }
 
   //this method is used to detect the initial setup has been completed and is never called again after, I should probably use the event class here.
@@ -178,10 +197,14 @@ class DaemonConnector {
   }
 
   notifyUserOfApplicationUpdate(){
-    Tools.sendOSNotification(this.store.getState().startup.lang.updateAvailableNotif, () => {
+    const callback = () => {
       this.store.dispatch({type: SETTINGS, payload: true});
       this.store.dispatch({type: SETTINGS_OPTION_SELECTED, payload: "General"})
-    });
+    }
+    const body = this.store.getState().startup.lang.updateAvailableNotif;
+
+    this.queueOrSendNotification(callback, body);
+
     this.store.dispatch({type: TELL_USER_OF_UPDATE})
   }
 
@@ -301,10 +324,13 @@ class DaemonConnector {
       let title = this.store.getState().startup.lang.eccNews;
       parser.on('end', () => {
         if(totalNews == 0 || !this.store.getState().notifications.newsNotificationsEnabled) return;
-        Tools.sendOSNotification(totalNews == 1 ? title : `${totalNews} ${title}`, () => {
+        const body = totalNews == 1 ? title : `${totalNews} ${title}`;
+        const callback = () => {
           this.store.dispatch({type: SELECTED_PANEL, payload: "news"});
           this.store.dispatch({type: SELECTED_SIDEBAR, payload: {undefined}})
-        })
+        };
+
+        this.queueOrSendNotification(callback, body);
       });
 
       parser.on('item', (item) => {
@@ -603,9 +629,9 @@ class DaemonConnector {
     if(shouldNotifyEarnings && earningsCountNotif > 0){
       earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
       let title = `Staking reward - ${earningsTotalNotif} ECC`;
-      Tools.sendOSNotification(earningsCountNotif == 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`, () => {
-        this.goToEarningsPanel();
-      })
+      const body = earningsCountNotif == 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`;
+      const callback = () => {this.goToEarningsPanel();}
+      this.queueOrSendNotification(callback, body);
     }
 
     statement += "COMMIT;";
@@ -714,9 +740,10 @@ class DaemonConnector {
       if(shouldNotifyEarnings && earningsCountNotif > 0){
         earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
         let title = `Staking reward - ${earningsTotalNotif} ECC`;
-        Tools.sendOSNotification(earningsCountNotif == 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`, () => {
-          this.goToEarningsPanel();
-        })
+        const body = earningsCountNotif == 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`;
+        const callback = () => {this.goToEarningsPanel();}
+        this.queueOrSendNotification(callback, body);
+
       }
       this.store.dispatch({type: STAKING_REWARD, payload: rows})
     });
@@ -737,6 +764,14 @@ class DaemonConnector {
   }
 
   //MISC METHODS
+
+  queueOrSendNotification(callback, body){
+    if(this.store.getState().startup.loading || this.store.getState().startup.loader || !this.store.getState().startup.setupDone){
+      this.queuedNotifications.push({callback: callback, body: body})
+    }
+    else
+      Tools.sendOSNotification(body, callback);
+  }
 
   async getAddresses(){
     const allReceived = await this.wallet.listAllAccounts();
