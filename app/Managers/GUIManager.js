@@ -91,7 +91,7 @@ class GUIManager{
         const downloadUrl = latestGui.download_url;
 
         const downloaded = await downloadFile(downloadUrl, walletDirectory,'Sapphire.zip', zipChecksum, true)
-          .catch(error => console.log(error));
+          .catch(error => reject(error));
 
         if (downloaded) {
           console.log("Done downloading gui");
@@ -107,7 +107,7 @@ class GUIManager{
           reject(downloaded);
         }
       }).catch(error => {
-        console.log(error);
+        console.log(error.message);
         reject(error);
       });
     });

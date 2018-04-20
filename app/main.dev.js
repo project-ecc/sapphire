@@ -380,7 +380,7 @@ function setupEventHandlers() {
   // TODO Csmartins.
 
   event.on('updateFailed', (errorMessage) => {
-
+    console.log(errorMessage)
   });
 
   event.on('updatedDaemon', () => {
