@@ -33,7 +33,11 @@ class GUIManager{
 		this.toldUserAboutUpdate = false;
 		console.log("wallet version: ", this.installedVersion);
 		event.on('updateGui', () => {
-			this.downloadGUI();
+		  try {
+        this.downloadGUI();
+      } catch (e){
+        event.emit('updateFailed', e.message);
+      }
 		});
 	}
 
@@ -100,13 +104,11 @@ class GUIManager{
             console.log(e);
           }
         } else {
-          self.downloadGUI();
-          // reject(downloaded);
+          reject(downloaded);
         }
       }).catch(error => {
-        event.emit('updateFailed', e.message);
         console.log(error);
-        reject(false);
+        reject(error);
       });
     });
 	}

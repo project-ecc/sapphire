@@ -88,7 +88,12 @@ class DaemonManager {
 	     console.log('got latest version');
 	    if (this.installedVersion == -1) {
 	    	do {
-	    		await this.downloadDaemon();
+	    	  try {
+            await this.downloadDaemon();
+          } catch (e){
+	    	    event.emit('updateFailed', e.message)
+          }
+
 	    	} while (this.installedVersion == -1);
 	    	console.log('telling electron about wallet.dat');
 	    	event.emit('wallet', this.walletDat);
@@ -169,7 +174,11 @@ class DaemonManager {
       setTimeout(async () => {
         let downloaded = false;
         do {
-          downloaded = await self.downloadDaemon();
+          try {
+            downloaded = await self.downloadDaemon();
+          } catch (e) {
+            event.emit('updateFailed', e.message)
+          }
         } while (!downloaded);
         event.emit('updatedDaemon');
         if (self.shouldRestart) { self.startDaemon(); }
