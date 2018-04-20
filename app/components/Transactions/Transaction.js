@@ -5,7 +5,6 @@ const homedir = require('os').homedir();
 import * as actions from '../../actions';
 import { connect } from 'react-redux';
 const lang = traduction();
-const settings = require('electron-settings');
 const Tools = require('../../utils/tools');
 
 class Transaction extends Component {

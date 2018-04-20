@@ -17,7 +17,7 @@ import ConfirmNewAddress from '../components/ReceiveTransaction/ConfirmNewAddres
 import ClosingApplication from '../components/Others/ClosingApplication';
 import TopBar from '../components/TopBar';
 import { Link } from 'react-router-dom';
-const settings = require('electron-settings');
+const settings = require('electron').remote.require('electron-settings');
 import NotificationPopup from '../components/NotificationPopup';
 import UnlockWallet from '../components/UnlockWallet';
 import GenericPanel from './GenericPanel';

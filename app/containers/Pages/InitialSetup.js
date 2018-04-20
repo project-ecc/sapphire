@@ -9,7 +9,6 @@ import { connect } from 'react-redux';
 import { traduction } from '../../lang/lang';
 import * as actions from '../../actions';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
-const settings = require('electron-settings');
 import { ipcRenderer } from 'electron';
 import TransitionComponent from '../../components/Others/TransitionComponent';
 const Tools = require('../../utils/tools');

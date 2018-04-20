@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-const settings = require('electron-settings');
+const settings = require('electron').remote.require('electron-settings');
 
 class ThemeSelector extends Component {
   constructor(props) {

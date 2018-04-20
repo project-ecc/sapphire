@@ -1,4 +1,3 @@
-const settings = require('electron-settings');
 import lang_en from './en';
 import lang_pt from './pt';
 import lang_nl from './nl';
@@ -19,6 +18,8 @@ import lang_sl from './sl';
 
 
 export function traduction() {
+	const settings = require('electron-settings');
+
 	if (settings.has('settings.lang')) {
 		var l = settings.get('settings.lang');
 		if (l == "en") {
@@ -62,42 +63,43 @@ export function traduction() {
 }
 
 export function language(){
-	console.log("here");
-		if (settings.has('settings.lang')) {
+	const settings = require('electron-settings');
+
+	if (settings.has('settings.lang')) {
 		var l = settings.get('settings.lang');
-		if (l == "en") {
-			return "English";
-		} else if (l == "pt") {
-			return "Português (Portuguese)";
-		} else if (l == "nl") {
-			return "Nederlands (Dutch)";
-		} else if (l == "de") {
-			return "Deutsch (German)";
-		} else if (l == "fr") {
-			return "Français (French)";
-		} else if (l == "bg") {
-			return "български (Bulgarian)";
-		} else if (l == "el") {
-			return "ελληνικά (Greek)";
-		} else if (l == "es") {
-			return "Español (Spanish)";
-		} else if (l == "ko") {
-			return "한국어(Korean)";
-		} else if (l == "pl") {
-			return "Polski (Polish)";
-		} else if (l == "tr") {
-			return "Türkçe (Turkish)";
-		} else if (l == "ru") {
-			return "Русский язык (Russian)";
-		} else if (l == "vn") {
-			return "Tiếng việt (Vietnamese)";
-		}else if(l == "zh_hk"){
-			return "繁體中文-中華人民共和國香港特別行政區 (Chinese - HK)";
-		}else if(l == "zh_cn"){
-			return "简体中文—中国 (Chinese - CN)";
-		}else if(l == "sl"){
-			return "Slovenčina (Slovenian)";
-		}
+	if (l == "en") {
+		return "English";
+	} else if (l == "pt") {
+		return "Português (Portuguese)";
+	} else if (l == "nl") {
+		return "Nederlands (Dutch)";
+	} else if (l == "de") {
+		return "Deutsch (German)";
+	} else if (l == "fr") {
+		return "Français (French)";
+	} else if (l == "bg") {
+		return "български (Bulgarian)";
+	} else if (l == "el") {
+		return "ελληνικά (Greek)";
+	} else if (l == "es") {
+		return "Español (Spanish)";
+	} else if (l == "ko") {
+		return "한국어(Korean)";
+	} else if (l == "pl") {
+		return "Polski (Polish)";
+	} else if (l == "tr") {
+		return "Türkçe (Turkish)";
+	} else if (l == "ru") {
+		return "Русский язык (Russian)";
+	} else if (l == "vn") {
+		return "Tiếng việt (Vietnamese)";
+	}else if(l == "zh_hk"){
+		return "繁體中文-中華人民共和國香港特別行政區 (Chinese - HK)";
+	}else if(l == "zh_cn"){
+		return "简体中文—中国 (Chinese - CN)";
+	}else if(l == "sl"){
+		return "Slovenčina (Slovenian)";
+	}
 
 	} else {
 		settings.set("settings.lang", "en");

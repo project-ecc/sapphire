@@ -12,7 +12,7 @@ import ThemeSelector from '../Others/ThemeSelector';
 const remote = require('electron').remote;
 const dialog = remote.require('electron').dialog;
 const app = remote.app;
-const settings = require('electron-settings');
+const settings = require('electron').remote.require('electron-settings');
 const homedir = require('os').homedir();
 var open = require("open");
 import {version} from './../../../package.json';

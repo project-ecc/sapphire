@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import $ from 'jquery';
 import {language } from '../../lang/lang';
-const settings = require('electron-settings');
+const settings = require('electron').remote.require('electron-settings');
 
 class LanguangeSelector extends Component {
   constructor(props) {

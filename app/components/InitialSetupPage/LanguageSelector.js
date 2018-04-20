@@ -4,7 +4,7 @@ import { traduction, language } from '../../lang/lang';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
 import $ from 'jquery';
-const settings = require('electron-settings');
+const settings = require('electron').remote.require('electron-settings');
 
 class LanguageSelector extends React.Component {
   constructor() {
