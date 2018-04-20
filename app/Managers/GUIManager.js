@@ -104,6 +104,7 @@ class GUIManager{
           // reject(downloaded);
         }
       }).catch(error => {
+        event.emit('updateFailed', e.message);
         console.log(error);
         reject(false);
       });

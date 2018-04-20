@@ -59,7 +59,6 @@ export function downloadFile(srcUrl, destFolder, destFileName, cs = null, unzip 
       })
       .on('end', async () => {
         event.emit('downloaded-file');
-
         try {
           event.emit('verifying-file');
           if (cs !== null) {
@@ -78,10 +77,8 @@ export function downloadFile(srcUrl, destFolder, destFileName, cs = null, unzip 
           event.emit('file-download-complete');
           resolve(true);
         } catch (e){
-
+          reject(e)
         }
-
-
       })
       .pipe(fs.createWriteStream(fileName));
   });

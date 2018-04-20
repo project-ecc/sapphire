@@ -1,5 +1,3 @@
-import {grabWalletDir} from "../utils/platform.service";
-
 const homedir = require('os').homedir();
 const { exec, execFile } = require('child_process');
 const os = require('os');
@@ -8,9 +6,9 @@ function installGUI(){
 	console.log("installing GUI...");
 
 	const guiVersion = process.env.version;
-	const walletDir = grabWalletDir();
 
   if (process.platform === 'linux') {
+    const walletDir = `${homedir}/.eccoin-wallet/`;
 
     const fileName = 'Sapphire';
     const architecture = os.arch() === 'x32' ? 'linux32' : 'linux64';
@@ -25,6 +23,7 @@ function installGUI(){
   }
   else if(process.platform === 'darwin'){
 
+    const walletDir =`${homedir}/Library/Application Support/.eccoin-wallet/`;
     const fileName = 'Sapphire';
     const fullpath = walletDir + fileName + '-v' + guiVersion + '.dmg';
 
@@ -37,6 +36,7 @@ function installGUI(){
 
   }
   else if (process.platform.indexOf('win') > -1) {
+    const walletDir = `${homedir}\\.eccoin-wallet\\`;
 
     const fileName = 'Sapphire';
     const architecture = os.arch() === 'x32' ? 'win32' : 'win64';

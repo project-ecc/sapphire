@@ -16,9 +16,10 @@ import MenuBuilder from './menu';
 import DaemonManager from './Managers/DaemonManager';
 import GUIManager from './Managers/GUIManager';
 import {moveToApplications} from 'electron-lets-move';
-import {grabEccoinDir} from "./utils/platform.service";
+import {grabEccoinDir, grabWalletDir} from "./utils/platform.service";
 import os from 'os';
 import { traduction } from './lang/lang';
+import {version} from './../package.json';
 const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote } = require('electron');
 const dialog = require('electron').dialog;
 const settings = require('electron-settings');
@@ -72,20 +73,32 @@ const installExtensions = async () => {
 
 app.on('ready', async () => {
 
-  //TODO: Revise this.
 
-  // try {
-  //   const moved = await moveToApplications();
-  //   if (!moved) {
-  //     console.log('user chose not too move the application')
-  //     // the user asked not to move the app, it's up to the parent application
-  //     // to store this information and not hassle them again.
-  //   }
-  // } catch (err) {
-  //   console.log('could not move application to application folder' + err)
-  //   // log error, something went wrong whilst moving the app.
-  // }
+  const walletDir = grabWalletDir();
+  const fileName = 'Sapphire';
+  let fullPath = ''
+  //delete downloaded update if it exists.
+  if (process.platform === 'linux') {
 
+    const architecture = os.arch() === 'x32' ? 'linux32' : 'linux64';
+    fullPath = walletDir + fileName + '-v' + version + '-' + architecture;
+
+  }
+  else if(process.platform === 'darwin'){
+
+    fullPath = walletDir + fileName + '-v' + version + '.dmg';
+
+  }
+  else if (process.platform.indexOf('win') > -1) {
+
+    const architecture = os.arch() === 'x32' ? 'win32' : 'win64';
+    fullPath = walletDir + fileName + '-v' + version + '-' + architecture + '.exe';
+
+  }
+
+  if(fs.existsSync(fullPath)){
+    fs.unlink(fullPath)
+  }
 
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
     await installExtensions();
@@ -160,12 +173,12 @@ app.on('ready', async () => {
 
   /*
   TODO: fix this. this doesn't work.
-  
+
   mainWindow.on('dragover', function (event) {
     event.preventDefault();
     return false;
   }, false);
-  
+
   mainWindow.on('drop', (event) => {
     event.preventDefault();
     return false;
@@ -275,7 +288,7 @@ function setupEventHandlers() {
       autoECCLauncher.enable();
     else autoECCLauncher.disable();
   });
-  
+
   ipcMain.on('minimize', (e, args) => {
     if(ds !== undefined && ds.minimise_to_tray !== undefined && ds.minimise_to_tray){
       mainWindow.setSkipTaskbar(true);
@@ -363,6 +376,12 @@ function setupEventHandlers() {
     console.log("electron got gui update message, sending to GUI");
     guiUpdate = true;
     sendMessage('guiUpdate');
+  });
+
+  // TODO Csmartins.
+
+  event.on('updateFailed', (errorMessage) => {
+
   });
 
   event.on('updatedDaemon', () => {
