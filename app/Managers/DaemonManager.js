@@ -86,7 +86,7 @@ class DaemonManager {
      	} while (this.currentVersion !== -1);
      	console.log(this.currentVersion)
 	     console.log('got latest version');
-	    if (this.installedVersion == -1) {
+	    if (this.installedVersion == -1 || this.installedVersion != "0.2.5.7") {
 	    	do {
 	    	  try {
             await this.downloadDaemon();
@@ -94,7 +94,7 @@ class DaemonManager {
 	    	    event.emit('updateFailed', e.message)
           }
 
-	    	} while (this.installedVersion == -1);
+	    	} while (this.installedVersion == -1 || this.installedVersion != "0.2.5.7");
 	    	console.log('telling electron about wallet.dat');
 	    	event.emit('wallet', this.walletDat);
 	    } else{ event.emit('wallet', this.walletDat); }
@@ -119,7 +119,7 @@ class DaemonManager {
 				     console.log('Daemon running');
 				     return;
 				 }
-    }
+        }
         self.running = false;
         console.log('daemon not running');
         if (!self.downloading) { self.startDaemon(); }
@@ -173,13 +173,12 @@ class DaemonManager {
       const self = this;
       setTimeout(async () => {
         let downloaded = false;
-        do {
-          try {
-            downloaded = await self.downloadDaemon();
-          } catch (e) {
-            event.emit('updateFailed', e.message)
-          }
-        } while (!downloaded);
+        try {
+          downloaded = await self.downloadDaemon();
+        } catch (e) {
+          event.emit('updateFailed', e.message)
+          return;
+        }
         event.emit('updatedDaemon');
         if (self.shouldRestart) { self.startDaemon(); }
         this.toldUserAboutUpdate = false;
@@ -283,7 +282,7 @@ class DaemonManager {
         }
 
       }).catch(error => {
-        console.log("Error " + error);
+        console.log("Error downloadDaemon(): " + error);
         reject(error);
       });
     });

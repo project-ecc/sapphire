@@ -381,6 +381,7 @@ function setupEventHandlers() {
 
   event.on('updateFailed', (errorMessage) => {
     console.log(errorMessage)
+    app.quit();
   });
 
   event.on('updatedDaemon', () => {
