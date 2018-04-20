@@ -10,7 +10,7 @@ function installGUI(){
   if (process.platform === 'linux') {
     const walletDir = `${homedir}/.eccoin-wallet/`;
 
-    const fileName = 'Sapphire';
+    const fileName = 'sapphire';
     const architecture = os.arch() === 'x32' ? 'linux32' : 'linux64';
     const fullPath = walletDir + fileName + '-v' + guiVersion + '-' + architecture;
 
@@ -24,7 +24,7 @@ function installGUI(){
   else if(process.platform === 'darwin'){
 
     const walletDir =`${homedir}/Library/Application Support/.eccoin-wallet/`;
-    const fileName = 'Sapphire';
+    const fileName = 'sapphire';
     let fullPath = walletDir + fileName + '-v' + guiVersion + '.dmg';
 
     // This must be added to escape the space.
@@ -41,7 +41,7 @@ function installGUI(){
   else if (process.platform.indexOf('win') > -1) {
     const walletDir = `${homedir}\\.eccoin-wallet\\`;
 
-    const fileName = 'Sapphire';
+    const fileName = 'sapphire';
     const architecture = os.arch() === 'x32' ? 'win32' : 'win64';
     const fullPath = walletDir + fileName + '-v' + guiVersion + '-' + architecture + '.exe';
 

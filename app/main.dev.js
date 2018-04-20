@@ -75,7 +75,7 @@ app.on('ready', async () => {
 
 
   const walletDir = grabWalletDir();
-  const fileName = 'Sapphire';
+  const fileName = 'sapphire';
   let fullPath = ''
   //delete downloaded update if it exists.
   if (process.platform === 'linux') {
