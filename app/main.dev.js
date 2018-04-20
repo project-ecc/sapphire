@@ -170,20 +170,6 @@ app.on('ready', async () => {
     return false;
   });
 
-  /*
-  TODO: fix this. this doesn't work.
-
-  mainWindow.on('dragover', function (event) {
-    event.preventDefault();
-    return false;
-  }, false);
-
-  mainWindow.on('drop', (event) => {
-    event.preventDefault();
-    return false;
-  }, false);
-  */
-
 	mainWindow.webContents.on('before-input-event', async function (event, input) {
 		if ((input.key === 'q' || input.key === "Q" || input.key === "w" || input.key === "W") && input.control) {
 			event.preventDefault();
@@ -239,9 +225,9 @@ function setupTrayIcon() {
     }
   ];
 
-  const contextMenu = Menu.buildFromTemplate(defaultMenu);
   tray.setToolTip('ECC Wallet');
-  tray.setContextMenu(contextMenu);
+  //const contextMenu = Menu.buildFromTemplate(defaultMenu);
+  //tray.setContextMenu(contextMenu);
 
   tray.on('click', () => {
     mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
