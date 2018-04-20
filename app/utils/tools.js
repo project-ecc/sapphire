@@ -260,6 +260,9 @@ module.exports = {
       else if(iconName == "eccNewsNotif"){
         return require('../../resources/images/news-white-notif.png')
       }
+      else if(iconName == "connectionsPaymentChain"){
+        return require('../../resources/images/connections-orange-pastel.png')
+      }
     }
     else if(selectedTheme && selectedTheme === "theme-defaultEcc"){
       if(iconName == "wallet" && !hover){
@@ -399,6 +402,9 @@ module.exports = {
       }
       else if(iconName == "eccNewsNotif"){
         return require('../../resources/images/news-blue-notif.png')
+      }
+      else if(iconName == "connectionsPaymentChain"){
+        return require('../../resources/images/connections-orange.png')
       }
     }
   },

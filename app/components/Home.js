@@ -242,8 +242,8 @@ class Home extends Component {
                   </div>
                     <img onClick={this.expensesTypeFilterClicked.bind(this, "messaging")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"5px", position:"relative", top: "103px", left: "12px"}} src={messaging}/>
                     <img onClick={this.expensesTypeFilterClicked.bind(this, "fileStorage")} style={{display: "inline-block",  cursor: "pointer", paddingLeft:"20px", position:"relative", top: "103px", left: "12px"}} src={fileStorageExpenses}/>
-                    <p onClick={this.expensesTypeFilterClicked.bind(this, "ans")} style = {{color: this.props.ansExpensesSelected ? "#aeacf3" : "#85899e"}} className={this.props.ansExpensesSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> ANS </p>
-                    <p onClick={this.expensesTypeFilterClicked.bind(this, "all")} style = {{color: this.props.allExpensesSelected ? "#aeacf3" : "#85899e"}} className={this.props.allExpensesSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> { this.props.lang.all }</p>
+                    <p onClick={this.expensesTypeFilterClicked.bind(this, "ans")} className={this.props.ansExpensesSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> ANS </p>
+                    <p onClick={this.expensesTypeFilterClicked.bind(this, "all")} className={this.props.allExpensesSelected ? "earningsFilters textSelected" : "earningsFilters textSelectableHome"}> { this.props.lang.all }</p>
                 </div>
               </div>
               <div className="col-sm-4 text-center"  style={{padding: "0 0"}}>

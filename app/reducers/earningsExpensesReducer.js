@@ -6,7 +6,7 @@ import {
 } from '../actions/types';
 
 
-const INITIAL_STATE = {allEarningsSelected: true, fileStorageEarningsSelected: false, stakingEarningsSelected: false, weekEarningsSelected: false, monthEarningsSelected: false, allTimeEarningsSelected: true, fileStorageExpensesSelected: false, messagingExpensesSelected: false, ansExpensesSelected: false, allExpensesSelected: false, weekExpenseseSelected: false, monthExpenseseSelected: false, allTimeExpensesSelected: true};
+const INITIAL_STATE = {allEarningsSelected: true, fileStorageEarningsSelected: false, stakingEarningsSelected: false, weekEarningsSelected: false, monthEarningsSelected: false, allTimeEarningsSelected: true, fileStorageExpensesSelected: false, messagingExpensesSelected: false, ansExpensesSelected: false, allExpensesSelected: true, weekExpenseseSelected: false, monthExpenseseSelected: false, allTimeExpensesSelected: true};
 
 export default(state = INITIAL_STATE, action) => {
  if(action.type == FILTER_EXPENSES_TYPE){

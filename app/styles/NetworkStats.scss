@@ -49,6 +49,23 @@
   	}
 }
 
+#paymentChainCircle{
+	@include themify($themes) { 
+    	stroke: themed('paymentChainCircleColor');  
+  	}
+}
+
+#messagingChainCircle{
+	@include themify($themes) { 
+    	stroke: themed('messagingChainCircleColor');  
+  	}
+}
+
+#fileStorageChainCircle{
+	@include themify($themes) { 
+    	stroke: themed('fileStorageChainCircleColor');  
+  	}
+}
 
 @media screen and (max-width: 1250px) {
 	.networkStatsChainTitle{

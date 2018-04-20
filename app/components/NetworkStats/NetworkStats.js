@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
+const Tools = require('../../utils/tools')
 
 class NetworkStats extends Component {
   constructor(props) {
@@ -42,24 +43,12 @@ class NetworkStats extends Component {
     )
   }
 
-  getHtmlChainInfo(enabled, percentage, connections, headers, block, color, rgbColor, imageConnections, operation = ""){
+  getHtmlChainInfo(enabled, percentage, connections, headers, block, rgbColor, imageConnections, id, operation = ""){
     return(
       <div className="chainInfo" style={{position: "relative", paddingTop: "30px"}}>
         <svg style={{maxWidth:"216px", maxHeight: "230px"}} className="score" width="100%" height="400" viewBox="-25 -25 400 400">
-        <circle className="score-empty" cx="175" cy="175" r="180" strokeWidth="5px" fill="none"></circle>
-        <defs>
-          <filter id="sofGlow" height="300%" width="300%" x="-75%" y="-75%">
-            <feMorphology operator="dilate" radius="1" in="SourceAlpha" result="thicken" />
-            <feGaussianBlur in="thicken" stdDeviation="2" result="blurred" />
-            <feFlood floodColor={rgbColor} result="glowColor" />
-            <feComposite in="glowColor" in2="blurred" operator="in" result="softGlow_colored" />
-            <feMerge>
-              <feMergeNode in="softGlow_colored"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-        <circle filter="url(#sofGlow)" className="js-circle score-circle" transform="rotate(-90 175 175)" cx="175" cy="175" r="180" strokeDasharray="1130" strokeWidth="5px" strokeDashoffset={this.getPercentage(100-percentage)} fill="none" stroke={color}></circle>
+        <circle className="score-empty" cx="175" cy="175" r="180" strokeWidth="6px" fill="none"></circle>
+        <circle id={id} className="js-circle score-circle" transform="rotate(-90 175 175)" cx="175" cy="175" r="180" strokeDasharray="1130" strokeWidth="6px" strokeDashoffset={this.getPercentage(100-percentage)} fill="none"></circle>
         {this.getText(enabled, percentage, operation)}
 
         </svg>
@@ -110,15 +99,15 @@ class NetworkStats extends Component {
           <div className="row">
             <div className="col-sm-4 text-center">
               <p className="networkStatsChainTitle">{ this.props.lang.messagingChain }</p>
-              {this.getHtmlChainInfo(this.props.messagingChain, 0, 0, 0, 0, "#29d55a", "rgb(41,213, 90)", this.props.messagingChain ? require('../../../resources/images/connections-green.png') : require('../../../resources/images/connections-default.png'), "messaging")}
+              {this.getHtmlChainInfo(false, 0, 0, 0, 0, "rgb(41,213, 90)", this.props.messagingChain ? require('../../../resources/images/connections-green.png') : require('../../../resources/images/connections-default.png'), "messagingChainCircle", "messaging")}
             </div>
             <div className="col-sm-4 text-center">
               <p className="networkStatsChainTitle">{ this.props.lang.paymentChain }</p>
-                {this.getHtmlChainInfo(true, this.props.percentagePaymentChain, this.props.connectionsPayment, this.props.headersPaymentChain, this.props.blockPaymentChain, this.props.theme == "default" ? "#d59529" : "#c39c59", "rgb(213,149, 41)", require('../../../resources/images/connections-orange.png'))}
+                {this.getHtmlChainInfo(true, this.props.percentagePaymentChain, this.props.connectionsPayment, this.props.headersPaymentChain, this.props.blockPaymentChain, "rgb(213,149, 41)", Tools.getIconForTheme("connectionsPaymentChain", false), "paymentChainCircle")}
             </div>
             <div className="col-sm-4 text-center">
               <p className="networkStatsChainTitle">{ this.props.lang.fileStorageChain }</p>
-              {this.getHtmlChainInfo(this.props.fileStorageChain, 0, 0, 0, 0, "#20729c", "rgb(32,114, 156)", this.props.fileStorage ? require('../../../resources/images/connections-blue.png') : require('../../../resources/images/connections-default.png'), "fileStorage")}
+              {this.getHtmlChainInfo(false, 0, 0, 0, 0, "rgb(32,114, 156)", this.props.fileStorage ? require('../../../resources/images/connections-blue.png') : require('../../../resources/images/connections-default.png'), "fileStorageChainCircle", "fileStorage")}
             </div>
           </div>
         </div>
