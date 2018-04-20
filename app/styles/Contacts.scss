@@ -18,9 +18,3 @@
 	font-size: 15px;
 	visibility: hidden;
 }
-
-#ansExplanation{
-  @include themify($themes) { 
-    color: themed('bodySecondaryParagraphColor');  
-  }
-}

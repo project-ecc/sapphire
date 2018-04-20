@@ -183,7 +183,7 @@ class ConfirmNewAddress extends React.Component {
       )
   	} else if(!this.props.ansAddress && this.props.account == ""){
   		return(
-  			<p className="confirmationText">{ this.props.lang.normalCreateConfirm1 } <span className="ecc">{ this.props.lang.normalCreateConfirm2 }</span> { this.props.lang.normalCreateConfirm3 }.</p>
+  			<p className="confirmationText">{ this.props.lang.normalCreateConfirm1 } <span className="ecc">{ this.props.lang.normalCreateConfirm2 }</span>.</p>
   		)
   	} else if(!this.props.ansAddress && this.props.account != ""){
   		return(

@@ -42,6 +42,10 @@
   }
 }
 
+.columnPaddingFixAns{
+  padding-left: 35px;
+}
+
 .dropdownFilterSelector {
   @include themify($themes) { 
     color: themed('bodyParagraphColor');  

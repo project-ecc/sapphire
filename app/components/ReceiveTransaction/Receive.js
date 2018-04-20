@@ -9,6 +9,7 @@ import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 const lang = traduction();
 const { clipboard } = require('electron');
 const ansAddresImage = require('../../../resources/images/ans_address.png');
+var classNames = require('classnames');
 
 // This is temporary until ANS is enabled
 const ansEnabled = false;
@@ -35,10 +36,11 @@ class Receive extends Component {
     if(this.props.newAddressAccount)
       TweenMax.set('#addressAccountPlaceHolder', {autoAlpha: 0});
     if(!this.props.ansAddress){
-      TweenMax.to('#addressAccount', 0.2, {top: -38});
-      TweenMax.to('#addressName', 0.2, {autoAlpha: 0});
+      //TweenMax.to('#addressAccount', 0.2, {top: -38});
+      TweenMax.to('#addressName', 0.2, {autoAlpha: 0.4});
       TweenMax.to('.tableCustom', 0.2, {top: 0});
       TweenMax.to('#imageAns', 0.2, {top: 6})
+      $("#addressName input").attr("disabled", true);
     }
   }
 
@@ -119,21 +121,25 @@ class Receive extends Component {
   handleChangeAddressCreationToAns(){
     if(this.props.ansAddress) return;
     this.props.setCreateAddressAns(true);
-    TweenMax.to('#addressAccount', 0.2, {top: 0});
+    //TweenMax.to('#addressAccount', 0.2, {top: 0});
     TweenMax.fromTo('#ansExplanation', 0.2, {top: -15}, {top: 15, autoAlpha: 1});
     TweenMax.to('#addressName', 0.2, {autoAlpha: 1});
     TweenMax.to('.tableCustom', 0.2, {top: 50});
     TweenMax.to('#imageAns', 0.2, {top: 55})
+    $("#addressName input").attr("disabled", false);
   }
 
   handleChangeAddressCreationToNormal(){
     if(!this.props.ansAddress) return;
     this.props.setCreateAddressAns(false);
-    TweenMax.to('#addressAccount', 0.2, {top: -38});
+    //TweenMax.to('#addressAccount', 0.2, {top: -38});
     TweenMax.fromTo('#ansExplanation', 0.2, {top: 15}, {top: -15, autoAlpha: 0});
-    TweenMax.to('#addressName', 0.2, {autoAlpha: 0});
+    TweenMax.to('#addressName', 0.2, {autoAlpha: 0.4});
     TweenMax.to('.tableCustom', 0.2, {top: 0});
     TweenMax.to('#imageAns', 0.2, {top: 6})
+    $("#addressName input").attr("disabled", true);
+    this.props.setNewAddressName("");
+    TweenMax.set('#addressNamePlaceHolder', {autoAlpha: 1});
   }
 
   handleChangeAccountAddress(event){
@@ -175,6 +181,35 @@ class Receive extends Component {
   render() {
     let counter = 0;
     let rowClassName = "row normalWeight tableRowCustom";
+    let nameHeader = classNames({
+      'col-sm-3 headerAddresses tableRowHeader columnPaddingFixAns': this.props.filterAns,
+      'col-sm-1 headerAddresses tableRowHeader': !this.props.filterAns,
+    });
+    let addressHeader = classNames({
+      'col-sm-6 headerAddresses tableRowHeader columnPaddingFixAns': this.props.filterAns,
+      'col-sm-7 headerAddresses tableRowHeader': !this.props.filterAns,
+    });
+    let amountHeader = classNames({
+      'col-sm-3 headerAddresses tableRowHeader columnPaddingFixAns': this.props.filterAns,
+      'col-sm-4 headerAddresses tableRowHeader': !this.props.filterAns,
+    });
+
+    let nameColumn = classNames({
+      'col-sm-3 tableColumn tableColumnFixReceive selectableText columnPaddingFixAns': this.props.filterAns,
+      'col-sm-1 tableColumn tableColumnFixReceive selectableText': !this.props.filterAns,
+    });
+
+    let addressColumn = classNames({
+      'col-sm-6 tableColumn selectableText columnPaddingFixAns': this.props.filterAns,
+      'col-sm-7 tableColumn selectableText': !this.props.filterAns,
+    });
+
+    let amountColumn = classNames({
+      'col-sm-3 tableColumn selectableText columnPaddingFixAns': this.props.filterAns,
+      'col-sm-4 tableColumn selectableText': !this.props.filterAns,
+    });
+
+
     return (
       <div className="panel">
         <div id="headerReceive">
@@ -195,7 +230,7 @@ class Receive extends Component {
               type="text"
               inputStyle={{textAlign: "left", width:"100%", display: "inline-block"}}
             />
-            <Input
+            {/*<Input
               divId="addressAccount"
               divStyle={{position: "relative",  marginTop: "10px"}}
               placeholder= { this.props.lang.accountOptional }
@@ -205,10 +240,10 @@ class Receive extends Component {
               handleChange={this.handleChangeAccountAddress.bind(this)}
               type="text"
               inputStyle={{textAlign: "left", width:"100%", display: "inline-block"}}
-            />
+            />*/}
           </div>
            <ConfirmButtonPopup handleConfirm={this.handleCreateNewAddress} style={{marginLeft: "20px", display: "inline-block", width: "auto", padding: "0px 20px"}} text={ this.props.ansAddress ? this.props.lang.createANSAddress : this.props.lang.createNormalAddress }/>
-            <p id="ansExplanation" style={{visibility: this.props.ansAddress ? "visible" : "hidden"}}>{ this.props.lang.ansCost1 } 0.00000005 <span className="ecc">ecc</span> { this.props.lang.ansCost2 }.</p>
+            <p id="ansExplanation" style={{visibility: this.props.ansAddress ? "visible" : "hidden"}}>{ this.props.lang.ansCost1 } 10 <span className="ecc">ecc</span> { this.props.lang.ansCost2 }.</p>
          </div>
 
          <div className="tableCustom">
@@ -223,9 +258,9 @@ class Receive extends Component {
           </div>
           <div className="tableContainer">
               <div className="row rowDynamic">
-                <div className="col-sm-3 headerAddresses headerAddressFix tableRowHeader">{this.props.filterAll ? "" : this.props.filterNormal ? "" : "NAME"}</div>
-                <div id="addressHeader" className="col-sm-6 headerAddresses tableRowHeader">{this.props.filterAll ? this.props.lang.address + " / " + this.props.lang.name : this.props.lang.address}</div>
-                <div id="addressHeader" className="col-sm-3 headerAddresses tableRowHeader">{ this.props.lang.amount }</div>
+                <div className={nameHeader}>{this.props.filterAll ? "" : this.props.filterNormal ? "" : this.props.lang.name}</div>
+                <div id="addressHeader" className={addressHeader}>{this.props.filterAll ? this.props.lang.address + " / " + this.props.lang.name : this.props.lang.address}</div>
+                <div id="addressHeader" className={amountHeader}>{ this.props.lang.amount }</div>
               </div>
             <div id="rows">
             {this.props.userAddresses.map((address, index) => {
@@ -233,13 +268,13 @@ class Receive extends Component {
                 counter++;
                 return (
                   <div className= {this.props.selectedAddress && address.address == this.props.selectedAddress.address ? rowClassName + " tableRowSelected" : counter % 2 != 0 ? rowClassName : rowClassName + " tableRowEven"} key={`address_${index}`}>
-                    <div className="col-sm-3 tableColumn tableColumnFixReceive selectableText" onClick={this.rowClicked.bind(this, address)}>
+                    <div className={nameColumn} onClick={this.rowClicked.bind(this, address)}>
                       {this.props.filterAns ? address.address : this.getAddressDiplay(address)}
                     </div>
-                    <div className="col-sm-6 tableColumn selectableText" onClick={this.rowClicked.bind(this, address)}>
+                    <div className={addressColumn} onClick={this.rowClicked.bind(this, address)}>
                       {this.props.filterAns ? address.normalAddress : address.address}
                     </div>
-                    <div className="col-sm-3 tableColumn selectableText" onClick={this.rowClicked.bind(this, address)}>
+                    <div className={amountColumn} onClick={this.rowClicked.bind(this, address)}>
                       {address.amount}
                     </div>
                   </div>
