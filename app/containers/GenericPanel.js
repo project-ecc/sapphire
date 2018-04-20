@@ -14,6 +14,7 @@ import NetworkStatsPage from './Pages/NetworkStatsPage';
 import NewsPage from './Pages/NewsPage';
 import FileStoragePage from './Pages/FileStoragePage';
 import {TweenMax} from "gsap";
+import $ from 'jquery';
 const Tools = require('../utils/tools');
 
 class GenericPanel extends Component {
@@ -62,7 +63,7 @@ class GenericPanel extends Component {
     return (
       <div>
         <Sidebar/>
-        <div className="mainSubPanel" style={this.props.selectedPanel == "messaging" ? {overflowY: "hidden"} : {}}>
+        <div className="mainSubPanel" style={this.props.selectedPanel == "messaging" ? {overflowY: "hidden"} : {paddingLeft: $( window ).width() <= 1023 ? "0px" : "224px"}}>
           {this.getPanel()}
         </div>
       </div>

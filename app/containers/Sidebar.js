@@ -51,13 +51,11 @@ class Sidebar extends Component {
     var self = this;
     $(document).ready(function(){
       if($( window ).width() <= 1023){
-          setTimeout(() => {
-            $('.sidebar').css('left', '-224px');
-            $('.mainSubPanel').css('padding-left', '0px');
+            //$('.sidebar').css('left', '-224px');
+            //$('.mainSubPanel').css('padding-left', '0px');
             self.props.setSidebarHidden(true);
             $('.miniButton').css('left', '10px');
             $('#appButtonsMac').css('left', '39px')
-          }, 500)
       }
       $(".sidebar-menu > li.have-children a.mainOption").on("click", function(i){
           i.stopPropagation();
@@ -200,7 +198,7 @@ class Sidebar extends Component {
 
     const usericon = require('../../resources/images/logo_setup.png');
     return (
-      <div className="sidebar">
+      <div className="sidebar" style={{left: $( window ).width() <= 1023 ? "-224px" : "0px"}}>
         <div className="userimage">
           <img id="sidebarLogo" src={usericon} />
         </div>

@@ -25,6 +25,10 @@ class UnlockWallet extends React.Component {
     }
   }
 
+  componentWillMount(){
+    Tools.hideFunctionIcons();
+  }
+
   async unlockWallet(){
     //const updated = await Tools.updateConfig(1);
     //if (updated){
@@ -56,6 +60,7 @@ class UnlockWallet extends React.Component {
   componentWillUnmount()
   {
     this.props.setPassword("");
+    Tools.showFunctionIcons();
   }
 
   handleChange(event) {

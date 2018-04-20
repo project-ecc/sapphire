@@ -243,7 +243,7 @@ aside{
 #unlockPanel{
   @include themify($themes) { 
     background-color: themed('popupBackgroundColor');  
-    box-shadow: themed('popupBoxShadow');  
+    //box-shadow: themed('popupBoxShadow');  
   } 
   min-width: 535px;
   z-index: 100;

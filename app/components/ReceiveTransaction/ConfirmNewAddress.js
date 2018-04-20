@@ -7,7 +7,7 @@ import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
 const event = require('../../utils/eventhandler');
-const tools = require('../../utils/tools');
+const Tools = require('../../utils/tools');
 
 // This is temporary until ANS is enabled
 const ansEnabled = false;
@@ -21,6 +21,15 @@ class ConfirmNewAddress extends React.Component {
     this.handleChangeNameAddress = this.handleChangeNameAddress.bind(this);
     this.createNormalAddress = this.createNormalAddress.bind(this);
     this.getConfirmationText = this.getConfirmationText.bind(this);
+  }
+
+  componentWillMount(){
+    Tools.hideFunctionIcons();
+  }
+
+  componentWillUnmount()
+  {
+    Tools.showFunctionIcons();
   }
 
   createNormalAddress(){

@@ -6,7 +6,7 @@ import $ from 'jquery';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 const event = require('../../utils/eventhandler');
-const tools = require('../../utils/tools');
+const Tools = require('../../utils/tools');
 
 class CreateAnsAddress extends React.Component {
  constructor() {
@@ -16,6 +16,14 @@ class CreateAnsAddress extends React.Component {
     this.getConfirmationText = this.getConfirmationText.bind(this);
   }
 
+  componentWillMount(){
+    Tools.hideFunctionIcons();
+  }
+
+  componentWillUnmount()
+  {
+    Tools.showFunctionIcons();
+  }
 
 
   handleConfirm(){

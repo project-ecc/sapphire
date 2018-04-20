@@ -23,6 +23,15 @@ class SendConfirmation extends React.Component {
     Tools.showTemporaryMessage('#wrongPassword');
   }
 
+  componentWillMount(){
+    Tools.hideFunctionIcons();
+  }
+
+  componentWillUnmount()
+  {
+    Tools.showFunctionIcons();
+  }
+
   sendECC(){
     let wasStaking = this.props.staking;
     this.unlockWallet(false, 5, () => {
