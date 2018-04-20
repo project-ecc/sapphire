@@ -220,7 +220,7 @@ class InitialSetup extends Component {
     else if(this.props.partialInitialSetup){
       return this.renderPartialInitialSetup();
     }
-    else if(this.props.unencryptedWallet){
+    else if(this.props.unencryptedWallet && !this.props.partialInitialSetup){
       return this.renderUnencryptedWalletSetup();
     }
     else if(this.props.shouldImportWallet || this.props.importingWalletWithSetupDone){

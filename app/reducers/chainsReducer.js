@@ -7,11 +7,12 @@ import {
 		CHAIN_INFO,
 		TRANSACTIONS_DATA,
     	SET_DAEMON_VERSION,
-    	SET_TEMPORARY_BALANCE
+    	SET_TEMPORARY_BALANCE,
+    	WALLET_INFO_SEC
 } from '../actions/types';
 
 
-const INITIAL_STATE = {paymentChainSync: 0, loadingBlockIndexPayment: false, blockPayment: 0, headersPayment:0, connectionsPayment: 0, isStaking: false, stakingConfig: false, staking: 0, balance: 0, transactionsData: [], connections: 0, transactionsType: "all", messagingChain: false, fileStorageChain:false, unconfirmedBalance: 0, daemonVersion: ''};
+const INITIAL_STATE = {paymentChainSync: 0, loadingBlockIndexPayment: false, blockPayment: 0, headersPayment:0, connectionsPayment: 0, isStaking: false, stakingConfig: false, staking: 0, balance: 0, transactionsData: [], connections: 0, transactionsType: "all", messagingChain: false, fileStorageChain:false, unconfirmedBalance: 0, daemonVersion: '', newMint: 0, immatureBalance: 0 };
 
 export default(state = INITIAL_STATE, action) => {
    if(action.type == BLOCK_INDEX_PAYMENT){
@@ -27,10 +28,13 @@ export default(state = INITIAL_STATE, action) => {
 		return {...state, isStaking: action.payload, password: ""}
 	}
 	else if(action.type == CHAIN_INFO){
-		return {...state, stakingConfig: action.payload.staking, isStaking: (action.payload.staking == true && action.payload.unlocked_until > 0), staking: action.payload.stake, connections: action.payload.connections, blockPayment: action.payload.blocks, headersPayment: action.payload.headers, connectionsPayment: action.payload.connections}
+		return {...state, stakingConfig: action.payload.staking, isStaking: (action.payload.staking == true && action.payload.unlocked_until > 0), connections: action.payload.connections, blockPayment: action.payload.blocks, headersPayment: action.payload.headers, connectionsPayment: action.payload.connections}
 	}
 	else if(action.type == WALLET_INFO){
-		return {...state, balance: action.payload.balance, unconfirmedBalance: action.payload.unconfirmedBalance}
+		return {...state, balance: action.payload.balance, newMint: action.payload.newmint, staking: action.payload.stake}
+	}
+	else if(action.type == WALLET_INFO_SEC){
+		return {...state, unconfirmedBalance: action.payload.unconfirmed_balance, immatureBalance: action.payload.immature_balance}
 	}
 	else if(action.type == TRANSACTIONS_DATA){
 		var data = action.payload.data;

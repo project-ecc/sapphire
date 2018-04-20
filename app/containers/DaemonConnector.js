@@ -1,6 +1,6 @@
 import Wallet from '../utils/wallet';
 import { ipcRenderer } from 'electron';
-import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS, SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE, SELECTED_THEME, SET_DAEMON_VERSION, STAKING_REWARD_UPDATE } from '../actions/types';
+import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS, SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE, SELECTED_THEME, SET_DAEMON_VERSION, STAKING_REWARD_UPDATE, WALLET_INFO_SEC } from '../actions/types';
 const event = require('../utils/eventhandler');
 const tools = require('../utils/tools');
 const sqlite3 = require('sqlite3');
@@ -58,7 +58,7 @@ class DaemonConnector {
     this.removeTransactionFromDb = this.removeTransactionFromDb.bind(this);
     this.removeTransactionFromMemory = this.removeTransactionFromMemory.bind(this);
     this.goToEarningsPanel = this.goToEarningsPanel.bind(this);
-    //this.createWallet = this.createWallet.bind(this);
+    this.createWallet = this.createWallet.bind(this);
     this.subscribeToEvents();
     this.currentAddresses = [];
     this.processedAddresses = transactionsInfo.get('addresses').value();
@@ -92,6 +92,7 @@ class DaemonConnector {
     this.checkQueuedNotificationsInterval;
     this.checkQueuedNotifications = this.checkQueuedNotifications.bind(this);
     this.queueOrSendNotification = this.queueOrSendNotification.bind(this);
+    this.unencryptedWallet = false;
 	}
 
   subscribeToEvents(){
@@ -160,9 +161,18 @@ class DaemonConnector {
     this.step++;
     if(this.step >= 7 && this.transactionsIndexed){
       this.step = 1;
-      if(this.partialSetup){
-        this.store.dispatch({type: PARTIAL_INITIAL_SETUP });
+      if(this.partialSetup && !this.unencryptedWallet){
+        this.store.dispatch({type: PARTIAL_INITIAL_SETUP, payload: false });
         this.partialSetup = false;
+      }
+      else if(this.partialSetup && this.unencryptedWallet){
+        this.store.dispatch({type: PARTIAL_INITIAL_SETUP, payload: true });
+        this.partialSetup = false;
+        this.unencryptedWallet = false;
+      }
+      else if(!this.partialSetup && this.unencryptedWallet){
+        this.store.dispatch({type: UNENCRYPTED_WALLET, payload: true });
+        this.unencryptedWallet = false;
       }
       if(this.firstRun){
         this.firstRun=false;
@@ -188,6 +198,7 @@ class DaemonConnector {
     ipcRenderer.on('daemonUpdate', this.handleDaemonUpdate.bind(this));
     ipcRenderer.on('daemonUpdated', this.handleDaemonUpdated.bind(this));
     ipcRenderer.on('guiUpdate', this.handleGuiUpdate.bind(this));
+    ipcRenderer.on('daemonCredentials', this.createWallet.bind(this));
   }
 
   handleDaemonUpdated(){
@@ -218,19 +229,21 @@ class DaemonConnector {
     this.store.dispatch({type: UPDATE_AVAILABLE, payload: {guiUpdate: this.store.getState().startup.guiUpdate, daemonUpdate: true} })
   }
 
-  handleInitialSetup(event, args){
-    this.store.dispatch({type: INITIAL_SETUP })
-    //this.createWallet(args);
+  createWallet(event, arg){
+    this.store.dispatch({type: DAEMON_CREDENTIALS, payload: arg })
+    this.wallet = this.store.getState().application.wallet;
   }
 
-  handlePartialSetup(event, args){
-    //this.createWallet(args);
+  handleInitialSetup(){
+    this.store.dispatch({type: INITIAL_SETUP })
+  }
+
+  handlePartialSetup(){
     this.partialSetup = true;
     this.getChainInfo();
   }
 
-  handleSetupDone(event, args){
-    //this.createWallet(args);
+  handleSetupDone(){
     this.store.dispatch({type: SETUP_DONE, payload: true});
     this.unsubscribeFromSetupEvents();
   }
@@ -241,7 +254,7 @@ class DaemonConnector {
 
       if(data.length > 0){
         // Set wallet balance
-        this.store.dispatch({type: WALLET_INFO, payload: {balance: data[0].balance, unconfirmedBalance: data[0].unconfirmed_balance}});
+        this.store.dispatch({type: WALLET_INFO, payload: data[0]});
 
         // Set daemon version
         this.store.dispatch({type: SET_DAEMON_VERSION, payload: tools.formatVersion(data[0].version)});
@@ -260,7 +273,7 @@ class DaemonConnector {
     this.wallet.getInfo().then((data) => {
       if(!data.encrypted){
         console.log("RUNNING UNENCRYPTED WALLET");
-        this.store.dispatch({type: UNENCRYPTED_WALLET, payload: true})
+        this.unencryptedWallet = true;
       }
       if(this.loadingBlockIndexPayment){
         this.loadingBlockIndexPayment = false;
@@ -293,7 +306,7 @@ class DaemonConnector {
 	  this.wallet.getInfo().then((data) => {
       if(!data.encrypted){
         console.log("RUNNING UNENCRYPTED WALLET");
-        this.store.dispatch({type: UNENCRYPTED_WALLET, payload: true})
+        //this.store.dispatch({type: UNENCRYPTED_WALLET, payload: true})
       }
       if(this.loadingBlockIndexPayment){
         this.loadingBlockIndexPayment = false;
@@ -302,6 +315,13 @@ class DaemonConnector {
 			this.store.dispatch({type: CHAIN_INFO, payload: data});
       this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data.blocks == 0 || data.headers == 0 ? 0 : ((data.blocks * 100) / data.headers).toFixed(2)})
 		})
+
+    this.wallet.command([{method: "getwalletinfo"}]).then((data) => {
+      this.store.dispatch({type: WALLET_INFO_SEC, payload: data[0]});
+    })
+    .catch((err) => {
+        console.log(err.code + " : " + err.message)
+    });
 	}
 
   fixNewsText(text){
@@ -952,10 +972,7 @@ class DaemonConnector {
       });
     });*/
 
-      /*createWallet(args){
-    this.store.dispatch({type: DAEMON_CREDENTIALS, payload: args })
-    this.wallet = this.store.getState().application.wallet;
-
+  /*
     this.getChainInfo();
     this.getWalletInfo();
     this.getTransactions();

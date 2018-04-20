@@ -3,7 +3,6 @@
 @import "~bootstrap-material-design/dist/css/bootstrap-material-design.css";
 @import "~bootstrap-material-design/dist/css/bootstrap-material-design.css";
 @import "~twemoji-awesome/dist/twemoji-awesome.min.css";
-@import url("https://fonts.googleapis.com/css?family=Muli:200,300,400,600,700,800,900");
 @import "./styles/Sidebar.scss";
 @import "./styles/Home.scss";
 @import "./styles/Receive.scss";
@@ -27,6 +26,30 @@
 @import "./styles/Messaging.scss";
 @import "./styles/FileStorage.scss";
 @import "./styles/themes.scss";
+
+@font-face {
+  font-family: 'Muli';
+  src: url('./fonts/Muli-SemiBold.ttf')  format('truetype');
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'Muli';
+  src: url('./fonts/Muli-Bold.ttf')  format('truetype');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Muli';
+  src: url('./fonts/Muli-Regular.ttf')  format('truetype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Muli';
+  src: url('./fonts/Muli-Light.ttf')  format('truetype');
+  font-weight: 300;
+}
 
 html,
 

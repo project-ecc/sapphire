@@ -84,7 +84,7 @@ class ChangePassword extends React.Component {
     if(this.props.passwordVal == "" || this.props.passwordValConfirmation == "" || this.props.newPassword == ""){
       Tools.showTemporaryMessage('#wrongPassword', this.props.lang.fillAllFields );
     }
-    else if(this.props.passwordVal != this.props.passwordValConfirmation){
+    else if(this.props.newPassword != this.props.passwordValConfirmation){
       Tools.showTemporaryMessage('#wrongPassword', this.props.lang.passwordsDontMatch );
     }
     else{
@@ -113,7 +113,7 @@ class ChangePassword extends React.Component {
         />
         <Input
           divStyle={{marginTop: "20px", width: "300px"}}
-          placeholder= { this.props.lang.repeatPassword }
+          placeholder= {  this.props.lang.newPassword}
           placeholderId="enterPasswordRepeat"
           placeHolderClassName="inputPlaceholder changePasswordInput"
           value={this.props.passwordValConfirmation}
@@ -123,7 +123,7 @@ class ChangePassword extends React.Component {
         />
         <Input
           divStyle={{marginTop: "20px", width: "300px"}}
-          placeholder= { this.props.lang.newPassword }
+          placeholder= { this.props.lang.repeatPassword }
           placeholderId="enterPasswordConfirmation"
           placeHolderClassName="inputPlaceholder changePasswordInput"
           value={this.props.newPassword}

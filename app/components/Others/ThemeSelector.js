@@ -38,7 +38,7 @@ class ThemeSelector extends Component {
   render() {
     return (
      <div id="themes" style={ this.props.style ? this.props.style : {position:"relative", marginTop:"30px", left:"-32px"}}>
-      <div onMouseEnter={this.onHover.bind(this, "theme-darkEcc")} onMouseLeave={this.onUnhover.bind(this)} onClick={this.onClickTheme.bind(this, "theme-darkEcc")} className={this.props.theme == "theme-darkEcc" ? "themeSelector selectedTheme" : "themeSelector" } id="darkTheme">
+      <div style={{paddingLeft: "20px"}} onMouseEnter={this.onHover.bind(this, "theme-darkEcc")} onMouseLeave={this.onUnhover.bind(this)} onClick={this.onClickTheme.bind(this, "theme-darkEcc")} className={this.props.theme == "theme-darkEcc" ? "themeSelector selectedTheme" : "themeSelector" } id="darkTheme">
        <div className="themes">
          <div className="theme">
           <div className="divSquare" style={{backgroundColor: "#d09128"}}></div>

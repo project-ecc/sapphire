@@ -57,7 +57,8 @@ class DaemonManager {
       this.shouldRestart = shouldRestart;
       this.updateDaemon();
     });
-		/* var daemonCredentials = await Tools.readRpcCredentials();
+    
+		 var daemonCredentials = await Tools.readRpcCredentials();
     	//exists -> try to stop it
     	this.installedVersion = await this.checkIfDaemonExists();
 	    if(this.installedVersion != -1 && daemonCredentials){
@@ -71,7 +72,7 @@ class DaemonManager {
 			}
 			var result = await Tools.updateOrCreateConfig(daemonCredentials.username, daemonCredentials.password)
 			this.wallet = new Wallet(daemonCredentials.username, daemonCredentials.password)
-		} */
+		}
 
     console.log('going to check daemon version');
     this.installedVersion = await this.checkIfDaemonExists();
@@ -86,7 +87,7 @@ class DaemonManager {
      	} while (this.currentVersion !== -1);
      	console.log(this.currentVersion)
 	     console.log('got latest version');
-	    if (this.installedVersion == -1 || this.installedVersion != "0.2.5.6") {
+	    if (this.installedVersion == -1 || this.installedVersion != "0.2.5.7") {
 	    	do {
 	    	  try {
             await this.downloadDaemon();
@@ -94,10 +95,10 @@ class DaemonManager {
 	    	    event.emit('updateFailed', e.message)
           }
 
-	    	} while (this.installedVersion == -1 || this.installedVersion != "0.2.5.6");
+	    	} while (this.installedVersion == -1 || this.installedVersion != "0.2.5.7");
 	    	console.log('telling electron about wallet.dat');
-	    	event.emit('wallet', this.walletDat);
-	    } else{ event.emit('wallet', this.walletDat); }
+	    	event.emit('wallet', this.walletDat, daemonCredentials);
+	    } else{ event.emit('wallet', this.walletDat, daemonCredentials); }
 
 		// if there is a wallet then start the daemon
     if (this.walletDat) { this.startDaemonChecker(); }

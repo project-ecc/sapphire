@@ -47,7 +47,7 @@ export default(state = INITIAL_STATE, action) => {
 	}
 	else if(action.type == PARTIAL_INITIAL_SETUP){
 		console.log("got partial initial setup");
-		return {...state, partialInitialSetup: true, loader: false, loading: false, unencryptedWallet: false};
+		return {...state, partialInitialSetup: true, loader: false, loading: false, unencryptedWallet: action.payload};
 	}
 	else if(action.type == IMPORTED_WALLET){
 		return {...state, importWallet: false}

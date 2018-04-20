@@ -81,7 +81,7 @@ class UnlockWallet extends React.Component {
     }
     this.unlockWallet().then(() => {
       return this.props.wallet.setGenerate().then(() => {
-        this.props.setStaking(true);
+        setTimeout(() => this.props.setStaking(true), 500)
       });
     });
   }

@@ -27,7 +27,7 @@
     "encrypting": "Encrypting your wallet...",
     "encryptWallet": "Encrypt your wallet",
     "enterPassword": "Enter Password",
-    "repeatPassword": "Repeat Password",
+    "repeatPassword": "Repeat New Password",
     "passwordsDoNotMatch": "Passwords do not match...",
     "passwordCantBeEmpty": "Password can't be empty...",
     "encrypt": "Encrypt",

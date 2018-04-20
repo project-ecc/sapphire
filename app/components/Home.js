@@ -203,11 +203,11 @@ class Home extends Component {
                 <p className="normalWeight homePanelTitleOne" id="balance" style={{fontSize: "20px"}}>{ this.props.lang.balance }</p>
                 <p className="normalWeight" style={{fontSize: "20px"}}>{this.props.balance} <span className="ecc">ecc</span></p>
                 <p className="totalBalance homePanelTitleTwo">{ this.props.lang.total }</p>
-                <p className="normalWeight">{this.props.balance} <span className="ecc">ecc</span></p>
+                <p className="normalWeight">{this.props.total} <span className="ecc">ecc</span></p>
               </div>
               <div className="col-sm-4"  style={{padding: "0 0"}}>
                 <p className="unconfirmedBalance homePanelTitleTwo">{ this.props.lang.unconfirmed }</p>
-                <p className="normalWeight">0 <span className="ecc">ecc</span></p>
+                <p className="normalWeight">{this.props.unconfirmed} <span className="ecc">ecc</span></p>
               </div>
             </div>
           </div>
@@ -267,8 +267,10 @@ const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
     staking: state.chains.isStaking,
-    balance: Tools.formatNumber(state.chains.balance + state.chains.staking),
-    stakingVal: state.chains.staking,
+    balance: Tools.formatNumber(state.chains.balance),
+    total: Tools.formatNumber(state.chains.balance + state.chains.staking + state.chains.newMint + state.chains.unconfirmedBalance + state.chains.immatureBalance),
+    unconfirmed: Tools.formatNumber(state.chains.unconfirmedBalance),
+    stakingVal: Tools.formatNumber(state.chains.staking),
 
     //Earnings stuff
     allEarningsSelected: state.earningsExpenses.allEarningsSelected,

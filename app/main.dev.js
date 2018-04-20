@@ -156,7 +156,6 @@ app.on('ready', async () => {
   });
 
   mainWindow.on('close', function (event) {
-    console.log(ds.minimise_on_close)
     if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
       event.preventDefault();
       if (!ds.minimise_to_tray) {
@@ -338,17 +337,18 @@ function setupEventHandlers() {
     var initialSetup = settings.has('settings.initialSetup');
 
     if(initialSetup && exists){
-      sendMessage("setup_done", daemonCredentials);
+      sendMessage("setup_done");
     }
     else if(initialSetup && !exists){
-      sendMessage("import_wallet", daemonCredentials);
+      sendMessage("import_wallet");
     }
     else if(!initialSetup && exists){
-      sendMessage("partial_initial_setup", daemonCredentials);
+      sendMessage("partial_initial_setup");
     }
     else if(!initialSetup && !exists){
-      sendMessage("initial_setup", daemonCredentials);
+      sendMessage("initial_setup");
     }
+    sendMessage("daemonCredentials", daemonCredentials)
   });
 
   event.on('daemonUpdate', () => {
