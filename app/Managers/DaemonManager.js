@@ -9,11 +9,13 @@ const extract = require('extract-zip');
 const https = require('https');
 const psList = require('ps-list');
 const checksum = require('checksum');
+const REQUIRED_DAEMON_VERSION = 258;
 
 import Wallet from '../utils/wallet';
 import { getPlatformWalletUri, grabWalletDir, grabEccoinDir, getDaemonDownloadUrl, getPlatformFileName } from '../utils/platform.service';
 import Tools from '../utils/tools';
 import {downloadFile} from '../utils/downloader';
+
 
 /*
 *	Handles daemon updates and the daemon'state
@@ -76,8 +78,8 @@ class DaemonManager {
 
     console.log('going to check daemon version');
     this.installedVersion = await this.checkIfDaemonExists();
-    const version = parseInt(this.installedVersion.replace(/\D/g,''));
-    console.log(version);
+    let version = parseInt(this.installedVersion.replace(/\D/g,''));
+    console.log("VERSION INT: ", version);
 		// on startup daemon should not be running unless it was to update the application
     	// if(this.installedVersion != -1 ){
 	    //	await this.stopDaemon();
@@ -89,15 +91,16 @@ class DaemonManager {
      	} while (this.currentVersion !== -1);
      	console.log(this.currentVersion)
 	     console.log('got latest version');
-	    if (this.installedVersion == -1 || version < 258) {
+	    if (this.installedVersion == -1 || version < REQUIRED_DAEMON_VERSION) {
 	    	do {
 	    	  try {
             await this.downloadDaemon();
+            version = parseInt(this.installedVersion.replace(/\D/g,''));
           } catch (e){
 	    	    event.emit('updateFailed', e.message)
           }
 
-	    	} while (this.installedVersion == -1 || version < 258);
+	    	} while (this.installedVersion == -1 || version < REQUIRED_DAEMON_VERSION);
 	    	console.log('telling electron about wallet.dat');
 	    	event.emit('wallet', this.walletDat, daemonCredentials);
 	    } else{ event.emit('wallet', this.walletDat, daemonCredentials); }

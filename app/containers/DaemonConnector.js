@@ -93,6 +93,7 @@ class DaemonConnector {
     this.checkQueuedNotifications = this.checkQueuedNotifications.bind(this);
     this.queueOrSendNotification = this.queueOrSendNotification.bind(this);
     this.unencryptedWallet = false;
+    this.heighestBlockFromServer = 0;
 	}
 
   subscribeToEvents(){
@@ -103,6 +104,14 @@ class DaemonConnector {
       this.store.dispatch({type: STAKING_REWARD_UPDATE})
     }, 30 * 60 * 1000)
     this.checkQueuedNotificationsInterval = setInterval(() => this.checkQueuedNotifications(), 5000);
+    //get headers from server every 2 minutes
+    setInterval( async() => {
+      this.heighestBlockFromServer = await this.getLastBlockFromServer();
+    }, 120000)
+    //get headers as soon as the app loads
+    setTimeout( async() => {
+      this.heighestBlockFromServer = await this.getLastBlockFromServer();
+    }, 0);
   }
 
   checkQueuedNotifications(){
@@ -302,8 +311,27 @@ class DaemonConnector {
     });
   }
 
+  getLastBlockFromServer(){
+    return new Promise((resolve, reject) => {
+      let options = {
+        url: 'https://ecc.network/api/v1/block_height',
+      };
+      function callback(error, response, body) {
+        if (!error && response.statusCode == 200) {
+          let json = JSON.parse(body);
+          resolve(json.block_height);
+        }
+        else
+        {
+          resolve(0);
+        }
+      }
+      request(options, callback);
+    });
+  }
+
   getChainInfo(){
-	  this.wallet.getInfo().then((data) => {
+	  this.wallet.getInfo().then(async (data) => {
       if(!data.encrypted){
         console.log("RUNNING UNENCRYPTED WALLET");
         //this.store.dispatch({type: UNENCRYPTED_WALLET, payload: true})
@@ -312,6 +340,8 @@ class DaemonConnector {
         this.loadingBlockIndexPayment = false;
         this.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: false})
       }
+      let highestBlock = data.headers == 0 || data.headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data.headers;
+      data.headers = highestBlock;
 			this.store.dispatch({type: CHAIN_INFO, payload: data});
       this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data.blocks == 0 || data.headers == 0 ? 0 : ((data.blocks * 100) / data.headers).toFixed(2)})
 		})
