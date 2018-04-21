@@ -198,7 +198,12 @@ class DaemonManager {
 		    try {
 	    		const data = fs.readFileSync(this.versionPath, 'utf8');
           console.log('daemon exists, version: ', data);
-	    		return data;
+          if(data.indexOf('version') > -1){
+            return data.replace('version', ' ').trim();
+          }
+          else{
+	    		 return data;
+          }
         } catch (e) {
           console.log('daemon.txt does not exist');
           return -1;
