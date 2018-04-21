@@ -240,7 +240,7 @@ class DaemonConnector {
 
   createWallet(event, arg){
     this.store.dispatch({type: DAEMON_CREDENTIALS, payload: arg })
-    this.wallet = this.store.getState().application.wallet;
+    this.wallet = new Wallet(arg.username, arg.password)
   }
 
   handleInitialSetup(){

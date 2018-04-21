@@ -223,7 +223,7 @@ function setupTrayIcon() {
     }
   ];
 
-  tray.setToolTip('ECC Wallet');
+  tray.setToolTip('Sapphire');
   //const contextMenu = Menu.buildFromTemplate(defaultMenu);
   //tray.setContextMenu(contextMenu);
 
@@ -336,6 +336,8 @@ function setupEventHandlers() {
   event.on('wallet', (exists, daemonCredentials) => {
     var initialSetup = settings.has('settings.initialSetup');
 
+    sendMessage("daemonCredentials", daemonCredentials)
+
     if(initialSetup && exists){
       sendMessage("setup_done");
     }
@@ -348,7 +350,6 @@ function setupEventHandlers() {
     else if(!initialSetup && !exists){
       sendMessage("initial_setup");
     }
-    sendMessage("daemonCredentials", daemonCredentials)
   });
 
   event.on('daemonUpdate', () => {
