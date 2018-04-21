@@ -87,7 +87,7 @@ class DaemonManager {
      	} while (this.currentVersion !== -1);
      	console.log(this.currentVersion)
 	     console.log('got latest version');
-	    if (this.installedVersion == -1 || this.installedVersion != "0.2.5.7") {
+	    if (this.installedVersion == -1 || this.installedVersion != "0.2.5.8") {
 	    	do {
 	    	  try {
             await this.downloadDaemon();
@@ -95,7 +95,7 @@ class DaemonManager {
 	    	    event.emit('updateFailed', e.message)
           }
 
-	    	} while (this.installedVersion == -1 || this.installedVersion != "0.2.5.7");
+	    	} while (this.installedVersion == -1 || this.installedVersion != "0.2.5.8");
 	    	console.log('telling electron about wallet.dat');
 	    	event.emit('wallet', this.walletDat, daemonCredentials);
 	    } else{ event.emit('wallet', this.walletDat, daemonCredentials); }
