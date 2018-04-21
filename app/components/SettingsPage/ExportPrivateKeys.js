@@ -158,7 +158,6 @@ class ExportPrivateKeys extends React.Component {
     TweenMax.set('#confirmButtonPopup', {css:{left: "218px"}})
     TweenMax.to('#confirmButtonPopup', 0.3, {autoAlpha: 1, delay: 0.8})
     TweenMax.set('#displayKeys p', {width: "450px"})
-    console.log(Object.keys(this.state.toDisplay).length)
     this.props.setPanelExportingPrivateKeys(this.props.panelNumber+2);
   }
 
@@ -187,29 +186,16 @@ class ExportPrivateKeys extends React.Component {
   }
 
   async getDataToExport(){
-    let accounts = await this.getAccounts();
-    let addresses = await this.getAddressesOfAccounts(accounts);
-    console.log("addresses:", addresses)
-      let batch = [];
+    let addresses = this.props.addresses;
+    let batch = [];
     let addressesArray = [];
-    if(addresses[0] && addresses[0].constructor === Array){
-      addresses = addresses[0];
-      addresses.map((address) => {
-        batch.push({
-          method: 'dumpprivkey', parameters: [address]
-        });
-        addressesArray.push(address);
-      })
+    addresses.map((address) => {
+      batch.push({
+        method: 'dumpprivkey', parameters: [address.normalAddress]
+      });
+      addressesArray.push(address.normalAddress);
+    })
 
-    }
-    else{
-      for(let key in Object.keys(addresses)){
-        batch.push({
-          method: 'dumpprivkey', parameters: [addresses[key]]
-        });
-        addressesArray.push(addresses[key]);
-      }
-    }
     let privKeys = await this.getPrivateKeys(batch);
     let counter = 1;
     let aux = [];
@@ -233,7 +219,6 @@ class ExportPrivateKeys extends React.Component {
       }
     }
     this.setState({ toDisplay: keys });
-    // console.log(this.state.toDisplay)
   }
 
   unlockWallet(flag, time, callback){
@@ -280,59 +265,8 @@ class ExportPrivateKeys extends React.Component {
   getPrivateKeys(batch){
     return new Promise((resolve, reject) => {
       this.props.wallet.command(batch).then((data) => {
-        console.log(data)
         resolve(data);
       }).catch((err) => {
-        reject(null);
-      });
-    });
-  }
-
-  getAccounts(){
-    return new Promise((resolve, reject) => {
-      this.props.wallet.listAccounts().then((data) => {
-        resolve(data);
-      }).catch((err) => {
-        reject(null);
-      });
-    });
-  }
-
-  getAddressesOfAccounts(accounts){
-    return new Promise((resolve, reject) => {
-      var promises = [];
-      let keys = Object.keys(accounts);
-      for(let i = 0; i < keys.length; i++){
-        let promise = this.getAddress(keys[i]);
-        promises.push(promise);
-      }
-
-      Promise.all(promises).then((data) => {
-        let oneArray = [];
-        if(data.length > 1)
-        {
-          for(let i = 0; i < data.length; i++){
-            for(let j = 0; j < data[i].length; j++){
-              oneArray.push(data[i][j]);
-            }
-          }
-          data = oneArray;
-        }
-        resolve(data);
-      }).catch((err) => {
-        console.log("error waiting for all promises: ", err);
-        reject(null);
-      })
-    });
-  }
-
-  getAddress(account){
-    return new Promise((resolve, reject) => {
-      this.props.wallet.getAddressesByAccount(account).then((address) => {
-        console.log(address)
-        resolve(address);
-      }).catch((err) => {
-        console.log("error getting address of account ", err);
         reject(null);
       });
     });
@@ -415,7 +349,6 @@ class ExportPrivateKeys extends React.Component {
       )
       }
     );
-    console.log(keys)
     return(
       <div id="displayKeys" style={{position: "relative", left:"100%", width: "535px"}}>
         <p style={{fontSize: "16px", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"20px", textAlign: "left"}}>
@@ -456,6 +389,7 @@ const mapStateToProps = state => {
     sideBarHidden: state.sideBar.sidebarHidden,
     wallet: state.application.wallet,
     staking: state.chains.staking,
+    addresses: state.application.userAddresses
   };
 };
 
