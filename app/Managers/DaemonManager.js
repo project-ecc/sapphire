@@ -60,13 +60,12 @@ class DaemonManager {
       this.updateDaemon();
     });
     
-		 var daemonCredentials = await Tools.readRpcCredentials();
-    	//exists -> try to stop it
-    	this.installedVersion = await this.checkIfDaemonExists();
-	    if(this.installedVersion != -1 && daemonCredentials){
-	    	this.wallet = new Wallet(daemonCredentials.username, daemonCredentials.password)
-	    	await this.stopDaemon();
-	    }
+		var daemonCredentials = await Tools.readRpcCredentials();
+  	this.installedVersion = await this.checkIfDaemonExists();
+    if(daemonCredentials){
+    	this.wallet = new Wallet(daemonCredentials.username, daemonCredentials.password)
+    	//await this.stopDaemon();
+    }
 		if(!daemonCredentials || daemonCredentials.username == "yourusername" || daemonCredentials.password == "yourpassword"){
 			daemonCredentials = {
 				username: Tools.generateId(5),
@@ -77,8 +76,8 @@ class DaemonManager {
 		}
 
     console.log('going to check daemon version');
-    this.installedVersion = await this.checkIfDaemonExists();
-    let version = parseInt(this.installedVersion.replace(/\D/g,''));
+    console.log(this.installedVersion)
+    let version = this.installedVersion == -1 ? this.installedVersion : parseInt(this.installedVersion.replace(/\D/g,''));
     console.log("VERSION INT: ", version);
 		// on startup daemon should not be running unless it was to update the application
     	// if(this.installedVersion != -1 ){
@@ -147,12 +146,13 @@ class DaemonManager {
     return new Promise((resolve, reject) => {
       self.wallet.walletstop()
 		      .then((data) => {
+            console.log(data)
 		      	if (data && data == 'ECC server stopping') {
 		      		console.log('stopping daemon');
 		      		resolve(true);
-		      	}		      	else if (data && data.code === 'ECONNREFUSED') {
+		      	}	else if (data && data.code === 'ECONNREFUSED') {
 		      		resolve(true);
-		      	}		      	else {
+		      	} else {
 		      		resolve(false);
 		      	}
 		      })

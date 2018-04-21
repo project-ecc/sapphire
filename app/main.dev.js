@@ -327,6 +327,7 @@ function setupEventHandlers() {
         let closedDaemon = false;
         do{
           closedDaemon = await daemonManager.stopDaemon();
+          console.log(closedDaemon)
         }while(!closedDaemon);
         app.quit();
       }
