@@ -27,7 +27,6 @@ const event = require('./utils/eventhandler');
 
 var fs = require('fs');
 var AutoLaunch = require('auto-launch');
-var lang = traduction();
 let autoECCLauncher = new AutoLaunch({
 	name: 'Sapphire'
 });
@@ -409,7 +408,8 @@ function sendMessage(type, argument = undefined) {
 
 
 function openFile () {
-console.log("called open file");
+  console.log("called open file");
+  var lang = traduction();
  dialog.showOpenDialog({ title: lang.selectAFileName, filters: [
 
    { name: 'wallet', extensions: ['dat'] }
