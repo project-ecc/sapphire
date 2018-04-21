@@ -76,6 +76,8 @@ class DaemonManager {
 
     console.log('going to check daemon version');
     this.installedVersion = await this.checkIfDaemonExists();
+    const version = parseInt(this.installedVersion.replace(/\D/g,''));
+    console.log(version);
 		// on startup daemon should not be running unless it was to update the application
     	// if(this.installedVersion != -1 ){
 	    //	await this.stopDaemon();
@@ -87,7 +89,7 @@ class DaemonManager {
      	} while (this.currentVersion !== -1);
      	console.log(this.currentVersion)
 	     console.log('got latest version');
-	    if (this.installedVersion == -1 || this.installedVersion != "0.2.5.8") {
+	    if (this.installedVersion == -1 || version < 258) {
 	    	do {
 	    	  try {
             await this.downloadDaemon();
@@ -95,7 +97,7 @@ class DaemonManager {
 	    	    event.emit('updateFailed', e.message)
           }
 
-	    	} while (this.installedVersion == -1 || this.installedVersion != "0.2.5.8");
+	    	} while (this.installedVersion == -1 || version < 258);
 	    	console.log('telling electron about wallet.dat');
 	    	event.emit('wallet', this.walletDat, daemonCredentials);
 	    } else{ event.emit('wallet', this.walletDat, daemonCredentials); }
