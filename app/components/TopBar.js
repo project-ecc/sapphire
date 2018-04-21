@@ -135,6 +135,10 @@ class TopBar extends React.Component {
        news = require('../../resources/images/news-orange.png');
     }
 
+    let numberOfNotifications = this.props.notifications["total"];
+    if(this.props.updateAvailable)
+      numberOfNotifications+=1;
+
     return(
       <div>
         <img className="miniButton" src={miniButton}></img>
@@ -151,6 +155,9 @@ class TopBar extends React.Component {
         </div>
         <div id="appButtons">
          <div onClick={this.notification} className="appButton functionIcon" id="eccNewsIcon">
+            <div className="appButtons__notifications-counter-holder">
+              <p className="appButtons__notifications-total">{numberOfNotifications > 0 ? numberOfNotifications : ""}</p>
+            </div>
             <img src={notification}></img>
           </div>
          <div onClick={this.news} className="appButton functionIcon" id="eccNewsIcon">
