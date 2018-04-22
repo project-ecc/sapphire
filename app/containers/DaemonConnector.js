@@ -319,11 +319,17 @@ class DaemonConnector {
       function callback(error, response, body) {
         if (!error && response.statusCode == 200) {
           let json = JSON.parse(body);
+          let height = json.block_height;
+          if(height < this.heighestBlockFromServer)
+          {
+            resolve(this.heighestBlockFromServer);
+            return;
+          }
           resolve(json.block_height);
         }
         else
         {
-          resolve(0);
+          resolve(this.heighestBlockFromServer);
         }
       }
       request(options, callback);

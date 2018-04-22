@@ -15766,13 +15766,17 @@ i.fa.fa-chevron-down {
   .theme-darkEcc .backupLocation {
     color: #464b5a; }
 
-.backupSuccessfull {
+.backupSuccessful {
   margin-top: 16px;
   font-size: 15px; }
 
 .exportedSapphireInfo {
   font-size: 15px;
   margin-top: 30px; }
+
+.backupFailed {
+  margin-top: 27px;
+  font-size: 15px; }
 
 @media only screen and (max-width: 900px) {
   .subSettings {
