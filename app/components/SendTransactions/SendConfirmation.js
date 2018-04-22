@@ -49,7 +49,7 @@ class SendConfirmation extends React.Component {
         else{
           this.props.setStaking(false);
         }
-        this.props.setTemporaryBalance(balance - this.props.amount)
+        this.props.setTemporaryBalance(this.props.balance - this.props.amount)
         this.props.setPassword("");
         this.props.setSendingECC(false);
         this.props.setUsernameSend("");
