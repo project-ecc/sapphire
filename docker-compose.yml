@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  compiler:
+    build: .
+    image: project_ecc/sapphire
+    volumes:
+      - ./build:/sapphire/build
+    environment:
+      - DEBUG=electron-builder
+    command: yarn package-all

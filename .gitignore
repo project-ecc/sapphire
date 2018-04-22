@@ -57,6 +57,11 @@ typings/
 # dotenv environment variables file
 .env
 
-bundle.js.map
 
+
+# Production build files
+bundle.js
+bundle.js.map
+main.prod.js
 main.prod.js.map
+package-lock.json
