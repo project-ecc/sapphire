@@ -746,6 +746,6 @@ export const setTemporaryBalance = (val) => {
 export const setActionPopupResult = (val) => {
   return {
     type: ACTION_POPUP_RESULT,
-    payload: {flag: val.flag, message: val.message, successfull: val.successfull}
+    payload: {flag: val.flag, message: val.message, successful: val.successful}
   };
 }

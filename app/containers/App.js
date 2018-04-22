@@ -143,7 +143,7 @@ class App extends Component<Props> {
       classVal = "closingApplication"
     }
     else if(this.props.actionPopupResult){
-      component = <ActionResultPopup message={this.props.actionPopupMessage} successfull={this.props.actionPopupStatus} />
+      component = <ActionResultPopup message={this.props.actionPopupMessage} successful={this.props.actionPopupStatus} />
     }
 
     return(

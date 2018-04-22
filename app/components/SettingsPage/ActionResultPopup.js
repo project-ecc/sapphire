@@ -29,14 +29,14 @@ class ActionResultPopup extends React.Component {
   }
 
   handleCancel(){
-    this.props.setActionPopupResult({flag: false, successfull: false, message: ''})
+    this.props.setActionPopupResult({flag: false, successful: false, message: ''})
   }
 
   render() {
      return (
       <div style={{height: "150px"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
-        <p className="popupTitle">{ this.props.successfull ? this.props.lang.operationSuccessful.replace('!', '') : this.props.operationFailed }</p>
+        <p className="popupTitle">{ this.props.successful ? this.props.lang.operationSuccessful.replace('!', '') : this.props.operationFailed }</p>
         {renderHTML(this.props.message)}
       </div>
       );

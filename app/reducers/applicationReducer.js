@@ -70,7 +70,7 @@ export default(state = INITIAL_STATE, action) => {
 		return {...state, unlocking: action.payload}
 	}
 	else if(action.type == ACTION_POPUP_RESULT){
-		return {...state, actionPopupResult: action.payload.flag, actionPopupMessage: action.payload.message, actionPopupStatus: action.payload.successfull}
+		return {...state, actionPopupResult: action.payload.flag, actionPopupMessage: action.payload.message, actionPopupStatus: action.payload.successful}
 	}
 	else if(action.type == HOVERED_SETTINGS_SOCIAL_ICON){
 		return {...state, settingsHoveredSocialIcon: action.payload}

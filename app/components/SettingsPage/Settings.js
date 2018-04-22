@@ -132,16 +132,16 @@ class Settings extends Component {
     ]).then((data) => {
       //Work on error handling
       if (data[0] === null) {
-        this.props.setActionPopupResult({flag: true, successfull: true, message: `<p className="backupSuccessfull">${this.props.lang.exportedWallet}:</p> <p className="backupLocation">${location}</p>`})
+        this.props.setActionPopupResult({flag: true, successful: true, message: `<p className="backupSuccessful">${this.props.lang.exportedWallet}:</p> <p className="backupLocation">${location}</p>`})
         this.props.setBackupOperationInProgress(false);
       } else {
         console.log("error backing up wallet: ", data);
-        this.props.setActionPopupResult({flag: true, successfull: false, message: `<p className="backupFailed">${this.props.lang.exportFailed}</p>`})
+        this.props.setActionPopupResult({flag: true, successful: false, message: `<p className="backupFailed">${this.props.lang.exportFailed}</p>`})
         this.props.setBackupOperationInProgress(false);
       }
     }).catch((err) => {
       console.log("exception backing up wallet: ", err)
-      this.props.setActionPopupResult({flag: true, successfull: false, message: `<p className="backupFailed">${this.props.lang.exportFailed}</p>`})
+      this.props.setActionPopupResult({flag: true, successful: false, message: `<p className="backupFailed">${this.props.lang.exportFailed}</p>`})
     });
   }
 
@@ -201,16 +201,16 @@ class Settings extends Component {
       }
      fs.writeFile(app.getPath('desktop')+"/Sapphire-info.json", jsonFormat(toPrint), (err) => {
         if(!err){
-          this.props.setActionPopupResult({flag: true, successfull: true, message: `<p className="exportedSapphireInfo">${this.props.lang.exportedSapphireInfo}.</p>`})
+          this.props.setActionPopupResult({flag: true, successful: true, message: `<p className="exportedSapphireInfo">${this.props.lang.exportedSapphireInfo}.</p>`})
         }
         else{
-          this.props.setActionPopupResult({flag: true, successfull: true, message: `<p className="exportedSapphireInfo">${this.props.lang.failedSapphireInfo}.</p>`})
+          this.props.setActionPopupResult({flag: true, successful: true, message: `<p className="exportedSapphireInfo">${this.props.lang.failedSapphireInfo}.</p>`})
         }
       });
       console.log(toPrint)
     }).catch((err) => {
       console.log("exception handleHelpFile: ", err)
-      this.props.setActionPopupResult({flag: true, successfull: false, message: `<p className="exportedSapphireInfo">${this.props.lang.failedSapphireInfo}.</p>`})
+      this.props.setActionPopupResult({flag: true, successful: false, message: `<p className="exportedSapphireInfo">${this.props.lang.failedSapphireInfo}.</p>`})
     });
   }
 
