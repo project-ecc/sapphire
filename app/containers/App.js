@@ -22,6 +22,8 @@ import NotificationPopup from '../components/NotificationPopup';
 import UnlockWallet from '../components/UnlockWallet';
 import GenericPanel from './GenericPanel';
 import TransitionComponent from '../components/Others/TransitionComponent';
+import ActionResultPopup from '../components/SettingsPage/ActionResultPopup';
+
 const Tools = require('../utils/tools');
 const notifier = require('node-notifier');
 
@@ -139,6 +141,9 @@ class App extends Component<Props> {
     else if(this.props.closingApplication){
       component = <ClosingApplication />;
       classVal = "closingApplication"
+    }
+    else if(this.props.actionPopupResult){
+      component = <ActionResultPopup message={this.props.actionPopupMessage} successfull={this.props.actionPopupStatus} />
     }
 
     return(
@@ -335,7 +340,10 @@ const mapStateToProps = state => {
     closingApplication: state.application.closingApplication,
     theme: state.application.theme,
     shouldImportWallet: state.startup.importWallet,
-    importingWalletWithSetupDone: state.startup.importingWalletWithSetupDone
+    importingWalletWithSetupDone: state.startup.importingWalletWithSetupDone,
+    actionPopupResult: state.application.actionPopupResult,
+    actionPopupMessage: state.application.actionPopupMessage,
+    actionPopupStatus: state.application.actionPopupStatus
   };
 };
 

@@ -555,7 +555,7 @@ class DaemonConnector {
         address = transactions[i].address;
         fee = transactions[i].fee == undefined ? 0 : transactions[i].fee;
         confirmations = transactions[i].confirmations;
-        if(this.transactionsMap[txId] == undefined){
+        if(!this.transactionsMap[txId]){
             this.transactionsMap[txId] = [];
             this.transactionsMap[txId].push(address)
         }
@@ -594,6 +594,7 @@ class DaemonConnector {
     for (const key of Object.keys(this.transactionsMap)) {
       let values = this.transactionsMap[key];
       for(let i = 1; i < values.length; i++){
+        console.log(values[i].confirmations)
         if(values[i].category == "generate" && values[i].amount > 0){
           console.log("PUSHING ENTRY: ", key);
           console.log("TIME: ", values[i].time);

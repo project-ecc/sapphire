@@ -107,7 +107,6 @@ class Transaction extends Component {
   }
 
   shouldComponentUpdate(state){
-    console.log(this.rowExpanded)
     if(this.props.page == state.page && this.props.page > 0 && this.props.type == state.type) return false;
     return true;
   }

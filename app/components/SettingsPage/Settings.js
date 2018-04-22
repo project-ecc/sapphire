@@ -18,6 +18,7 @@ var open = require("open");
 import {version} from './../../../package.json';
 const Tools = require('../../utils/tools');
 const guiVersion = version;
+var jsonFormat = require('json-format');
 
 class Settings extends Component {
   constructor(props) {
@@ -36,6 +37,7 @@ class Settings extends Component {
     this.handleImportPrivateKey = this.handleImportPrivateKey.bind(this);
     this.handleChangePasswordClicked = this.handleChangePasswordClicked.bind(this);
     this.handleSidebarClicked = this.handleSidebarClicked.bind(this);
+    this.handleHelpFile = this.handleHelpFile.bind(this);
   }
 
   handleUpdateApplication(){
@@ -130,13 +132,16 @@ class Settings extends Component {
     ]).then((data) => {
       //Work on error handling
       if (data[0] === null) {
+        this.props.setActionPopupResult({flag: true, successfull: true, message: `<p className="backupSuccessfull">${this.props.lang.exportedWallet}:</p> <p className="backupLocation">${location}</p>`})
         this.props.setBackupOperationInProgress(false);
       } else {
         console.log("error backing up wallet: ", data);
+        this.props.setActionPopupResult({flag: true, successfull: true, message: `<p className="backupFailed">${this.props.lang.exportFailed}</p>`})
         this.props.setBackupOperationInProgress(false);
       }
     }).catch((err) => {
       console.log("exception backing up wallet: ", err)
+      this.props.setActionPopupResult({flag: true, successfull: true, message: `<p className="backupFailed">${this.props.lang.exportFailed}</p>`})
     });
   }
 
@@ -166,6 +171,47 @@ class Settings extends Component {
 
   handleSidebarClicked(option){
     this.props.setSettingsOptionSelected(option);
+  }
+
+  getTypeOfQuery(id){
+    switch(id){
+      case 0: return "getinfo";
+      case 1: return "getwalletinfo";
+      case 2: return "getblockchaininfo";
+      case 3: return "getnetworkinfo";
+      case 4: return "getpeerinfo";
+      case 5: return "listtransactions (25)"
+    }
+  }
+
+  handleHelpFile(){
+    let queries = [];
+    queries.push({method: 'getinfo'});
+    queries.push({method: 'getwalletinfo'});
+    queries.push({method: 'getblockchaininfo'});
+    queries.push({method: 'getnetworkinfo'});
+    queries.push({method: 'getpeerinfo'});
+    queries.push({method: 'listtransactions', parameters: ["*", 25]});
+    let toPrint = {};
+    this.props.wallet.command(queries).then((data) => {
+      for(let i = 0; i < data.length; i++){
+        let queryType = this.getTypeOfQuery(i);
+        let response = data[i];
+        toPrint[queryType] = response;
+      }
+     fs.writeFile(app.getPath('desktop')+"/Sapphire-info.json", jsonFormat(toPrint), (err) => {
+        if(!err){
+          this.props.setActionPopupResult({flag: true, successfull: true, message: `<p className="exportedSapphireInfo">${this.props.lang.exportedSapphireInfo}.</p>`})
+        }
+        else{
+          this.props.setActionPopupResult({flag: true, successfull: true, message: `<p className="exportedSapphireInfo">${this.props.lang.failedSapphireInfo}.</p>`})
+        }
+      });
+      console.log(toPrint)
+    }).catch((err) => {
+      console.log("exception handleHelpFile: ", err)
+      this.props.setActionPopupResult({flag: true, successfull: false, message: `<p className="exportedSapphireInfo">${this.props.lang.failedSapphireInfo}.</p>`})
+    });
   }
 
   getGeneralSettings(){
@@ -204,6 +250,14 @@ class Settings extends Component {
             <p onClick={this.handleUpdateApplication.bind(this)} id={this.props.updateAvailable ? "updateAvailable" : "updateUnavailable"}>{this.props.updateAvailable ? this.props.lang.installUpdate : this.props.lang.noUpdateAvailable }</p>
           </div>
         </div>
+        <div className="row settingsToggle" >
+            <div className="col-sm-10 text-left removePadding">
+              <p className="walletBackupOptions" style={{fontSize: "14px", fontWeight: "700"}}>{this.props.lang.sapphireInfoDesc}.</p>
+            </div>
+            <div className="col-sm-2 text-right removePadding">
+            <p onClick={this.handleHelpFile.bind(this)} style={{cursor: "pointer"}}>Generate</p>
+            </div>
+          </div>
       </div>
     )
   }

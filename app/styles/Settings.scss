@@ -252,6 +252,25 @@
     cursor: pointer;
 }
 
+.backupLocation{
+	@include themify($themes) { 
+		color: themed('bodySecondaryParagraphColor') ;  
+	}
+	margin-top: 5px;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.backupSuccessfull{
+	margin-top: 16px;
+    font-size: 15px;
+}
+
+.exportedSapphireInfo{
+	font-size: 15px;
+    margin-top: 30px;
+}
+
 @media only screen and (max-width: 900px) {
     .subSettings {
         max-width: 520px;

@@ -15757,6 +15757,23 @@ i.fa.fa-chevron-down {
   text-decoration: underline;
   cursor: pointer; }
 
+.backupLocation {
+  margin-top: 5px;
+  font-weight: 700;
+  font-size: 15px; }
+  .theme-defaultEcc .backupLocation {
+    color: #555d77; }
+  .theme-darkEcc .backupLocation {
+    color: #464b5a; }
+
+.backupSuccessfull {
+  margin-top: 16px;
+  font-size: 15px; }
+
+.exportedSapphireInfo {
+  font-size: 15px;
+  margin-top: 30px; }
+
 @media only screen and (max-width: 900px) {
   .subSettings {
     max-width: 520px; } }
