@@ -43,6 +43,10 @@ class ImportWallet extends React.Component {
     ipcRenderer.removeListener('importedWallet', this.sendActionImportedWallet);
     ipcRenderer.removeListener('importStarted', this.sendActionImportStarted);
     ipcRenderer.removeListener('importCancelled', this.sendActionImportCancelled);
+
+    if(this.props.shouldImportWallet){
+      this.props.setImportWalletTemporary({importWalletTemp: true, importWallet: false});
+    }
   }
 
   openFile() {
@@ -88,7 +92,8 @@ const mapStateToProps = state => {
     lang: state.startup.lang,
     importing: state.setup.importing,
     importHasStarted: state.setup.importStarted,
-    setupDone: state.startup.setupDone
+    setupDone: state.startup.setupDone,
+    shouldImportWallet: state.startup.importWallet
   };
 };
 

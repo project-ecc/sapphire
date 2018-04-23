@@ -268,6 +268,9 @@ class App extends Component<Props> {
   }
 
   getInitialSetup(){
+    console.log("this.props.unencryptedWallet: ", this.props.unencryptedWallet)
+    console.log("this.props.shouldImportWallet: ", this.props.shouldImportWallet)
+    console.log("this.props.importingWalletWithSetupDone: ", this.props.importingWalletWithSetupDone)
     if(!this.props.setupDone && !this.props.loader && !this.props.updatingApplication || this.props.unencryptedWallet || this.props.shouldImportWallet || this.props.importingWalletWithSetupDone){
       return(
         <TransitionGroup>

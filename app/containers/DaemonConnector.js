@@ -1,6 +1,6 @@
 import Wallet from '../utils/wallet';
 import { ipcRenderer } from 'electron';
-import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS, SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE, SELECTED_THEME, SET_DAEMON_VERSION, STAKING_REWARD_UPDATE, WALLET_INFO_SEC } from '../actions/types';
+import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS, SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE, SELECTED_THEME, SET_DAEMON_VERSION, STAKING_REWARD_UPDATE, WALLET_INFO_SEC, IMPORT_WALLET_TEMPORARY } from '../actions/types';
 const event = require('../utils/eventhandler');
 const tools = require('../utils/tools');
 const sqlite3 = require('sqlite3');
@@ -139,9 +139,6 @@ class DaemonConnector {
   }
 
   mainCycle(){
-    if(process.env.NODE_ENV === 'development' && (this.store.getState().startup.loading || this.store.getState().startup.loader)){
-      this.store.dispatch({type: LOADING, payload:true})
-    }
     if(this.store.getState().startup.updatingApp){
       setTimeout(() => {
         this.mainCycle();
@@ -186,6 +183,9 @@ class DaemonConnector {
       if(this.firstRun){
         this.firstRun=false;
         this.store.dispatch({type: LOADING, payload:false})
+        if(this.store.getState().startup.importWalletTemp){
+          this.store.dispatch({type: IMPORT_WALLET_TEMPORARY, payload: {importWalletTemp: false, importWallet: true}})
+        }
       }
     }
     setTimeout(() => {
@@ -260,7 +260,7 @@ class DaemonConnector {
   getWalletInfo(){
     this.wallet.command([{method: "getinfo"}]).then((data) => {
       //this.store.dispatch({type: SELECTED_THEME, payload: !this.store.getState().application.theme});
-
+      console.log("getWalletInfo: ", data)
       if(data.length > 0){
         // Set wallet balance
         this.store.dispatch({type: WALLET_INFO, payload: data[0]});
@@ -294,6 +294,7 @@ class DaemonConnector {
       }
       if(!this.runningMainCycle){
         this.runningMainCycle = true;
+        console.log("GOING TO RUN MAIN CYCLE")
         this.mainCycle();
       }
       clearInterval(this.checkStartupStatusInterval);

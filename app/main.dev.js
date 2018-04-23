@@ -169,7 +169,7 @@ app.on('ready', async () => {
   });
 
 	mainWindow.webContents.on('before-input-event', async function (event, input) {
-		if ((input.key === 'q' || input.key === "Q" || input.key === "w" || input.key === "W") && input.control) {
+		if ((input.key.toLowerCase() === 'q' || input.key.toLowerCase() === "w") && input.control) {
 			event.preventDefault();
 			sendMessage("closing_daemon");
 			let closedDaemon = false;

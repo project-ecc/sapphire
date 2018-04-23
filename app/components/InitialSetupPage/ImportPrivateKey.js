@@ -23,6 +23,10 @@ class ImportPrivateKey extends React.Component {
   componentWillUnmount(){
     this.props.privateKey("");
     this.props.password("");
+    if(!this.props.notInitialSetup && this.props.setupDoneInternal){
+      this.props.importedWallet();
+      this.props.setImportingWalletWithSetupDone(false);
+    }
   }
 
   unlockWallet(flag, time, callback){
@@ -306,7 +310,8 @@ class ImportPrivateKey extends React.Component {
     wallet: state.application.wallet,
     passwordVal: state.setup.password,
     checkingDaemonStatusPrivateKey: state.application.checkingDaemonStatusPrivateKey,
-    showingFunctionIcons: state.application.showingFunctionIcons
+    showingFunctionIcons: state.application.showingFunctionIcons,
+    setupDoneInternal: state.startup.setupDoneInternal,
   };
 };
 

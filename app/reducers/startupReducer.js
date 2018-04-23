@@ -15,16 +15,20 @@ import {
   SETUP_DONE_INTERNAL,
   TELL_USER_OF_UPDATE,
   IMPORTED_WALLET,
-  IMPORTING_WALLET_SETUP_DONE
+  IMPORTING_WALLET_SETUP_DONE,
+  IMPORT_WALLET_TEMPORARY
 } from '../actions/types';
 
 
-const INITIAL_STATE = {lang: lang, loader: true, initialSetup: false, partialInitialSetup: false, setupDone: false, importWallet: false, loading: false, updatingApp: false, guiUpdate: false, daemonUpdate:false, unencryptedWallet: false, setupDoneInternal: false, toldUserAboutUpdate: false, importingWalletWithSetupDone: false};
+const INITIAL_STATE = {lang: lang, loader: true, initialSetup: false, partialInitialSetup: false, setupDone: false, importWallet: false, loading: false, updatingApp: false, guiUpdate: false, daemonUpdate:false, unencryptedWallet: false, setupDoneInternal: false, toldUserAboutUpdate: false, importingWalletWithSetupDone: false, importWalletTemp: false};
 
 export default(state = INITIAL_STATE, action) => {
 	if(action.type == SET_LANGUAGE){
 		lang = traduction();
 		return {...state, lang: lang};
+	}
+	else if(action.type == IMPORT_WALLET_TEMPORARY){
+		return {...state, importWalletTemp: action.payload.importWalletTemp, importWallet: action.payload.importWallet}
 	}
 	else if(action.type == IMPORTING_WALLET_SETUP_DONE){
 		return {...state, importingWalletWithSetupDone: action.payload}

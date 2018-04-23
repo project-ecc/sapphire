@@ -264,13 +264,20 @@ class Home extends Component {
 }
 
 const mapStateToProps = state => {
+  let balance = !state.chains.balance ? 0 : state.chains.balance;
+  let staking = !state.chains.staking ? 0 : state.chains.staking;
+  let newMint = !state.chains.newMint ? 0 : state.chains.newMint;
+  let unconfirmedBalance = !state.chains.unconfirmedBalance ? 0 : state.chains.unconfirmedBalance;
+  let immatureBalance = !state.chains.immatureBalance ? 0 : state.chains.immatureBalance;
+
   return{
     lang: state.startup.lang,
     staking: state.chains.isStaking,
-    balance: Tools.formatNumber(state.chains.balance),
-    total: Tools.formatNumber(state.chains.balance + state.chains.staking + state.chains.newMint + state.chains.unconfirmedBalance + state.chains.immatureBalance),
-    unconfirmed: Tools.formatNumber(state.chains.unconfirmedBalance),
-    stakingVal: Tools.formatNumber(state.chains.staking),
+    balance: Tools.formatNumber(balance),
+    //temporary fix...
+    total: Tools.formatNumber(balance + staking + newMint + unconfirmedBalance + immatureBalance),
+    unconfirmed: Tools.formatNumber(unconfirmedBalance),
+    stakingVal: Tools.formatNumber(staking),
 
     //Earnings stuff
     allEarningsSelected: state.earningsExpenses.allEarningsSelected,

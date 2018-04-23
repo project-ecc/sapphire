@@ -120,6 +120,7 @@ class EncryptWallet extends React.Component {
         this.props.password("");
         this.props.passwordConfirmation("");
         this.showWalletEncrypted();
+        this.props.setUnencryptedWallet(false);
         var self = this;
         setTimeout(function(){
             self.startWallet();

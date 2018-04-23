@@ -38,7 +38,7 @@ class InitialSetup extends Component {
 
   handleForward() {
     if((this.props.importing && !this.props.importingWalletWithSetupDone) || !this.props.stepOverVal || this.props.encrypting || this.props.importingPrivKey) return;
-    else if(this.props.setupDoneInternal || this.props.importingWalletWithSetupDone){
+    else if((this.props.setupDoneInternal || this.props.importingWalletWithSetupDone) && !this.props.shouldImportWallet){
       console.log("Done with setup!");
       ipcRenderer.send('initialSetup');
       this.props.importedWallet();
@@ -199,6 +199,7 @@ class InitialSetup extends Component {
 
   renderImportWallet(){
     return(
+      <div>
       <TransitionGroup key="1" component="article">
         {this.props.step == 1 ?
           <TransitionComponent
@@ -209,6 +210,27 @@ class InitialSetup extends Component {
             : null
         }
       </TransitionGroup>
+      <TransitionGroup key="2" component="article">
+        {this.props.step == 2 ?
+          <TransitionComponent
+            children= {<EncryptWallet checkEncrypted = {this.props.importedWalletVal}/>}
+            animationType= "setupStep"
+            animateIn= {Tools.animateStepIn}
+            animateOut = {Tools.animateStepOut}/>
+            : null
+        }
+        </TransitionGroup>
+        <TransitionGroup key="3" component="article">
+        {this.props.step == 3 ?
+          <TransitionComponent
+            children= {<ImportPrivateKey notInitialSetup = {false}/>}
+            animationType= "setupStep"
+            animateIn= {Tools.animateStepIn}
+            animateOut = {Tools.animateStepOut}/>
+            : null
+        }
+        </TransitionGroup>
+      </div>
     )
   }
 
@@ -219,7 +241,7 @@ class InitialSetup extends Component {
     else if(this.props.partialInitialSetup){
       return this.renderPartialInitialSetup();
     }
-    else if(this.props.unencryptedWallet && !this.props.partialInitialSetup){
+    else if(this.props.unencryptedWallet && !this.props.partialInitialSetup && !this.props.shouldImportWallet){
       return this.renderUnencryptedWalletSetup();
     }
     else if(this.props.shouldImportWallet || this.props.importingWalletWithSetupDone){
