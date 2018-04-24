@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 import {TweenMax} from "gsap";
 import * as actions from '../../actions';
 import $ from 'jquery';
+import * as EventEmitter from "events";
 const lang = traduction();
 const Tools = require('../../utils/tools');
-import event from '../../utils/eventhandler';
+const event = require('../../utils/eventhandler');
 class Loader extends React.Component {
 
  constructor() {
@@ -37,49 +38,6 @@ class Loader extends React.Component {
   }
 
   componentDidMount(){
-
-    event.on('downloading-file', (payload) => {
-      const walletPercent = payload.percent * 100;
-      // this.setState({
-      //   isInstalling: true,
-      //   progress: walletPercent.toFixed(2),
-      //   progressMessage: `Downloading wallet \n ${walletPercent.toFixed(2)}%`
-      // });
-    });
-
-    event.on('downloaded-file', () => {
-      // this.setState({
-      //   isInstalling: true,
-      //   progress: 100,
-      //   progressMessage: 'Downloaded wallet 100%'
-      // });
-    });
-
-    event.on('verifying-file', () => {
-      // this.setState({
-      //   isInstalling: true,
-      //   progressMessage: 'Verifying wallet...'
-      // });
-    });
-
-    event.on('unzipping-file', (payload) => {
-      // this.setState({
-      //   isInstalling: true,
-      //   progressMessage: `${payload.message}`
-      // });
-    });
-
-    event.on('file-download-complete', () => {
-      // this.setState({
-      //   isInstalling: false,
-      //   progressMessage: ''
-      // });
-    });
-
-    event.on('download-error', (payload) => {
-      console.log(payload);
-    });
-
 
   	//fix for when importing a wallet with the setup done, without this the "loading" text doesn't show up, since the prop is already set to true
   	if(this.props.loading && $(this.refs.blockIndexLoad).css('visibility') == "hidden"){
@@ -197,6 +155,7 @@ class Loader extends React.Component {
 					<p id="loading" style={{fontSize: "45px", fontWeight: "bold"}}>{ this.props.lang.loading }</p>
 				</div>
 				<p ref="mainMessage" style={{marginTop: "-50px", fontWeight:"300", visibility:"hidden"}} id="gettingReady">{ this.props.lang.mainMessage }</p>
+        <p>{this.props.application.downloadMessage}</p>
 			</div>
       </div>
     );

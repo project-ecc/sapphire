@@ -59,6 +59,7 @@ export function downloadFile(srcUrl, destFolder, destFileName, cs = null, unzip 
       })
       .on('end', async () => {
         event.emit('downloaded-file');
+
         try {
           event.emit('verifying-file');
           if (cs !== null) {

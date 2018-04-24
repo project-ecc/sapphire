@@ -127,3 +127,4 @@ export const SET_TEMPORARY_BALANCE = "set_temporary_balace";
 export const WALLET_INFO_SEC = "wallet_info_sec";
 export const ACTION_POPUP_RESULT = "action_popup_result";
 export const IMPORT_WALLET_TEMPORARY = "import_wallet_temporary";
+export const FILE_DOWNLOAD_STATUS = "file_download_status";

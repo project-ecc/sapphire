@@ -1,6 +1,6 @@
 import Wallet from '../utils/wallet';
 import { ipcRenderer } from 'electron';
-import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS, SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE, SELECTED_THEME, SET_DAEMON_VERSION, STAKING_REWARD_UPDATE, WALLET_INFO_SEC, IMPORT_WALLET_TEMPORARY } from '../actions/types';
+import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS, SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE, SELECTED_THEME, SET_DAEMON_VERSION, STAKING_REWARD_UPDATE, WALLET_INFO_SEC, IMPORT_WALLET_TEMPORARY, FILE_DOWNLOAD_STATUS } from '../actions/types';
 const event = require('../utils/eventhandler');
 const tools = require('../utils/tools');
 const sqlite3 = require('sqlite3');
@@ -208,6 +208,64 @@ class DaemonConnector {
     ipcRenderer.on('daemonUpdated', this.handleDaemonUpdated.bind(this));
     ipcRenderer.on('guiUpdate', this.handleGuiUpdate.bind(this));
     ipcRenderer.on('daemonCredentials', this.createWallet.bind(this));
+
+    //downloader events.
+    ipcRenderer.on('downloading-file', function (e, arg){
+      // console.log("downloading-file", e, arg);
+      const walletPercent = arg.percent * 100;
+      console.log(walletPercent)
+
+      this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
+        payload: {
+          downloadMessage: 'Downloading Wallet Daemon',
+          downloadPercentage: walletPercent,
+          downloadRemainingTime: arg.time.remaining
+        }
+      })
+      // console.log(payload)
+    });
+
+    ipcRenderer.on('downloaded-file', function () {
+      this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
+        payload: {
+          downloadMessage: 'Downloading complete',
+          downloadPercentage: 100.00,
+          downloadRemainingTime: 0.0
+        }
+      })
+    });
+
+    ipcRenderer.on('verifying-file', function () {
+      this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
+        payload: {
+          downloadMessage: 'Validating',
+          downloadPercentage: 100.00,
+          downloadRemainingTime: 0.0
+        }
+      })
+    });
+
+    ipcRenderer.on('unzipping-file', function () {
+      this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
+        payload: {
+          downloadMessage: 'Unzipping',
+          downloadPercentage: 100.00,
+          downloadRemainingTime: 0.0
+        }
+      })
+    });
+    ipcRenderer.on('file-download-complete', function () {
+      this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
+        payload: {
+          downloadMessage: 'Download Complete',
+          downloadPercentage: 100.00,
+          downloadRemainingTime: 0.0
+        }
+      })
+    });
+    ipcRenderer.on('download-error', function (e, arg) {
+      console.log(e, arg)
+    });
   }
 
   handleDaemonUpdated(){
