@@ -210,55 +210,55 @@ class DaemonConnector {
     ipcRenderer.on('daemonCredentials', this.createWallet.bind(this));
 
     //downloader events.
-    ipcRenderer.on('downloading-file', function (e, arg){
+    ipcRenderer.on('downloading-file', (event, arg) =>{
       // console.log("downloading-file", e, arg);
       const walletPercent = arg.percent * 100;
       console.log(walletPercent)
 
       this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
         payload: {
-          downloadMessage: 'Downloading Wallet Daemon',
-          downloadPercentage: walletPercent,
+          downloadMessage: 'Downloading the required files',
+          downloadPercentage: walletPercent.toFixed(2),
           downloadRemainingTime: arg.time.remaining
         }
       })
       // console.log(payload)
     });
 
-    ipcRenderer.on('downloaded-file', function () {
+    ipcRenderer.on('downloaded-file', () => {
       this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
         payload: {
-          downloadMessage: 'Downloading complete',
-          downloadPercentage: 100.00,
+          downloadMessage: 'Downloading the required files',
+          downloadPercentage: 100,
           downloadRemainingTime: 0.0
         }
       })
     });
 
-    ipcRenderer.on('verifying-file', function () {
+    ipcRenderer.on('verifying-file', () => {
       this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
         payload: {
           downloadMessage: 'Validating',
-          downloadPercentage: 100.00,
+          downloadPercentage: undefined,
           downloadRemainingTime: 0.0
         }
       })
     });
 
-    ipcRenderer.on('unzipping-file', function () {
+    ipcRenderer.on('unzipping-file', () => {
       this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
         payload: {
           downloadMessage: 'Unzipping',
-          downloadPercentage: 100.00,
+          downloadPercentage: undefined,
           downloadRemainingTime: 0.0
         }
       })
     });
-    ipcRenderer.on('file-download-complete', function () {
+    ipcRenderer.on('file-download-complete', () => {
       this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
         payload: {
-          downloadMessage: 'Download Complete',
-          downloadPercentage: 100.00,
+          downloadMessage: '',
+          downloadPercentage: undefined,
           downloadRemainingTime: 0.0
         }
       })

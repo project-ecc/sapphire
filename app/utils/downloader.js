@@ -27,7 +27,7 @@ export function downloadFile(srcUrl, destFolder, destFileName, cs = null, unzip 
     }
 
     progress(request.get(downloadRequestOpts), {
-      // throttle: 2000,                    // Throttle the progress event to 2000ms, defaults to 1000ms
+       throttle: 250,                    // Throttle the progress event to 2000ms, defaults to 1000ms
       // delay: 1000,                       // Only start to emit after 1000ms delay, defaults to 0ms
       // lengthHeader: 'x-transfer-length'  // Length header to use, defaults to content-length
     })
@@ -59,23 +59,20 @@ export function downloadFile(srcUrl, destFolder, destFileName, cs = null, unzip 
       })
       .on('end', async () => {
         event.emit('downloaded-file');
-
         try {
-          event.emit('verifying-file');
+          //event.emit('verifying-file');
           if (cs !== null) {
             const validated = await validateChecksum(fileName, cs);
             if (!validated) reject(validated);
           }
-          event.emit('verifying-file');
-
-          event.emit('unzipping-file', { message: 'Unzipping..' });
+          //event.emit('verifying-file');
+          //event.emit('unzipping-file', { message: 'Unzipping..' });
           if(unzip) {
             const unzipped = await unzipFile(fileName, destFolder, true);
             if(!unzipped) reject(unzipped);
           }
-          event.emit('unzipping-file', { message: 'Unzip Complete' });
-
-          event.emit('file-download-complete');
+          //event.emit('unzipping-file', { message: 'Unzip Complete' });
+          //event.emit('file-download-complete');
           resolve(true);
         } catch (e){
           reject(e)
@@ -99,7 +96,7 @@ export function unzipFile(fileToUnzip, targetDirectory, deleteOldZip = false) {
         console.log(err);
         reject(err);
       } else {
-        event.emit('unzipping-file', { message: 'Unzipped!' });
+        //event.emit('unzipping-file', { message: 'Unzipped!' });
         console.log('unzip successfully.');
         if(deleteOldZip){
           if (fs.existsSync(fileToUnzip)) {
@@ -108,7 +105,7 @@ export function unzipFile(fileToUnzip, targetDirectory, deleteOldZip = false) {
                 console.log(deleteFileError);
                 reject(deleteFileError)
               } else {
-                event.emit('unzipping-file', { message: 'Cleaning up..' });
+                //event.emit('unzipping-file', { message: 'Cleaning up..' });
                 console.log('File successfully deleted');
                 resolve(true);
               }
@@ -128,14 +125,14 @@ export function unzipFile(fileToUnzip, targetDirectory, deleteOldZip = false) {
  */
 export function validateChecksum (fileName, toValidateAgainst) {
   return new Promise((resolve, reject) =>{
-    event.emit('verifying-file');
+    //event.emit('verifying-file');
     checksum.file(fileName, (error, sum) => {
 
       console.log(`checksum from file ${sum}`);
       console.log(`validating against ${toValidateAgainst}`);
       console.log('Done downloading verifying');
 
-      event.emit('verifying-file');
+      //event.emit('verifying-file');
       if (toValidateAgainst === sum) {
         resolve(true);
       } else {

@@ -389,7 +389,7 @@ function setupEventHandlers() {
   });
 
   event.on('downloaded-file', () => {
-    sendMessage('downloading-file');
+    sendMessage('downloaded-file');
   });
 
   event.on('verifying-file', () => {

@@ -13,12 +13,17 @@ class Loader extends React.Component {
  constructor() {
     super();
     this.showLoadingBlockIndex = this.showLoadingBlockIndex.bind(this);
+    this.showPercentage = this.showPercentage.bind(this);
   }
 
   shouldComponentUpdate(nextProps){
   	if(!this.props.loading && nextProps.loading){
   		this.showLoadingBlockIndex();
   		return false;
+  	}
+  	else if(!this.props.downloadMessage && nextProps.downloadMessage){
+  		this.showDownloadingMessage();
+  		setTimeout(() => this.showPercentage(), 500);
   	}
   	return true;
   }
@@ -34,19 +39,25 @@ class Loader extends React.Component {
   	  Tools.hideFunctionIcons();
       this.props.setShowingFunctionIcons(false);
   	}
-
   }
 
   componentDidMount(){
-
   	//fix for when importing a wallet with the setup done, without this the "loading" text doesn't show up, since the prop is already set to true
   	if(this.props.loading && $(this.refs.blockIndexLoad).css('visibility') == "hidden"){
   		this.showLoadingBlockIndex();
   	}
   }
 
+  showPercentage(){
+	TweenMax.fromTo('.loadingDownloadPercentage', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
+  }
+
+  showDownloadingMessage(){
+	TweenMax.fromTo('.loadingDownloadMessage', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
+  }
+
   showLoadingBlockIndex(){
-	TweenMax.to('#gettingReady', 0.2, {autoAlpha: 0, scale: 0.5});
+	TweenMax.to(['#gettingReady', '.loadingDownloadMessage', '.percentage'], 0.2, {autoAlpha: 0, scale: 0.5});
     TweenMax.to('#blockIndexLoad', 0.2, {autoAlpha: 1, scale: 1});
   }
 
@@ -154,8 +165,9 @@ class Loader extends React.Component {
 				<div id="blockIndexLoad" ref="blockIndexLoad">
 					<p id="loading" style={{fontSize: "45px", fontWeight: "bold"}}>{ this.props.lang.loading }</p>
 				</div>
-				<p ref="mainMessage" style={{marginTop: "-50px", fontWeight:"300", visibility:"hidden"}} id="gettingReady">{ this.props.lang.mainMessage }</p>
-        <p>{this.props.application.downloadMessage}</p>
+				<p style={{marginTop: "-50px", fontWeight:"300", visibility:"hidden"}} id="gettingReady">{ this.props.lang.mainMessage }</p>
+    			<p className="loadingDownloadMessage">{this.props.downloadMessage}</p>
+    			<p className="loadingDownloadPercentage">{this.props.percentage}%</p>
 			</div>
       </div>
     );
@@ -167,7 +179,9 @@ const mapStateToProps = state => {
     lang: state.startup.lang,
     loading: state.startup.loading,
     updatingApplication: state.startup.updatingApp,
-    showingFunctionIcons: state.application.showingFunctionIcons
+    showingFunctionIcons: state.application.showingFunctionIcons,
+    downloadMessage: state.application.downloadMessage,
+    percentage: state.application.downloadPercentage
   };
 };
 
