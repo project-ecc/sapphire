@@ -44,7 +44,7 @@ class Transaction extends Component {
         this.props.setTransactionsData(data, this.props.type);
         this.props.setTransactionsPage(page);
         this.updateTable();
-        $(".extraInfoTransaction").hide();
+        //$(".extraInfoTransaction").hide();
     }).catch((err) => {
         console.log("error getting transactions: ", err)
     });
@@ -72,11 +72,9 @@ class Transaction extends Component {
     let totalSize = numberOfChildren * 40; //40px height of each row
     let sizeOfContainer = $('#transactionAddresses').height()-204;
     if(sizeOfContainer < totalSize){
-      $('#rows').css("overflow-y", "scroll");
       $('.headerAddresses').css("left", "-6px");
     }
     else{
-      $(rows).css("overflow-y", "scroll");
       $('.headerAddresses').css("left", "-2px");
     }
   }
