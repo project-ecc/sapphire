@@ -15,7 +15,6 @@ import path from 'path';
 import MenuBuilder from './menu';
 import DaemonManager from './Managers/DaemonManager';
 import GUIManager from './Managers/GUIManager';
-import {moveToApplications} from 'electron-lets-move';
 import {grabEccoinDir, grabWalletDir} from "./utils/platform.service";
 import os from 'os';
 import { traduction } from './lang/lang';
@@ -381,6 +380,33 @@ function setupEventHandlers() {
 
   event.on('daemonStarted', () => {
     sendMessage("importedWallet");
+  });
+
+
+  //downloader events.
+  event.on('downloading-file', (payload) => {
+    sendMessage('downloading-file', payload)
+  });
+
+  event.on('downloaded-file', () => {
+    sendMessage('downloaded-file');
+  });
+
+  event.on('verifying-file', () => {
+    sendMessage('verifying-file');
+  });
+
+  event.on('unzipping-file', () => {
+    sendMessage('unzipping-file');
+  });
+
+  event.on('file-download-complete', () => {
+    sendMessage('file-download-complete');
+  });
+
+  event.on('download-error', (payload) => {
+    sendMessage('download-error', payload);
+    console.log(payload);
   });
 
   ipcMain.on('importWallet', (e, args) => {

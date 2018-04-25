@@ -4,20 +4,26 @@ import { connect } from 'react-redux';
 import {TweenMax} from "gsap";
 import * as actions from '../../actions';
 import $ from 'jquery';
+import * as EventEmitter from "events";
 const lang = traduction();
 const Tools = require('../../utils/tools');
-import event from '../../utils/eventhandler';
+const event = require('../../utils/eventhandler');
 class Loader extends React.Component {
 
  constructor() {
     super();
     this.showLoadingBlockIndex = this.showLoadingBlockIndex.bind(this);
+    this.showPercentage = this.showPercentage.bind(this);
   }
 
   shouldComponentUpdate(nextProps){
   	if(!this.props.loading && nextProps.loading){
   		this.showLoadingBlockIndex();
   		return false;
+  	}
+  	else if(!this.props.downloadMessage && nextProps.downloadMessage){
+  		this.showDownloadingMessage();
+  		setTimeout(() => this.showPercentage(), 500);
   	}
   	return true;
   }
@@ -33,62 +39,25 @@ class Loader extends React.Component {
   	  Tools.hideFunctionIcons();
       this.props.setShowingFunctionIcons(false);
   	}
-
   }
 
   componentDidMount(){
-
-    event.on('downloading-file', (payload) => {
-      const walletPercent = payload.percent * 100;
-      // this.setState({
-      //   isInstalling: true,
-      //   progress: walletPercent.toFixed(2),
-      //   progressMessage: `Downloading wallet \n ${walletPercent.toFixed(2)}%`
-      // });
-    });
-
-    event.on('downloaded-file', () => {
-      // this.setState({
-      //   isInstalling: true,
-      //   progress: 100,
-      //   progressMessage: 'Downloaded wallet 100%'
-      // });
-    });
-
-    event.on('verifying-file', () => {
-      // this.setState({
-      //   isInstalling: true,
-      //   progressMessage: 'Verifying wallet...'
-      // });
-    });
-
-    event.on('unzipping-file', (payload) => {
-      // this.setState({
-      //   isInstalling: true,
-      //   progressMessage: `${payload.message}`
-      // });
-    });
-
-    event.on('file-download-complete', () => {
-      // this.setState({
-      //   isInstalling: false,
-      //   progressMessage: ''
-      // });
-    });
-
-    event.on('download-error', (payload) => {
-      console.log(payload);
-    });
-
-
   	//fix for when importing a wallet with the setup done, without this the "loading" text doesn't show up, since the prop is already set to true
   	if(this.props.loading && $(this.refs.blockIndexLoad).css('visibility') == "hidden"){
   		this.showLoadingBlockIndex();
   	}
   }
 
+  showPercentage(){
+	TweenMax.fromTo('.loadingDownloadPercentage', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
+  }
+
+  showDownloadingMessage(){
+	TweenMax.fromTo('.loadingDownloadMessage', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
+  }
+
   showLoadingBlockIndex(){
-	TweenMax.to('#gettingReady', 0.2, {autoAlpha: 0, scale: 0.5});
+	TweenMax.to(['#gettingReady', '.loadingDownloadMessage', '.percentage'], 0.2, {autoAlpha: 0, scale: 0.5});
     TweenMax.to('#blockIndexLoad', 0.2, {autoAlpha: 1, scale: 1});
   }
 
@@ -196,7 +165,9 @@ class Loader extends React.Component {
 				<div id="blockIndexLoad" ref="blockIndexLoad">
 					<p id="loading" style={{fontSize: "45px", fontWeight: "bold"}}>{ this.props.lang.loading }</p>
 				</div>
-				<p ref="mainMessage" style={{marginTop: "-50px", fontWeight:"300", visibility:"hidden"}} id="gettingReady">{ this.props.lang.mainMessage }</p>
+				<p style={{marginTop: "-50px", fontWeight:"300", visibility:"hidden"}} id="gettingReady">{ this.props.lang.mainMessage }</p>
+    			<p className="loadingDownloadMessage">{this.props.downloadMessage}</p>
+    			<p className="loadingDownloadPercentage">{this.props.percentage < 100.00 ? this.props.percentage + '%' : null}</p>
 			</div>
       </div>
     );
@@ -208,7 +179,9 @@ const mapStateToProps = state => {
     lang: state.startup.lang,
     loading: state.startup.loading,
     updatingApplication: state.startup.updatingApp,
-    showingFunctionIcons: state.application.showingFunctionIcons
+    showingFunctionIcons: state.application.showingFunctionIcons,
+    downloadMessage: state.application.downloadMessage,
+    percentage: state.application.downloadPercentage
   };
 };
 
