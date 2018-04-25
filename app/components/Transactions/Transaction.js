@@ -186,7 +186,7 @@ class Transaction extends Component {
               <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.statusCAPS }</div>
               <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.timeCAPS }</div>
             </div>
-          <div id="rows" style={{height: "500px", width: "100%", padding: "0 0", "overflow-y": "scroll"}}>
+          <div id="rows" style={{height: "500px", width: "100%", padding: "0 0", overflowY: "scroll"}}>
             {data.map((t, index) => {
 
               if (this.props.type === 'all'
