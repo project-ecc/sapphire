@@ -7,7 +7,6 @@ const event = require('../utils/eventhandler');
 const os = require('os');
 const extract = require('extract-zip');
 const https = require('https');
-const psList = require('ps-list');
 const checksum = require('checksum');
 const REQUIRED_DAEMON_VERSION = 258;
 
@@ -15,6 +14,7 @@ import Wallet from '../utils/wallet';
 import { getPlatformWalletUri, grabWalletDir, grabEccoinDir, getDaemonDownloadUrl, getPlatformFileName } from '../utils/platform.service';
 import Tools from '../utils/tools';
 import {downloadFile} from '../utils/downloader';
+const find = require('find-process');
 
 
 /*
@@ -117,13 +117,12 @@ class DaemonManager {
   checkIfDaemonIsRunning() {
     if (this.installedVersion != -1 && !this.downloading) {
       const self = this;
-      psList().then(data => {
-			    for (let i = 0; i < data.length; i++) {
-				    if (data[i].name.toLowerCase().indexOf('eccoind') > -1) {
-				     self.running = true;
-				     console.log('Daemon running');
-				     return;
-				 }
+      console.log("Checking if daemon is running...")
+      find('name', "eccoind").then(function (list) {
+        if(list.length > 0){
+          self.running = true;
+          console.log('Daemon running');
+          return;
         }
         self.running = false;
         console.log('daemon not running');
