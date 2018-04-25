@@ -57,7 +57,7 @@ class Loader extends React.Component {
   }
 
   showLoadingBlockIndex(){
-	TweenMax.to(['#gettingReady', '.loadingDownloadMessage', '.percentage'], 0.2, {autoAlpha: 0, scale: 0.5});
+    TweenMax.to(['#gettingReady', '.loadingDownloadMessage', '.loadingDownloadPercentage'], 0.2, {autoAlpha: 0, scale: 0.5});
     TweenMax.to('#blockIndexLoad', 0.2, {autoAlpha: 1, scale: 1});
   }
 
