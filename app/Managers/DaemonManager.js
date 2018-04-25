@@ -119,10 +119,10 @@ class DaemonManager {
       const self = this;
       console.log("Checking if daemon is running...")
       find('name', "eccoind").then(function (list) {
-        if(list.length > 0){
+        if(list && list.length > 0){
           console.log('Daemon running');
         }
-        else{
+        else if(list && list.length == 0){
           console.log('daemon not running');
           self.running = false;
           if (!self.downloading) { self.startDaemon(); }
