@@ -213,7 +213,6 @@ class DaemonConnector {
     ipcRenderer.on('downloading-file', (event, arg) =>{
       // console.log("downloading-file", e, arg);
       const walletPercent = arg.percent * 100;
-      console.log(walletPercent)
 
       this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
         payload: {
