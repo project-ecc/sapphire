@@ -49,6 +49,7 @@ class Loader extends React.Component {
   }
 
   showPercentage(){
+  	TweenMax.set('.loadingDownloadPercentage', {css:{display: "block"}})
 	TweenMax.fromTo('.loadingDownloadPercentage', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
   }
 
