@@ -1,7 +1,7 @@
 {
   "name": "Sapphire-ECC",
   "productName": "Sapphire",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Electron application providing the graphical user interface for the ECC Wallet",
   "scripts": {
     "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js",
@@ -203,6 +203,7 @@
     "events": "^1.1.1",
     "extract-zip": "^1.6.6",
     "feedme": "^1.1.2",
+    "find-process": "^1.1.1",
     "font-awesome": "^4.7.0",
     "fs-path": "0.0.23",
     "glob": "^7.1.2",
@@ -217,7 +218,6 @@
     "path": "^0.12.7",
     "popper.js": "^1.14.3",
     "project-version": "^1.0.0",
-    "ps-list": "^4.0.0",
     "radium": "^0.21.2",
     "react": "^15.6.2",
     "react-dom": "^15.6.1",
