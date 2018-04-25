@@ -167,7 +167,7 @@ class Loader extends React.Component {
 				</div>
 				<p style={{marginTop: "-50px", fontWeight:"300", visibility:"hidden"}} id="gettingReady">{ this.props.lang.mainMessage }</p>
     			<p className="loadingDownloadMessage">{this.props.downloadMessage}</p>
-    			<p className="loadingDownloadPercentage">{this.props.percentage}</p>
+    			<p className="loadingDownloadPercentage">{this.props.percentage}%</p>
 			</div>
       </div>
     );
