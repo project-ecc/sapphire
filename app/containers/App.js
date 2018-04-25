@@ -34,7 +34,6 @@ class App extends Component<Props> {
     this.loadSettingsToRedux = this.loadSettingsToRedux.bind(this);
     this.setGenericAnimationToFalse = this.setGenericAnimationToFalse.bind(this);
     this.setGenericAnimationToTrue = this.setGenericAnimationToTrue.bind(this);
-    this.processCloseRequest = this.processCloseRequest.bind(this);
   }
 
   componentDidMount() {
@@ -42,10 +41,12 @@ class App extends Component<Props> {
 
     this.loadSettingsToRedux();
 
-
-
     ipcRenderer.on('closing_daemon', () => {
-      this.processCloseRequest();
+      if(this.props.loader){
+        TweenMax.to('#loading-wrapper', 0.3, {autoAlpha: 0.5});
+      }
+      Tools.hideFunctionIcons();
+      this.props.setClosingApplication();
     });
 
     ipcRenderer.on('focused', (e) => {
@@ -162,14 +163,6 @@ class App extends Component<Props> {
         </TransitionGroup>
       </div>
     )
-  }
-
-  processCloseRequest(){
-    if(this.props.loader){
-      TweenMax.to('#loading-wrapper', 0.3, {autoAlpha: 0.5});
-    }
-    Tools.hideFunctionIcons();
-    this.props.setClosingApplication();
   }
 
   getLoader(){
@@ -300,7 +293,7 @@ class App extends Component<Props> {
     return (
       <div className={this.props.theme}>
         <div id="main">
-          <TopBar closeSapphire={this.processCloseRequest}/>
+          <TopBar/>
           <div className="mancha">
           </div>
           <div>

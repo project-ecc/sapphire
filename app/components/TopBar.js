@@ -3,6 +3,7 @@ import $ from 'jquery';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import { ipcRenderer } from 'electron';
+const event = require('../utils/eventhandler');
 
 class TopBar extends React.Component {
  constructor() {
@@ -33,8 +34,6 @@ class TopBar extends React.Component {
   componentWillUnmount(){
     $('#appButtonsMac').off('mouseenter');
     $('#appButtonsMac').off('mouseleave');
-    //ipcRenderer.off("unfocused");
-    //ipcRenderer.off("focused");
   }
 
   minimize(){
@@ -56,9 +55,6 @@ class TopBar extends React.Component {
 
   close(){
     ipcRenderer.send('close');
-    if(!this.props.minimizeOnClose){
-      this.props.closeSapphire();
-    }
   }
 
   news(){

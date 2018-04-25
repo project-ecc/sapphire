@@ -98,7 +98,7 @@ class GUIManager{
             self.downloading = false;
             self.installedVersion = self.currentVersion;
             cp.fork("./app/Managers/UpdateGUI", {detached:true, env:{version:self.installedVersion}});
-            app.quit();
+            event.emit('close');
           }catch(e){
             console.log(e);
           }
