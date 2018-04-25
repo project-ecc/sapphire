@@ -7,7 +7,6 @@ const event = require('../utils/eventhandler');
 const os = require('os');
 const extract = require('extract-zip');
 const https = require('https');
-const psList = require('ps-list');
 const checksum = require('checksum');
 const REQUIRED_DAEMON_VERSION = 258;
 
@@ -15,6 +14,7 @@ import Wallet from '../utils/wallet';
 import { getPlatformWalletUri, grabWalletDir, grabEccoinDir, getDaemonDownloadUrl, getPlatformFileName } from '../utils/platform.service';
 import Tools from '../utils/tools';
 import {downloadFile} from '../utils/downloader';
+const find = require('find-process');
 
 
 /*
@@ -110,24 +110,23 @@ class DaemonManager {
 
   startDaemonChecker() {
     this.checkIfDaemonIsRunning();
-    this.intervalID = setInterval(this.checkIfDaemonIsRunning.bind(this), 60000);
+    this.intervalID = setInterval(this.checkIfDaemonIsRunning.bind(this), 30000);
     this.intervalIDCheckUpdates = setInterval(this.getLatestVersion.bind(this), 6000000);
   }
 
   checkIfDaemonIsRunning() {
     if (this.installedVersion != -1 && !this.downloading) {
       const self = this;
-      psList().then(data => {
-			    for (let i = 0; i < data.length; i++) {
-				    if (data[i].name.toLowerCase().indexOf('eccoind') > -1) {
-				     self.running = true;
-				     console.log('Daemon running');
-				     return;
-				 }
+      console.log("Checking if daemon is running...")
+      find('name', "eccoind").then(function (list) {
+        if(list && list.length > 0){
+          console.log('Daemon running');
         }
-        self.running = false;
-        console.log('daemon not running');
-        if (!self.downloading) { self.startDaemon(); }
+        else if(list && list.length == 0){
+          console.log('daemon not running');
+          self.running = false;
+          if (!self.downloading) { self.startDaemon(); }
+        }
       });
     }
   }
