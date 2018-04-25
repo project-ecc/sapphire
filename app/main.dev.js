@@ -154,7 +154,7 @@ app.on('ready', async () => {
   	}
   });
 
-  mainWindow.on('close', function (event) {
+  /*mainWindow.on('close', async function (event) {
     if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
       event.preventDefault();
       if (!ds.minimise_to_tray) {
@@ -163,20 +163,16 @@ app.on('ready', async () => {
         mainWindow.hide();
       }
     } else {
-      app.quit();
+      console.log("MAINWINDOW");
+      close();
     }
     return false;
-  });
+  });*/
 
 	mainWindow.webContents.on('before-input-event', async function (event, input) {
 		if ((input.key.toLowerCase() === 'q' || input.key.toLowerCase() === "w") && input.control) {
 			event.preventDefault();
-			sendMessage("closing_daemon");
-			let closedDaemon = false;
-			do{
-				closedDaemon = await daemonManager.stopDaemon();
-			}while(!closedDaemon);
-			app.exit(0);
+			close();
 		}
 	});
 
@@ -208,27 +204,11 @@ function setupTrayIcon() {
   }
   tray = new Tray(nativeImage.createFromPath(trayImage));
 
-	const defaultMenu = [
-    {
-      label: 'Quit',
-      accelerator: 'Command+Q',
-      click: async function() {
-        sendMessage("closing_daemon");
-        let closedDaemon = false;
-        do {
-          closedDaemon = await daemonManager.stopDaemon();
-        } while (!closedDaemon);
-        app.exit(0);
-      }
-    }
-  ];
-
   tray.setToolTip('Sapphire');
-  //const contextMenu = Menu.buildFromTemplate(defaultMenu);
-  //tray.setContextMenu(contextMenu);
 
   tray.on('click', () => {
-    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+    mainWindow.show();
+		mainWindow.focus();
   });
 }
 
@@ -253,7 +233,7 @@ function setupEventHandlers() {
 	});
 
 	ipcMain.on('show', (e, args) => {
-    mainWindow.show()
+    mainWindow.show();
 		mainWindow.focus();
 	});
 
@@ -315,22 +295,8 @@ function setupEventHandlers() {
     daemonManager.startDaemonChecker();
   });
 
-  ipcMain.on('close', async (e, args) => {
-      //daemonManager.stopDaemon();
-    if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
-        if (!ds.minimise_to_tray) {
-          mainWindow.minimize();
-        } else {
-          mainWindow.hide();
-        }
-      } else {
-        let closedDaemon = false;
-        do{
-          closedDaemon = await daemonManager.stopDaemon();
-          console.log(closedDaemon)
-        }while(!closedDaemon);
-        app.quit();
-      }
+  ipcMain.on('close', () => {
+    event.emit('close');
   });
 
   event.on('wallet', (exists, daemonCredentials) => {
@@ -368,7 +334,7 @@ function setupEventHandlers() {
 
   event.on('updateFailed', (errorMessage) => {
     console.log(errorMessage)
-    app.quit();
+    close();
   });
 
   event.on('updatedDaemon', () => {
@@ -402,6 +368,24 @@ function setupEventHandlers() {
     }
   });
 }
+
+event.on('close', async () => {
+  if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
+    if (!ds.minimise_to_tray) {
+      mainWindow.minimize();
+    } else {
+      mainWindow.hide();
+    }
+  } else {
+    let closedDaemon = false;
+    do{
+      closedDaemon = await daemonManager.stopDaemon();
+      console.log("closedDaemon: ", closedDaemon);
+    }while(!closedDaemon);
+    console.log("shutdown");
+    app.quit();
+  }
+});
 
 function sendMessage(type, argument = undefined) {
 	console.log("sending message: ", type);
