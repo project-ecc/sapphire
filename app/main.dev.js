@@ -156,7 +156,7 @@ app.on('ready', async () => {
 	mainWindow.webContents.on('before-input-event', async function (event, input) {
 		if ((input.key.toLowerCase() === 'q' || input.key.toLowerCase() === "w") && input.control) {
 			event.preventDefault();
-			event.emit("close");;
+			closeApplication();
 		}
 	});
 
@@ -280,7 +280,7 @@ function setupEventHandlers() {
   });
 
   ipcMain.on("close", () => {
-    event.emit("close");
+    closeApplication();
   });
 
   event.on('wallet', (exists, daemonCredentials) => {
@@ -318,7 +318,7 @@ function setupEventHandlers() {
 
   event.on('updateFailed', (errorMessage) => {
     console.log(errorMessage)
-    event.emit("close");;
+    closeApplication();
   });
 
   event.on('updatedDaemon', () => {
@@ -380,7 +380,7 @@ function setupEventHandlers() {
   });
 }
 
-event.on("close", async () => {
+async function closeApplication(){
   if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
     if (!ds.minimise_to_tray) {
       mainWindow.minimize();
@@ -397,6 +397,10 @@ event.on("close", async () => {
     console.log("shutdown");
     app.quit();
   }
+}
+
+event.on("close", async () => {
+  closeApplication();
 });
 
 function sendMessage(type, argument = undefined) {
