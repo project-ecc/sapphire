@@ -44,7 +44,7 @@ class Transaction extends Component {
         this.props.setTransactionsData(data, this.props.type);
         this.props.setTransactionsPage(page);
         this.updateTable();
-        $(".extraInfoTransaction").hide();
+        //$(".extraInfoTransaction").hide();
     }).catch((err) => {
         console.log("error getting transactions: ", err)
     });
@@ -67,17 +67,14 @@ class Transaction extends Component {
   }
 
  updateTable(){
-    $(".extraInfoTransaction").hide();
     $('#rows').css("height", $('#transactionAddresses').height()-204);
     let numberOfChildren = this.props.data.length;
     let totalSize = numberOfChildren * 40; //40px height of each row
     let sizeOfContainer = $('#transactionAddresses').height()-204;
     if(sizeOfContainer < totalSize){
-      $('#rows').css("overflow-y", "auto");
       $('.headerAddresses').css("left", "-6px");
     }
     else{
-      $(rows).css("overflow-y", "hidden");
       $('.headerAddresses').css("left", "-2px");
     }
   }
@@ -112,11 +109,10 @@ class Transaction extends Component {
   }
   componentWillReceiveProps(){
     this.updateTable();
-    $(".extraInfoTransaction").hide();
   }
 
   handleDropDownClicked(){
-    $('.dropdownFilterSeglector').attr('tabindex', 1).focus();
+    $('.dropdownFilterSelector').attr('tabindex', 1).focus();
     $('.dropdownFilterSelector').toggleClass('active');
     $('.dropdownFilterSelector').find('.dropdown-menuFilterSelector').slideToggle(300);
   }
@@ -127,7 +123,7 @@ class Transaction extends Component {
   }
 
   componentDidUpdate(){
-    $(".extraInfoTransaction").hide();
+    
   }
 
   onItemClick(event) {
@@ -135,6 +131,10 @@ class Transaction extends Component {
     if(type == this.props.type) return;
     let data = this.props.data;
     this.props.setTransactionsData(data, type);
+    $(".extraInfoTransaction").hide();
+    $(".extraInfoTransaction").each(function() {
+      $(this).attr('sd', 'false');
+    })
   }
 
   getValue(val){
@@ -186,7 +186,7 @@ class Transaction extends Component {
               <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.statusCAPS }</div>
               <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.timeCAPS }</div>
             </div>
-          <div id="rows" style={{height: "500px", width: "100%", padding: "0 0"}}>
+          <div id="rows" style={{height: "500px", width: "100%", padding: "0 0", overflowY: "scroll"}}>
             {data.map((t, index) => {
 
               if (this.props.type === 'all'
@@ -230,7 +230,7 @@ class Transaction extends Component {
                     <div className="col-sm-2" style={{paddingTop: "9px"}}>
                       <p style={{ margin: '0px' }}><span>{time}</span></p>
                     </div>
-                    <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{paddingLeft: "4%", width: "100%", paddingTop: "11px", paddingBottom: "11px", cursor:"default", zIndex:"2"}}>
+                    <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{paddingLeft: "4%", width: "100%", paddingTop: "11px", paddingBottom: "11px", cursor:"default", zIndex:"2", display:"none"}}>
                       <div className="col-sm-8">
                         <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.dateString}</span></p>
                         <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{(new Date(t.time * 1000)).toString()}</span></p>
