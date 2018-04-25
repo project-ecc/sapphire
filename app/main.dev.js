@@ -154,25 +154,10 @@ app.on('ready', async () => {
   	}
   });
 
-  /*mainWindow.on('close', async function (event) {
-    if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
-      event.preventDefault();
-      if (!ds.minimise_to_tray) {
-        mainWindow.minimize();
-      } else {
-        mainWindow.hide();
-      }
-    } else {
-      console.log("MAINWINDOW");
-      close();
-    }
-    return false;
-  });*/
-
 	mainWindow.webContents.on('before-input-event', async function (event, input) {
 		if ((input.key.toLowerCase() === 'q' || input.key.toLowerCase() === "w") && input.control) {
 			event.preventDefault();
-			close();
+			event.emit("close");;
 		}
 	});
 
@@ -295,8 +280,8 @@ function setupEventHandlers() {
     daemonManager.startDaemonChecker();
   });
 
-  ipcMain.on('close', () => {
-    event.emit('close');
+  ipcMain.on("close", () => {
+    event.emit("close");
   });
 
   event.on('wallet', (exists, daemonCredentials) => {
@@ -334,7 +319,7 @@ function setupEventHandlers() {
 
   event.on('updateFailed', (errorMessage) => {
     console.log(errorMessage)
-    close();
+    event.emit("close");;
   });
 
   event.on('updatedDaemon', () => {
@@ -369,7 +354,7 @@ function setupEventHandlers() {
   });
 }
 
-event.on('close', async () => {
+event.on("close", async () => {
   if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
     if (!ds.minimise_to_tray) {
       mainWindow.minimize();
@@ -377,6 +362,7 @@ event.on('close', async () => {
       mainWindow.hide();
     }
   } else {
+    sendMessage("closing_daemon");
     let closedDaemon = false;
     do{
       closedDaemon = await daemonManager.stopDaemon();
