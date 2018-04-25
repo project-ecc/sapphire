@@ -110,7 +110,7 @@ class DaemonManager {
 
   startDaemonChecker() {
     this.checkIfDaemonIsRunning();
-    this.intervalID = setInterval(this.checkIfDaemonIsRunning.bind(this), 60000);
+    this.intervalID = setInterval(this.checkIfDaemonIsRunning.bind(this), 30000);
     this.intervalIDCheckUpdates = setInterval(this.getLatestVersion.bind(this), 6000000);
   }
 
@@ -120,13 +120,13 @@ class DaemonManager {
       console.log("Checking if daemon is running...")
       find('name', "eccoind").then(function (list) {
         if(list.length > 0){
-          self.running = true;
           console.log('Daemon running');
-          return;
         }
-        self.running = false;
-        console.log('daemon not running');
-        if (!self.downloading) { self.startDaemon(); }
+        else{
+          console.log('daemon not running');
+          self.running = false;
+          if (!self.downloading) { self.startDaemon(); }
+        }
       });
     }
   }
