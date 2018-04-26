@@ -160,6 +160,11 @@ app.on('ready', async () => {
 		}
 	});
 
+  mainWindow.on('close', (e) => {
+    e.preventDefault();
+    closeApplication();
+  })
+
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 
@@ -176,8 +181,7 @@ app.on('ready', async () => {
   setupEventHandlers();
 });
 
-app.on('before-quit', async function (e) {
-  e.preventDefault();
+async function closeApplication(){
   if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
     if (!ds.minimise_to_tray) {
       mainWindow.minimize();
@@ -185,17 +189,26 @@ app.on('before-quit', async function (e) {
       mainWindow.hide();
     }
   } else {
-    mainWindow.show();
-    mainWindow.focus();
+    console.log("Herererere", mainWindow)
+    if(mainWindow){
+      mainWindow.show();
+      mainWindow.focus();
+    }
     sendMessage("closing_daemon");
     let closedDaemon = false;
+    console.log(daemonManager)
     do{
       closedDaemon = await daemonManager.stopDaemon();
-      console.log("closedDaemon: ", closedDaemon);
+      //console.log("closedDaemon: ", closedDaemon);
     }while(!closedDaemon);
     console.log("shutdown");
     app.exit();
   }
+}
+
+app.on('before-quit', async function (e) {
+  e.preventDefault();
+  closeApplication();
  });
 
 function setupTrayIcon() {
