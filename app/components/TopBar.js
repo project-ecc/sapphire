@@ -33,8 +33,6 @@ class TopBar extends React.Component {
   componentWillUnmount(){
     $('#appButtonsMac').off('mouseenter');
     $('#appButtonsMac').off('mouseleave');
-    //ipcRenderer.off("unfocused");
-    //ipcRenderer.off("focused");
   }
 
   minimize(){
@@ -55,10 +53,7 @@ class TopBar extends React.Component {
   }
 
   close(){
-    ipcRenderer.send('close');
-    if(!this.props.minimizeOnClose){
-      this.props.closeSapphire();
-    }
+    ipcRenderer.send('quit');
   }
 
   news(){

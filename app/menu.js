@@ -1,7 +1,6 @@
 // @flow
 import { app, Menu, shell, BrowserWindow } from 'electron';
 
-
 export default class MenuBuilder {
   mainWindow: BrowserWindow;
 
@@ -89,7 +88,6 @@ export default class MenuBuilder {
       label: 'Window',
       submenu: [
         { label: 'Minimize', accelerator: 'Command+M', selector: 'performMiniaturize:' },
-        { label: 'Close', accelerator: 'Command+W', selector: 'performClose:' },
         { type: 'separator' },
         { label: 'Bring All to Front', selector: 'arrangeInFront:' }
       ]
@@ -124,9 +122,7 @@ export default class MenuBuilder {
       }, {
         label: '&Close',
         accelerator: 'Ctrl+W',
-        click: () => {
-          this.mainWindow.close();
-        }
+        click: () => { app.quit() }
       }]
     }, {
       label: '&View',

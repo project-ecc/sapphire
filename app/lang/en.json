@@ -170,7 +170,8 @@
 
     "startOnLogin": "Start ECC on system login",
     "hideTrayIcon": "Hide tray icon",
-    "minimizeToTray": "Minimize to tray instead of the task bar",
+    "minimizeToTray": "Minimize to tray instead of the taskbar",
+    "minimizeToTrayMac": "Minimize to tray instead of the dock",
     "minimizeOnClose": "Minimize on close",
     "applicationVersion": "Application version",
     "installUpdate": "Install Update",

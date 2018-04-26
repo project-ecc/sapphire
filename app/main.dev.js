@@ -168,31 +168,17 @@ app.on('ready', async () => {
   	}
   });
 
-  mainWindow.on('close', function (event) {
-    if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
-      event.preventDefault();
-      if (!ds.minimise_to_tray) {
-        mainWindow.minimize();
-      } else {
-        mainWindow.hide();
-      }
-    } else {
-      app.quit();
-    }
-    return false;
-  });
-
 	mainWindow.webContents.on('before-input-event', async function (event, input) {
 		if ((input.key.toLowerCase() === 'q' || input.key.toLowerCase() === "w") && input.control) {
 			event.preventDefault();
-			sendMessage("closing_daemon");
-			let closedDaemon = false;
-			do{
-				closedDaemon = await daemonManager.stopDaemon();
-			}while(!closedDaemon);
-			app.exit(0);
+			app.quit();
 		}
 	});
+
+  mainWindow.on('close', (e) => {
+    e.preventDefault();
+    closeApplication();
+  })
 
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
@@ -210,6 +196,36 @@ app.on('ready', async () => {
   setupEventHandlers();
 });
 
+async function closeApplication(){
+  if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
+    if (!ds.minimise_to_tray) {
+      mainWindow.minimize();
+    } else {
+      mainWindow.hide();
+    }
+  } else {
+    console.log("Herererere", mainWindow)
+    if(mainWindow){
+      mainWindow.show();
+      mainWindow.focus();
+    }
+    sendMessage("closing_daemon");
+    let closedDaemon = false;
+    console.log(daemonManager)
+    do{
+      closedDaemon = await daemonManager.stopDaemon();
+      //console.log("closedDaemon: ", closedDaemon);
+    }while(!closedDaemon);
+    console.log("shutdown");
+    app.exit();
+  }
+}
+
+app.on('before-quit', async function (e) {
+  e.preventDefault();
+  closeApplication();
+ });
+
 function setupTrayIcon() {
   var trayImage;
   var imageFolder = __dirname + '/dist/assets';
@@ -222,27 +238,11 @@ function setupTrayIcon() {
   }
   tray = new Tray(nativeImage.createFromPath(trayImage));
 
-	const defaultMenu = [
-    {
-      label: 'Quit',
-      accelerator: 'Command+Q',
-      click: async function() {
-        sendMessage("closing_daemon");
-        let closedDaemon = false;
-        do {
-          closedDaemon = await daemonManager.stopDaemon();
-        } while (!closedDaemon);
-        app.exit(0);
-      }
-    }
-  ];
-
   tray.setToolTip('Sapphire');
-  //const contextMenu = Menu.buildFromTemplate(defaultMenu);
-  //tray.setContextMenu(contextMenu);
 
   tray.on('click', () => {
-    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+    mainWindow.show();
+		mainWindow.focus();
   });
 }
 
@@ -267,7 +267,7 @@ function setupEventHandlers() {
 	});
 
 	ipcMain.on('show', (e, args) => {
-    mainWindow.show()
+    mainWindow.show();
 		mainWindow.focus();
 	});
 
@@ -304,6 +304,10 @@ function setupEventHandlers() {
     fullScreen = !fullScreen;
   });
 
+	ipcMain.on('quit', () => {
+    app.quit();
+  });
+
   ipcMain.on('hideTray', (e, hideTray) => {
     if(!hideTray)
       setupTrayIcon();
@@ -327,24 +331,6 @@ function setupEventHandlers() {
   ipcMain.on('initialSetup', (e, args) => {
     settings.set('settings.initialSetup', true);
     daemonManager.startDaemonChecker();
-  });
-
-  ipcMain.on('close', async (e, args) => {
-      //daemonManager.stopDaemon();
-    if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
-        if (!ds.minimise_to_tray) {
-          mainWindow.minimize();
-        } else {
-          mainWindow.hide();
-        }
-      } else {
-        let closedDaemon = false;
-        do{
-          closedDaemon = await daemonManager.stopDaemon();
-          console.log(closedDaemon)
-        }while(!closedDaemon);
-        app.quit();
-      }
   });
 
   event.on('wallet', (exists, daemonCredentials) => {
