@@ -141,6 +141,7 @@ class Settings extends Component {
       }
     }).catch((err) => {
       console.log("exception backing up wallet: ", err)
+      this.props.setBackupOperationInProgress(false);
       this.props.setActionPopupResult({flag: true, successful: false, message: `<p className="backupFailed">${this.props.lang.exportFailed}</p>`})
     });
   }
