@@ -49,3 +49,17 @@
     color: themed('bigPanelTimeColor'); ;
   }
 }
+
+.loadingDownloadMessage{
+  font-size: 16px;
+  font-weight: 400;
+  visibility: hidden;
+}
+
+.loadingDownloadPercentage{
+  font-size: 16px;
+  font-weight: 400;
+  padding-top: 5px; 
+  visibility: hidden;
+  display: none;
+}

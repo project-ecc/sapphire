@@ -7,7 +7,6 @@ const homedir = require('os').homedir();
 var https = require('https');
 const event = require('../utils/eventhandler');
 const os = require('os');
-const psList = require('ps-list');
 const { exec } = require('child_process');
 import Client from 'eccoin-js';
 import {grabWalletDir} from "../utils/platform.service";
