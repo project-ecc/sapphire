@@ -1,6 +1,5 @@
 // @flow
 import { app, Menu, shell, BrowserWindow } from 'electron';
-const event = require('./utils/eventhandler');
 
 export default class MenuBuilder {
   mainWindow: BrowserWindow;
@@ -56,7 +55,7 @@ export default class MenuBuilder {
         { label: 'Hide Others', accelerator: 'Command+Shift+H', selector: 'hideOtherApplications:' },
         { label: 'Show All', selector: 'unhideAllApplications:' },
         { type: 'separator' },
-        { label: 'Quit', accelerator: 'Command+Q', click: () => { event.emit("close") } }
+        { label: 'Quit', accelerator: 'Command+Q', click: () => { app.quit(); } }
       ]
     };
     const subMenuEdit = {
@@ -123,7 +122,7 @@ export default class MenuBuilder {
       }, {
         label: '&Close',
         accelerator: 'Ctrl+W',
-        click: () => { event.emit("close") }
+        click: () => { app.quit() }
       }]
     }, {
       label: '&View',

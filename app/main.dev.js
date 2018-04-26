@@ -157,7 +157,7 @@ app.on('ready', async () => {
 	mainWindow.webContents.on('before-input-event', async function (event, input) {
 		if ((input.key.toLowerCase() === 'q' || input.key.toLowerCase() === "w") && input.control) {
 			event.preventDefault();
-			event.emit("close");;
+			app.quit();
 		}
 	});
 
@@ -176,6 +176,28 @@ app.on('ready', async () => {
 
   setupEventHandlers();
 });
+
+app.on('before-quit', async function (e) {
+  e.preventDefault();
+  if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
+    if (!ds.minimise_to_tray) {
+      mainWindow.minimize();
+    } else {
+      mainWindow.hide();
+    }
+  } else {
+    mainWindow.show();
+    mainWindow.focus();
+    sendMessage("closing_daemon");
+    let closedDaemon = false;
+    do{
+      closedDaemon = await daemonManager.stopDaemon();
+      console.log("closedDaemon: ", closedDaemon);
+    }while(!closedDaemon);
+    console.log("shutdown");
+    app.exit();
+  }
+ });
 
 function setupTrayIcon() {
   var trayImage;
@@ -255,6 +277,10 @@ function setupEventHandlers() {
     fullScreen = !fullScreen;
   });
 
+	ipcMain.on('quit', () => {
+    app.quit();
+  });
+
   ipcMain.on('hideTray', (e, hideTray) => {
     if(!hideTray)
       setupTrayIcon();
@@ -278,10 +304,6 @@ function setupEventHandlers() {
   ipcMain.on('initialSetup', (e, args) => {
     settings.set('settings.initialSetup', true);
     daemonManager.startDaemonChecker();
-  });
-
-  ipcMain.on("close", () => {
-    event.emit("close");
   });
 
   event.on('wallet', (exists, daemonCredentials) => {
@@ -319,7 +341,7 @@ function setupEventHandlers() {
 
   event.on('updateFailed', (errorMessage) => {
     console.log(errorMessage)
-    event.emit("close");;
+    app.quit();
   });
 
   event.on('updatedDaemon', () => {
@@ -354,7 +376,7 @@ function setupEventHandlers() {
   });
 }
 
-event.on("close", async () => {
+/*event.on("close", async () => {
   if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
     if (!ds.minimise_to_tray) {
       mainWindow.minimize();
@@ -362,6 +384,8 @@ event.on("close", async () => {
       mainWindow.hide();
     }
   } else {
+    mainWindow.show();
+    mainWindow.focus();
     sendMessage("closing_daemon");
     let closedDaemon = false;
     do{
@@ -369,9 +393,9 @@ event.on("close", async () => {
       console.log("closedDaemon: ", closedDaemon);
     }while(!closedDaemon);
     console.log("shutdown");
-    app.quit();
+    app.exit();
   }
-});
+});*/
 
 function sendMessage(type, argument = undefined) {
 	console.log("sending message: ", type);

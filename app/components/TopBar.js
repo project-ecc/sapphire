@@ -3,7 +3,6 @@ import $ from 'jquery';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import { ipcRenderer } from 'electron';
-const event = require('../utils/eventhandler');
 
 class TopBar extends React.Component {
  constructor() {
@@ -54,7 +53,7 @@ class TopBar extends React.Component {
   }
 
   close(){
-    ipcRenderer.send('close');
+    ipcRenderer.send('quit');
   }
 
   news(){
