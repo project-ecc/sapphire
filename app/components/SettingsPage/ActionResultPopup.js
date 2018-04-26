@@ -36,7 +36,7 @@ class ActionResultPopup extends React.Component {
      return (
       <div style={{height: "150px"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
-        <p className="popupTitle">{ this.props.successful ? this.props.lang.operationSuccessful.replace('!', '') : this.props.operationFailed }</p>
+        <p className="popupTitle">{ this.props.successful ? this.props.lang.operationSuccessful.replace('!', '') : this.props.lang.operationFailed }</p>
         {renderHTML(this.props.message)}
       </div>
       );
