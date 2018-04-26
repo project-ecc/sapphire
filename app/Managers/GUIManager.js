@@ -13,6 +13,7 @@ import {grabWalletDir} from "../utils/platform.service";
 import {version} from './../../package.json';
 var cp = require('child_process');
 var checksum = require('checksum');
+import Tools from '../utils/tools';
 import {downloadFile} from "../utils/downloader";
 import {getSapphireDownloadUrl} from "../utils/platform.service";
 
@@ -40,6 +41,21 @@ class GUIManager{
 		});
 	}
 
+
+  checkForUpdates() {
+    //check that version value has been set and
+    // the user has not yet been told about an update
+    if(!this.upgrading && !this.toldUserAboutUpdate){
+
+      if(Tools.compareVersion(this.installedVersion, this.currentVersion) === -1){
+        console.log('Installed GUI Version: ', this.installedVersion);
+        console.log('Latest GUI Version : ', this.currentVersion);
+        this.toldUserAboutUpdate = true;
+        event.emit('guiUpdate');
+      }
+    }
+  }
+
 	getLatestVersion(){
     setTimeout(this.getLatestVersion.bind(this), 60000);
     console.log('checking for latest gui version');
@@ -54,10 +70,7 @@ class GUIManager{
       const parsed = JSON.parse(data);
       if(parsed.success === true){
         this.currentVersion = parsed.versions[0].name.substring(1);
-        if(this.currentVersion !== this.installedVersion && !this.upgrading && !this.toldUserAboutUpdate){
-          this.toldUserAboutUpdate = true;
-          event.emit('guiUpdate');
-        }
+        this.checkForUpdates();
       }
     }).catch(error => {
       console.log(error.message);

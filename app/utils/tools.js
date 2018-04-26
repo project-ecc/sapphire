@@ -696,6 +696,35 @@ module.exports = {
     }
     //console.log(formattedString)
     return formattedString;
+  },
+  compareVersion(v1, v2){
+
+    //This will split both the versions by '.'
+    let arr1 = v1.split('.');
+    let arr2 = v2.split('.');
+
+    //Initializer for the version arrays
+    let i = 0;
+
+    // We have taken into consideration that both the
+    // versions will contains equal number of delimiters
+    while (i < arr1.length){
+
+      //Version 2 is greater than version 1
+      if(parseInt(arr2[i]) > parseInt(arr1[i])){
+        return -1
+      }
+
+      // Version 1 is greater than version 2
+      if(parseInt(arr1[i]) > parseInt(arr2[i])){
+        return 1
+      }
+
+      // We can't conclude till now
+      i += 1;
+    }
+    //Both the versions are equal
+    return 0;
   }
 };
 

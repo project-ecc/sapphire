@@ -59,7 +59,7 @@ class DaemonManager {
       this.shouldRestart = shouldRestart;
       this.updateDaemon();
     });
-    
+
 		var daemonCredentials = await Tools.readRpcCredentials();
   	this.installedVersion = await this.checkIfDaemonExists();
     if(daemonCredentials){
@@ -138,7 +138,7 @@ class DaemonManager {
 	      	cb(result);
 	      }
 	    });
- }
+  }
 
   async stopDaemon() {
     const self = this;
@@ -162,15 +162,6 @@ class DaemonManager {
 	  	});
   }
 
-  checkForUpdates() {
-    if (this.installedVersion != -1 && this.installedVersion != this.currentVersion && !this.toldUserAboutUpdate) {
-      console.log('installed: ', this.installedVersion);
-      console.log('current: ', this.currentVersion);
-      this.toldUserAboutUpdate = true;
-      event.emit('daemonUpdate');
-    }
-  }
-
   async updateDaemon() {
     console.log('daemon manager got update call');
     const r = await this.stopDaemon();
@@ -190,7 +181,6 @@ class DaemonManager {
       }, 7000);
     }
   }
-
 
   async checkIfDaemonExists() {
     if (fs.existsSync(getPlatformWalletUri())) {
@@ -215,6 +205,7 @@ class DaemonManager {
     return -1;
   }
 
+
   async checkIfWalletExists() {
     	if (!fs.existsSync(grabEccoinDir())) {
     		fs.mkdirSync(grabEccoinDir());
@@ -227,6 +218,20 @@ class DaemonManager {
 
     console.log('wallet does not exist');
     return false;
+  }
+
+  checkForUpdates() {
+    //check that version value has been set and
+    // the user has not yet been told about an update
+    if(this.installedVersion !== -1 && !this.toldUserAboutUpdate){
+
+      if(Tools.compareVersion(this.installedVersion, this.currentVersion) === -1){
+        console.log('Installed Daemon Version: ', this.installedVersion);
+        console.log('Latest Daemon Version: ', this.currentVersion);
+        this.toldUserAboutUpdate = true;
+        event.emit('daemonUpdate');
+      }
+    }
   }
 
   async getLatestVersion() {

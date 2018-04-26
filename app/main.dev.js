@@ -82,7 +82,6 @@ var shouldQuit = app.makeSingleInstance(function(commandLine, workingDirectory) 
 
 if (shouldQuit) {
   app.quit();
-  return;
 }
 
 app.on('ready', async () => {
