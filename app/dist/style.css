@@ -15775,8 +15775,11 @@ i.fa.fa-chevron-down {
   margin-top: 30px; }
 
 .backupFailed {
-  margin-top: 27px;
-  font-size: 15px; }
+  font-size: 15px;
+  width: 420px;
+  text-align: left;
+  margin: 0 auto;
+  margin-top: 20px; }
 
 @media only screen and (max-width: 900px) {
   .subSettings {

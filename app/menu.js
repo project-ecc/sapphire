@@ -10,7 +10,9 @@ export default class MenuBuilder {
 
   buildMenu() {
     if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
-      this.setupDevelopmentEnvironment();
+      this.setupDevContextMenu();
+    } else {
+      this.setupProdContextMenu();
     }
 
     let template;
@@ -27,18 +29,33 @@ export default class MenuBuilder {
     return menu;
   }
 
-  setupDevelopmentEnvironment() {
+  setupDevContextMenu() {
     this.mainWindow.openDevTools();
     this.mainWindow.webContents.on('context-menu', (e, props) => {
       const { x, y } = props;
-
       Menu
-        .buildFromTemplate([{
-          label: 'Inspect element',
-          click: () => {
-            this.mainWindow.inspectElement(x, y);
-          }
-        }])
+        .buildFromTemplate([
+          {
+            label: 'Inspect element',
+            click: () => {
+              this.mainWindow.inspectElement(x, y);
+            }
+          },
+          { type: 'separator' },
+          { role: 'copy' },
+          { role: 'paste' }
+      ])
+        .popup(this.mainWindow);
+    });
+  }
+
+  setupProdContextMenu() {
+    this.mainWindow.webContents.on('context-menu', () => {
+      Menu
+        .buildFromTemplate([
+          { role: 'copy' },
+          { role: 'paste' }
+        ])
         .popup(this.mainWindow);
     });
   }
