@@ -231,7 +231,7 @@ class Settings extends Component {
         />
         <SettingsToggle
           keyVal={6}
-          text= { this.props.lang.minimizeToTray }
+          text= { process.platform === "darwin" ? this.props.lang.minimizeToTrayMac : this.props.lang.minimizeToTray }
           handleChange = {this.handleMinimizeToTray}
           checked = {this.props.minimizeToTray}
         />
