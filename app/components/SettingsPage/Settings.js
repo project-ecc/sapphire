@@ -152,6 +152,7 @@ class Settings extends Component {
       properties: ['openDirectory']
     }, (folderPaths) => {
       if (folderPaths === undefined) {
+        this.props.setBackupOperationInProgress(false);
         return;
       }
       let walletpath;
