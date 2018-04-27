@@ -137,17 +137,6 @@ class TopBar extends React.Component {
     return(
       <div>
         <img className="miniButton" src={miniButton}></img>
-        <div id="appButtonsMac">
-          <div onClick={this.close} className="appButtonMac">
-            <img src={close}></img>
-          </div>
-          <div onClick={this.minimize} className="appButtonMac">
-            <img src={minimize}></img>
-          </div>
-          <div onClick={this.fullScreenMac.bind(this, false)} className="appButtonMac">
-            <img src={maximize}></img>
-          </div>
-        </div>
         <div id="appButtons">
          <div onClick={this.notification} className="appButton functionIcon" id="eccNewsIcon">
             <div className="appButtons__notifications-counter-holder">
