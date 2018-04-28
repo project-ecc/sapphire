@@ -406,8 +406,10 @@ class DaemonConnector {
       }
       let highestBlock = data.headers == 0 || data.headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data.headers;
       data.headers = highestBlock;
-			this.store.dispatch({type: CHAIN_INFO, payload: data});
-      this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data.blocks == 0 || data.headers == 0 ? 0 : ((data.blocks * 100) / data.headers).toFixed(2)})
+      this.store.dispatch({type: CHAIN_INFO, payload: data});
+      let syncedPercentage = (data.blocks * 100) / data.headers;
+      syncedPercentage === 100 ? syncedPercentage = syncedPercentage.toFixed(0) : syncedPercentage = syncedPercentage.toFixed(2);
+      this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data.blocks == 0 || data.headers == 0 ? 0 : syncedPercentage })
 		})
 
     this.wallet.command([{method: "getwalletinfo"}]).then((data) => {

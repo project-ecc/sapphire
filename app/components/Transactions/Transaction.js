@@ -184,10 +184,10 @@ class Transaction extends Component {
           </div>
           <div style={{width: "100%", marginTop: "5px", padding: "0 0"}}>
             <div className="row rowDynamic">
-              <div className="col-sm-6 headerAddresses tableRowHeader" style={{paddingLeft: "4%"}}>{ this.props.lang.typeCAPS }</div>
+              <div className="col-sm-6 headerAddresses tableRowHeader" style={{paddingLeft: "4%"}}>{ this.props.lang.type }</div>
               <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.amount }</div>
-              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.statusCAPS }</div>
-              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.timeCAPS }</div>
+              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.status }</div>
+              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.time }</div>
             </div>
           <div id="rows" style={{height: "500px", width: "100%", padding: "0 0", overflowY: "scroll"}}>
             {data.map((t, index) => {
