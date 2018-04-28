@@ -1,15 +1,17 @@
 import $ from 'jquery';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { ipcRenderer } from 'electron';
+
 import MessagingContacts from './MessagingContacts';
 import MessagingChat from './MessagingChat';
 import { traduction } from '../../lang/lang';
-const homedir = require('os').homedir();
 import * as actions from '../../actions';
-import { connect } from 'react-redux';
-const Tools = require('../../utils/tools')
-import { ipcRenderer } from 'electron';
 import MessagingTopBar from './MessagingTopBar';
 import MessagingEnabler from './MessagingEnabler';
+
+const homedir = require('os').homedir();
+const Tools = require('../../utils/tools');
 
 class Messaging extends Component {
   constructor(props) {
@@ -54,7 +56,7 @@ class Messaging extends Component {
           Tools.sendMessage(this, this.props.lang.fullMessaging, 1, "Sapphire");
           this.props.setUserClickedButton("fullMessaging");
         }
-        if($('#messagingOptions').css("visibility") != "hidden"){
+        if($('#messagingOptions').css("visibility") !== "hidden"){
           Tools.animateMessagingFunctionIconsOut();
         }
         /*setTimeout(() => {
@@ -64,7 +66,7 @@ class Messaging extends Component {
       }
     }
     else if($(window).width() >= 580 && !this.props.showingFunctionIcons){
-      if($('#messagingOptionsSmall').css("visibility") != "hidden"){
+      if($('#messagingOptionsSmall').css("visibility") !== "hidden"){
         Tools.animateMessagingSmallFunctionIconsOut();
       }
       this.props.setMobileView(false);
@@ -97,7 +99,7 @@ class Messaging extends Component {
   }
 
   render() {
-    
+
     return (
         <div id="messagingContainer" className={this.props.warning ? "makeFullScreen" : ""}>
           <MessagingEnabler />

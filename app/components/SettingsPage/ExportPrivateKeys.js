@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
 import {TweenMax, TimelineMax} from "gsap";
-import $ from 'jquery';
 import { ipcRenderer } from 'electron';
-var fs = require('fs');
-var jsPDF = require('jspdf');
+import * as actions from '../../actions';
+
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
+
+import $ from 'jquery';
+
 const Tools = require('../../utils/tools');
-const { clipboard } = require('electron');
 const os = require('os');
+const { clipboard } = require('electron');
+
+var fs = require('fs');
+var jsPDF = require('jspdf');
 
 class ExportPrivateKeys extends React.Component {
   constructor() {
@@ -52,7 +56,7 @@ class ExportPrivateKeys extends React.Component {
 
   handleChange(event) {
     const pw = event.target.value;
-    if(pw.length == 0)
+    if(pw.length === 0)
       TweenMax.set('#password', {autoAlpha: 1});
     else
       TweenMax.set('#password', {autoAlpha: 0});
@@ -64,12 +68,12 @@ class ExportPrivateKeys extends React.Component {
   }
 
   async handlePanels(){
-    if(this.props.panelNumber == 1){
+    if(this.props.panelNumber === 1){
       this.displayConfirm = false;
       this.handleConfirm();
       await this.getDataToExport();
     }
-    else if(this.props.panelNumber == 2){
+    else if(this.props.panelNumber === 2){
       this.handleExportOptions();
       this.displayConfirm = true;
 
@@ -80,11 +84,11 @@ class ExportPrivateKeys extends React.Component {
       this.tween = TweenMax.to('#selectedlocation', 0.2, {scale: 0.5, autoAlpha: 0, delay: 3})
       TweenMax.set('#selectedlocation',{scale: 1, delay: 3.2})*/
     }
-    else if(this.props.panelNumber == 3){
+    else if(this.props.panelNumber === 3){
       //this.displayConfirm = true;
       this.export();
     }
-    else if(this.props.panelNumber == 4){
+    else if(this.props.panelNumber === 4){
       clipboard.writeText(this.addressesToCopy);
     }
     /*else if(this.props.panelNumber == 2){
@@ -149,21 +153,21 @@ class ExportPrivateKeys extends React.Component {
   }
 
   handleDisplayKeys(){
-    let height = Object.keys(this.state.toDisplay).length == 1 ? 300 : 400;
+    let height = Object.keys(this.state.toDisplay).length === 1 ? 300 : 400;
     TweenMax.to('#exportOptions', 0.3, {css:{left: "-100%"}});
-    TweenMax.to('#displayKeys', 0.3, {css:{left: "0%", width: "570px"}})
-    TweenMax.to('#unlockPanel', 0.2, {css:{height: height +"px", top: "19%", minWidth:"570px", marginLeft:"-274px"}})
-    TweenMax.to('#exportPrivKey', 0.2, {css:{height: height+"px"}})
+    TweenMax.to('#displayKeys', 0.3, {css:{left: "0%", width: "570px"}});
+    TweenMax.to('#unlockPanel', 0.2, {css:{height: height +"px", top: "19%", minWidth:"570px", marginLeft:"-274px"}});
+    TweenMax.to('#exportPrivKey', 0.2, {css:{height: height+"px"}});
     $('#confirmButtonPopup').text(this.props.lang.copyAll);
-    TweenMax.set('#confirmButtonPopup', {css:{left: "218px"}})
-    TweenMax.to('#confirmButtonPopup', 0.3, {autoAlpha: 1, delay: 0.8})
-    TweenMax.set('#displayKeys p', {width: "450px"})
+    TweenMax.set('#confirmButtonPopup', {css:{left: "218px"}});
+    TweenMax.to('#confirmButtonPopup', 0.3, {autoAlpha: 1, delay: 0.8});
+    TweenMax.set('#displayKeys p', {width: "450px"});
     this.props.setPanelExportingPrivateKeys(this.props.panelNumber+2);
   }
 
   handleConfirm(){
     let wasStaking = this.props.staking;
-    if(this.props.passwordVal == ""){
+    if(this.props.passwordVal === ""){
       this.showWrongPassword();
       return;
     }
@@ -194,7 +198,7 @@ class ExportPrivateKeys extends React.Component {
         method: 'dumpprivkey', parameters: [address.normalAddress]
       });
       addressesArray.push(address.normalAddress);
-    })
+    });
 
     let privKeys = await this.getPrivateKeys(batch);
     let counter = 1;
@@ -210,7 +214,7 @@ class ExportPrivateKeys extends React.Component {
       keys[i] = {publicKey: addressesArray[i], privateKey: privKeys[i]};
 
       counter++;
-      if(counter == 24 || i == addressesArray.length - 1 ){
+      if(counter === 24 || i === addressesArray.length - 1 ){
         this.toPrint.push([]);
         for(let j = 0; j < aux.length; j++)
           this.toPrint[this.toPrint.length-1].push(aux[j]);
@@ -275,7 +279,7 @@ class ExportPrivateKeys extends React.Component {
   handleExportClick(){
     ipcRenderer.send('exportPrivateKeys');
     ipcRenderer.on('locationSelected', (event, arg) => {
-      if(arg != undefined){
+      if(arg !== undefined){
         $('#exportPrivKeyButton').text(this.props.lang.export);
         $('#selectedlocation').text(arg);
         if(this.tween !== undefined)
@@ -324,18 +328,18 @@ class ExportPrivateKeys extends React.Component {
   handleCopyAddressClicked(publicAddress, privateAddress, element){
     let toCopy = publicAddress + os.EOL + privateAddress;
     clipboard.writeText(toCopy);
-    TweenMax.to(element, 0.1, {scale: 1.1})
+    TweenMax.to(element, 0.1, {scale: 1.1});
     TweenMax.to(element, 0.1, {scale: 1, delay: 0.1})
   }
 
   renderdisplayKeys(){
-    if(this.state.toDisplay == null){
+    if(this.state.toDisplay === null){
       return
     }
     let counter = 0;
     const keys = Object.keys(this.state.toDisplay).map((key) => {
       let pubKey = this.state.toDisplay[key].publicKey;
-      let privKey = this.state.toDisplay[key].privateKey
+      let privKey = this.state.toDisplay[key].privateKey;
       this.addressesToCopy += pubKey + os.EOL;
       this.addressesToCopy += privKey + os.EOL;
       this.addressesToCopy += os.EOL;
@@ -352,7 +356,7 @@ class ExportPrivateKeys extends React.Component {
     return(
       <div id="displayKeys" style={{position: "relative", left:"100%", width: "535px"}}>
         <p style={{fontSize: "16px", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"20px", textAlign: "left"}}>
-          {`${this.props.lang.listing} ${keys.length}  ${keys.length == 1 ? this.props.lang.addressInFormat : this.props.lang.addressesInFormat}:`}
+          {`${this.props.lang.listing} ${keys.length}  ${keys.length === 1 ? this.props.lang.addressInFormat : this.props.lang.addressesInFormat}:`}
           <p style={{paddingTop: "15px"}} className="pdfExample">{`<${this.props.lang.publicAddress}>`}</p>
           <p className="pdfExample">{`<${this.props.lang.privateKey}>`}</p>
         </p>

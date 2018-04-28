@@ -73,7 +73,7 @@ class ImportPrivateKey extends React.Component {
   }
 
   importPrivateKey(){
-    if(this.props.passwordVal == ""){
+    if(this.props.passwordVal === ""){
       this.showWrongPassword();
       return;
     }
@@ -85,14 +85,14 @@ class ImportPrivateKey extends React.Component {
       const parameters = [this.props.privateKeyValue];
       this.props.wallet.command([{ method, parameters }]).then((result) => {
         console.log(result);
-        if(result[0] == null){
+        if(result[0] === null){
           console.log("imported address");
           this.props.setCheckingDaemonStatusPrivKey(false);
           this.showFunctionIcons();
           this.addressImported();
         }
         //loading wallet
-        else if(result[0].code == "-28"){
+        else if(result[0].code === "-28"){
           setTimeout(()=> {
             this.importPrivateKey();
           }, 500);
@@ -107,13 +107,13 @@ class ImportPrivateKey extends React.Component {
         }
       }).catch((result) => {
         console.log("ERROR IMPORTING ADDRESS: ", result);
-        if(result.code == "ECONNREFUSED"){
+        if(result.code === "ECONNREFUSED"){
           this.failedToImportAddress();
           this.props.setCheckingDaemonStatusPrivKey(false);
           this.showFunctionIcons();
         }
         //imported but rescaning
-        else if(result.code == "ESOCKETTIMEDOUT"){
+        else if(result.code === "ESOCKETTIMEDOUT"){
           this.checkDaemonStatus();
           TweenMax.to('#importingPrivKey p', 0.5, {autoAlpha: 1});
         }
@@ -162,7 +162,7 @@ class ImportPrivateKey extends React.Component {
 
   handleChangePrivateKey(event) {
     let privKey = event.target.value;
-    if(privKey.length == 0){
+    if(privKey.length === 0){
       TweenMax.set('#enterPrivKey', {autoAlpha: 1});
     }
     else
@@ -173,7 +173,7 @@ class ImportPrivateKey extends React.Component {
 
   handleChangePassword(event) {
     let pw = event.target.value;
-    if(pw.length == 0){
+    if(pw.length === 0){
       TweenMax.set('#enterPassword', {autoAlpha: 1});
     }
     else

@@ -9,20 +9,20 @@ class TransitionComponent extends React.Component {
  componentWillAppear (callback) {
   console.log("componentWillAppear", this.props.animationType);
   console.log("componentWillAppear TRANSITION");
-    if(this.props.animationType == "loader"){
+    if(this.props.animationType === "loader"){
       this.props.animateIn(this.refs.animate, this.props.updatingApplication, this.props.animateLogo, callback);
     }
-    else if(this.props.animationType == "setupStep"){
+    else if(this.props.animationType === "setupStep"){
       this.props.animateIn(this.refs.animate, callback);
     }
-    else if(this.props.animationType == "initialSetup"){
+    else if(this.props.animationType === "initialSetup"){
       this.props.animateIn(this.refs.animate, callback);
     }
-    else if(this.props.animationType == "settings"){
+    else if(this.props.animationType === "settings"){
       this.props.animateIn(this.refs.animate, this.props.resetWillChange.bind(this),  callback, 1.5);
       this.props.setGenericAnimationToTrue();
     }
-    else if(this.props.animationType == "genericPanel"){
+    else if(this.props.animationType === "genericPanel"){
       this.props.animateIn(this.refs.animate, this.props.resetWillChange.bind(this), callback, 0.5);
       this.props.setGenericAnimationToTrue();
     }
@@ -32,13 +32,13 @@ class TransitionComponent extends React.Component {
   componentWillEnter(callback){
     console.log("componentWillEnter", this.props.animationType);
     console.log("componentWillEnter TRANSITION");
-    if(this.props.animationType == "popup"){
+    if(this.props.animationType === "popup"){
       this.props.animateIn(this.refs.animate, callback, "22%");
     }
-    else if(this.props.animationType == "loader"){
+    else if(this.props.animationType === "loader"){
       this.props.animateIn(this.refs.animate, this.props.updatingApplication, this.props.animateLogo, callback);
     }
-    else if(this.props.animationType == "setupStep"){
+    else if(this.props.animationType === "setupStep"){
       this.props.animateIn(this.refs.animate, callback);
     }
     else callback();
@@ -50,18 +50,18 @@ class TransitionComponent extends React.Component {
 
   componentWillLeave (callback) {
     console.log("componentWillLeave TRANSITION");
-    if(this.props.animationType == "popup")
+    if(this.props.animationType === "popup")
       this.props.animateOut(this.refs.animate, callback);
-    else if(this.props.animationType == "genericPanel"){
+    else if(this.props.animationType === "genericPanel"){
       this.props.animateOut(this.refs.animate, this.props.resetWillChange.bind(this), callback, 1);
     }
-    else if(this.props.animationType == "settings"){
+    else if(this.props.animationType === "settings"){
       this.props.animateOut(this.refs.animate, this.props.resetWillChange.bind(this), callback, 1.5);
     }
-    else if(this.props.animationType == "loader" || this.props.animationType == "initialSetup"){
+    else if(this.props.animationType === "loader" || this.props.animationType === "initialSetup"){
       callback()
     }
-    else if(this.props.animationType == "firstSetupStep" || this.props.animationType == "setupStep"){
+    else if(this.props.animationType === "firstSetupStep" || this.props.animationType === "setupStep"){
       this.props.animateOut(this.refs.animate, callback)
     }
     else callback();

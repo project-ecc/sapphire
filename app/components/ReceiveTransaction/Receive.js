@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
-import { traduction } from '../../lang/lang';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
-import $ from 'jquery';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
+
+import { traduction } from '../../lang/lang';
+import * as actions from '../../actions';
 import Input from '../Others/Input';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
+
+import $ from 'jquery';
+
 const lang = traduction();
 const { clipboard } = require('electron');
 const ansAddresImage = require('../../../resources/images/ans_address.png');
+
 var classNames = require('classnames');
 
 // This is temporary until ANS is enabled
@@ -45,7 +49,7 @@ class Receive extends Component {
   }
 
   componentWillReceiveProps(props){
-    if(this.props.userAddresses.length != props.userAddresses.length){
+    if(this.props.userAddresses.length !== props.userAddresses.length){
       TweenMax.fromTo('#addressCreatedSuccessfully', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
       TweenMax.to('#addressCreatedSuccessfully', 0.2, {autoAlpha: 0, scale: 0.5, delay: 5});
     }
@@ -70,7 +74,7 @@ class Receive extends Component {
     let sizeOfContainer = $('.tableCustom').height()-128;
     let sizeOfContainerWidth = $('.tableCustom').width();
     $('.rowDynamic').css("width", sizeOfContainerWidth);
-    
+
     if(sizeOfContainer < totalSize){
       $('#rows').css("overflow-y", "auto");
       $('.headerAddresses').css("left", "-3px");
@@ -101,7 +105,7 @@ class Receive extends Component {
   }
 
   handleCreateNewAddress(skipCheck) {
-    if(this.props.ansAddress && this.props.newAddressName == "" && !skipCheck){
+    if(this.props.ansAddress && this.props.newAddressName === "" && !skipCheck){
       //animate line
     } else{
       this.props.setCreatingAddress(true);
@@ -125,7 +129,7 @@ class Receive extends Component {
     TweenMax.fromTo('#ansExplanation', 0.2, {top: -15}, {top: 15, autoAlpha: 1});
     TweenMax.to('#addressName', 0.2, {autoAlpha: 1});
     TweenMax.to('.tableCustom', 0.2, {top: 50});
-    TweenMax.to('#imageAns', 0.2, {top: 55})
+    TweenMax.to('#imageAns', 0.2, {top: 55});
     $("#addressName input").attr("disabled", false);
   }
 
@@ -136,7 +140,7 @@ class Receive extends Component {
     TweenMax.fromTo('#ansExplanation', 0.2, {top: 15}, {top: -15, autoAlpha: 0});
     TweenMax.to('#addressName', 0.2, {autoAlpha: 0.4});
     TweenMax.to('.tableCustom', 0.2, {top: 0});
-    TweenMax.to('#imageAns', 0.2, {top: 6})
+    TweenMax.to('#imageAns', 0.2, {top: 6});
     $("#addressName input").attr("disabled", true);
     this.props.setNewAddressName("");
     TweenMax.set('#addressNamePlaceHolder', {autoAlpha: 1});
@@ -144,7 +148,7 @@ class Receive extends Component {
 
   handleChangeAccountAddress(event){
     const account = event.target.value;
-    if(account.length == 0)
+    if(account.length === 0)
       TweenMax.set('#addressAccountPlaceHolder', {autoAlpha: 1});
     else
       TweenMax.set('#addressAccountPlaceHolder', {autoAlpha: 0});
@@ -154,7 +158,7 @@ class Receive extends Component {
 
   handleChangeNameAddress(event){
     const name = event.target.value;
-    if(name.length == 0) {
+    if(name.length === 0) {
       TweenMax.set('#addressNamePlaceHolder', {autoAlpha: 1});
     } else {
       TweenMax.set('#addressNamePlaceHolder', {autoAlpha: 0});
@@ -170,11 +174,11 @@ class Receive extends Component {
 
   filterClicked(type){
     console.log(type);
-    if(type == "all")
+    if(type === "all")
       this.props.setFilterOwnAddresses("all");
-    else if(type == "normal")
+    else if(type === "normal")
       this.props.setFilterOwnAddresses("normal");
-    else if(type == "ans")
+    else if(type === "ans")
       this.props.setFilterOwnAddresses("ans");
   }
 
@@ -267,7 +271,7 @@ class Receive extends Component {
               if(this.props.filterAll || this.props.filterNormal && !address.ans || this.props.filterAns && address.ans){
                 counter++;
                 return (
-                  <div className= {this.props.selectedAddress && address.address == this.props.selectedAddress.address ? rowClassName + " tableRowSelected" : counter % 2 != 0 ? rowClassName : rowClassName + " tableRowEven"} key={`address_${index}`}>
+                  <div className= {this.props.selectedAddress && address.address === this.props.selectedAddress.address ? rowClassName + " tableRowSelected" : counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} key={`address_${index}`}>
                     <div className={nameColumn} onClick={this.rowClicked.bind(this, address)}>
                       {this.props.filterAns ? address.address : this.getAddressDiplay(address)}
                     </div>

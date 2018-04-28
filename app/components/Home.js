@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import ToggleButton from 'react-toggle';
+import TransitionGroup from 'react-transition-group/TransitionGroup';
+import glob from 'glob';
+
 import { exchanges } from '../utils/exchange';
 import { traduction } from '../lang/lang';
-import glob from 'glob';
+import * as actions from '../actions';
+
+const Tools = require('../utils/tools');
 const event = require('../utils/eventhandler');
 const homedir = require('os').homedir();
 const lang = traduction();
-import { connect } from 'react-redux';
-import ToggleButton from 'react-toggle';
-import * as actions from '../actions';
-import TransitionGroup from 'react-transition-group/TransitionGroup';
-const Tools = require('../utils/tools');
 
 class Home extends Component {
   constructor(props) {
@@ -92,7 +94,7 @@ class Home extends Component {
       this.buildFilterObject('Month', this.props.monthEarningsSelected),
       this.buildFilterObject('Week', this.props.weekEarningsSelected),
     ].filter(f => f.val)[0];
-     
+
     const typeFilter = [
       this.buildFilterObject(['fileStorage', 'staking'], this.props.allEarningsSelected),
       this.buildFilterObject(['fileStorage'], this.props.fileStorageEarningsSelected),
@@ -144,8 +146,8 @@ class Home extends Component {
   }
 
   getUpcomingPayments(){
-    if(this.props.notifications["ansPayments"]["payments"].length == 0)
-      return (<p className="noIcomingPayments">{this.props.lang.noUpcomingPayments}</p>)
+    if(this.props.notifications["ansPayments"]["payments"].length === 0)
+      return (<p className="noIcomingPayments">{this.props.lang.noUpcomingPayments}</p>);
     else{
       const payments = this.props.notifications["ansPayments"]["payments"];
       const today = new Date();

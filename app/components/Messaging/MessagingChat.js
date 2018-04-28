@@ -1,15 +1,17 @@
 import $ from 'jquery';
 import React, { Component } from 'react';
-import { traduction } from '../../lang/lang';
-const homedir = require('os').homedir();
-import * as actions from '../../actions';
-import { connect } from 'react-redux';
-const Tools = require('../../utils/tools')
-import MessagingInput from './MessagingInput';
-import MessagingOptions from './MessagingOptions';
-var moment = require('moment');
 import jstz from 'jstz';
 import renderHTML from 'react-render-html';
+import { connect } from 'react-redux';
+
+import { traduction } from '../../lang/lang';
+import * as actions from '../../actions';
+import MessagingInput from './MessagingInput';
+import MessagingOptions from './MessagingOptions';
+
+var moment = require('moment');
+const homedir = require('os').homedir();
+const Tools = require('../../utils/tools')
 
 class MessagingChat extends Component {
   constructor(props) {

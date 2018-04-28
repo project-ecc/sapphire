@@ -1,24 +1,28 @@
 import React, { Component } from 'react';
 import fs from 'fs';
-import * as actions from '../../actions';
-import { connect } from 'react-redux';
 import $ from 'jquery';
 import { ipcRenderer } from 'electron';
+import { connect } from 'react-redux';
 import os from 'os';
+
+
+import * as actions from '../../actions';
 import SettingsToggle from './SettingsToggle';
 import SettingsSidebarItem from './SettingsSidebarItem';
 import LanguageSelector from '../Others/LanguageSelector';
 import ThemeSelector from '../Others/ThemeSelector';
+import {version} from './../../../package.json';
+
+const settings = require('electron').remote.require('electron-settings');
 const remote = require('electron').remote;
 const dialog = remote.require('electron').dialog;
 const app = remote.app;
-const settings = require('electron').remote.require('electron-settings');
 const homedir = require('os').homedir();
-var open = require("open");
-import {version} from './../../../package.json';
 const Tools = require('../../utils/tools');
 const guiVersion = version;
+
 var jsonFormat = require('json-format');
+var open = require("open");
 
 class Settings extends Component {
   constructor(props) {
@@ -101,7 +105,7 @@ class Settings extends Component {
   }
 
   handleNewsNotifications(){
-    if(this.props.newsNotifications == true){
+    if(this.props.newsNotifications === true){
       this.props.setNewsChecked();
     }
     this.reloadSettings('notifications.news', !this.props.newsNotifications);
@@ -109,7 +113,7 @@ class Settings extends Component {
   }
 
   handleStakingNotifications(){
-    if(this.props.stakingNotifications == true){
+    if(this.props.stakingNotifications === true){
       this.props.setEarningsChecked();
     }
     this.reloadSettings('notifications.staking', !this.props.stakingNotifications);
@@ -210,7 +214,7 @@ class Settings extends Component {
       });
       console.log(toPrint)
     }).catch((err) => {
-      console.log("exception handleHelpFile: ", err)
+      console.log("exception handleHelpFile: ", err);
       this.props.setActionPopupResult({flag: true, successful: false, message: `<p className="exportedSapphireInfo">${this.props.lang.failedSapphireInfo}.</p>`})
     });
   }
@@ -384,10 +388,10 @@ class Settings extends Component {
   }
 
   shouldComponentUpdate(props){
-    console.log(props.theme)
-    console.log(this.props.theme)
-    if(props.theme != this.props.theme){
-      console.log("Forcing update.")
+    console.log(props.theme);
+    console.log(this.props.theme);
+    if(props.theme !== this.props.theme){
+      console.log("Forcing update.");
       this.forceUpdate()
     }
     return true;
@@ -402,19 +406,19 @@ class Settings extends Component {
 
     const hoveredIcon = this.props.hoveredIcon;
 
-    if(hoveredIcon && hoveredIcon == "twitter"){
+    if(hoveredIcon && hoveredIcon === "twitter"){
       twitter = Tools.getIconForTheme("twitter", true);
     }
-    else if(hoveredIcon && hoveredIcon == "facebook"){
+    else if(hoveredIcon && hoveredIcon === "facebook"){
       facebook = Tools.getIconForTheme("facebook", true);
     }
-    else if(hoveredIcon && hoveredIcon == "medium"){
+    else if(hoveredIcon && hoveredIcon === "medium"){
       medium = Tools.getIconForTheme("medium", true);
     }
-    else if(hoveredIcon && hoveredIcon == "reddit"){
+    else if(hoveredIcon && hoveredIcon === "reddit"){
       reddit = Tools.getIconForTheme("reddit", true);
     }
-    else if(hoveredIcon && hoveredIcon == "slack"){
+    else if(hoveredIcon && hoveredIcon === "slack"){
       slack = Tools.getIconForTheme("slack", true);
     }
 
@@ -428,11 +432,11 @@ class Settings extends Component {
           <div id="settingsContainer">
             <div id="sidebarSettings">
               <p id="sidebarTitle">{ this.props.lang.appSettingsCAPS }</p>
-              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "General")} selected={this.props.settingsOptionSelected == "General" ? true : false} text={ this.props.lang.general } />
-              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Wallet")} selected={this.props.settingsOptionSelected == "Wallet" ? true : false} text={ this.props.lang.wallet } />
-              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Notifications")} selected={this.props.settingsOptionSelected == "Notifications" ? true : false} text={ this.props.lang.notifications } />
-              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Appearance")} selected={this.props.settingsOptionSelected == "Appearance" ? true : false} text={ this.props.lang.appearance } />
-              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Language")} selected={this.props.settingsOptionSelected == "Language" ? true : false} text={ this.props.lang.language } />
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "General")} selected={this.props.settingsOptionSelected === "General"} text={ this.props.lang.general } />
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Wallet")} selected={this.props.settingsOptionSelected === "Wallet"} text={ this.props.lang.wallet } />
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Notifications")} selected={this.props.settingsOptionSelected === "Notifications"} text={ this.props.lang.notifications } />
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Appearance")} selected={this.props.settingsOptionSelected === "Appearance"} text={ this.props.lang.appearance } />
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Language")} selected={this.props.settingsOptionSelected === "Language"} text={ this.props.lang.language } />
               <div id="socialIcons">
                 <img onMouseEnter={this.handleIconHover.bind(this, "twitter")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://twitter.com/project_ecc")} src={twitter} />
                 <img onMouseEnter={this.handleIconHover.bind(this, "facebook")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://www.facebook.com/projectECC/")} src={facebook} />

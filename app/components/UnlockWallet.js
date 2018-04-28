@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../actions';
 import {TweenMax} from "gsap";
-import $ from 'jquery';
-const Tools = require('../utils/tools');
+
+import * as actions from '../actions';
 import CloseButtonPopup from './Others/CloseButtonPopup';
 import ConfirmButtonPopup from './Others/ConfirmButtonPopup';
 import Input from './Others/Input';
+
+import $ from 'jquery';
+
+const Tools = require('../utils/tools');
 
 class UnlockWallet extends React.Component {
  constructor() {
@@ -19,11 +22,11 @@ class UnlockWallet extends React.Component {
   }
 
   _handleKeyPress = (e) => {
-   console.log(e)
+   console.log(e);
     if (e.key === 'Enter') {
       this.handleConfirm();
     }
-  }
+  };
 
   componentWillMount(){
     Tools.hideFunctionIcons();
@@ -65,7 +68,7 @@ class UnlockWallet extends React.Component {
 
   handleChange(event) {
     const pw = event.target.value;
-    if(pw.length == 0)
+    if(pw.length === 0)
       TweenMax.set('#password', {autoAlpha: 1});
     else
       TweenMax.set('#password', {autoAlpha: 0});
@@ -74,7 +77,7 @@ class UnlockWallet extends React.Component {
   }
 
   handleConfirm(){
-    if(this.props.passwordVal == ""){
+    if(this.props.passwordVal === ""){
       Tools.showTemporaryMessage('#wrongPassword');
       this.props.setPassword("");
       return;

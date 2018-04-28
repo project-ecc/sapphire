@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { connect } from 'react-redux';
-import * as actions from '../actions';
 import { ipcRenderer } from 'electron';
+
+import * as actions from '../actions';
 
 class TopBar extends React.Component {
  constructor() {
@@ -238,7 +239,7 @@ class TopBar extends React.Component {
 const mapStateToProps = state => {
   return{
     settings: state.application.settings,
-    news: state.application.selectedPanel == "news" ? true : false,
+    news: state.application.selectedPanel === "news",
     macButtonsHover: state.application.macButtonsHover,
     macButtonsFocus: state.application.macButtonsFocus,
     genericPanelAnimationOn: state.application.genericPanelAnimationOn,

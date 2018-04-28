@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
 import {TweenMax} from "gsap";
-import $ from 'jquery';
-const tools = require('../../utils/tools');
+import { ipcRenderer } from 'electron';
+
+import * as actions from '../../actions';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
-import { ipcRenderer } from 'electron';
+
+import $ from 'jquery';
+
+const tools = require('../../utils/tools');
 
 class UpdateApplication extends React.Component {
  constructor() {

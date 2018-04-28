@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {TweenMax} from "gsap";
+
 import * as actions from '../../actions';
 import NewsItem from './NewsItem';
+
 import $ from 'jquery';
-import {TweenMax} from "gsap";
 
 class News extends Component {
   constructor(props) {
@@ -24,7 +26,7 @@ class News extends Component {
     $('.postsContainer').css('height', containerSize);
     let postsPerContainer = Math.floor(containerSize / 155);
     var currentPostsPerContainer = this.props.postsPerContainer;
-    if(currentPostsPerContainer != postsPerContainer){
+    if(currentPostsPerContainer !== postsPerContainer){
       this.props.setEccPostsPage(1);
     }
     this.props.setPostsPerContainer(postsPerContainer);
@@ -52,7 +54,7 @@ class News extends Component {
 
   switchPage(direction){
     if(this.props.switchingPage) return;
-    if(direction == "right" && !$('#arrowRight').hasClass('arrowInactive')){
+    if(direction === "right" && !$('#arrowRight').hasClass('arrowInactive')){
       this.props.setNewsSwitchingPage(true);
       TweenMax.to('#postsContainer' + (this.props.eccPostsPage-1), 0.5, {x: -1500, autoAlpha: 0});
       TweenMax.fromTo('#postsContainer' + (this.props.eccPostsPage), 0.5, {x: 1500, autoAlpha: 0}, {x: 0, autoAlpha: 1});
@@ -62,7 +64,7 @@ class News extends Component {
       }, 400);
       this.updateArrows(this.props.eccPostsPage);
     }
-    else if(direction == "left" && !$('#arrowLeft').hasClass('arrowInactive')){
+    else if(direction === "left" && !$('#arrowLeft').hasClass('arrowInactive')){
       this.props.setNewsSwitchingPage(true);
       TweenMax.to('#postsContainer' + (this.props.eccPostsPage-1), 0.5, {x: 1500, autoAlpha: 0});
       TweenMax.fromTo('#postsContainer' + (this.props.eccPostsPage-2), 0.5, {x: -1500, autoAlpha: 0}, {x: 0, autoAlpha: 1});
@@ -88,9 +90,11 @@ class News extends Component {
         <div id="panelHolder">
         {this.props.eccPostsArrays.map((array, indexArray) => {
           return(
-            <div className="postsContainer" id={"postsContainer" + indexArray} style={{opacity: indexArray == (this.props.eccPostsPage - 1) ? "1" : "0", visibility: indexArray == (this.props.eccPostsPage - 1) ? "visible" : "hidden", transform: indexArray == (this.props.eccPostsPage - 1) ? "initial" : ""}} key={`newsPostContainer_${indexArray}`}>
+            <div className="postsContainer" id={"postsContainer" + indexArray} style={{opacity: indexArray === (this.props.eccPostsPage - 1) ? "1" : "0",
+              visibility: indexArray === (this.props.eccPostsPage - 1) ? "visible" : "hidden", transform: indexArray === (this.props.eccPostsPage - 1) ? "initial" : ""}}
+                 key={`newsPostContainer_${indexArray}`}>
             {array.map((post, index) => {
-              if(indexArray == (this.props.eccPostsPage - 1))
+              if(indexArray === (this.props.eccPostsPage - 1))
                 items++;
               return(
                 <NewsItem
@@ -112,10 +116,10 @@ class News extends Component {
         </div>
         <div id="arrows" style={{width: $('.panel').width()-80, top: items >= this.props.postsPerContainer ? (155 * this.props.postsPerContainer + 180) + "px" : (155 * items + 180) + "px" }}>
           <div onClick={this.switchPage.bind(this, "left")} className= {this.props.eccPostsPage - 1 == 0 ? "increaseClickArea increaseClickAreaLeft cursorPointerFalse" : "increaseClickArea increaseClickAreaLeft"}>
-            <div id="arrowLeft"  className={this.props.eccPostsPage - 1 == 0 ? "arrowNews arrowInactive arrowLeftNews" : "arrowNews arrowLeftNews"}></div>
+            <div id="arrowLeft" className={this.props.eccPostsPage - 1 === 0 ? "arrowNews arrowInactive arrowLeftNews" : "arrowNews arrowLeftNews"}></div>
           </div>
           <div onClick={this.switchPage.bind(this, "right")} className= {this.props.eccPostsPage * this.props.postsPerContainer < Object.keys(this.props.eccPosts).length ? "increaseClickArea" : "increaseClickArea cursorPointerFalse"}>
-            <div id="arrowRight"  className= {this.props.eccPostsPage * this.props.postsPerContainer < Object.keys(this.props.eccPosts).length ? "arrowNews arrowRightNews" : "arrowNews arrowInactive arrowRightNews"}></div>
+            <div id="arrowRight" className={this.props.eccPostsPage * this.props.postsPerContainer < Object.keys(this.props.eccPosts).length ? "arrowNews arrowRightNews" : "arrowNews arrowInactive arrowRightNews"}></div>
           </div>
         </div>
         <div id="stats">
