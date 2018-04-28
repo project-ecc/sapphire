@@ -101,6 +101,7 @@ class Send extends Component {
               type="text"
               inputStyle={{top: "60px", width: "80%", textAlign: "left", marginBottom: "50px"}}
               inputId="inputAddressSend"
+              autoFocus={true}
             />
             <img id="clearButton" onClick={this.handleClear} src={clearButton}/>
             <Input

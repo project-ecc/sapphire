@@ -252,6 +252,7 @@ class ImportPrivateKey extends React.Component {
               handleChange={this.handleChangePrivateKey.bind(this)}
               type="text"
               inputStyle={{marginBottom:"32px", width:"400px"}}
+              autoFocus={true}
             />
            <Input
               divStyle={{width: "400px"}}

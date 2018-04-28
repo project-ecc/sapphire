@@ -29,6 +29,7 @@ class MessagingChat extends Component {
     else{
       Tools.animateMessagingFunctionIconsOut();
     }
+    $("#messagingInputTextArea").focus();
   }
 
   handleOptionsSmallClicked(){
@@ -38,6 +39,7 @@ class MessagingChat extends Component {
     else{
       Tools.animateMessagingSmallFunctionIconsOut();
     }
+    $("#messagingInputTextArea").focus();
   }
 
   handleOptionsMouseEnter(){

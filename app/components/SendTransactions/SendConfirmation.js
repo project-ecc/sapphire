@@ -20,6 +20,8 @@ class SendConfirmation extends React.Component {
     this.showWrongPassword = this.showWrongPassword.bind(this);
     this.sendECC = this.sendECC.bind(this);
     this.getNameOrAddressHtml = this.getNameOrAddressHtml.bind(this);
+    this.reset = this.reset.bind(this);
+    this.showMessage = this.showMessage.bind(this);
   }
 
   showWrongPassword(){
@@ -37,6 +39,7 @@ class SendConfirmation extends React.Component {
 
   sendECC(){
     let wasStaking = this.props.staking;
+    this.props.setPopupLoading(true)
     this.unlockWallet(false, 5, () => {
       var batch = [];
       console.log(this.props.amount);
@@ -52,23 +55,33 @@ class SendConfirmation extends React.Component {
         else{
           this.props.setStaking(false);
         }
+        this.reset();
         this.props.setTemporaryBalance(this.props.balance - this.props.amount);
-        this.props.setPassword("");
-        this.props.setSendingECC(false);
-        this.props.setUsernameSend("");
-        this.props.setAmountSend("");
-        this.props.setAddressSend("");
-        $('#message').text(this.props.lang.sentSuccessfully);
-        Tools.showTemporaryMessage('#message');
-        setTimeout(() => {
-          $('#message').text(this.props.lang.addressCopiedBelow)
-        }, 2500)
+        this.showMessage(this.props.lang.sentSuccessfully);
       }).catch((err) => {
-        this.props.setPassword("");
-        console.log("err sending ecc: ", err);
+        this.showMessage(this.props.lang.failedToSend);
+        this.reset();
       });
     })
+  }
 
+  showMessage(message){
+    $('#message').text(message);
+    Tools.showTemporaryMessage('#message');
+    setTimeout(() => {
+      $('#message').text(this.props.lang.addressCopiedBelow)
+    }, 2500)
+  }
+
+  reset(){
+    this.props.setPopupLoading(false)
+    this.props.setPassword("");
+    this.props.setSendingECC(false);
+    this.props.setUsernameSend("");
+    this.props.setAmountSend("");
+    this.props.setAddressSend("");
+    TweenMax.set('#amountSend', {autoAlpha: 1});
+    TweenMax.set('#addressSend', {autoAlpha: 1});
   }
 
   unlockWallet(flag, time, callback){
@@ -87,10 +100,13 @@ class SendConfirmation extends React.Component {
           console.log("Daemon not running - Dev please look into this and what exactly triggered it");
       } else if (data === null) {
           callback();
+          return;
       } else {
         console.log("error unlocking wallet: ", data)
       }
+      this.props.setPopupLoading(false)
     }).catch((err) => {
+      this.props.setPopupLoading(false)
       console.log("err unlocking wallet: ", err);
     });
   }
@@ -144,17 +160,19 @@ class SendConfirmation extends React.Component {
           <Input
             divStyle={{width: "400px", marginTop: "20px"}}
             placeholder= { this.props.lang.password }
+            inputId="sendPasswordId"
             placeholderId= "password"
             placeHolderClassName="inputPlaceholder inputPlaceholderUnlock"
             value={this.props.passwordVal}
             handleChange={this.handleChange.bind(this)}
             type="password"
             inputStyle={{width: "400px", top: "20px", marginBottom: "30px"}}
+            autoFocus={true}
           />
         <div>
           <p id="wrongPassword" className="wrongPassword">Wrong password</p>
         </div>
-        <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm"/>
+        <ConfirmButtonPopup inputId={"#sendPasswordId"} handleConfirm={this.handleConfirm} text="Confirm" textLoading={this.props.lang.confirming} text={ this.props.lang.confirm }/>
       </div>
       );
     }
@@ -168,7 +186,7 @@ const mapStateToProps = state => {
     amount: state.application.amountSend,
     address: state.application.addressSend,
     username: state.application.userNameToSend,
-    staking: state.chains.staking,
+    staking: state.chains.isStaking,
     wallet: state.application.wallet,
     balance: state.chains.balance
   };
