@@ -80,7 +80,7 @@ class EncryptWallet extends React.Component {
 
   handlePasswordChange(event){
       let pw = event.target.value;
-    if(pw.length == 0){
+    if(pw.length === 0){
       TweenMax.set('#enterPassword', {autoAlpha: 1});
     }
     else
@@ -91,7 +91,7 @@ class EncryptWallet extends React.Component {
 
   handleConfirmationPassword(event){
     let pw = event.target.value;
-    if(pw.length == 0){
+    if(pw.length === 0){
       TweenMax.set('#enterPasswordRepeat', {autoAlpha: 1});
     }
     else
@@ -101,7 +101,7 @@ class EncryptWallet extends React.Component {
   }
 
   encryptWallet(){
-    if(this.props.passwordValue != this.props.passwordConfirmationValue || (this.props.passwordValue.length == 0)){
+    if(this.props.passwordValue !== this.props.passwordConfirmationValue || (this.props.passwordValue.length === 0)){
       TweenMax.fromTo('#passwordError', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1.2});
       TweenMax.to('#passwordError', 0.3, {scale: 1, delay: 0.2});
       TweenMax.to('#passwordError', 0.3, {autoAlpha: 0, scale: 0.5, delay: 3.5});
@@ -109,9 +109,9 @@ class EncryptWallet extends React.Component {
     }
     this.showEncryptingWallet();
     this.props.wallet.encryptWallet(this.props.passwordValue).then((data) =>{
+      var self = this;
       if (data.code === -1 || data.code === -28) {
         console.log("failed to encrypt: ", data);
-        var self = this;
         setTimeout(function(){
           self.encryptWallet();
         }, 1000);
@@ -121,7 +121,6 @@ class EncryptWallet extends React.Component {
         this.props.passwordConfirmation("");
         this.showWalletEncrypted();
         this.props.setUnencryptedWallet(false);
-        var self = this;
         setTimeout(function(){
             self.startWallet();
             //making sure >_>
@@ -191,7 +190,7 @@ class EncryptWallet extends React.Component {
               inputStyle={{width: "200px"}}
             />
           </div>
-          <p id="passwordError" style={{fontSize: "15px", fontWeight: "bold", visibility: "hidden"}}>{this.props.passwordValue != this.props.passwordConfirmationValue ? this.props.lang.passwordsDoNotMatch : this.props.lang.passwordCantBeEmpty }</p>
+          <p id="passwordError" style={{fontSize: "15px", fontWeight: "bold", visibility: "hidden"}}>{this.props.passwordValue !== this.props.passwordConfirmationValue ? this.props.lang.passwordsDoNotMatch : this.props.lang.passwordCantBeEmpty }</p>
            <div style={{marginTop: "8px"}} onClick={this.encryptWallet} id="importButton">
            { this.props.lang.encrypt }
            </div>

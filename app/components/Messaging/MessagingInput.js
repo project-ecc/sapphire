@@ -1,10 +1,12 @@
 import $ from 'jquery';
 import React, { Component } from 'react';
-import { traduction } from '../../lang/lang';
-const homedir = require('os').homedir();
-import * as actions from '../../actions';
 import { connect } from 'react-redux';
-const Tools = require('../../utils/tools')
+
+import { traduction } from '../../lang/lang';
+import * as actions from '../../actions';
+
+const Tools = require('../../utils/tools');
+const homedir = require('os').homedir();
 
 class MessagingInput extends Component {
   constructor(props) {
@@ -16,8 +18,8 @@ class MessagingInput extends Component {
   }
 
   componentDidMount(){
-    this.setSendButtonStyling(this.props.messagingInputValue)
-    window.addEventListener('keypress', this.handleEnterPressed)
+    this.setSendButtonStyling(this.props.messagingInputValue);
+    window.addEventListener('keypress', this.handleEnterPressed);
     if(this.props.enabled)
       this.setInputFocus();
   }
@@ -33,7 +35,7 @@ class MessagingInput extends Component {
   }
 
   handleEnterPressed(e){
-    if(e.which == 13) {
+    if(e.which === 13) {
       e.preventDefault();
       this.sendMessage();
     }
@@ -44,7 +46,7 @@ class MessagingInput extends Component {
   }
 
   setSendButtonStyling(message){
-    if(!message || message.length == 0){
+    if(!message || message.length === 0){
       TweenMax.set('#enterMessage', {autoAlpha: 1});
       $("#messagingInputOptions polyline").removeClass("sendButtonActive");
       $("#messagingInputOptions circle").removeClass("sendButtonActive");
@@ -64,7 +66,7 @@ class MessagingInput extends Component {
 
   handleInputChange(event) {
     let message = event.target.value;
-    if(message.length == 1 && message == "\n" ) return;
+    if(message.length === 1 && message === "\n" ) return;
     this.setSendButtonStyling(message);
     this.props.setMessagingInputVal(message);
   }

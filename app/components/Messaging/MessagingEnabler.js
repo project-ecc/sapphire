@@ -1,12 +1,16 @@
-import $ from 'jquery';
 import React, { Component } from 'react';
-import { traduction } from '../../lang/lang';
-const homedir = require('os').homedir();
-import * as actions from '../../actions';
 import { connect } from 'react-redux';
-const Tools = require('../../utils/tools')
 import { ipcRenderer } from 'electron';
 import renderHTML from 'react-render-html';
+
+import { traduction } from '../../lang/lang';
+import * as actions from '../../actions';
+
+
+import $ from 'jquery';
+
+const Tools = require('../../utils/tools');
+const homedir = require('os').homedir();
 
 class MessagingEnabler extends Component {
   constructor(props) {
@@ -47,7 +51,7 @@ class MessagingEnabler extends Component {
           <img id="messageIconPopup" src={messagingIcon}/>
           <p id="warningMessagingTitle">{this.props.lang.secureMessaging}</p>
           <p id="warningMessagingSubtitle">{renderHTML(this.props.lang.servicePreview)}</p>
-          <p className="messagingWarningDesc">{this.props.lang.sapphireMessage7}</p> 
+          <p className="messagingWarningDesc">{this.props.lang.sapphireMessage7}</p>
           <p className="messagingWarningDesc kind">{this.props.lang.sapphireMessage8}</p>
           <img onClick={this.handleEnableMessaging.bind(this)} id="messageIconPopupConfirm" src={confirmButton}/>
         </div>

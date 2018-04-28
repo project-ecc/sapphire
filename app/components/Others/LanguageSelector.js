@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import * as actions from '../../actions';
-import $ from 'jquery';
 import {language } from '../../lang/lang';
+
+import $ from 'jquery';
+
 const settings = require('electron').remote.require('electron-settings');
+
 
 class LanguangeSelector extends Component {
   constructor(props) {
@@ -16,19 +20,19 @@ class LanguangeSelector extends Component {
     $('.dropdownLanguageSelector').toggleClass('active');
     $('.dropdownLanguageSelector').find('.dropdown-menuLanguageSelector').slideToggle(300);
   }
-  
+
   handleDrowDownUnfocus(){
     $('.dropdownLanguageSelector').removeClass('active');
     $('.dropdownLanguageSelector').find('.dropdown-menuLanguageSelector').slideUp(300);
   }
-  
+
 
   onItemClick(event) {
     let lang = event.currentTarget.dataset.id;
     settings.set('settings.lang', lang);
     this.props.setLang();
   }
-  
+
   render() {
     return (
       <div className="dropdownLanguageSelector" onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>

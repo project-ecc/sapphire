@@ -1,12 +1,15 @@
-import $ from 'jquery';
 import React, { Component } from 'react';
-import { traduction } from '../../lang/lang';
-const homedir = require('os').homedir();
-import * as actions from '../../actions';
 import { connect } from 'react-redux';
-const Tools = require('../../utils/tools')
+
+import { traduction } from '../../lang/lang';
+import * as actions from '../../actions';
 import MessagingInput from './MessagingInput';
 import MessagingOptions from './MessagingOptions';
+
+import $ from 'jquery';
+
+const Tools = require('../../utils/tools');
+const homedir = require('os').homedir();
 
 class MessagingTopBar extends Component {
   constructor(props) {
@@ -15,11 +18,11 @@ class MessagingTopBar extends Component {
 
   handleButtonOnClick(type){
     switch(type){
-      case "chatList": 
+      case "chatList":
         if(this.props.clickedSearchButton) return;
         Tools.sendMessage(this, this.props.lang.sapphireMessage20, 1, "Sapphire");
         break;
-      case "add": 
+      case "add":
         if(this.props.clickedBinButton) return;
         Tools.sendMessage(this, this.props.lang.sapphireMessage21, 1, "Sapphire");
          break;
@@ -36,7 +39,7 @@ class MessagingTopBar extends Component {
     TweenMax.fromTo($('#optionsButtonSmallView'), 0.2,{ autoAlpha:1, x:0}, { autoAlpha:0, x: 50, delay: 0.1, ease: Linear.easeNone});
     $('#topBarMessage').text(this.props.lang.chats);
     this.props.setShowingChatListOnly(true);
-    if($('#messagingOptionsSmall').css("visibility") != "hidden"){
+    if($('#messagingOptionsSmall').css("visibility") !== "hidden"){
       Tools.animateMessagingSmallFunctionIconsOut();
     }
   }

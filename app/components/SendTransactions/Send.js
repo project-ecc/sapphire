@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import AddressBook from './AddressBook';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
 import {TweenMax} from "gsap";
+
+import AddressBook from './AddressBook';
+import * as actions from '../../actions';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
-import $ from 'jquery';
 import Input from '../Others/Input';
+
+import $ from 'jquery';
+
 const Tools = require('../../utils/tools');
 
 class Send extends Component {
@@ -33,13 +36,13 @@ class Send extends Component {
   }
 
   confirmSend() {
-    if(this.props.amount == "" || isNaN(this.props.amount) == 1){
+    if(this.props.amount === "" || isNaN(this.props.amount) === 1){
       Tools.highlightInput('#inputAmountSend', 1000)
     }
-    if(this.props.address == ""){
+    if(this.props.address === ""){
       Tools.highlightInput('#inputAddressSend', 1000)
     }
-    if(this.props.address != "" && this.props.amount != "" && Number(this.props.amount) > 0){
+    if(this.props.address !== "" && this.props.amount !== "" && Number(this.props.amount) > 0){
       if(this.props.amount > this.props.balance){
         Tools.showTemporaryMessage('#message', this.props.lang.notEnoughBalance);
         Tools.highlightInput('#inputAmountSend', 2100)
@@ -61,7 +64,7 @@ class Send extends Component {
 
   handleChangeAddress(event){
     const address = event.target.value;
-    if(address.length == 0){
+    if(address.length === 0){
       TweenMax.set('#addressSend', {autoAlpha: 1});
       this.props.setUsernameSend("");
     }
@@ -73,7 +76,7 @@ class Send extends Component {
 
   handleChangeAmount(event){
     const amount = event.target.value;
-    if(amount.length == 0)
+    if(amount.length === 0)
       TweenMax.set('#amountSend', {autoAlpha: 1});
     else
       TweenMax.set('#amountSend', {autoAlpha: 0});

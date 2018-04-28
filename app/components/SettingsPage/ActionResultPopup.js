@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
-const Tools = require('../../utils/tools');
-import CloseButtonPopup from '../Others/CloseButtonPopup';
 import renderHTML from 'react-render-html';
+
+import * as actions from '../../actions';
+import CloseButtonPopup from '../Others/CloseButtonPopup';
+
+const Tools = require('../../utils/tools');
 
 class ActionResultPopup extends React.Component {
  constructor() {
@@ -13,7 +15,7 @@ class ActionResultPopup extends React.Component {
   }
 
   _handleKeyPress = (e) => {
-   console.log(e)
+   console.log(e);
     if (e.key === 'Enter') {
       this.handleConfirm();
     }
@@ -29,7 +31,7 @@ class ActionResultPopup extends React.Component {
   }
 
   handleCancel(){
-    this.props.setActionPopupResult({flag: false, successful: false, message: ''})
+    this.props.setActionPopupResult({flag: false, successful: false, message: ''});
   }
 
   render() {

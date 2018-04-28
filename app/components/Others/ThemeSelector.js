@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import * as actions from '../../actions';
+
 const settings = require('electron').remote.require('electron-settings');
 
 class ThemeSelector extends Component {
@@ -38,25 +40,25 @@ class ThemeSelector extends Component {
   render() {
     return (
      <div id="themes" style={ this.props.style ? this.props.style : {position:"relative", marginTop:"30px", left:"-32px"}}>
-      <div style={{paddingLeft: "20px"}} onMouseEnter={this.onHover.bind(this, "theme-darkEcc")} onMouseLeave={this.onUnhover.bind(this)} onClick={this.onClickTheme.bind(this, "theme-darkEcc")} className={this.props.theme == "theme-darkEcc" ? "themeSelector selectedTheme" : "themeSelector" } id="darkTheme">
+      <div style={{paddingLeft: "20px"}} onMouseEnter={this.onHover.bind(this, "theme-darkEcc")} onMouseLeave={this.onUnhover.bind(this)} onClick={this.onClickTheme.bind(this, "theme-darkEcc")} className={this.props.theme === "theme-darkEcc" ? "themeSelector selectedTheme" : "themeSelector" } id="darkTheme">
        <div className="themes">
          <div className="theme">
           <div className="divSquare" style={{backgroundColor: "#d09128"}}></div>
           <div className="divSquare" style={{backgroundColor: "#21242a"}}></div>
           <div className="divSquare" style={{backgroundColor: "#333840"}}></div>
           <div className="divSquare" style={{backgroundColor: "#1e2544"}}></div>
-         </div> 
+         </div>
        </div>
          <p className="themeName">{ this.props.lang.dark }</p>
        </div>
-       <div onMouseEnter={this.onHover.bind(this, "theme-defaultEcc")} onMouseLeave={this.onUnhover.bind(this)} onClick={this.onClickTheme.bind(this, "theme-defaultEcc")} className={this.props.theme == "theme-defaultEcc" ? "themeSelector selectedTheme" : "themeSelector" } id="defaultTheme">
+       <div onMouseEnter={this.onHover.bind(this, "theme-defaultEcc")} onMouseLeave={this.onUnhover.bind(this)} onClick={this.onClickTheme.bind(this, "theme-defaultEcc")} className={this.props.theme === "theme-defaultEcc" ? "themeSelector selectedTheme" : "themeSelector" } id="defaultTheme">
        <div className="themes">
          <div className="theme">
           <div className="divSquare" style={{backgroundColor: "#d09128"}}></div>
           <div className="divSquare" style={{backgroundColor: "#14182f"}}></div>
           <div className="divSquare" style={{backgroundColor: "#c4c4d3"}}></div>
           <div className="divSquare" style={{backgroundColor: "#1e2544"}}></div>
-         </div> 
+         </div>
        </div>
          <p className="themeName">{ this.props.lang.default }</p>
        </div>
@@ -67,7 +69,7 @@ class ThemeSelector extends Component {
           <div className="divSquare" style={{backgroundColor: "#17152a"}}></div>
           <div className="divSquare" style={{backgroundColor: "#de9b2b"}}></div>
           <div className="divSquare" style={{backgroundColor: "#ffffff"}}></div>
-         </div> 
+         </div>
        </div>
          <p className="themeName">{ this.props.lang.light }</p>
        </div>

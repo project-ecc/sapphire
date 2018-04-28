@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
 import {TweenMax, TimelineMax} from "gsap";
-import $ from 'jquery';
+
+import * as actions from '../../actions';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
+
+import $ from 'jquery';
+
 const Tools = require('../../utils/tools');
 
 class ChangePassword extends React.Component {
@@ -28,7 +31,7 @@ class ChangePassword extends React.Component {
 
   handlePasswordChange(event) {
     let pw = event.target.value;
-    if(pw.length == 0){
+    if(pw.length === 0){
       TweenMax.set('#enterPassword', {autoAlpha: 1});
     }
     else
@@ -39,7 +42,7 @@ class ChangePassword extends React.Component {
 
   handlePasswordConfirmationChange(event){
     let pw = event.target.value;
-    if(pw.length == 0){
+    if(pw.length === 0){
       TweenMax.set('#enterPasswordRepeat', {autoAlpha: 1});
     }
     else
@@ -50,7 +53,7 @@ class ChangePassword extends React.Component {
 
   handleNewPasswordChange(event){
     let pw = event.target.value;
-    if(pw.length == 0){
+    if(pw.length === 0){
       TweenMax.set('#enterPasswordConfirmation', {autoAlpha: 1});
     }
     else
@@ -62,7 +65,7 @@ class ChangePassword extends React.Component {
   changePassword(){
     var wasStaking = this.props.isStaking;
     this.props.wallet.walletChangePassphrase(this.props.passwordVal, this.props.newPassword).then((data)=>{
-      if(data == null){
+      if(data === null){
         if(wasStaking){
 
         }
@@ -71,7 +74,7 @@ class ChangePassword extends React.Component {
           this.props.setChangingPassword(false)
         }, 2000)
       }
-      else if(data.code && data.code == -14){
+      else if(data.code && data.code === -14){
         Tools.showTemporaryMessage('#wrongPassword', this.props.lang.wrongPasswordProper );
       }
     })
@@ -81,10 +84,10 @@ class ChangePassword extends React.Component {
   }
 
   handleConfirm(){
-    if(this.props.passwordVal == "" || this.props.passwordValConfirmation == "" || this.props.newPassword == ""){
+    if(this.props.passwordVal === "" || this.props.passwordValConfirmation === "" || this.props.newPassword === ""){
       Tools.showTemporaryMessage('#wrongPassword', this.props.lang.fillAllFields );
     }
-    else if(this.props.newPassword != this.props.passwordValConfirmation){
+    else if(this.props.newPassword !== this.props.passwordValConfirmation){
       Tools.showTemporaryMessage('#wrongPassword', this.props.lang.passwordsDontMatch );
     }
     else{

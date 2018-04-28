@@ -57,7 +57,8 @@ typings/
 # dotenv environment variables file
 .env
 
-
+# Webstorm index files
+.idea
 
 # Production build files
 bundle.js

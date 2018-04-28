@@ -28,7 +28,7 @@ class Contacts extends Component {
 
   handleChangeNewContactName(event){
     const name = event.target.value;
-    if(name.length == 0)
+    if(name.length === 0)
       TweenMax.set('#addressNamePlaceHolder', {autoAlpha: 1});
     else
       TweenMax.set('#addressNamePlaceHolder', {autoAlpha: 0});
@@ -39,7 +39,7 @@ class Contacts extends Component {
 
   handleChangeNewContactAddress(event){
     const address = event.target.value;
-    if(address.length == 0)
+    if(address.length === 0)
       TweenMax.set('#addressAccountPlaceHolder', {autoAlpha: 1});
     else
       TweenMax.set('#addressAccountPlaceHolder', {autoAlpha: 0});
@@ -48,10 +48,10 @@ class Contacts extends Component {
   }
 
   addContact(){
-    if(this.props.newContactName == "" && this.props.newContactAddress == ""){
+    if(this.props.newContactName === "" && this.props.newContactAddress === ""){
       Tools.highlightInput("#inputName, #inputAddressVal", 1000)
     }
-    else if(this.props.newContactAddress != ""){
+    else if(this.props.newContactAddress !== ""){
       //normal address
       console.log("adding normal address");
       this.addNormalAddress();
@@ -81,7 +81,7 @@ class Contacts extends Component {
       console.log(isAddressValid);
         if (isAddressValid.isvalid) {
           const tt = low.get('friends').find({ address: this.props.newContactAddress }).value();
-          if (tt != null) {
+          if (tt !== null) {
             this.addressAlreadyExists();
             this.resetFields();
 

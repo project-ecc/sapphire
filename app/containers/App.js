@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
-import $ from 'jquery';
+import React, { Component } from 'react'
+import { ipcRenderer } from 'electron';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+
 import Sidebar from './Sidebar';
 import InitialSetup from './Pages/InitialSetup';
 import Settings from '../components/SettingsPage/Settings';
-import { ipcRenderer } from 'electron';
 import Loading from '../components/LoaderPage/LoaderPage';
-import { connect } from 'react-redux';
 import * as actions from '../actions';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import ExportPrivateKeys from '../components/SettingsPage/ExportPrivateKeys';
@@ -16,14 +17,15 @@ import SendConfirmation from '../components/SendTransactions/SendConfirmation';
 import ConfirmNewAddress from '../components/ReceiveTransaction/ConfirmNewAddress';
 import ClosingApplication from '../components/Others/ClosingApplication';
 import TopBar from '../components/TopBar';
-import { Link } from 'react-router-dom';
-const settings = require('electron').remote.require('electron-settings');
 import NotificationPopup from '../components/NotificationPopup';
 import UnlockWallet from '../components/UnlockWallet';
 import GenericPanel from './GenericPanel';
 import TransitionComponent from '../components/Others/TransitionComponent';
 import ActionResultPopup from '../components/SettingsPage/ActionResultPopup';
 
+import $ from 'jquery';
+
+const settings = require('electron').remote.require('electron-settings');
 const Tools = require('../utils/tools');
 const notifier = require('node-notifier');
 
@@ -119,7 +121,7 @@ class App extends Component<Props> {
       component = <ExportPrivateKeys />;
     }
     else if(this.props.importingPrivateKey){
-      component = <ImportPrivateKey notInitialSetup = {true}/>;
+      component = <ImportPrivateKey notInitialSetup={true}/>;
     }
     else if(this.props.changingPassword){
       component = <ChangePassword />
@@ -141,7 +143,7 @@ class App extends Component<Props> {
     }
     else if(this.props.closingApplication){
       component = <ClosingApplication />;
-      classVal = "closingApplication"
+      classVal = "closingApplication";
     }
     else if(this.props.actionPopupResult){
       component = <ActionResultPopup message={this.props.actionPopupMessage} successful={this.props.actionPopupStatus} />
@@ -150,14 +152,14 @@ class App extends Component<Props> {
     return(
       <div>
         <TransitionGroup component="article">
-          { component != null ?
+          { component !== null ?
             <TransitionComponent
               children={component}
-              id= {id}
-              class = {classVal}
-              animationType= "popup"
-              animateIn= {animateIn}
-              animateOut = {animateOut}/>
+              id={id}
+              class={classVal}
+              animationType="popup"
+              animateIn={animateIn}
+              animateOut={animateOut}/>
             : null
           }
         </TransitionGroup>
@@ -173,12 +175,12 @@ class App extends Component<Props> {
             { this.props.loader || this.props.updatingApplication ?
               <TransitionComponent
                 children={<Loading />}
-                id= "loading-wrapper"
-                animationType= "loader"
-                animateIn= {Tools.animateLoaderIn}
-                animateOut = {Tools.animateLoaderOut}
-                animateLogo = {this.animateLogo.bind(this)}
-                updatingApplication = {this.props.updatingApplication}/>
+                id="loading-wrapper"
+                animationType="loader"
+                animateIn={Tools.animateLoaderIn}
+                animateOut={Tools.animateLoaderOut}
+                animateLogo={this.animateLogo.bind(this)}
+                updatingApplication={this.props.updatingApplication}/>
                 : null
             }
           </TransitionGroup>
@@ -225,19 +227,18 @@ class App extends Component<Props> {
           <TransitionGroup component="section">
             <TransitionComponent
               children={<GenericPanel />}
-              id= ""
-              class= "genericPanel"
-              animationType= "genericPanel"
-              animateIn= {Tools.animateGeneralPanelIn}
-              animateOut = {Tools.animateGeneralPanelOut}
-              resetWillChange = {this.resetWillChange}
-              setGenericAnimationToFalse = {this.setGenericAnimationToFalse}
-              setGenericAnimationToTrue = {this.setGenericAnimationToTrue}/>
+              id=""
+              class="genericPanel"
+              animationType="genericPanel"
+              animateIn={Tools.animateGeneralPanelIn}
+              animateOut={Tools.animateGeneralPanelOut}
+              resetWillChange={this.resetWillChange}
+              setGenericAnimationToFalse={this.setGenericAnimationToFalse}
+              setGenericAnimationToTrue={this.setGenericAnimationToTrue}/>
           </TransitionGroup>
       )
     }
-    else
-      return null;
+    else return null;
   }
 
   getSettings(){
@@ -246,13 +247,13 @@ class App extends Component<Props> {
         <TransitionGroup component="section">
           <TransitionComponent
             children={<Settings />}
-            id= "settings"
-            animationType= "settings"
-            animateIn= {Tools.animateGeneralPanelIn}
-            animateOut = {Tools.animateGeneralPanelOut}
-            resetWillChange = {this.resetWillChange}
-            setGenericAnimationToFalse = {this.setGenericAnimationToFalse}
-            setGenericAnimationToTrue = {this.setGenericAnimationToTrue}/>
+            id="settings"
+            animationType="settings"
+            animateIn={Tools.animateGeneralPanelIn}
+            animateOut={Tools.animateGeneralPanelOut}
+            resetWillChange={this.resetWillChange}
+            setGenericAnimationToFalse={this.setGenericAnimationToFalse}
+            setGenericAnimationToTrue={this.setGenericAnimationToTrue}/>
         </TransitionGroup>
       )
     }
@@ -261,18 +262,18 @@ class App extends Component<Props> {
   }
 
   getInitialSetup(){
-    console.log("this.props.unencryptedWallet: ", this.props.unencryptedWallet)
-    console.log("this.props.shouldImportWallet: ", this.props.shouldImportWallet)
-    console.log("this.props.importingWalletWithSetupDone: ", this.props.importingWalletWithSetupDone)
+    console.log("this.props.unencryptedWallet: ", this.props.unencryptedWallet);
+    console.log("this.props.shouldImportWallet: ", this.props.shouldImportWallet);
+    console.log("this.props.importingWalletWithSetupDone: ", this.props.importingWalletWithSetupDone);
     if(!this.props.setupDone && !this.props.loader && !this.props.updatingApplication || this.props.unencryptedWallet || this.props.shouldImportWallet || this.props.importingWalletWithSetupDone){
       return(
         <TransitionGroup>
           <TransitionComponent
             children={<InitialSetup/>}
-            id= "initialSetup"
-            animationType= "initialSetup"
-            animateIn= {Tools.animateInitialSetupIn}
-            animateOut = {Tools.animateInitialSetupOut}/>
+            id="initialSetup"
+            animationType="initialSetup"
+            animateIn={Tools.animateInitialSetupIn}
+            animateOut={Tools.animateInitialSetupOut}/>
         </TransitionGroup>
       )
     }
@@ -283,10 +284,9 @@ class App extends Component<Props> {
     if(this.props.notificationPopup){
       return(
         <NotificationPopup/>
-      )
+      );
     }
-    else
-      return null;
+    else return null;
   }
   render() {
     console.log(this.props.theme);
@@ -323,7 +323,7 @@ const mapStateToProps = state => {
     importingPrivateKey: state.application.importingPrivateKey,
     changingPassword: state.application.changingPassword,
     checkingDaemonStatusPrivateKey: state.application.checkingDaemonStatusPrivateKey,
-    news: state.application.selectedPanel == "news" ? true : false,
+    news: state.application.selectedPanel === "news",
     updateApplication: state.application.updateApplication,
     updatingApplication: state.startup.updatingApp,
     unlocking: state.application.unlocking,

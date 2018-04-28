@@ -1,10 +1,13 @@
-import $ from 'jquery';
 import React, { Component } from 'react';
-import { traduction } from '../../lang/lang';
-const homedir = require('os').homedir();
-import * as actions from '../../actions';
 import { connect } from 'react-redux';
-const Tools = require('../../utils/tools')
+
+import { traduction } from '../../lang/lang';
+import * as actions from '../../actions';
+
+import $ from 'jquery';
+
+const Tools = require('../../utils/tools');
+const homedir = require('os').homedir();
 
 class MessagingSearch extends Component {
   constructor(props) {

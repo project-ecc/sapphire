@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
 import {TweenMax} from "gsap";
-import $ from 'jquery';
-const Tools = require('../../utils/tools');
+
+import * as actions from '../../actions';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
+
+import $ from 'jquery';
+
+const Tools = require('../../utils/tools');
 
 class SendConfirmation extends React.Component {
  constructor() {
@@ -49,7 +52,7 @@ class SendConfirmation extends React.Component {
         else{
           this.props.setStaking(false);
         }
-        this.props.setTemporaryBalance(this.props.balance - this.props.amount)
+        this.props.setTemporaryBalance(this.props.balance - this.props.amount);
         this.props.setPassword("");
         this.props.setSendingECC(false);
         this.props.setUsernameSend("");
@@ -94,7 +97,7 @@ class SendConfirmation extends React.Component {
 
   handleChange(event) {
     const pw = event.target.value;
-    if(pw.length == 0)
+    if(pw.length === 0)
       TweenMax.set('#password', {autoAlpha: 1});
     else
       TweenMax.set('#password', {autoAlpha: 0});
@@ -103,7 +106,7 @@ class SendConfirmation extends React.Component {
   }
 
   handleConfirm(){
-    if(this.props.passwordVal == ""){
+    if(this.props.passwordVal === ""){
       this.showWrongPassword();
       return;
     }
@@ -115,7 +118,7 @@ class SendConfirmation extends React.Component {
   }
 
   getNameOrAddressHtml(){
-    if(this.props.username != "" && this.props.username != undefined){
+    if(this.props.username !== "" && this.props.username !== undefined){
       return(
         <div>
           <p className="labelSend">{ this.props.lang.name }: {this.props.username} </p>
@@ -133,7 +136,7 @@ class SendConfirmation extends React.Component {
 
   render() {
      return (
-      <div ref="second" style={{height: this.props.username != "" && this.props.username != undefined ? "324px" : "293px", top: "22%"}}>
+      <div ref="second" style={{height: this.props.username !== "" && this.props.username !== undefined ? "324px" : "293px", top: "22%"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">{ this.props.lang.confirmTransaction }</p>
         <p className="labelAmountSend">{ this.props.lang.amount }: {Tools.formatNumber(Number(this.props.amount))} <span className="ecc">ECC</span></p>

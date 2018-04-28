@@ -68,7 +68,7 @@ class Loader extends React.Component {
 			<svg version="1.1" id="logoLoader" x="0px" y="0px" viewBox="0 0 1200 1200" style={{enableBackground:"new 0 0 1200 1200"}}>
  				<filter id="black">
 			        <feOffset result="offOut" in="SourceAlpha" dx="0" dy="-20"/>
-			        <feColorMatrix in="offOut" result ="matrixOut" type="matrix"
+			        <feColorMatrix in="offOut" result="matrixOut" type="matrix"
 			                                     values="0 0 0 0 0
 			                                             0 0 0 0 0
 			                                             0 0 0 0 0
@@ -78,7 +78,7 @@ class Loader extends React.Component {
 		  		</filter>
  				<filter id="yellow">
 			        <feOffset result="offOut" in="SourceAlpha" dx="0" dy="-20"/>
-			        <feColorMatrix in="offOut" result ="matrixOut" type="matrix"
+			        <feColorMatrix in="offOut" result="matrixOut" type="matrix"
 			                                     values="0 0 0 0 1
 	                                                0 0 0 0 0.4
 	                                                0 0 0 0 -0.5

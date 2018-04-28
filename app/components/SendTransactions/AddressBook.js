@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import low from '../../utils/low';
 import {TweenMax} from "gsap";
-const { clipboard } = require('electron');
 import { connect } from 'react-redux';
+
+import low from '../../utils/low';
 import * as actions from '../../actions';
+
 import $ from 'jquery';
+
 const Tools = require('../../utils/tools');
+const { clipboard } = require('electron');
 
 class AddressBook extends Component {
   constructor(props) {
@@ -65,7 +68,7 @@ class AddressBook extends Component {
     TweenMax.to('#message', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
     TweenMax.set('#addressSend', {autoAlpha: 0});
     this.props.setAddressSend(friend.address);
-    if(friend.name == "")
+    if(friend.name === "")
       this.props.setUsernameSend(undefined);
     else this.props.setUsernameSend(friend.name);
   }
@@ -116,7 +119,7 @@ class AddressBook extends Component {
           <div id="rows" style={{width: "100%", padding: "0 0"}}>
           {this.props.friends.map((friend, index) => {
             return (
-              <div className= {index % 2 != 0 ? rowClassName : rowClassName + " tableRowEven"} onClick={this.rowClicked.bind(this, friend)} onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default"}} key={`friend_${index}`}>
+              <div className= {index % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} onClick={this.rowClicked.bind(this, friend)} onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default"}} key={`friend_${index}`}>
                 <div className={this.props.sendPanel ? "col-sm-4 tableColumn tableColumContactFix" : "col-sm-4 tableColumn tableColumContactFix selectableText"}>
                   {friend.name}
                 </div>
@@ -124,7 +127,7 @@ class AddressBook extends Component {
                   {friend.address}
                 </div>
                 <div className="col-sm-1 tableColumn">
-                  <img className="deleteContactIcon" onClick={this.deleteAddress.bind(this, friend)} style={{visibility: this.props.hoveredAddress == friend ? "visible" : "hidden"}}src={bin}/>
+                  <img className="deleteContactIcon" onClick={this.deleteAddress.bind(this, friend)} style={{visibility: this.props.hoveredAddress === friend ? "visible" : "hidden"}}src={bin}/>
                 </div>
               </div>
             );

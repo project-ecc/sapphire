@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
-const Tools = require('../../utils/tools')
+
+import * as actions from '../../actions';
+
+const Tools = require('../../utils/tools');
 
 class NetworkStats extends Component {
   constructor(props) {
@@ -12,20 +14,20 @@ class NetworkStats extends Component {
   }
 
   getPercentage(percentage){
-    if(percentage == 100) return 1130;
-    else if(percentage == 0) return 0;
-    console.log((percentage * 1130) / 100)
+    if(percentage === 100) return 1130;
+    else if(percentage === 0) return 0;
+    console.log((percentage * 1130) / 100);
     return Math.round((percentage * 1130) / 100);
   }
 
   getOffset(percentage){
     let len = percentage.toString().length;
-    if(len == 6) return 70;
-    else if(len == 5) return 55;
-    else if(len == 4) return 40;
-    else if(len == 3) return 30;
-    else if(len == 2) return 10;
-    else if(len == 1) return 0;
+    if(len === 6) return 70;
+    else if(len === 5) return 55;
+    else if(len === 4) return 40;
+    else if(len === 3) return 30;
+    else if(len === 2) return 10;
+    else if(len === 1) return 0;
   }
 
   getText(enabled, percentage, operation = ""){
@@ -63,10 +65,10 @@ class NetworkStats extends Component {
   }
 
   processChainClick(operation){
-    if(operation == "messaging"){
+    if(operation === "messaging"){
 
 
-    }else if(operation == "fileStorage"){
+    }else if(operation === "fileStorage"){
 
     }
   }

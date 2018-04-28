@@ -1,14 +1,17 @@
 import $ from 'jquery';
 import React, { Component } from 'react';
-import { traduction } from '../../lang/lang';
-const homedir = require('os').homedir();
-import * as actions from '../../actions';
 import { connect } from 'react-redux';
-const Tools = require('../../utils/tools')
-import MessagingSearch from './MessagingSearch';
-var moment = require('moment');
-moment.locale('lt');
 import renderHTML from 'react-render-html';
+
+import { traduction } from '../../lang/lang';
+import * as actions from '../../actions';
+import MessagingSearch from './MessagingSearch';
+
+var moment = require('moment');
+const Tools = require('../../utils/tools');
+const homedir = require('os').homedir();
+
+moment.locale('lt');
 
 class MessagingContacts extends Component {
   constructor(props) {
@@ -39,7 +42,7 @@ class MessagingContacts extends Component {
       TweenMax.fromTo('#contacts', 0.1, { autoAlpha:1, css: {left: "0%"}}, { autoAlpha:0, css: {left: "-100%"}, delay: 0.03, ease: Linear.easeNone});
       TweenMax.fromTo('#messagingChat', 0.1,{ autoAlpha:0, css: {left: "100%"}}, { autoAlpha:1, css: {left: "0%"}, ease: Linear.easeNone});
       TweenMax.fromTo('#chatListIcon', 0.2,{ autoAlpha:1, x:0}, { autoAlpha:0, x:-50, delay: 0.1, ease: Linear.easeNone});
-      TweenMax.fromTo('#goBackMessageIcon', 0.2,{ autoAlpha:0, x:50}, { autoAlpha:1, x:0, delay: 0.1, ease: Linear.easeNone}); 
+      TweenMax.fromTo('#goBackMessageIcon', 0.2,{ autoAlpha:0, x:50}, { autoAlpha:1, x:0, delay: 0.1, ease: Linear.easeNone});
       TweenMax.fromTo('#chatContactIcon', 0.2,{ autoAlpha:1, x:0}, { autoAlpha:0, x:-50, delay: 0.1, ease: Linear.easeNone});
       TweenMax.fromTo('#optionsButtonSmallView', 0.2,{ autoAlpha:1, x:50}, { autoAlpha:1, x: 0, delay: 0.1, ease: Linear.easeNone});
       this.props.setShowingChatListOnly(false);

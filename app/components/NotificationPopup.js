@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../actions';
 import {TweenMax} from "gsap";
+
+import * as actions from '../actions';
+
 import $ from 'jquery';
+
 const Tools = require('../utils/tools');
 const os = require('os');
 /*
@@ -65,7 +68,7 @@ class NotificationPopup extends React.Component {
   }
 
   getNotificationsBody(){
-    if(this.props.notifications["total"] == 0 && !this.props.updateAvailable){
+    if(this.props.notifications["total"] === 0 && !this.props.updateAvailable){
       return(
         <p id="noNotifications" className="notificationsHeaderContentFix">{ this.props.lang.noNotifications }</p>
       )
@@ -91,7 +94,7 @@ class NotificationPopup extends React.Component {
   }
 
   getAnsIncomingPayments(){
-    if(this.props.notifications["ansPayments"]["payments"].length == 0){
+    if(this.props.notifications["ansPayments"]["payments"].length === 0){
       return null;
     }
     let earnings = Tools.getIconForTheme("overview", false);
@@ -111,7 +114,7 @@ class NotificationPopup extends React.Component {
           image = {earnings}
           body = {body}
           time = {time}
-          class = {this.props.last == "incomingStakingPayments" && !this.props.updateAvailable ? "notificationItem newsItemRoundCorners resetCursor" : "notificationItem newsItemBorder resetCursor" }/>
+          class = {this.props.last === "incomingStakingPayments" && !this.props.updateAvailable ? "notificationItem newsItemRoundCorners resetCursor" : "notificationItem newsItemBorder resetCursor" }/>
           <div className="payAns" id="payAns">
             <p>{totalAnsPayments > 1 ? this.props.lang.extendANSSubscriptions : this.props.lang.extendANSSubscription }</p>
           </div>
@@ -124,7 +127,7 @@ class NotificationPopup extends React.Component {
     let settings = require('../../resources/images/settings-white.png');
     let body = <p>{ this.props.lang.clickToUpdateApp }</p>;
     let className = "applicationUpdate";
-    if(this.props.notifications["differentKinds"] == 0){
+    if(this.props.notifications["differentKinds"] === 0){
       className = "applicationUpdateOnlyNotif"
     }
     return(
@@ -136,7 +139,7 @@ class NotificationPopup extends React.Component {
   }
 
   getStakingNotifications(){
-    if(this.props.notifications["stakingEarnings"].total == 0){
+    if(this.props.notifications["stakingEarnings"].total === 0){
       return null;
     }
     let earnings = Tools.getIconForTheme("overview", false);
@@ -154,12 +157,12 @@ class NotificationPopup extends React.Component {
         image = {earnings}
         body = {body}
         time = {time}
-        class = {this.props.last == "earnings" && !this.props.updateAvailable ? "notificationItem newsItemRoundCorners" : "notificationItem newsItemBorder" }/>
+        class = {this.props.last === "earnings" && !this.props.updateAvailable ? "notificationItem newsItemRoundCorners" : "notificationItem newsItemBorder" }/>
     )
   }
 
   getNewsNotifications(){
-    if(this.props.notifications["news"].total == 0){
+    if(this.props.notifications["news"].total === 0){
       return null;
     }
     let news = Tools.getIconForTheme("eccNewsNotif", false);
@@ -176,12 +179,12 @@ class NotificationPopup extends React.Component {
         image = {news}
         body = {newsBody}
         time = {time}
-        class = {this.props.last == "news" && !this.props.updateAvailable ? "notificationItem newsItemRoundCorners" : "notificationItem newsItemBorder" }/>
+        class = {this.props.last === "news" && !this.props.updateAvailable ? "notificationItem newsItemRoundCorners" : "notificationItem newsItemBorder" }/>
     )
   }
 
   getNotificationsCounter(){
-    if(this.props.notifications["total"] == 0 && !this.props.updateAvailable){
+    if(this.props.notifications["total"] === 0 && !this.props.updateAvailable){
       return null;
     }
     return(
@@ -196,7 +199,7 @@ class NotificationPopup extends React.Component {
       <div ref="second">
         <div id="notificationContainer" className={process.platform === 'darwin' ? "notificationContainerMac" : ""}>
           <div id="notificationHeader">
-            <div id="notificationsHeaderContent" style={{top: this.props.notifications["total"] == 0 && !this.props.updateAvailable ? "6px" : "0px"}}>
+            <div id="notificationsHeaderContent" style={{top: this.props.notifications["total"] === 0 && !this.props.updateAvailable ? "6px" : "0px"}}>
             <p>{ this.props.lang.notifications }</p>
             {this.getNotificationsCounter()}
           </div>

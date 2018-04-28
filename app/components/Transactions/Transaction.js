@@ -1,9 +1,12 @@
-import $ from 'jquery';
 import React, { Component } from 'react';
-import { traduction } from '../../lang/lang';
-const homedir = require('os').homedir();
-import * as actions from '../../actions';
 import { connect } from 'react-redux';
+
+import { traduction } from '../../lang/lang';
+import * as actions from '../../actions';
+
+import $ from 'jquery';
+
+const homedir = require('os').homedir();
 const lang = traduction();
 const Tools = require('../../utils/tools');
 
@@ -35,7 +38,7 @@ class Transaction extends Component {
   }
 
   handlePreviousClicked(){
-    if(this.props.requesting || this.props.page == 0) return;
+    if(this.props.requesting || this.props.page === 0) return;
     this.getAllTransactions(this.props.page - 1);
   }
 
@@ -104,7 +107,7 @@ class Transaction extends Component {
   }
 
   shouldComponentUpdate(state){
-    if(this.props.page == state.page && this.props.page > 0 && this.props.type == state.type) return false;
+    if(this.props.page == state.page && this.props.page > 0 && this.props.type === state.type) return false;
     return true;
   }
   componentWillReceiveProps(){
@@ -123,12 +126,12 @@ class Transaction extends Component {
   }
 
   componentDidUpdate(){
-    
+
   }
 
   onItemClick(event) {
     let type = event.currentTarget.dataset.id;
-    if(type == this.props.type) return;
+    if(type === this.props.type) return;
     let data = this.props.data;
     this.props.setTransactionsData(data, type);
     $(".extraInfoTransaction").hide();
@@ -192,9 +195,9 @@ class Transaction extends Component {
               if (this.props.type === 'all'
               || this.props.type === t.category
               || this.props.type === t.confirmations
-              || (this.props.type == 1 && t.confirmations > 0)
-              || (this.props.type == -1 && t.confirmations < 0)){
-                if(this.props.type == "generate" && t.amount == 0) return null;
+              || (this.props.type === 1 && t.confirmations > 0)
+              || (this.props.type === -1 && t.confirmations < 0)){
+                if(this.props.type === "generate" && t.amount === 0) return null;
                 counter++;
                 const iTime = new Date(t.time * 1000);
                 let time = Tools.calculateTimeSince(this.props.lang, today, iTime);
@@ -217,7 +220,7 @@ class Transaction extends Component {
                 }
 
                 return (
-                  <div className= {counter % 2 != 0 ? rowClassName : rowClassName + " tableRowEven"} style={{cursor: "pointer", fontSize: "15px", minHeight: "40px"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
+                  <div className= {counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} style={{cursor: "pointer", fontSize: "15px", minHeight: "40px"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
                     <div className="col-sm-6 transactionAddress" style={{paddingLeft: "4%", paddingTop: "9px"}}>
                       <p style={{ margin: '0px' }}><span>{category}</span><span className="desc2 transactionAddress"> ({t.address})</span></p>
                     </div>
@@ -257,7 +260,7 @@ class Transaction extends Component {
           </div>
           <div className="row">
             <div className="col-sm-6 text-right">
-              <p className="buttonTransaction" onClick={this.handlePreviousClicked} style={{marginRight: "50px", opacity: this.props.page == 0 ? "0.2" : "1", cursor: this.props.page == 0 ? "default" : "pointer"}}>{ this.props.lang.previous }</p>
+              <p className="buttonTransaction" onClick={this.handlePreviousClicked} style={{marginRight: "50px", opacity: this.props.page === 0 ? "0.2" : "1", cursor: this.props.page === 0 ? "default" : "pointer"}}>{ this.props.lang.previous }</p>
             </div>
             <div className="col-sm-6 text-left">
               <p className="buttonTransaction" onClick={this.handleNextClicked} style={{marginLeft: "50px", opacity: this.props.data.length < 100 ? "0.2" : "1", cursor: this.props.data.length < 100 ? "default" : "pointer"}}>{ this.props.lang.next }</p>
