@@ -291,7 +291,7 @@ class ExportPrivateKeys extends React.Component {
   getLocationToExportPanel(){
     return(
       <div id="setLocationPanel" style={{position: "absolute", left:"100%", width: "100%", top: "52px"}}>
-        <p style={{fontSize: "16px", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"25px", textAlign: "left"}}>
+        <p style={{fontSize: "16px", width: "400px", margin: "0 auto", paddingTop: "25px", marginBottom:"25px", textAlign: "left"}}>
           { this.props.lang.exportFormat }:
         </p>
         <p className="pdfExample">{`<${this.props.lang.publicAddress}>`}</p>
@@ -312,7 +312,7 @@ class ExportPrivateKeys extends React.Component {
       </div>
     )
   }
-  
+
   handleMouseEnterAddress(id){
     TweenMax.set(id, {autoAlpha: 1});
   }
