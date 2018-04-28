@@ -13,11 +13,11 @@ import LanguageSelector from '../Others/LanguageSelector';
 import ThemeSelector from '../Others/ThemeSelector';
 import {version} from './../../../package.json';
 
+const settings = require('electron').remote.require('electron-settings');
+const remote = require('electron').remote;
 const dialog = remote.require('electron').dialog;
 const app = remote.app;
-const settings = require('electron').remote.require('electron-settings');
 const homedir = require('os').homedir();
-const remote = require('electron').remote;
 const Tools = require('../../utils/tools');
 const guiVersion = version;
 
@@ -389,7 +389,7 @@ class Settings extends Component {
 
   shouldComponentUpdate(props){
     console.log(props.theme);
-    console.log(this.props.theme;
+    console.log(this.props.theme);
     if(props.theme !== this.props.theme){
       console.log("Forcing update.");
       this.forceUpdate()
