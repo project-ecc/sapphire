@@ -15846,10 +15846,10 @@ i.fa.fa-chevron-down {
   font-size: 23px; }
 
 .theme-defaultEcc #loading {
-  color: #1f2642; }
+  color: #252d4f; }
 
 .theme-darkEcc #loading {
-  color: #252831; }
+  color: #313541; }
 
 .loadingDownloadMessage {
   font-size: 16px;
@@ -16212,9 +16212,9 @@ i.fa.fa-chevron-down {
 #headerNetworkText {
   transition: font-size 0.3s; }
   .theme-defaultEcc #headerNetworkText {
-    color: #1f2642; }
+    color: #252d4f; }
   .theme-darkEcc #headerNetworkText {
-    color: #252831; }
+    color: #313541; }
 
 .percentageSyncedNetworkVal {
   font: 200 60px "Muli"; }
@@ -16303,9 +16303,9 @@ i.fa.fa-chevron-down {
   margin-top: 15px;
   margin-bottom: 20px; }
   .theme-defaultEcc #eccNews {
-    color: #1f2642; }
+    color: #252d4f; }
   .theme-darkEcc #eccNews {
-    color: #252831; }
+    color: #313541; }
 
 .newsItemTitle {
   font-size: 19px;
@@ -17283,9 +17283,9 @@ i.fa.fa-chevron-down {
   background-position: 0 -100%;
   background-size: 100% 200%; }
   .theme-defaultEcc .circleOptionsButton {
-    background-image: linear-gradient(to bottom, #d09128 50%, #313541 50%); }
+    background-image: linear-gradient(to bottom, #d09128 50%, #555d77 50%); }
   .theme-darkEcc .circleOptionsButton {
-    background-image: linear-gradient(to bottom, #c39c59 50%, #313541 50%); }
+    background-image: linear-gradient(to bottom, #c39c59 50%, #464b5a 50%); }
 
 .circleOptionsButton {
   transition-delay: 0ms; }

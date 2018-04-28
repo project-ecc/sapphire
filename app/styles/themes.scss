@@ -96,7 +96,7 @@ $themes: (
     eccTicker: #d09128,
     mainElementBoxShadow: 0 4px 11px -6px black,
 
-    bigPanelTimeColor: #1f2642,
+    bigPanelTimeColor: #252d4f,
     manchaBackgroundColor: rgba(0,0,0,0.7),
 
     //FULL BUTTON
@@ -129,7 +129,7 @@ $themes: (
     messageTimeColor: #b4b7c8,
     popupColor: #cecece,
     popupSpanColor: #989898,
-    optionsHoverEffectBackgroundColor: linear-gradient(to bottom, #d09128 50%, rgb(49,53,65) 50%),
+    optionsHoverEffectBackgroundColor: linear-gradient(to bottom, #d09128 50%, #555d77 50%),
 
   ),
   darkEcc: (
@@ -227,7 +227,7 @@ $themes: (
     eccTicker: #c39c59,
     mainElementBoxShadow: 0 4px 11px -6px black,
 
-    bigPanelTimeColor: #252831,
+    bigPanelTimeColor: #313541,
     manchaBackgroundColor: rgba(0,0,0,0.7),
 
     //FULL BUTTON
@@ -260,7 +260,7 @@ $themes: (
     messageTimeColor: #6d6d6d,
     popupColor: #b0b0b0,
     popupSpanColor: #989898,
-    optionsHoverEffectBackgroundColor: linear-gradient(to bottom, #c39c59 50%, rgb(49,53,65) 50%),
+    optionsHoverEffectBackgroundColor: linear-gradient(to bottom, #c39c59 50%, #464b5a 50%),
   ),
 );
 
