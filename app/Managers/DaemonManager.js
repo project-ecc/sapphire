@@ -96,7 +96,7 @@ class DaemonManager {
             await this.downloadDaemon();
             version = parseInt(this.installedVersion.replace(/\D/g,''));
           } catch (e){
-	    	    event.emit('updateFailed', e.message)
+            event.emit('download-error', {message: e.message});
           }
 
 	    	} while (this.installedVersion == -1 || version < REQUIRED_DAEMON_VERSION);
@@ -172,7 +172,7 @@ class DaemonManager {
         try {
           downloaded = await self.downloadDaemon();
         } catch (e) {
-          event.emit('updateFailed', e.message)
+          event.emit('download-error', {message: e.message});
           return;
         }
         event.emit('updatedDaemon');
