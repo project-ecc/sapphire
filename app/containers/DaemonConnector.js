@@ -263,6 +263,13 @@ class DaemonConnector {
       })
     });
     ipcRenderer.on('download-error', function (e, arg) {
+      this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
+        payload: {
+          downloadMessage: 'Download error occurred',
+          downloadPercentage: undefined,
+          downloadRemainingTime: 0.0
+        }
+      });
       console.log(e, arg)
     });
   }

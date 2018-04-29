@@ -57,7 +57,7 @@ class GUIManager{
   }
 
 	getLatestVersion(){
-    setTimeout(this.getLatestVersion.bind(this), 60000);
+    setTimeout(this.getLatestVersion.bind(this), 600000);
     console.log('checking for latest gui version');
 
     const guiDownloadURL = getSapphireDownloadUrl();
