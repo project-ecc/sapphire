@@ -1,6 +1,13 @@
 import Wallet from '../utils/wallet';
 import { ipcRenderer } from 'electron';
-import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS, SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE, SELECTED_THEME, SET_DAEMON_VERSION, STAKING_REWARD_UPDATE, WALLET_INFO_SEC, IMPORT_WALLET_TEMPORARY, FILE_DOWNLOAD_STATUS } from '../actions/types';
+import {
+  PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO,
+  CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION,
+  DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER,
+  NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS,
+  SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE, SELECTED_THEME, SET_DAEMON_VERSION, STAKING_REWARD_UPDATE,
+  WALLET_INFO_SEC, IMPORT_WALLET_TEMPORARY, FILE_DOWNLOAD_STATUS, TOLD_USER_UPDATE_FAILED
+} from '../actions/types';
 const event = require('../utils/eventhandler');
 const tools = require('../utils/tools');
 const sqlite3 = require('sqlite3');
@@ -262,14 +269,22 @@ class DaemonConnector {
         }
       })
     });
-    ipcRenderer.on('download-error', function (e, arg) {
+    ipcRenderer.on('download-error', (e, arg) => {
+      console.log('Download failure: ' + arg.message)
       this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
         payload: {
-          downloadMessage: 'Download error occurred',
+          downloadMessage: 'Download error occurred, try again later',
           downloadPercentage: undefined,
           downloadRemainingTime: 0.0
         }
       });
+
+      this.store.dispatch({type: TOLD_USER_UPDATE_FAILED,
+        payload: {
+          updateFailed: true
+        }
+      });
+      event.emit('download-failed');
       console.log(e, arg)
     });
   }

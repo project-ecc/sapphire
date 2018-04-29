@@ -365,12 +365,7 @@ function setupEventHandlers() {
     sendMessage('guiUpdate');
   });
 
-  // TODO Csmartins.
 
-  event.on('updateFailed', (errorMessage) => {
-    console.log(errorMessage)
-    app.quit();
-  });
 
   event.on('updatedDaemon', () => {
     sendMessage("daemonUpdated");
@@ -408,7 +403,6 @@ function setupEventHandlers() {
 
   event.on('download-error', (payload) => {
     sendMessage('download-error', payload);
-    console.log(payload);
   });
 
   ipcMain.on('importWallet', (e, args) => {
