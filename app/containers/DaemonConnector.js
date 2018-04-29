@@ -94,6 +94,7 @@ class DaemonConnector {
     this.queueOrSendNotification = this.queueOrSendNotification.bind(this);
     this.unencryptedWallet = false;
     this.heighestBlockFromServer = 0;
+    this.heighestBlockFromServerInterval;
 	}
 
   subscribeToEvents(){
@@ -105,7 +106,7 @@ class DaemonConnector {
     }, 30 * 60 * 1000)
     this.checkQueuedNotificationsInterval = setInterval(() => this.checkQueuedNotifications(), 5000);
     //get headers from server every 2 minutes
-    setInterval( async() => {
+    this.heighestBlockFromServerInterval = setInterval( async() => {
       this.heighestBlockFromServer = await this.getLastBlockFromServer();
     }, 120000)
     //get headers as soon as the app loads
@@ -132,7 +133,6 @@ class DaemonConnector {
   handleStoreChange() {
     const setupDone = this.store.getState().startup.setupDone;
     if(setupDone){
-      console.log("SETUP IS DONE!!");
       this.unsubscribe();
       this.unsubscribeFromSetupEvents();
     }
@@ -286,12 +286,10 @@ class DaemonConnector {
   }
 
   handleGuiUpdate(){
-    console.log("daemon connector got gui update message, updating state");
     this.store.dispatch({type: UPDATE_AVAILABLE, payload: {guiUpdate: true, daemonUpdate: this.store.getState().startup.daemonUpdate} })
   }
 
   handleDaemonUpdate(){
-    console.log("daemon connector got daemon update message, updating state");
     this.store.dispatch({type: UPDATE_AVAILABLE, payload: {guiUpdate: this.store.getState().startup.guiUpdate, daemonUpdate: true} })
   }
 
@@ -317,7 +315,6 @@ class DaemonConnector {
   getWalletInfo(){
     this.wallet.command([{method: "getinfo"}]).then((data) => {
       //this.store.dispatch({type: SELECTED_THEME, payload: !this.store.getState().application.theme});
-      console.log("getWalletInfo: ", data)
       if(data.length > 0){
         // Set wallet balance
         this.store.dispatch({type: WALLET_INFO, payload: data[0]});
@@ -338,20 +335,17 @@ class DaemonConnector {
   stateCheckerInitialStartup(){
     this.wallet.getInfo().then((data) => {
       if(!data.encrypted){
-        console.log("RUNNING UNENCRYPTED WALLET");
         this.unencryptedWallet = true;
       }
       if(this.loadingBlockIndexPayment){
         this.loadingBlockIndexPayment = false;
         this.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: false})
       }
-      console.log("UPDATING APP: ", this.store.getState().startup.updatingApp);
       if(this.store.getState().startup.updatingApp){
         this.store.dispatch({type: UPDATING_APP, payload: false})
       }
       if(!this.runningMainCycle){
         this.runningMainCycle = true;
-        console.log("GOING TO RUN MAIN CYCLE")
         this.mainCycle();
       }
       clearInterval(this.checkStartupStatusInterval);
@@ -370,24 +364,32 @@ class DaemonConnector {
   }
 
   getLastBlockFromServer(){
+    console.log("getLastBlockFromServer()")
     return new Promise((resolve, reject) => {
       let options = {
         url: 'https://ecc.network/api/v1/block_height',
       };
+      let self = this;
       function callback(error, response, body) {
         if (!error && response.statusCode == 200) {
           let json = JSON.parse(body);
           let height = json.block_height;
-          if(height < this.heighestBlockFromServer)
+          let localHeight = self.store.getState().chains.headersPayment;
+          if(localHeight >= height){
+            clearInterval(self.heighestBlockFromServerInterval);
+            resolve(localHeight);
+            return;
+          }
+          if(height < self.heighestBlockFromServer)
           {
-            resolve(this.heighestBlockFromServer);
+            resolve(self.heighestBlockFromServer);
             return;
           }
           resolve(json.block_height);
         }
         else
         {
-          resolve(this.heighestBlockFromServer);
+          resolve(self.heighestBlockFromServer);
         }
       }
       request(options, callback);
@@ -396,10 +398,6 @@ class DaemonConnector {
 
   getChainInfo(){
 	  this.wallet.getInfo().then(async (data) => {
-      if(!data.encrypted){
-        console.log("RUNNING UNENCRYPTED WALLET");
-        //this.store.dispatch({type: UNENCRYPTED_WALLET, payload: true})
-      }
       if(this.loadingBlockIndexPayment){
         this.loadingBlockIndexPayment = false;
         this.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: false})
@@ -579,8 +577,6 @@ class DaemonConnector {
   }
 
   async loadTransactionsForProcessing(){
-    console.log("RUNNING loadTransactionsForProcessing()");
-    console.log("CURRENT FROM: ", this.currentFrom);
     this.isIndexingTransactions = true;
 
     this.checkIfTransactionsNeedToBeDeleted();
@@ -611,7 +607,6 @@ class DaemonConnector {
     for (let i = 0; i < transactions.length; i++) {
       time = transactions[i].time;
       if(time > this.currentFrom || !this.transactionsIndexed){
-        console.log("FOUND NEW TRANSACTION: ", transactions[i].txid);
         shouldRequestAnotherPage = true;
         txId = transactions[i].txid;
         amount = transactions[i].amount;
@@ -647,7 +642,6 @@ class DaemonConnector {
   }
 
   processTransactions(){
-    console.log("RUNNING processTransactions()");
     let entries = [];
     /*let auxCurrentAddresses = [];
     let currentAddresses = this.store.getState().application.userAddresses;
@@ -658,10 +652,7 @@ class DaemonConnector {
     for (const key of Object.keys(this.transactionsMap)) {
       let values = this.transactionsMap[key];
       for(let i = 1; i < values.length; i++){
-        console.log(values[i].confirmations)
         if(values[i].category == "generate" && values[i].amount > 0){
-          console.log("PUSHING ENTRY: ", key);
-          console.log("TIME: ", values[i].time);
           entries.push({...values[i], txId: key});
           break;
         }
