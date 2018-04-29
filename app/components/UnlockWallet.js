@@ -41,7 +41,8 @@ class UnlockWallet extends React.Component {
         };
         batch.push(obj);
 
-        this.props.wallet.command(batch).then((data) => {
+        return this.props.wallet.command(batch).then((data) => {
+          let result = false;
           console.log("data: ", data);
           data = data[0];
           if (data !== null && data.code === -14) {
@@ -51,17 +52,23 @@ class UnlockWallet extends React.Component {
           } else if (data === null) {
             this.props.setPassword("");
             this.props.setUnlocking(false);
+            result = true;
           } else {
             console.log("error unlocking wallet: ", data)
           }
+          this.props.setPopupLoading(false)
+          return result;
         }).catch((err) => {
           console.log("err unlocking wallet: ", err);
+          this.props.setPopupLoading(false)
+          return false;
         });
      // }
   }
 
   componentWillUnmount()
   {
+    this.props.setPopupLoading(false)
     this.props.setPassword("");
     Tools.showFunctionIcons();
   }
@@ -82,9 +89,11 @@ class UnlockWallet extends React.Component {
       this.props.setPassword("");
       return;
     }
-    this.unlockWallet().then(() => {
+    this.props.setPopupLoading(true)
+    this.unlockWallet().then((result) => {
+      if(!result) return;
       return this.props.wallet.setGenerate().then(() => {
-        setTimeout(() => this.props.setStaking(true), 500)
+        setTimeout(() => this.props.setStaking(true), 1000)
       });
     });
   }
@@ -109,11 +118,13 @@ class UnlockWallet extends React.Component {
             type="password"
             inputStyle={{width: "400px", top: "20px", marginBottom: "30px"}}
             onKeyPress={this._handleKeyPress}
+            inputId="unlockWalletPassword"
+            autoFocus={true}
           />
         <div>
           <p id="wrongPassword" className="wrongPassword">{ this.props.lang.wrongPassword }</p>
         </div>
-        <ConfirmButtonPopup handleConfirm={this.handleConfirm} text={ this.props.lang.confirm }/>
+        <ConfirmButtonPopup inputId="#unlockWalletPassword" handleConfirm={this.handleConfirm} textLoading={this.props.lang.confirming} text={ this.props.lang.confirm }/>
       </div>
       );
     }

@@ -48,6 +48,7 @@ class ExportPrivateKeys extends React.Component {
     this.addressesToCopy = "";
     this.props.setPanelExportingPrivateKeys(1);
     this.tween = undefined;
+    this.props.setPassword("");
   }
 
   componentWillMount(){
@@ -70,8 +71,8 @@ class ExportPrivateKeys extends React.Component {
   async handlePanels(){
     if(this.props.panelNumber === 1){
       this.displayConfirm = false;
+      this.props.setPopupLoading(true)
       this.handleConfirm();
-      await this.getDataToExport();
     }
     else if(this.props.panelNumber === 2){
       this.handleExportOptions();
@@ -126,6 +127,8 @@ class ExportPrivateKeys extends React.Component {
             handleChange={this.handleChange.bind(this)}
             type="password"
             inputStyle={{width: "400px", top: "20px", marginBottom: "30px"}}
+            inputId="exportPrivKeyId"
+            autoFocus={true}
           />
           <p id="wrongPassword" className="wrongPassword">{ this.props.lang.wrongPassword }</p>
         </div>
@@ -166,30 +169,17 @@ class ExportPrivateKeys extends React.Component {
   }
 
   handleConfirm(){
-    let wasStaking = this.props.staking;
     if(this.props.passwordVal === ""){
       this.showWrongPassword();
       return;
     }
     this.unlockWallet(false, 5, async () => {
-      TweenMax.to('#passwordPanel', 0.3, {x: "-100%"});
-      TweenMax.to('#exportOptions', 0.3, {css: {left:"0%"}});
-      TweenMax.to('#confirmButtonPopup', 0.3, {x: "-450px", autoAlpha: 0});
-      setTimeout(() => {
-        TweenMax.set('#confirmButtonPopup', {x: "0px"});
-      }, 300)
-      this.props.setPanelExportingPrivateKeys(this.props.panelNumber+1);
-
-      if(wasStaking){
-        this.unlockWallet(true, 31556926, () => {});
-      } else {
-        this.props.setStaking(false);
-      }
-      this.props.setPassword("");
+      this.getDataToExport();
     })
   }
 
   async getDataToExport(){
+    let wasStaking = this.props.staking;
     let addresses = this.props.addresses;
     let batch = [];
     let addressesArray = [];
@@ -223,6 +213,20 @@ class ExportPrivateKeys extends React.Component {
       }
     }
     this.setState({ toDisplay: keys });
+    this.props.setPopupLoading(false)
+    if(wasStaking){
+      this.unlockWallet(true, 31556926, () => {});
+    } else {
+      this.props.setStaking(false);
+    }
+    TweenMax.to('#passwordPanel', 0.3, {x: "-100%"});
+    TweenMax.to('#exportOptions', 0.3, {css: {left:"0%"}});
+    TweenMax.to('#confirmButtonPopup', 0.3, {x: "-450px", autoAlpha: 0});
+    setTimeout(() => {
+      TweenMax.set('#confirmButtonPopup', {x: "0px"});
+    }, 300)
+    this.props.setPanelExportingPrivateKeys(this.props.panelNumber+1);
+    this.props.setPassword("");
   }
 
   unlockWallet(flag, time, callback){
@@ -232,19 +236,22 @@ class ExportPrivateKeys extends React.Component {
     };
     batch.push(obj);
 
-    this.props.wallet.command(batch).then((data) => {
+   this.props.wallet.command(batch).then((data) => {
       data = data[0];
       if (data !== null && data.code === -14) {
         this.showWrongPassword();
       } else if (data !== null && data.code === 'ECONNREFUSED') {
         console.log("daemong ain't working mate :(")
       } else if (data === null) {
+        this.props.setPopupLoading(false)
         callback();
       } else {
         console.log("error unlocking wallet: ", data)
       }
+      this.props.setPopupLoading(false)
     }).catch((err) => {
       console.log("err unlocking wallet: ", err);
+      this.props.setPopupLoading(false)
     });
   }
 
@@ -377,7 +384,7 @@ class ExportPrivateKeys extends React.Component {
         {this.getLocationToExportPanel()}
         {this.renderdisplayKeys()}
 
-        <div onClick={this.handlePanels} id= "confirmButtonPopup" className="buttonPrimary" style={{bottom: "10px", left:"205px"}}>{this.props.lang.next}</div>
+        <ConfirmButtonPopup inputId="#exportPrivKeyId" handleConfirm={this.handlePanels} textLoading={this.props.lang.confirming} text={this.props.lang.next}/>
       </div>
     );
   }
@@ -392,7 +399,7 @@ const mapStateToProps = state => {
     locationToExport: state.application.locationToExport,
     sideBarHidden: state.sideBar.sidebarHidden,
     wallet: state.application.wallet,
-    staking: state.chains.staking,
+    staking: state.chains.isStaking,
     addresses: state.application.userAddresses
   };
 };

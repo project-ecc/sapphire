@@ -411,6 +411,16 @@ module.exports = {
 
   //Animations
 
+  disableInput: function(id){
+    $(id).attr("disabled", true);
+    $(id).css("opacity", "0.5");
+  },
+
+  enableInput: function(id){
+    $(id).attr("disabled", false);
+    $(id).css("opacity", "1");
+  },
+
   animateMessagingFunctionIconsIn: function(){
     TweenMax.set('#messagingOptions', {autoAlpha: 1});
     TweenMax.staggerFromTo('.messagingOption', 0.1, {y: -60, autoAlpha: 0}, {y: 0, autoAlpha: 1}, -0.05);

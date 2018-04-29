@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
-
 import { traduction } from '../../lang/lang';
 import * as actions from '../../actions';
 import Input from '../Others/Input';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
-
 import $ from 'jquery';
-
 const lang = traduction();
 const { clipboard } = require('electron');
 const ansAddresImage = require('../../../resources/images/ans_address.png');
-
 var classNames = require('classnames');
 
 // This is temporary until ANS is enabled
@@ -131,6 +127,7 @@ class Receive extends Component {
     TweenMax.to('.tableCustom', 0.2, {top: 50});
     TweenMax.to('#imageAns', 0.2, {top: 55});
     $("#addressName input").attr("disabled", false);
+    $("#addressName input").focus();
   }
 
   handleChangeAddressCreationToNormal(){
@@ -233,6 +230,7 @@ class Receive extends Component {
               handleChange={this.handleChangeNameAddress.bind(this)}
               type="text"
               inputStyle={{textAlign: "left", width:"100%", display: "inline-block"}}
+              autoFocus={true}
             />
             {/*<Input
               divId="addressAccount"

@@ -7,8 +7,6 @@ class TransitionComponent extends React.Component {
   }
 
  componentWillAppear (callback) {
-  console.log("componentWillAppear", this.props.animationType);
-  console.log("componentWillAppear TRANSITION");
     if(this.props.animationType === "loader"){
       this.props.animateIn(this.refs.animate, this.props.updatingApplication, this.props.animateLogo, callback);
     }
@@ -30,8 +28,6 @@ class TransitionComponent extends React.Component {
   }
 
   componentWillEnter(callback){
-    console.log("componentWillEnter", this.props.animationType);
-    console.log("componentWillEnter TRANSITION");
     if(this.props.animationType === "popup"){
       this.props.animateIn(this.refs.animate, callback, "22%");
     }
@@ -44,12 +40,7 @@ class TransitionComponent extends React.Component {
     else callback();
   }
 
-  componentWillUnmount(){
-    console.log("componentWillUnmount TRANSITION")
-  }
-
   componentWillLeave (callback) {
-    console.log("componentWillLeave TRANSITION");
     if(this.props.animationType === "popup")
       this.props.animateOut(this.refs.animate, callback);
     else if(this.props.animationType === "genericPanel"){

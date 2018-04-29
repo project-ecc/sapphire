@@ -105,7 +105,6 @@ class App extends Component<Props> {
 
     //added this as a temporary fix when importing a wallet when initial setup has been done
     const initialSetup = settings.get('settings.initialSetup');
-    console.log("INITIAL SETUP", initialSetup)
     if(initialSetup){
       this.props.setSetupDone(true);
     }
@@ -262,9 +261,6 @@ class App extends Component<Props> {
   }
 
   getInitialSetup(){
-    console.log("this.props.unencryptedWallet: ", this.props.unencryptedWallet);
-    console.log("this.props.shouldImportWallet: ", this.props.shouldImportWallet);
-    console.log("this.props.importingWalletWithSetupDone: ", this.props.importingWalletWithSetupDone);
     if(!this.props.setupDone && !this.props.loader && !this.props.updatingApplication || this.props.unencryptedWallet || this.props.shouldImportWallet || this.props.importingWalletWithSetupDone){
       return(
         <TransitionGroup>
@@ -289,7 +285,6 @@ class App extends Component<Props> {
     else return null;
   }
   render() {
-    console.log(this.props.theme);
     return (
       <div className={this.props.theme}>
         <div id="main">

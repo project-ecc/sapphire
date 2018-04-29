@@ -81,7 +81,7 @@ class Contacts extends Component {
       console.log(isAddressValid);
         if (isAddressValid.isvalid) {
           const tt = low.get('friends').find({ address: this.props.newContactAddress }).value();
-          if (tt !== null) {
+          if (tt) {
             this.addressAlreadyExists();
             this.resetFields();
 
@@ -138,6 +138,7 @@ class Contacts extends Component {
               type="text"
               inputStyle={{textAlign: "left", margin: "0 0", width:"100%"}}
               inputId="inputName"
+              autoFocus={true}
             />
             <Input
               divStyle={{position: "relative",  marginTop: "10px"}}

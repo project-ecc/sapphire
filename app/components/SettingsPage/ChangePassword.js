@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {TweenMax, TimelineMax} from "gsap";
-
 import * as actions from '../../actions';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
-
 import $ from 'jquery';
-
 const Tools = require('../../utils/tools');
 
 class ChangePassword extends React.Component {
@@ -63,7 +60,7 @@ class ChangePassword extends React.Component {
   }
 
   changePassword(){
-    var wasStaking = this.props.isStaking;
+    let wasStaking = this.props.isStaking;
     this.props.wallet.walletChangePassphrase(this.props.passwordVal, this.props.newPassword).then((data)=>{
       if(data === null){
         if(wasStaking){
@@ -77,9 +74,11 @@ class ChangePassword extends React.Component {
       else if(data.code && data.code === -14){
         Tools.showTemporaryMessage('#wrongPassword', this.props.lang.wrongPasswordProper );
       }
+      this.props.setPopupLoading(false)
     })
     .catch((err) => {
       console.error(err);
+      this.props.setPopupLoading(false)
     });
   }
 
@@ -91,6 +90,7 @@ class ChangePassword extends React.Component {
       Tools.showTemporaryMessage('#wrongPassword', this.props.lang.passwordsDontMatch );
     }
     else{
+      this.props.setPopupLoading(true);
       this.changePassword();
     }
   }
@@ -112,7 +112,9 @@ class ChangePassword extends React.Component {
           value={this.props.passwordVal}
           handleChange={this.handlePasswordChange.bind(this)}
           type="password"
+          inputId="enterPasswordId"
           inputStyle={{width: "300px"}}
+          autoFocus={true}
         />
         <Input
           divStyle={{marginTop: "20px", width: "300px"}}
@@ -122,6 +124,7 @@ class ChangePassword extends React.Component {
           value={this.props.passwordValConfirmation}
           handleChange={this.handlePasswordConfirmationChange.bind(this)}
           type="password"
+          inputId="newPasswordId"
           inputStyle={{width: "300px"}}
         />
         <Input
@@ -132,10 +135,11 @@ class ChangePassword extends React.Component {
           value={this.props.newPassword}
           handleChange={this.handleNewPasswordChange.bind(this)}
           type="password"
+          inputId="repeatNewPasswordId"
           inputStyle={{width: "300px"}}
         />
         <p id="wrongPassword" className="wrongPassword" style= {{paddingTop:"10px"}}>{ this.props.lang.wrongPassword }</p>
-        <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm"/>
+        <ConfirmButtonPopup inputId={"#enterPasswordId, #enterPasswordId, #repeatNewPasswordId"} handleConfirm={this.handleConfirm} textLoading={this.props.lang.confirming} text={ this.props.lang.confirm }/>
       </div>
       );
     }

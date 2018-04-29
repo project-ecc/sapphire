@@ -105,33 +105,38 @@ aside{
   font-size: 17px;
   overflow: hidden;
   font-weight: 600;
-  
+
   /* Disables text selection globally so it doesn't feel like a web page. Enable text for copying with selectableText style class */
   user-select: none;
   cursor: default;
 }
 
 .ecc{
-  @include themify($themes) { 
-    color: themed('eccTicker');  
+  @include themify($themes) {
+    color: themed('eccTicker');
   }
 }
 
 .textSelectable{
-  @include themify($themes) { 
-    color: themed('tableHeaderDescription');  
+  @include themify($themes) {
+    color: themed('tableHeaderDescription');
   }
 }
 
 .textSelected{
-  @include themify($themes) { 
-    color: themed('textSelected');  
+  @include themify($themes) {
+    color: themed('textSelected');
   }
 }
 
 #settings{
-  top: 40px; 
+  top: 40px;
   width: 100%;
+}
+
+.EllipsisLoader{
+	display: inline-block;
+  padding-left: 2px;
 }
 
 .changePassword{
@@ -183,25 +188,25 @@ aside{
 }
 
 .inputDiv{
-  position: relative; 
+  position: relative;
   margin: 0 auto;
 }
 
 .inputPlaceholder{
-  @include themify($themes) { 
-    color: themed('inputPlaceHolderColor');  
+  @include themify($themes) {
+    color: themed('inputPlaceHolderColor');
   }
   position: absolute;
-  text-align: center; 
-  font-size: 15px; 
+  text-align: center;
+  font-size: 15px;
 }
 
 .inputCustom{
-  @include themify($themes) { 
-    color: themed('inputColor');  
+  @include themify($themes) {
+    color: themed('inputColor');
     border-bottom: themed('inputBorderBottom');
   }
-  font-size: 15px; 
+  font-size: 15px;
   font-weight: 600;
   background-color: transparent;
   border: none;
@@ -211,25 +216,25 @@ aside{
 }
 
 .inputCustomHighlight{
-  @include themify($themes) { 
+  @include themify($themes) {
     border-bottom: themed('inputBorderBottomHighlight') !important;
   }
 }
 
 .popupTitle{
-  @include themify($themes) { 
-    color: themed('bodyParagraphColor');  
-    font-weight: themed('popupTitleFontWeight');  
-  } 
+  @include themify($themes) {
+    color: themed('bodyParagraphColor');
+    font-weight: themed('popupTitleFontWeight');
+  }
   font-size: 18px;
   padding-top: 20px;
 }
 
-.buttonUnlock{ 
-  @include themify($themes) { 
-    background: themed('fullButtonBackground');  
-    color: themed('fullButtonColor');  
-  } 
+.buttonUnlock{
+  @include themify($themes) {
+    background: themed('fullButtonBackground');
+    color: themed('fullButtonColor');
+  }
   position: absolute;
   height: 36px;
   width: 125px;
@@ -242,8 +247,8 @@ aside{
 }
 
 .buttonPrimary {
-  @include themify($themes) { 
-    border: themed('buttonBorder');  
+  @include themify($themes) {
+    border: themed('buttonBorder');
   }
   position: absolute;
   height: 36px;
@@ -257,17 +262,17 @@ aside{
 }
 
 .buttonPrimary:hover {
-  @include themify($themes) { 
+  @include themify($themes) {
     background-color: themed('buttonBorderedHoverColor');
     color: themed('buttonBorderedFontColor');
   }
 }
 
 #unlockPanel{
-  @include themify($themes) { 
-    background-color: themed('popupBackgroundColor');  
-    //box-shadow: themed('popupBoxShadow');  
-  } 
+  @include themify($themes) {
+    background-color: themed('popupBackgroundColor');
+    //box-shadow: themed('popupBoxShadow');
+  }
   min-width: 535px;
   z-index: 100;
   position: fixed;
@@ -283,31 +288,31 @@ aside{
 }
 
 .wrongPassword{
-  @include themify($themes) { 
-    color: themed('popupMessageText');  
+  @include themify($themes) {
+    color: themed('popupMessageText');
   }
-  width: 100%; 
-  visibility: hidden; 
+  width: 100%;
+  visibility: hidden;
   margin-bottom: 14px;
   font-size: 16px;
 }
 
 .closeButtonPopup{
-  @include themify($themes) { 
-    border: themed('popupCloseButtonBorder');  
-  } 
-  border-radius: 50%; 
-  width: 30px; 
-  height: 30px; 
-  position: absolute; 
-  right: 15px; 
-  top: 15px; 
+  @include themify($themes) {
+    border: themed('popupCloseButtonBorder');
+  }
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  right: 15px;
+  top: 15px;
   cursor: pointer;
 }
 
 .closeButtonPopup:hover{
-  @include themify($themes) { 
-    background-color: themed('popupCloseButtonHoverBackgroundColor');  
+  @include themify($themes) {
+    background-color: themed('popupCloseButtonHoverBackgroundColor');
   }
 }
 
@@ -322,12 +327,12 @@ aside{
 
 .selectableText{
   user-select: text;
-  cursor: text;  
+  cursor: text;
 }
 
 .mancha {
-  @include themify($themes) { 
-    background-color: themed('manchaBackgroundColor');  
+  @include themify($themes) {
+    background-color: themed('manchaBackgroundColor');
   }
   position: fixed;
   top: 0;
