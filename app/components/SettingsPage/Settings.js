@@ -431,7 +431,7 @@ class Settings extends Component {
         <div id="mainSettingsColorFix">
           <div id="settingsContainer">
             <div id="sidebarSettings">
-              <p id="sidebarTitle">{ this.props.lang.appSettingsCAPS }</p>
+              <p id="sidebarTitle">{ this.props.lang.appSettings }</p>
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "General")} selected={this.props.settingsOptionSelected === "General"} text={ this.props.lang.general } />
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Wallet")} selected={this.props.settingsOptionSelected === "Wallet"} text={ this.props.lang.wallet } />
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Notifications")} selected={this.props.settingsOptionSelected === "Notifications"} text={ this.props.lang.notifications } />
