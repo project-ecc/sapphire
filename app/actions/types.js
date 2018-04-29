@@ -129,3 +129,4 @@ export const ACTION_POPUP_RESULT = "action_popup_result";
 export const IMPORT_WALLET_TEMPORARY = "import_wallet_temporary";
 export const FILE_DOWNLOAD_STATUS = "file_download_status";
 export const POPUP_LOADING = "popup_loading";
+export const RESET_STAKING_EARNINGS = "reset_staking_earnings";

@@ -28,6 +28,27 @@ export default class Wallet {
     });
   }
 
+  getAllInfo(){
+    return new Promise((resolve, reject) => {
+      let batch = [];
+      batch.push({method: "getInfo"})
+      batch.push({method: "listtransactions", parameters: ["*", 100, 0]})
+      batch.push({method: "listreceivedbyaddress", parameters: [0, true]})
+      batch.push({method: "listaddressgroupings"})
+      batch.push({method: "getwalletinfo"})
+
+      client.command(batch).then((responses) => {
+        try{
+          if(responses[0].name === "RpcError")
+            return resolve(undefined);
+        }catch(e){}
+        return resolve(responses);
+      }).catch((err) => {
+        return resolve(undefined);
+      });
+    });
+  }
+
   listAccounts() {
     return new Promise((resolve, reject) => {
       client.listAccounts().then((data) => {

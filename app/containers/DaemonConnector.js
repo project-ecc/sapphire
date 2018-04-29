@@ -1,6 +1,6 @@
 import Wallet from '../utils/wallet';
 import { ipcRenderer } from 'electron';
-import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS, SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE, SELECTED_THEME, SET_DAEMON_VERSION, STAKING_REWARD_UPDATE, WALLET_INFO_SEC, IMPORT_WALLET_TEMPORARY, FILE_DOWNLOAD_STATUS } from '../actions/types';
+import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS, SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE, SELECTED_THEME, SET_DAEMON_VERSION, STAKING_REWARD_UPDATE, WALLET_INFO_SEC, IMPORT_WALLET_TEMPORARY, FILE_DOWNLOAD_STATUS, RESET_STAKING_EARNINGS } from '../actions/types';
 const event = require('../utils/eventhandler');
 const tools = require('../utils/tools');
 const sqlite3 = require('sqlite3');
@@ -33,13 +33,7 @@ class DaemonConnector {
     this.handleStoreChange = this.handleStoreChange.bind(this);
     this.unsubscribe = this.store.subscribe(this.handleStoreChange);
     this.unsubscribeFromSetupEvents = this.unsubscribeFromSetupEvents.bind(this);
-    this.getTransactions = this.getTransactions.bind(this);
     this.getAddresses = this.getAddresses.bind(this);
-    this.getAccounts = this.getAccounts.bind(this);
-    this.getAddressesOfAccounts = this.getAddressesOfAccounts.bind(this);
-    this.getAddress = this.getAddress.bind(this);
-    this.getReceivedByAddress = this.getReceivedByAddress.bind(this);
-    this.getAddressesAmounts = this.getAddressesAmounts.bind(this);
     this.mainCycle = this.mainCycle.bind(this);
     this.subscribeToEvents = this.subscribeToEvents.bind(this);
     this.loadTransactionsForProcessing = this.loadTransactionsForProcessing.bind(this);
@@ -48,8 +42,6 @@ class DaemonConnector {
     this.setupTransactionsDB = this.setupTransactionsDB.bind(this);
     this.closeDb = this.closeDb.bind(this);
     this.processTransactions = this.processTransactions.bind(this);
-    this.getWalletInfo = this.getWalletInfo.bind(this);
-    this.getChainInfo = this.getChainInfo.bind(this);
     this.getRawTransaction = this.getRawTransaction.bind(this);
     this.insertIntoDb = this.insertIntoDb.bind(this);
     this.loadTransactionFromDb = this.loadTransactionFromDb.bind(this);
@@ -72,7 +64,7 @@ class DaemonConnector {
     this.runningMainCycle = false;
     this.setupTransactionsDB();
     this.firstRun = true;
-    this.isIndexingTransactions = false;
+    this.hasLoadedTransactionsFromDb = false;
     this.checkStartupStatusInterval = setInterval(()=>{
       this.stateCheckerInitialStartup();
     }, 2000);
@@ -138,35 +130,37 @@ class DaemonConnector {
     }
   }
 
-  mainCycle(){
+  async mainCycle(){
     if(this.store.getState().startup.updatingApp){
       setTimeout(() => {
         this.mainCycle();
       }, this.firstRun && this.transactionsIndexed ? 1000 : 3000);
       return;
     }
-    if(this.step == 1){
-      this.getChainInfo();
-    }
-    else if(this.step == 2){
-      this.getWalletInfo();
-    }
-    else if(this.step == 3){
-      this.getTransactions();
-    }
-    else if(this.step == 4){
-      this.getAddresses();
-    }
-    else if(this.step == 5 && !this.isIndexingTransactions && this.transactionsIndexed){
+    if(!this.hasLoadedTransactionsFromDb)
+      await this.loadTransactionFromDb();
+
+    await this.wallet.getAllInfo().then( async (data) => {
+      if(data){
+        let highestBlock = data[0].headers == 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
+        data[0].headers = highestBlock;
+
+        this.store.dispatch({type: SET_DAEMON_VERSION, payload: tools.formatVersion(data[0].version)});
+        this.store.dispatch({type: WALLET_INFO, payload: data[0]});
+        this.store.dispatch({type: CHAIN_INFO, payload: data[0]});
+        this.store.dispatch({type: WALLET_INFO_SEC, payload: data[4]});
+        this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data[0].blocks == 0 || data[0].headers == 0 ? 0 : ((data[0].blocks * 100) / data[0].headers).toFixed(2)})
+        this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: data[1], type: this.store.getState().chains.transactionsType}});
+        await this.getAddresses(data[2], data[3]);
+      }
+    });
+    if(!this.firstRun && !this.isIndexingTransactions && this.transactionsIndexed){
       this.loadTransactionsForProcessing();
     }
-    else if(this.step == 6 && this.store.getState().application.pendingTransactions.length > 0){
-      this.processPendingTransactions();
-    }
+    //RETHINK THIS -> needs to happen when user is 100% synced...
+    //this.processPendingTransactions();
 
-    this.step++;
-    if(this.step >= 7 && this.transactionsIndexed){
-      this.step = 1;
+    if(this.transactionsIndexed){
       if(this.partialSetup && !this.unencryptedWallet){
         this.store.dispatch({type: PARTIAL_INITIAL_SETUP, payload: false });
         this.partialSetup = false;
@@ -188,9 +182,13 @@ class DaemonConnector {
         }
       }
     }
+    if((this.store.getState().startup.daemonUpdate || this.store.getState().startup.guiUpdate) && !this.store.getState().startup.toldUserAboutUpdate && !this.store.getState().startup.loader){
+      this.notifyUserOfApplicationUpdate();
+    }
+
     setTimeout(() => {
       this.mainCycle();
-    }, this.firstRun && this.transactionsIndexed ? 1000 : 3000);
+    }, this.firstRun && this.transactionsIndexed ? 1000 : 4000);
   }
 
   unsubscribeFromSetupEvents(){
@@ -304,32 +302,11 @@ class DaemonConnector {
 
   handlePartialSetup(){
     this.partialSetup = true;
-    this.getChainInfo();
   }
 
   handleSetupDone(){
     this.store.dispatch({type: SETUP_DONE, payload: true});
     this.unsubscribeFromSetupEvents();
-  }
-
-  getWalletInfo(){
-    this.wallet.command([{method: "getinfo"}]).then((data) => {
-      //this.store.dispatch({type: SELECTED_THEME, payload: !this.store.getState().application.theme});
-      if(data.length > 0){
-        // Set wallet balance
-        this.store.dispatch({type: WALLET_INFO, payload: data[0]});
-
-        // Set daemon version
-        this.store.dispatch({type: SET_DAEMON_VERSION, payload: tools.formatVersion(data[0].version)});
-
-        if((this.store.getState().startup.daemonUpdate || this.store.getState().startup.guiUpdate) && !this.store.getState().startup.toldUserAboutUpdate && !this.store.getState().startup.loader){
-          this.notifyUserOfApplicationUpdate();
-        }
-      }
-    })
-    .catch((err) => {
-        console.log(err.code + " : " + err.message)
-    });
   }
 
   stateCheckerInitialStartup(){
@@ -364,7 +341,6 @@ class DaemonConnector {
   }
 
   getLastBlockFromServer(){
-    console.log("getLastBlockFromServer()")
     return new Promise((resolve, reject) => {
       let options = {
         url: 'https://ecc.network/api/v1/block_height',
@@ -395,26 +371,6 @@ class DaemonConnector {
       request(options, callback);
     });
   }
-
-  getChainInfo(){
-	  this.wallet.getInfo().then(async (data) => {
-      if(this.loadingBlockIndexPayment){
-        this.loadingBlockIndexPayment = false;
-        this.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: false})
-      }
-      let highestBlock = data.headers == 0 || data.headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data.headers;
-      data.headers = highestBlock;
-			this.store.dispatch({type: CHAIN_INFO, payload: data});
-      this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data.blocks == 0 || data.headers == 0 ? 0 : ((data.blocks * 100) / data.headers).toFixed(2)})
-		})
-
-    this.wallet.command([{method: "getwalletinfo"}]).then((data) => {
-      this.store.dispatch({type: WALLET_INFO_SEC, payload: data[0]});
-    })
-    .catch((err) => {
-        console.log(err.code + " : " + err.message)
-    });
-	}
 
   fixNewsText(text){
     let result = text.replace(new RegExp('</p><p>', 'g'), ' ');
@@ -456,6 +412,7 @@ class DaemonConnector {
         let date = item["pubdate"];
         let iTime = new Date(date);
         let time = Tools.calculateTimeSince(this.store.getState().startup.lang, today, iTime);
+
         //push post (fetch existing posts)
         let post = undefined;
         if(posts.length == 0 || posts[posts.length-1].date > iTime.getTime()){
@@ -486,7 +443,7 @@ class DaemonConnector {
           this.store.dispatch({type: POSTS_PER_CONTAINER, payload: this.store.getState().application.postsPerContainerEccNews})
 
         }
-        if(post && post.date > lastCheckedNews && this.store.getState().notifications.newsNotificationsEnabled){
+        if(post && post.date > lastCheckedNews && this.store.getState().notifications.newsNotificationsEnabled ){
           totalNews++;
           this.store.dispatch({type: NEWS_NOTIFICATION, payload: post.date})
         }
@@ -536,6 +493,7 @@ class DaemonConnector {
       transactionsInfo.get('addresses').push(currentAddress).write();
       this.processedAddresses.push(currentAddress)
     }
+    this.store.dispatch({type: RESET_STAKING_EARNINGS});
     this.from = 0;
     this.transactionsIndexed = false;
     this.db = new sqlite3.Database(app.getPath('userData') + '/transactions');
@@ -823,50 +781,53 @@ class DaemonConnector {
   }
 
   loadTransactionFromDb(){
-    this.openDb();
-    let sql = `SELECT * FROM transactions ORDER BY time DESC;`;
-    this.db.all(sql, [], (err, rows) => {
-      if (err) {
-        console.log("ERROR GETTING TRANSACTIONS: ", err);
-      }
-      let lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
-      let earningsCountNotif = 0;
-      let earningsTotalNotif = 0;
-      let shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
-      rows.map((transaction) => {
-        let time = transaction.time;
-        let amount = transaction.amount;
-        if(time > lastCheckedEarnings && shouldNotifyEarnings){
-          this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}});
-          earningsCountNotif++;
-          earningsTotalNotif += amount;
+    return new Promise((resolve, reject) => {
+      this.openDb();
+      let sql = `SELECT * FROM transactions ORDER BY time DESC;`;
+      this.db.all(sql, [], (err, rows) => {
+        if (err) {
+          console.log("ERROR GETTING TRANSACTIONS: ", err);
         }
+        let lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
+        let earningsCountNotif = 0;
+        let earningsTotalNotif = 0;
+        let shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
+        rows.map((transaction) => {
+          let time = transaction.time;
+          let amount = transaction.amount;
+          if(time > lastCheckedEarnings && shouldNotifyEarnings){
+            this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}});
+            earningsCountNotif++;
+            earningsTotalNotif += amount;
+          }
 
+        });
+        //this is an issue
+        /*if(shouldNotifyEarnings && earningsCountNotif > 0){
+          earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
+          let title = `Staking reward - ${earningsTotalNotif} ECC`;
+          const body = earningsCountNotif == 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`;
+          const callback = () => {this.goToEarningsPanel();}
+          this.queueOrSendNotification(callback, body);
+        }*/
+        this.store.dispatch({type: STAKING_REWARD, payload: rows})
       });
-      if(shouldNotifyEarnings && earningsCountNotif > 0){
-        earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
-        let title = `Staking reward - ${earningsTotalNotif} ECC`;
-        const body = earningsCountNotif == 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`;
-        const callback = () => {this.goToEarningsPanel();}
-        this.queueOrSendNotification(callback, body);
 
-      }
-      this.store.dispatch({type: STAKING_REWARD, payload: rows})
-    });
-
-    sql = `SELECT * FROM pendingTransactions;`;
-    this.db.all(sql, [], (err, rows) => {
-      if (err) {
-        console.log("ERROR GETTING TRANSACTIONS: ", err);
-      }
-      let aux = [];
-      rows.map((val) => {
-        aux.push(val.transaction_id)
+      sql = `SELECT * FROM pendingTransactions;`;
+      this.db.all(sql, [], (err, rows) => {
+        if (err) {
+          console.log("ERROR GETTING TRANSACTIONS: ", err);
+        }
+        let aux = [];
+        rows.map((val) => {
+          aux.push(val.transaction_id)
+        });
+        this.store.dispatch({type: PENDING_TRANSACTION, payload: aux});
+        this.closeDb();
+        this.hasLoadedTransactionsFromDb = true;
+        resolve();
       });
-      this.store.dispatch({type: PENDING_TRANSACTION, payload: aux});
-      this.closeDb();
     });
-
   }
 
   //MISC METHODS
@@ -879,9 +840,7 @@ class DaemonConnector {
       Tools.sendOSNotification(body, callback);
   }
 
-  async getAddresses(){
-    const allReceived = await this.wallet.listAllAccounts();
-    const allAddresses = await this.wallet.getAllAddresses();
+  async getAddresses(allReceived, allAddresses){
     const normalAddresses = [].concat.apply([], allAddresses).map(group => {
       return {
         account: group.length > 2 ? group[2] : null,
@@ -932,87 +891,6 @@ class DaemonConnector {
       this.loadTransactionsForProcessing();
       this.store.dispatch({type: INDEXING_TRANSACTIONS, payload: true})
     }
-    else if(this.firstRun){
-      this.loadTransactionFromDb();
-    }
-  }
-
-  getAccounts(){
-    return new Promise((resolve, reject) => {
-      this.wallet.listAccounts().then((data) => {
-          resolve(data);
-      }).catch((err) => {
-          reject(null);
-      });
-    });
-  }
-
-  getAddressesOfAccounts(accounts){
-    return new Promise((resolve, reject) => {
-      let promises = [];
-      let keys = Object.keys(accounts);
-      for(let i = 0; i < keys.length; i++){
-        let promise = this.getAddress(keys[i]);
-        promises.push(promise);
-      }
-
-      Promise.all(promises).then((data) => {
-        resolve(data);
-      }).catch((err) => {
-        console.log("error waiting for all promises: ", err);
-        reject(null);
-      })
-    });
-  }
-
-  getAddressesAmounts(addresses){
-    return new Promise((resolve, reject) => {
-      let promises = [];
-      for(let i = 0; i < addresses.length; i++){
-        for(let j = 0; j < addresses[i].length; j++){
-          let promise = this.getReceivedByAddress(addresses[i][j]);
-          promises.push(promise);
-        }
-      }
-
-      Promise.all(promises).then((data) => {
-        resolve(data);
-      }).catch((err) => {
-        console.log("error waiting for all promises: ", err);
-        reject(null);
-      })
-    });
-  }
-
-  getReceivedByAddress(address){
-    return new Promise((resolve, reject) => {
-      this.wallet.getReceivedByAddress(address).then((amount) => {
-           resolve(amount);
-      }).catch((err) => {
-          console.log("error getting address of account ", err);
-          reject(null);
-      });
-    });
-  }
-
-  getAddress(account){
-    return new Promise((resolve, reject) => {
-      this.wallet.getAddressesByAccount(account).then((address) => {
-           resolve(address);
-      }).catch((err) => {
-          console.log("error getting address of account ", err);
-          reject(null);
-      });
-    });
-  }
-
-  getTransactions(){
-    if(this.store.getState().chains.transactionsPage > 0) return;
-    this.wallet.getTransactions(null, 100, 0).then((data) => {
-        this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: data, type: this.store.getState().chains.transactionsType}});
-    }).catch((err) => {
-        console.log("error getting transactions: ", err)
-    });
   }
 
  getRawTransaction(transactionId){
