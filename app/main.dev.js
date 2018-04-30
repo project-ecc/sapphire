@@ -134,7 +134,6 @@ app.on('ready', async () => {
     minWidth: 800,
     minHeight: 600,
     title: "Sapphire",
-    titleBarStyle: 'hiddenInset',
     backgroundColor: getBackgroundColor(),
     frame: false,
     webPreferences: {backgroundThrottling: false}

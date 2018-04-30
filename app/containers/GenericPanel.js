@@ -38,16 +38,11 @@ class GenericPanel extends Component {
         return(<NetworkStatsPage/>);
       case "contacts":
         return(<ContactsPage/>)
-      case "messaging": 
+      case "messaging":
         return(<MessagingPage/>)
-      case "fileStorage": 
+      case "fileStorage":
         return(<FileStoragePage/>)
     }
-  }
-
-  componentWillReceiveProps(props)
-  {
-    console.log(props)
   }
 
   componentWillMount(){

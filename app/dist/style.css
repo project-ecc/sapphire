@@ -17614,6 +17614,10 @@ aside {
   top: 40px;
   width: 100%; }
 
+.EllipsisLoader {
+  display: inline-block;
+  padding-left: 2px; }
+
 .changePassword {
   height: 305px; }
 

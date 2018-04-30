@@ -149,6 +149,7 @@
     "amount": "Amount",
 
     "sentSuccessfully": "Sent successfully!",
+    "failedToSend": "Failed to send transaction",
     "confirmTransaction": "Confirm transaction",
     "password": "Password",
 
@@ -203,6 +204,7 @@
     "updateDoesNotRequireRestart": "This update does not require a restart",
     "applicationUpdate": "Application Update",
     "confirm": "Confirm",
+    "confirming": "Confirming",
 
     "transactions": "Transactions",
     "received": "Received",

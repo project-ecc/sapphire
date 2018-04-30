@@ -39,9 +39,11 @@ class ConfirmNewAddress extends React.Component {
     this.props.wallet.createNewAddress(this.props.account).then((newAddress) => {
     	console.log(newAddress);
       	event.emit('newAddress');
+        this.props.setPopupLoading(false)
       	this.props.setCreatingAddress(false);
     }).catch((err) => {
        console.log("error creating address: ", err)
+       this.props.setPopupLoading(false)
     });
   }
 
@@ -58,6 +60,7 @@ class ConfirmNewAddress extends React.Component {
       })
       .catch(err => {
         console.log('error creating ANS address: ', err);
+        this.props.setPopupLoading(false)
       });
   }
 
@@ -66,10 +69,12 @@ class ConfirmNewAddress extends React.Component {
       .then(address => {
         console.log(address);
         event.emit('newAddress');
+        this.props.setPopupLoading(false)
         this.props.setCreatingAddress(false);
         this.props.setUpgradingAddress(false);
       })
       .catch(err => {
+        this.props.setPopupLoading(false)
         console.log('error creating ANS address: ', err);
       });
   }
@@ -82,6 +87,7 @@ class ConfirmNewAddress extends React.Component {
 
   handleConfirm(){
     this.props.setPassword('');
+    this.props.setPopupLoading(true)
     if (!this.props.ansAddress) {
       this.createNormalAddress();
     } else {
@@ -162,7 +168,9 @@ class ConfirmNewAddress extends React.Component {
             value={this.props.passwordVal}
             handleChange={this.handleChange.bind(this)}
             type="password"
+            inputId="passwordAnsId"
             inputStyle={{width: "400px", top: "20px", marginBottom: "30px"}}
+            autoFocus={true}
           />
         </div>
       )
@@ -179,7 +187,9 @@ class ConfirmNewAddress extends React.Component {
             value={this.props.username}
             handleChange={this.handleChangeNameAddress.bind(this)}
             type="text"
+            inputId="usernameAnsId"
             inputStyle={{width:"400px", display: "inline-block"}}
+            autoFocus={true}
           />
           <Input
             divStyle={{width: "400px", marginTop: "20px"}}
@@ -189,6 +199,7 @@ class ConfirmNewAddress extends React.Component {
             value={this.props.passwordVal}
             handleChange={this.handleChange.bind(this)}
             type="password"
+            inputId="passwordAnsId"
             inputStyle={{width: "400px", top: "20px", marginBottom: "30px"}}
           />
         </div>
@@ -212,7 +223,7 @@ class ConfirmNewAddress extends React.Component {
         <p className="popupTitle">{ this.props.lang.confirmNewAddress }</p>
          {this.getConfirmationText()}
          {(!this.props.ansAddress || (this.props.ansAddress && ansEnabled)) &&
-          <ConfirmButtonPopup handleConfirm={this.handleConfirm} text="Confirm" style={{position: 'relative', marginTop: '30px', bottom: "10px", left:"205px"}}/>}
+          <ConfirmButtonPopup inputId="#passwordAnsId, #usernameAnsId" textLoading={this.props.lang.confirming} text={this.props.lang.confirm} handleConfirm={this.handleConfirm} text="Confirm" style={{position: 'relative', marginTop: '30px', bottom: "10px", left:"205px"}}/>}
       </div>
       );
     }

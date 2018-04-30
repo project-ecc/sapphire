@@ -6,7 +6,8 @@ import {
 	STAKING_NOTIFICATION,
 	OPERATIVE_SYSTEM_NOTIFICATIONS,
 	NEWS_NOTIFICATIONS,
-	STAKING_NOTIFICATIONS
+	STAKING_NOTIFICATIONS,
+  RESET_STAKING_EARNINGS
 } from '../actions/types';
 
 import notificationsInfo from '../utils/notificationsInfo';
@@ -81,6 +82,20 @@ export default(state = INITIAL_STATE, action) => {
 
 		return {...state, entries: entries}
 	}
+  else if(action.type == RESET_STAKING_EARNINGS){
+    let entries = Object.assign({}, state.entries);
+
+    if(entries["stakingEarnings"].count > 0){
+      let differentKinds = entries["differentKinds"];
+      entries["differentKinds"] = differentKinds - 1;
+      entries["total"] = entries["total"] - entries["stakingEarnings"].count;
+      entries["stakingEarnings"].count = 0;
+      entries["stakingEarnings"].total = 0;
+      entries["stakingEarnings"].date = GetOldDate();
+      entries["last"] = "news";
+    }
+    return {...state, entries: entries}
+  }
 	else if(action.type == STAKING_NOTIFICATION){
 		let entries = Object.assign({}, state.entries);
 		let differentKinds = entries["differentKinds"];
