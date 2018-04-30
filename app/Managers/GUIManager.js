@@ -46,7 +46,7 @@ class GUIManager {
         console.log('Installed GUI Version: ', this.installedVersion);
         console.log('Latest GUI Version : ', this.currentVersion);
         this.toldUserAboutUpdate = true;
-        //event.emit('guiUpdate');
+        event.emit('guiUpdate');
       }
     }
   }

@@ -39,8 +39,8 @@ class DaemonManager {
     this.shouldRestart = undefined;
 
     // use this to manually throw an update message
-    this.toldUserAboutUpdate = true;
-    event.emit('daemonUpdate');
+    //this.toldUserAboutUpdate = true;
+    //event.emit('daemonUpdate');
   }
 
   async initialSetup() {
