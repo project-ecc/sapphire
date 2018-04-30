@@ -3,9 +3,7 @@ import sapphireConfig from '../../gui-data.json';
 const homedir = require('os').homedir();
 const os = require('os');
 
-//let serverUrl = process.env.NODE_ENV === 'production' ? daemonConfig.live_server_address : daemonConfig.dev_server_address;
-
-let serverUrl = daemonConfig.live_server_address;
+let serverUrl = process.env.NODE_ENV === 'production' ? daemonConfig.live_server_address : daemonConfig.dev_server_address;
 
 export function getPlatformFileName() {
   if (process.platform === 'linux') {
