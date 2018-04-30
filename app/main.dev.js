@@ -197,6 +197,7 @@ app.on('ready', async () => {
 });
 
 async function closeApplication(){
+  console.log("closeApplication()")
   if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
     if (!ds.minimise_to_tray) {
       mainWindow.minimize();
@@ -364,12 +365,9 @@ function setupEventHandlers() {
     sendMessage('guiUpdate');
   });
 
-  // TODO Csmartins.
-
-  event.on('updateFailed', (errorMessage) => {
-    console.log(errorMessage)
-    app.quit();
-  });
+  event.on('close', () => {
+    closeApplication();
+  })
 
   event.on('updatedDaemon', () => {
     sendMessage("daemonUpdated");
@@ -406,8 +404,7 @@ function setupEventHandlers() {
   });
 
   event.on('download-error', (payload) => {
-    sendMessage('download-error', payload);
-    console.log(payload);
+    sendMessage('download-error');
   });
 
   ipcMain.on('importWallet', (e, args) => {
@@ -418,10 +415,8 @@ function setupEventHandlers() {
     console.log("electron got update signal, sending to daemon");
     console.log(guiUpdate);
     console.log(daemonUpdate);
-    if(guiUpdate && daemonUpdate){
-      event.emit('updateDaemon', false);
-    }
-    else if(guiUpdate){
+
+    if(guiUpdate){
       event.emit('updateGui');
     }
     else {

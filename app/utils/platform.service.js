@@ -3,8 +3,9 @@ import sapphireConfig from '../../gui-data.json';
 const homedir = require('os').homedir();
 const os = require('os');
 
-let serverUrl =
-  process.env.NODE_ENV === 'production' ? daemonConfig.live_server_address : daemonConfig.dev_server_address;
+//let serverUrl = process.env.NODE_ENV === 'production' ? daemonConfig.live_server_address : daemonConfig.dev_server_address;
+
+let serverUrl = daemonConfig.live_server_address;
 
 export function getPlatformFileName() {
   if (process.platform === 'linux') {
@@ -27,16 +28,15 @@ export function getDaemonDownloadUrl() {
 
   if (process.platform === 'linux') {
     url += os.arch() === 'x32' ? daemonConfig.linux32 : daemonConfig.linux64;
-    return url;
 
   } else if (process.platform === 'darwin') {
     url += daemonConfig.osx;
-    return url;
 
   } else if (process.platform.indexOf('win') > -1) {
     url += os.arch() === 'x32' ? daemonConfig.win32 : daemonConfig.win64;
-    return url;
   }
+
+  return url + "/versions.json";
 }
 
 export function getSapphireDownloadUrl() {
@@ -45,17 +45,16 @@ export function getSapphireDownloadUrl() {
 
   if (process.platform === 'linux') {
     url += os.arch() === 'x32' ? sapphireConfig.linux32 : sapphireConfig.linux64;
-    return url;
 
   } else if (process.platform === 'darwin') {
     url += sapphireConfig.osx;
-    return url;
 
   } else if (process.platform.indexOf('win') > -1) {
 
     url += os.arch() === 'x32' ? sapphireConfig.win32 : sapphireConfig.win64;
-    return url;
   }
+
+  return url + "/versions.json";
 }
 
 export function grabWalletDir() {

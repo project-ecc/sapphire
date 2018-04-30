@@ -37,6 +37,10 @@ class DaemonManager {
     this.wallet = new Wallet();
     this.toldUserAboutUpdate = false;
     this.shouldRestart = undefined;
+
+    // use this to manually throw an update message
+    this.toldUserAboutUpdate = true;
+    event.emit('daemonUpdate');
   }
 
   async initialSetup() {
@@ -96,7 +100,7 @@ class DaemonManager {
             await this.downloadDaemon();
             version = parseInt(this.installedVersion.replace(/\D/g,''));
           } catch (e){
-	    	    event.emit('updateFailed', e.message)
+            event.emit('download-error', {message: e.message});
           }
 
 	    	} while (this.installedVersion == -1 || version < REQUIRED_DAEMON_VERSION);
@@ -164,19 +168,21 @@ class DaemonManager {
 
   async updateDaemon() {
     console.log('daemon manager got update call');
+    this.downloading = true;
     const r = await this.stopDaemon();
     if (r) {
-      const self = this;
       setTimeout(async () => {
         let downloaded = false;
         try {
-          downloaded = await self.downloadDaemon();
+          downloaded = await this.downloadDaemon();
         } catch (e) {
-          event.emit('updateFailed', e.message)
+          event.emit('download-error', {message: e.message});
+          this.downloading = false;
           return;
         }
+        this.downloading = false;
         event.emit('updatedDaemon');
-        if (self.shouldRestart) { self.startDaemon(); }
+        if (!this.shouldRestart) { this.startDaemon(); }
         this.toldUserAboutUpdate = false;
       }, 7000);
     }
@@ -223,19 +229,20 @@ class DaemonManager {
   checkForUpdates() {
     //check that version value has been set and
     // the user has not yet been told about an update
-    if(this.installedVersion !== -1 && !this.toldUserAboutUpdate){
-
+    //if(this.installedVersion !== -1 && !this.toldUserAboutUpdate){
+      console.log("aaa: ", this.installedVersion)
+      console.log("aaa: ", this.currentVersion)
       if(Tools.compareVersion(this.installedVersion, this.currentVersion) === -1){
         console.log('Installed Daemon Version: ', this.installedVersion);
         console.log('Latest Daemon Version: ', this.currentVersion);
         this.toldUserAboutUpdate = true;
         event.emit('daemonUpdate');
-      }
+      //}
     }
   }
 
   async getLatestVersion() {
-    setTimeout(this.getLatestVersion.bind(this), 60000);
+    setTimeout(this.getLatestVersion.bind(this), 600000);
 
     console.log('checking for latest daemon version');
 
@@ -247,8 +254,8 @@ class DaemonManager {
     };
 
     request(opts).then((data) => {
-      const parsed = JSON.parse(data);
-      if(parsed.success === true){
+      if(data){
+        const parsed = JSON.parse(data);
         this.currentVersion = parsed.versions[0].name.substring(1);
         console.log(this.currentVersion);
         self.checkForUpdates();

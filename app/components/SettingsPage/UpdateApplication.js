@@ -20,7 +20,6 @@ class UpdateApplication extends React.Component {
 
   handleConfirm(){
     this.props.setUpdateApplication(false);
-    this.props.setUpdateAvailable();
     setTimeout(() => {
       this.props.setUpdatingApplication(true);
       ipcRenderer.send('update');

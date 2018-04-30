@@ -1,6 +1,14 @@
 import Wallet from '../utils/wallet';
 import { ipcRenderer } from 'electron';
-import { PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO, CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION, DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER, NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS, SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE, SELECTED_THEME, SET_DAEMON_VERSION, STAKING_REWARD_UPDATE, WALLET_INFO_SEC, IMPORT_WALLET_TEMPORARY, FILE_DOWNLOAD_STATUS, RESET_STAKING_EARNINGS } from '../actions/types';
+import {
+  PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO,
+  CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION,
+  DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER,
+  NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS,
+  SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE, SELECTED_THEME, SET_DAEMON_VERSION, STAKING_REWARD_UPDATE,
+  WALLET_INFO_SEC, IMPORT_WALLET_TEMPORARY, FILE_DOWNLOAD_STATUS, TOLD_USER_UPDATE_FAILED
+} from '../actions/types';
+
 const event = require('../utils/eventhandler');
 const tools = require('../utils/tools');
 const sqlite3 = require('sqlite3');
@@ -132,9 +140,7 @@ class DaemonConnector {
 
   async mainCycle(){
     if(this.store.getState().startup.updatingApp){
-      setTimeout(() => {
-        this.mainCycle();
-      }, this.firstRun && this.transactionsIndexed ? 1000 : 3000);
+      this.runningMainCycle = false;
       return;
     }
     if(!this.hasLoadedTransactionsFromDb)
@@ -204,7 +210,6 @@ class DaemonConnector {
     ipcRenderer.on('guiUpdate', this.handleGuiUpdate.bind(this));
     ipcRenderer.on('daemonUpdate', this.handleDaemonUpdate.bind(this));
     ipcRenderer.on('daemonUpdated', this.handleDaemonUpdated.bind(this));
-    ipcRenderer.on('guiUpdate', this.handleGuiUpdate.bind(this));
     ipcRenderer.on('daemonCredentials', this.createWallet.bind(this));
 
     //downloader events.
@@ -260,12 +265,34 @@ class DaemonConnector {
         }
       })
     });
-    ipcRenderer.on('download-error', function (e, arg) {
-      console.log(e, arg)
+    ipcRenderer.on('download-error', (e, arg) => {
+      console.log('Download failure: ')
+      this.store.dispatch({type: TOLD_USER_UPDATE_FAILED,
+        payload: {
+          updateFailed: true
+        }
+      });
+      if(this.store.getState().startup.daemonUpdate){
+        this.firstRun = true;
+        this.checkStartupStatusInterval = setInterval(()=>{
+          this.stateCheckerInitialStartup();
+        }, 2000)
+      }
+    });
+
+    event.on('runMainCycle', () => {
+      if(!this.runningMainCycle){
+        this.firstRun = true;
+        this.mainCycle();
+      }
     });
   }
 
+
+
   handleDaemonUpdated(){
+    this.store.dispatch({type: UPDATE_AVAILABLE, payload: {guiUpdate: false, daemonUpdate: false}})
+    this.firstRun = true;
     this.checkStartupStatusInterval = setInterval(()=>{
       this.stateCheckerInitialStartup();
     }, 2000)

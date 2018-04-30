@@ -128,5 +128,6 @@ export const WALLET_INFO_SEC = "wallet_info_sec";
 export const ACTION_POPUP_RESULT = "action_popup_result";
 export const IMPORT_WALLET_TEMPORARY = "import_wallet_temporary";
 export const FILE_DOWNLOAD_STATUS = "file_download_status";
+export const TOLD_USER_UPDATE_FAILED = 'tell_user_update_failed';
 export const POPUP_LOADING = "popup_loading";
 export const RESET_STAKING_EARNINGS = "reset_staking_earnings";

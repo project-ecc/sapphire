@@ -40,10 +40,16 @@ export default(state = INITIAL_STATE, action) => {
 		return {...state, toldUserAboutUpdate: true}
 	}
 	else if(action.type == UPDATE_AVAILABLE){
-		return {...state, daemonUpdate: action.payload.daemonUpdate, guiUpdate: action.payload.guiUpdate}
+    let daemonUpdate = state.daemonUpdate;
+    let guiUpdate = state.guiUpdate;
+    if(action.payload){
+      daemonUpdate = action.payload.daemonUpdate;
+      guiUpdate = action.payload.guiUpdate;
+    }
+		return {...state, daemonUpdate: daemonUpdate, guiUpdate: guiUpdate}
 	}
 	else if(action.type == UPDATING_APP){
-		return {...state, updatingApp: action.payload, daemonUpdate: false, guiUpdate: false, toldUserAboutUpdate: false}
+		return {...state, updatingApp: action.payload, toldUserAboutUpdate: true}
 	}
 	else if(action.type == INITIAL_SETUP){
 		console.log("got initial setup");
