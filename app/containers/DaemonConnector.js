@@ -147,9 +147,7 @@ class DaemonConnector {
 
   mainCycle(){
     if(this.store.getState().startup.updatingApp){
-      setTimeout(() => {
-        this.mainCycle();
-      }, this.firstRun && this.transactionsIndexed ? 1000 : 3000);
+      this.runningMainCycle = false;
       return;
     }
     if(this.step == 1){
@@ -213,7 +211,6 @@ class DaemonConnector {
     ipcRenderer.on('guiUpdate', this.handleGuiUpdate.bind(this));
     ipcRenderer.on('daemonUpdate', this.handleDaemonUpdate.bind(this));
     ipcRenderer.on('daemonUpdated', this.handleDaemonUpdated.bind(this));
-    ipcRenderer.on('guiUpdate', this.handleGuiUpdate.bind(this));
     ipcRenderer.on('daemonCredentials', this.createWallet.bind(this));
 
     //downloader events.
@@ -270,26 +267,33 @@ class DaemonConnector {
       })
     });
     ipcRenderer.on('download-error', (e, arg) => {
-      console.log('Download failure: ' + arg.message)
-      this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
-        payload: {
-          downloadMessage: 'Download error occurred, try again later',
-          downloadPercentage: undefined,
-          downloadRemainingTime: 0.0
-        }
-      });
-
+      console.log('Download failure: ')
       this.store.dispatch({type: TOLD_USER_UPDATE_FAILED,
         payload: {
           updateFailed: true
         }
       });
-      event.emit('download-failed');
-      console.log(e, arg)
+      if(this.store.getState().startup.daemonUpdate){
+        this.firstRun = true;
+        this.checkStartupStatusInterval = setInterval(()=>{
+          this.stateCheckerInitialStartup();
+        }, 2000)
+      }
+    });
+
+    event.on('runMainCycle', () => {
+      if(!this.runningMainCycle){
+        this.firstRun = true;
+        this.mainCycle();
+      }
     });
   }
 
+
+
   handleDaemonUpdated(){
+    this.store.dispatch({type: UPDATE_AVAILABLE, payload: {guiUpdate: false, daemonUpdate: false}})
+    this.firstRun = true;
     this.checkStartupStatusInterval = setInterval(()=>{
       this.stateCheckerInitialStartup();
     }, 2000)

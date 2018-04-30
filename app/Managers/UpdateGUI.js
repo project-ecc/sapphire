@@ -45,7 +45,8 @@ function installGUI(){
     const architecture = os.arch() === 'x32' ? 'win32' : 'win64';
     const fullPath = walletDir + fileName + '-v' + guiVersion + '-' + architecture + '.exe';
 
-    runExec(`${fullPath}.exe`, 1000).then(() => {
+    console.log(fullPath)
+    runExec(fullPath, 1000).then(() => {
       process.exit();
     })
     .catch(() => {

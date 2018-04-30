@@ -37,7 +37,7 @@
     "exportedSapphireInfo": "Exported <b>Sapphire-info.json</b> to your desktop",
     "failedSapphireInfo": "Something went wrong exporting the file",
     "sapphireInfoDesc": "Click on Generate to make a log file that can help Sapphire developers track down the issues you are experiencing. Use only if requested to",
-
+    "dismiss": "Dismiss",
     "exportPrivKeyDesc": "Please choose a method for exporting your private keys. You can either view them individually on-screen, or export them all at once to a PDF.",
     "viewOnScreen": "View On-screen",
     "exportToPdf": "Export to PDF",
@@ -47,6 +47,7 @@
     "listing" :"Listing",
     "addressInFormat": "address in this format",
     "addressesInFormat": "addresses in this format",
+    "updateFailed": "Update failed, please try again later.",
 
     "loading": "Loading",
     "mainMessage": "Hello, we are getting a few things ready...",

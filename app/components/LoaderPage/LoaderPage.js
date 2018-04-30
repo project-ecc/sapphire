@@ -3,6 +3,7 @@ import { traduction } from '../../lang/lang';
 import { connect } from 'react-redux';
 import {TweenMax} from "gsap";
 import * as actions from '../../actions';
+import ConfirmButtonPopup from '../Others/ConfirmButtonPopup'
 import $ from 'jquery';
 const lang = traduction();
 const Tools = require('../../utils/tools');
@@ -27,7 +28,10 @@ class Loader extends React.Component {
   		setTimeout(() => this.showPercentage(), 500);
   	}
   	else if(!this.props.updateFailed && nextProps.updateFailed) {
-      this.showdownloadFailed()
+      setTimeout(() => {
+        this.showdownloadFailed()
+      }, 1000);
+
     }
   	return true;
   }
@@ -37,7 +41,15 @@ class Loader extends React.Component {
     this.props.setUpdatingApplication(false);
     Tools.showFunctionIcons();
     this.props.setShowingFunctionIcons(true);
-    event.emit('guiUpdate');
+    this.props.wallet.walletstart((result) => {
+      if (result) {
+        console.log("started daemon")
+      }
+    });
+
+    if(this.props.guiUpdate){
+      event.emit('runMainCycle');
+    }
   }
 
 
@@ -76,7 +88,7 @@ class Loader extends React.Component {
   }
 
   showdownloadFailed() {
-    TweenMax.set('.showDismissButton', {css:{display: "block", textAlign: "center"}})
+    TweenMax.set('.showDismissButton', {css:{display: "block", autoAlpha: 0, textAlign: "center"}})
     TweenMax.fromTo('.showDismissButton', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
   }
 
@@ -188,8 +200,8 @@ class Loader extends React.Component {
     			<p className="loadingDownloadMessage">{this.props.downloadMessage}</p>
     			<p className="loadingDownloadPercentage">{this.props.percentage != null ?  this.props.percentage + '%' : null}</p>
         <div style={{display: "none", margin: "auto", textAlign:"center"}} className="showDismissButton">
-          <p className="loadingDownloadPercentage">{this.props.updateFailed === true ? 'Update failed': null}</p>
-          <input className="buttonPrimary" type="button" onClick={this.handleDismissUpdateFailed} id="confirmButtonPopup" value="Dismiss" />
+          <p style={{  fontSize: "18px", fontWeight: "400", paddingTop: "13px"}}>{this.props.lang.updateFailed}</p>
+          <ConfirmButtonPopup style={{margin: "0 auto", position: "relative", top: "21px"}} handleConfirm={this.handleDismissUpdateFailed} text={ this.props.lang.dismiss }/>
         </div>
 			</div>
       </div>
@@ -205,7 +217,9 @@ const mapStateToProps = state => {
     showingFunctionIcons: state.application.showingFunctionIcons,
     downloadMessage: state.application.downloadMessage,
     percentage: state.application.downloadPercentage,
-    updateFailed: state.application.updateFailed
+    updateFailed: state.application.updateFailed,
+    wallet: state.application.wallet,
+    guiUpdate: state.startup.guiUpdate
   };
 };
 

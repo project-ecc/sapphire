@@ -32,8 +32,8 @@ class GUIManager {
       }
     });
     // use this to manually throw an update message
-    this.toldUserAboutUpdate = true;
-    event.emit('guiUpdate');
+    //this.toldUserAboutUpdate = true;
+    //event.emit('guiUpdate');
   }
 
 
@@ -46,7 +46,7 @@ class GUIManager {
         console.log('Installed GUI Version: ', this.installedVersion);
         console.log('Latest GUI Version : ', this.currentVersion);
         this.toldUserAboutUpdate = true;
-        event.emit('guiUpdate');
+        //event.emit('guiUpdate');
       }
     }
   }
@@ -62,8 +62,8 @@ class GUIManager {
     };
 
     request(opts).then((data) => {
-      const parsed = JSON.parse(data);
-      if (parsed.success === true) {
+      if(data){
+        const parsed = JSON.parse(data);
         this.currentVersion = parsed.versions[0].name.substring(1);
         this.checkForUpdates();
       }
@@ -96,16 +96,17 @@ class GUIManager {
         const latestGui = parsed.versions[0];
         const zipChecksum = latestGui.checksum;
         const downloadUrl = latestGui.download_url;
-
+        console.log(self.currentVersion)
         const downloaded = await downloadFile(downloadUrl, walletDirectory, 'Sapphire.zip', zipChecksum, true)
           .catch(error => reject(error));
 
+        console.log("DOWNLOADED OR NOT: ", downloaded)
         if (downloaded) {
           console.log("Done downloading gui");
           try {
             self.downloading = false;
-            self.installedVersion = self.currentVersion;
-            cp.fork("./app/Managers/UpdateGUI", {detached: true, env: {version: self.installedVersion}});
+            console.log("current version: ", self.currentVersion)
+            cp.fork("./app/Managers/UpdateGUI", {detached: true, env: {version: self.currentVersion}});
             event.emit('close');
           } catch (e) {
             console.log(e);
