@@ -137,6 +137,9 @@ class Settings extends Component {
       //Work on error handling
       if (data[0] === null) {
         this.props.setActionPopupResult({flag: true, successful: true, message: `<p className="backupSuccessful">${this.props.lang.exportedWallet}:</p> <p className="backupLocation">${location}</p>`})
+      } else if(data[0]['code'] == '-4') {
+        console.log('Windows code error 4: Insufficient permissions');
+        this.props.setActionPopupResult({flag: true, successful: false, message: `<p className="backupFailed">${this.props.lang.exportFailedTryAdmin}</p>`})
       } else {
         console.log("error backing up wallet: ", data);
         this.props.setActionPopupResult({flag: true, successful: false, message: `<p className="backupFailed">${this.props.lang.exportFailed}</p>`})
