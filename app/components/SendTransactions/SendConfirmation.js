@@ -48,16 +48,22 @@ class SendConfirmation extends React.Component {
       };
       batch.push(obj);
       this.props.wallet.command(batch).then((data) => {
-        if(wasStaking){
-            this.unlockWallet(true, 31556926, () => {
-           });
+        if(data && data[0] && typeof data[0] === 'string'){
+          if(wasStaking){
+              this.unlockWallet(true, 31556926, () => {
+             });
+          }
+          else{
+            this.props.setStaking(false);
+          }
+          this.reset();
+          this.props.setTemporaryBalance(this.props.balance - this.props.amount);
+          this.showMessage(this.props.lang.sentSuccessfully);
         }
         else{
-          this.props.setStaking(false);
+          this.showMessage(this.props.lang.failedToSend);
+          this.reset();
         }
-        this.reset();
-        this.props.setTemporaryBalance(this.props.balance - this.props.amount);
-        this.showMessage(this.props.lang.sentSuccessfully);
       }).catch((err) => {
         this.showMessage(this.props.lang.failedToSend);
         this.reset();
