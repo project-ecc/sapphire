@@ -533,6 +533,22 @@ module.exports = {
 
   //Animations end
 
+  createInstallScript(commands, path){
+    let script = "";
+    commands.map((line) => {
+      script += line + os.EOL;
+    })
+    return new Promise((resolve, reject) => {
+      fs.writeFile(path, script, function(err) {
+        if(err) {
+            reject(false);
+        }else{
+          resolve(true);
+        }
+      });
+    });
+  },
+
   updateConfig: function(staking){
 
     return new Promise((resolve, reject) => {

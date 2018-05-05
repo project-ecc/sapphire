@@ -7,7 +7,8 @@ import Tools from '../utils/tools';
 import {downloadFile} from "../utils/downloader";
 
 let cp = require('child_process');
-
+const homedir = require('os').homedir();
+const { exec } = require('child_process');
 
 class GUIManager {
 
@@ -32,8 +33,8 @@ class GUIManager {
       }
     });
     // use this to manually throw an update message
-    //this.toldUserAboutUpdate = true;
-    //event.emit('guiUpdate');
+    this.toldUserAboutUpdate = true;
+    event.emit('guiUpdate');
   }
 
 
@@ -83,31 +84,25 @@ class GUIManager {
     const self = this;
 
     return new Promise((resolve, reject) => {
-      console.log('downloading GUI');
-
       // download latest daemon info from server
       const opts = {
         url: guiDownloadURL
       };
 
       request(opts).then(async (data) => {
-        console.log('gui response' + data)
         const parsed = JSON.parse(data);
         const latestGui = parsed.versions[0];
         const zipChecksum = latestGui.checksum;
         const downloadUrl = latestGui.download_url;
-        console.log(self.currentVersion)
         const downloaded = await downloadFile(downloadUrl, walletDirectory, 'Sapphire.zip', zipChecksum, true)
           .catch(error => reject(error));
 
-        console.log("DOWNLOADED OR NOT: ", downloaded)
         if (downloaded) {
           console.log("Done downloading gui");
           try {
             self.downloading = false;
             console.log("current version: ", self.currentVersion)
-            cp.fork("./app/Managers/UpdateGUI", {detached: true, env: {version: self.currentVersion}});
-            event.emit('close');
+            installGUI(self.currentVersion);
           } catch (e) {
             console.log(e);
           }
@@ -123,3 +118,75 @@ class GUIManager {
 }
 
 module.exports = GUIManager;
+
+async function installGUI(guiVersion){
+  console.log("installing GUI...");
+
+  if (process.platform === 'linux') {
+    const walletDir = `${homedir}/.eccoin-wallet/`;
+
+    const fileName = 'sapphire';
+    const architecture = os.arch() === 'x32' ? 'linux32' : 'linux64';
+    const fullPath = walletDir + fileName + '-v' + guiVersion + '-' + architecture;
+
+    runExec(`chmod +x ${fullPath} && ${fullPath}`, 1000).then(() => {
+      process.exit();
+    })
+    .catch(() => {
+      process.exit();
+    });
+  }
+  else if(process.platform === 'darwin'){
+
+    const walletDir =`${homedir}/Library/Application Support/.eccoin-wallet/`;
+    const fileName = 'sapphire';
+    let fullPath = walletDir + fileName + '-v' + guiVersion + '-mac.dmg';
+
+    // This must be added to escape the space.
+    fullPath = `"${fullPath}"`;
+    console.log(fullPath)
+    runExec(`open ${fullPath}`, 1000).then(() => {
+      process.exit();
+    })
+    .catch(() => {
+      process.exit();
+    });
+
+  }
+  else if (process.platform.indexOf('win') > -1) {
+
+    const walletDir = `${homedir}\\.eccoin-wallet\\`;
+
+    const fileName = 'sapphire';
+    const architecture = os.arch() === 'x32' ? 'win32' : 'win64';
+    const execName = fileName + '-v' + guiVersion + '-' + architecture + '.exe';
+
+    try{
+      await Tools.createInstallScript(["timeout /t 1", `start /d "${walletDir}" ${execName}`], walletDir+"script.bat")
+    }catch(err){
+      console.log(err);
+    }
+
+    runExec(walletDir+"script.bat", 1000).then(() => {
+      event.emit('close');
+    })
+    .catch(() => {
+      event.emit('close');
+    });
+  }
+}
+
+function runExec(cmd, timeout) {
+  return new Promise((resolve, reject) => {
+    exec(cmd, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+      } else {
+        console.log(stdout)
+        resolve('program exited without an error');
+      }
+      event.emit('close');
+    });
+
+  });
+}

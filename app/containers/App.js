@@ -29,7 +29,6 @@ const settings = require('electron').remote.require('electron-settings');
 const Tools = require('../utils/tools');
 const notifier = require('node-notifier');
 
-
 class App extends Component<Props> {
   constructor(props) {
     super(props);
