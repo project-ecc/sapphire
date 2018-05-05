@@ -886,7 +886,7 @@ class DaemonConnector {
     const allAddressesWithANS = await Promise.all(normalAddresses.map(async (address) => {
       let retval;
       const ansRecord = await this.wallet.getANSRecord(address.address);
-      if (ansRecord.Name) {
+      if (ansRecord && ansRecord.Name) {
         retval = {
           account: address.account,
           address: ansRecord.Name,

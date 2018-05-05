@@ -86,10 +86,7 @@ class Receive extends Component {
         </div>
       )
     } else {
-      return (
-        //<p id="upgradeAns" onClick={this.handleUpgradeAddress.bind(this)}>{this.props.lang.upgradeToANS}</p>
-        <p ></p>
-      )
+      return null;
     }
   }
 
@@ -203,6 +200,7 @@ class Receive extends Component {
       'col-sm-4 tableColumn selectableText': !this.props.filterAns,
     });
 
+    const selectedAddress = this.props.selectedAddress;
 
     return (
       <div className="panel">
@@ -262,7 +260,7 @@ class Receive extends Component {
               if(this.props.filterAll || this.props.filterNormal && !address.ans || this.props.filterAns && address.ans){
                 counter++;
                 return (
-                  <div className= {this.props.selectedAddress && ((address.address === this.props.selectedAddress.address && !this.props.selectedAddress.ans) || ( this.props.selectedAddress.ans && address.address+"#"+address.code === this.props.selectedAddress.address+"#"+this.props.selectedAddress.code))  ? rowClassName + " tableRowSelected" : counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} key={`address_${index}`}>
+                  <div className= {selectedAddress && ((address.address === selectedAddress.address && !selectedAddress.ans) || ( selectedAddress.ans && address.address+"#"+address.code === selectedAddress.address+"#"+selectedAddress.code))  ? rowClassName + " tableRowSelected" : counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} key={`address_${index}`}>
                     <div className={nameColumn} onClick={this.rowClicked.bind(this, address)}>
                       {this.props.filterAns ? address.code ? renderHTML(`${address.address}<span className="Receive__ans-code">#${address.code}</span>`) : address.address : this.getAddressDiplay(address)}
                     </div>
@@ -283,6 +281,7 @@ class Receive extends Component {
         <div id="imageAns">
           <img src={ansAddresImage} />
           <p className="ansLabel">{ this.props.lang.ansAddresses }</p>
+          <p className="Receive__upgrade-text" style={{visibility: selectedAddress ? selectedAddress.ans ? "hidden" : "visible" : "hidden"}}>Upgrade to ANS address</p>
           <div>
             <p id="addressCreatedSuccessfully"> { this.props.lang.addressCreatedSuccessfully }<br></br><span className="ecc" onClick={this.goToBackupPage.bind(this)}>{ this.props.lang.clickToBackupWallet }</span></p>
           </div>
