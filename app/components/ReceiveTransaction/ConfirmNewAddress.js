@@ -152,11 +152,7 @@ class ConfirmNewAddress extends React.Component {
   }
 
   getConfirmationText(){
-    if (this.props.ansAddress && !ansEnabled) {
-      return (
-        <p className="confirmationText" style={{textAlign:"center"}}>{ this.props.lang.ansComingSoon }</p>
-      )
-    } else if(this.props.ansAddress && !this.props.upgradingAddress) {
+   if(this.props.ansAddress && !this.props.upgradingAddress) {
   		return(
         <div>
           <p className="confirmationText" style={{ marginBottom: '25px' }}>{ this.props.lang.ansCreateConfirm1 } <span className="ecc">{ this.props.lang.ansCreateConfirm2 }</span> { this.props.lang.ansCreateConfirm3 } "{this.props.username}".</p>
@@ -222,8 +218,7 @@ class ConfirmNewAddress extends React.Component {
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">{ this.props.lang.confirmNewAddress }</p>
          {this.getConfirmationText()}
-         {(!this.props.ansAddress || (this.props.ansAddress && ansEnabled)) &&
-          <ConfirmButtonPopup inputId="#passwordAnsId, #usernameAnsId" textLoading={this.props.lang.confirming} text={this.props.lang.confirm} handleConfirm={this.handleConfirm} text="Confirm" style={{position: 'relative', marginTop: '30px', bottom: "10px", left:"205px"}}/>}
+        <ConfirmButtonPopup inputId="#passwordAnsId, #usernameAnsId" textLoading={this.props.lang.confirming} text={this.props.lang.confirm} handleConfirm={this.handleConfirm} text="Confirm" style={{position: 'relative', marginTop: '30px', bottom: "10px", left:"205px"}}/>
       </div>
       );
     }

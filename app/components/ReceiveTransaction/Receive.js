@@ -6,13 +6,11 @@ import * as actions from '../../actions';
 import Input from '../Others/Input';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import $ from 'jquery';
+import renderHTML from 'react-render-html';
 const lang = traduction();
 const { clipboard } = require('electron');
 const ansAddresImage = require('../../../resources/images/ans_address.png');
 var classNames = require('classnames');
-
-// This is temporary until ANS is enabled
-const ansEnabled = false;
 
 class Receive extends Component {
 
@@ -88,15 +86,10 @@ class Receive extends Component {
         </div>
       )
     } else {
-      if (ansEnabled) {
-        return (
-          <p id="upgradeAns" onClick={this.handleUpgradeAddress.bind(this)}>{this.props.lang.upgradeToANS}</p>
-        )
-      } else {
-        return (
-          <p></p>
-        )
-      }
+      return (
+        //<p id="upgradeAns" onClick={this.handleUpgradeAddress.bind(this)}>{this.props.lang.upgradeToANS}</p>
+        <p ></p>
+      )
     }
   }
 
@@ -269,12 +262,12 @@ class Receive extends Component {
               if(this.props.filterAll || this.props.filterNormal && !address.ans || this.props.filterAns && address.ans){
                 counter++;
                 return (
-                  <div className= {this.props.selectedAddress && address.address === this.props.selectedAddress.address ? rowClassName + " tableRowSelected" : counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} key={`address_${index}`}>
+                  <div className= {this.props.selectedAddress && ((address.address === this.props.selectedAddress.address && !this.props.selectedAddress.ans) || ( this.props.selectedAddress.ans && address.address+"#"+address.code === this.props.selectedAddress.address+"#"+this.props.selectedAddress.code))  ? rowClassName + " tableRowSelected" : counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} key={`address_${index}`}>
                     <div className={nameColumn} onClick={this.rowClicked.bind(this, address)}>
-                      {this.props.filterAns ? address.address : this.getAddressDiplay(address)}
+                      {this.props.filterAns ? address.code ? renderHTML(`${address.address}<span className="Receive__ans-code">#${address.code}</span>`) : address.address : this.getAddressDiplay(address)}
                     </div>
                     <div className={addressColumn} onClick={this.rowClicked.bind(this, address)}>
-                      {this.props.filterAns ? address.normalAddress : address.address}
+                      {this.props.filterAns ? address.normalAddress : address.code ? renderHTML(`${address.address}<span className="Receive__ans-code">#${address.code}</span>`) : address.address}
                     </div>
                     <div className={amountColumn} onClick={this.rowClicked.bind(this, address)}>
                       {address.amount}

@@ -7,8 +7,8 @@
 }
 
 #ansExplanation{
-	@include themify($themes) { 
-		color: themed('bodySecondaryParagraphColor');  
+	@include themify($themes) {
+		color: themed('bodySecondaryParagraphColor');
 	}
 	display: inline-block;
 	font-size: 14px;
@@ -22,17 +22,17 @@
 }
 
 #headerReceive{
-	text-align: center; 
-	position: relative; 
-	top: 25px; 
+	text-align: center;
+	position: relative;
+	top: 25px;
 	font-size: 14px;
 }
 
 #headerReceive span{
-	@include themify($themes) { 
-		color: themed('bodySecondaryParagraphColor');  
+	@include themify($themes) {
+		color: themed('bodySecondaryParagraphColor');
 	}
-	padding: 0px 20px; 
+	padding: 0px 20px;
 }
 
 #inputAddress{
@@ -76,13 +76,13 @@
 }
 
 #imageAns{
-	position: relative; 
+	position: relative;
 	top: 55px;
 }
 
 .ansLabel{
-	@include themify($themes) { 
-		color: themed('bodySecondaryParagraphColor');  
+	@include themify($themes) {
+		color: themed('bodySecondaryParagraphColor');
 	}
 	font-size: 14px;
 	display: inline-block;
@@ -93,8 +93,8 @@
 }
 
 #addressCreatedSuccessfully{
-	@include themify($themes) { 
-		color: themed('popupMessageText');  
+	@include themify($themes) {
+		color: themed('popupMessageText');
 	}
 	font-size: 15px;
 	display: inline-block;
@@ -111,8 +111,8 @@
 }
 
 #upgradeAns{
-	@include themify($themes) { 
-		color: themed('textSelected');  
+	@include themify($themes) {
+		color: themed('textSelected');
 	}
 	font-size: 13px;
 	display: inline-block;
@@ -127,4 +127,10 @@
 	font-weight: 500;
 	margin-top:30px;
 	margin-bottom: 70px;
+}
+
+.Receive__ans-code{
+	font-size: 12px;
+    font-weight: bold;
+    color: #2e2e3a;
 }

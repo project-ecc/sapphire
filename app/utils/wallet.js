@@ -155,8 +155,8 @@ export default class Wallet {
 
   getANSRecord(address) {
     return new Promise((resolve, reject) => {
-      client.getANSRecord(address).then(record => {
-        return resolve(record);
+      client.command([{method: "getansrecord", parameters: [address, "PTR"]}]).then(record => {
+        return resolve(record[0][0]);
       }).catch(err => {
         return reject(err);
       })

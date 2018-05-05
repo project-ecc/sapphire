@@ -149,7 +149,10 @@ class DaemonConnector {
     await this.wallet.getAllInfo().then( async (data) => {
       if(data){
         let highestBlock = data[0].headers == 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
+        console.log("highestBlock: ", highestBlock)
         data[0].headers = highestBlock;
+
+      console.log("current block: ", data[0].blocks)
 
         this.store.dispatch({type: SET_DAEMON_VERSION, payload: tools.formatVersion(data[0].version)});
         this.store.dispatch({type: WALLET_INFO, payload: data[0]});
@@ -377,7 +380,9 @@ class DaemonConnector {
         if (!error && response.statusCode == 200) {
           let json = JSON.parse(body);
           let height = json.block_height;
+          console.log("Server height: ", height)
           let localHeight = self.store.getState().chains.headersPayment;
+          console.log("Local height: ", self.store.getState().chains.headersPayment)
           if(localHeight >= height){
             clearInterval(self.heighestBlockFromServerInterval);
             resolve(localHeight);
@@ -878,7 +883,7 @@ class DaemonConnector {
       }
     });
 
-    /*const allAddressesWithANS = await Promise.all(normalAddresses.map(async (address) => {
+    const allAddressesWithANS = await Promise.all(normalAddresses.map(async (address) => {
       let retval;
       const ansRecord = await this.wallet.getANSRecord(address.address);
       if (ansRecord.Name) {
@@ -887,14 +892,14 @@ class DaemonConnector {
           address: ansRecord.Name,
           normalAddress: address.address,
           amount: address.amount,
+          code: ansRecord.Code,
           ans: true,
         }
       } else {
         retval = address;
       }
-
       return retval;
-    }));*/
+    }));
 
     const toAppend = allReceived
                       .filter(address => address.amount === 0)
@@ -908,8 +913,9 @@ class DaemonConnector {
                         }
                       });
 
-    //const toReturn = allAddressesWithANS.concat(toAppend);
-    const toReturn = normalAddresses.concat(toAppend);
+    const toReturn = allAddressesWithANS.concat(toAppend);
+    console.log(toReturn)
+    //const toReturn = normalAddresses.concat(toAppend);
 
     this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
     //We need to have the addresses loaded to be able to index transactions
