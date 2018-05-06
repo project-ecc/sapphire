@@ -144,7 +144,6 @@ async function installGUI(guiVersion){
     let shPath = walletDir+ "script.sh"
 
     runExec(`chmod +x "${shPath}" && sh "${shPath}"`, 1000).then(() => {
-      // runExec("sh "+ walletDir + "script.sh", 1000).then(() => {
       event.emit('close');
     })
       .catch(() => {
@@ -176,7 +175,6 @@ async function installGUI(guiVersion){
     let shPath = walletDir+ "script.sh"
 
     runExec(`chmod +x "${shPath}" && sh "${shPath}"`, 1000).then(() => {
-    // runExec("sh "+ walletDir + "script.sh", 1000).then(() => {
       event.emit('close');
     })
     .catch(() => {
