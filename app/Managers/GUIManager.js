@@ -35,6 +35,7 @@ class GUIManager {
     // use this to manually throw an update message
     this.toldUserAboutUpdate = true;
     event.emit('guiUpdate');
+
   }
 
 
@@ -120,6 +121,7 @@ class GUIManager {
 module.exports = GUIManager;
 
 async function installGUI(guiVersion){
+  console.log(guiVersion)
   console.log("installing GUI...");
 
   if (process.platform === 'linux') {
@@ -144,14 +146,22 @@ async function installGUI(guiVersion){
 
     // This must be added to escape the space.
     fullPath = `"${fullPath}"`;
-    console.log(fullPath)
-    runExec(`open ${fullPath}`, 1000).then(() => {
-      process.exit();
+
+    try{
+      await Tools.createInstallScript(["sleep 2", `open ${fullPath}`], walletDir+"script.sh")
+    }catch(err){
+      console.log(err);
+    }
+
+    let shPath = walletDir+ "script.sh"
+
+    runExec(`chmod +x "${shPath}" && sh "${shPath}"`, 1000).then(() => {
+    // runExec("sh "+ walletDir + "script.sh", 1000).then(() => {
+      event.emit('close');
     })
     .catch(() => {
-      process.exit();
+      event.emit('close');
     });
-
   }
   else if (process.platform.indexOf('win') > -1) {
 
