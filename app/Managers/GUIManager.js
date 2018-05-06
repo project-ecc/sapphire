@@ -129,7 +129,27 @@ async function installGUI(guiVersion){
 
     const fileName = 'sapphire';
     const architecture = os.arch() === 'x32' ? 'linux32' : 'linux64';
-    const fullPath = walletDir + fileName + '-v' + guiVersion + '-' + architecture;
+    let fullPath = walletDir + fileName + '-v' + guiVersion + '-' + architecture;
+
+
+    // This must be added to escape the space.
+    fullPath = `"${fullPath}"`;
+
+    try{
+      await Tools.createInstallScript(["sleep 2", `open ${fullPath}`], walletDir+"script.sh")
+    }catch(err){
+      console.log(err);
+    }
+
+    let shPath = walletDir+ "script.sh"
+
+    runExec(`chmod +x "${shPath}" && sh "${shPath}"`, 1000).then(() => {
+      // runExec("sh "+ walletDir + "script.sh", 1000).then(() => {
+      event.emit('close');
+    })
+      .catch(() => {
+        event.emit('close');
+      });
 
     runExec(`chmod +x ${fullPath} && ${fullPath}`, 1000).then(() => {
       process.exit();
