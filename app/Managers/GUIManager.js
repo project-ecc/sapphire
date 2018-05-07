@@ -33,8 +33,8 @@ class GUIManager {
       }
     });
     // use this to manually throw an update message
-    this.toldUserAboutUpdate = true;
-    event.emit('guiUpdate');
+    // this.toldUserAboutUpdate = true;
+    // event.emit('guiUpdate');
 
   }
 
