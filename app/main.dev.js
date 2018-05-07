@@ -404,7 +404,7 @@ function setupEventHandlers() {
   });
 
   event.on('download-error', (payload) => {
-    sendMessage('download-error');
+    sendMessage('download-error', payload);
   });
 
   ipcMain.on('importWallet', (e, args) => {

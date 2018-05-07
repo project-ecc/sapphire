@@ -149,12 +149,12 @@ class DaemonConnector {
     await this.wallet.getAllInfo().then( async (data) => {
       if(data){
         let highestBlock = data[0].headers == 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
-        
+
         // remove .00 if 100%
         let syncedPercentageDecimalFix;
         let syncedPercentage = (data[0].blocks * 100) / data[0].headers;
         syncedPercentage === 100 ? syncedPercentageDecimalFix = 0 : syncedPercentageDecimalFix = 2;
-        
+
         data[0].headers = highestBlock;
 
         this.store.dispatch({type: SET_DAEMON_VERSION, payload: tools.formatVersion(data[0].version)});
@@ -272,10 +272,11 @@ class DaemonConnector {
       })
     });
     ipcRenderer.on('download-error', (e, arg) => {
-      console.log('Download failure: ')
+      console.log('Download failure: '+ arg.message);
       this.store.dispatch({type: TOLD_USER_UPDATE_FAILED,
         payload: {
-          updateFailed: true
+          updateFailed: true,
+          downloadMessage: arg.message
         }
       });
       if(this.store.getState().startup.daemonUpdate){

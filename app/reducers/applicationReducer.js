@@ -339,7 +339,7 @@ export default(state = INITIAL_STATE, action) => {
     return {...state, downloadMessage: action.payload.downloadMessage, downloadPercentage: action.payload.downloadPercentage, downloadRemainingTime: action.payload.downloadRemainingTime}
   }
   else if(action.type == TOLD_USER_UPDATE_FAILED){
-	  return {...state, updateFailed: action.payload.updateFailed}
+	  return {...state, updateFailed: action.payload.updateFailed, downloadMessage: action.payload.message}
 	}
 	return state;
 }

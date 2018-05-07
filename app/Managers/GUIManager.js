@@ -138,6 +138,7 @@ async function installGUI(guiVersion){
     try{
       await Tools.createInstallScript(["sleep 2", `open ${fullPath}`], walletDir+"script.sh")
     }catch(err){
+      event.emit('download-error', err);
       console.log(err);
     }
 
@@ -146,15 +147,8 @@ async function installGUI(guiVersion){
     runExec(`chmod +x "${shPath}" && sh "${shPath}"`, 1000).then(() => {
       event.emit('close');
     })
-      .catch(() => {
-        event.emit('close');
-      });
-
-    runExec(`chmod +x ${fullPath} && ${fullPath}`, 1000).then(() => {
-      process.exit();
-    })
     .catch(() => {
-      process.exit();
+      event.emit('close');
     });
   }
   else if(process.platform === 'darwin'){
@@ -169,6 +163,7 @@ async function installGUI(guiVersion){
     try{
       await Tools.createInstallScript(["sleep 2", `open ${fullPath}`], walletDir+"script.sh")
     }catch(err){
+      event.emit('download-error', err);
       console.log(err);
     }
 
@@ -192,6 +187,7 @@ async function installGUI(guiVersion){
     try{
       await Tools.createInstallScript(["timeout /t 1", `start /d "${walletDir}" ${execName}`], walletDir+"script.bat")
     }catch(err){
+      event.emit('download-error', err);
       console.log(err);
     }
 
