@@ -245,7 +245,6 @@ class DaemonManager {
   }
 
   async getLatestVersion() {
-    setTimeout(this.getLatestVersion.bind(this), 600000);
 
     console.log('checking for latest daemon version');
 
