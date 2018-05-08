@@ -34,7 +34,9 @@ export function getDaemonDownloadUrl() {
     url += os.arch() === 'x32' ? daemonConfig.win32 : daemonConfig.win64;
   }
 
-  return url + "/versions.json";
+  //below url for aws release.
+  // return url + "/versions.json";
+  return url;
 }
 
 export function getSapphireDownloadUrl() {

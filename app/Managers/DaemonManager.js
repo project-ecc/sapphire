@@ -8,7 +8,7 @@ const os = require('os');
 const extract = require('extract-zip');
 const https = require('https');
 const checksum = require('checksum');
-const REQUIRED_DAEMON_VERSION = 258;
+const REQUIRED_DAEMON_VERSION = 2510;
 
 import Wallet from '../utils/wallet';
 import { getPlatformWalletUri, grabWalletDir, grabEccoinDir, getDaemonDownloadUrl, getPlatformFileName } from '../utils/platform.service';
@@ -229,7 +229,7 @@ class DaemonManager {
   checkForUpdates() {
     //check that version value has been set and
     // the user has not yet been told about an update
-    //if(this.installedVersion !== -1 && !this.toldUserAboutUpdate){
+    if(this.installedVersion !== -1 && !this.toldUserAboutUpdate){
       console.log("aaa: ", this.installedVersion)
       console.log("aaa: ", this.currentVersion)
       if(Tools.compareVersion(this.installedVersion, this.currentVersion) === -1){
@@ -237,7 +237,7 @@ class DaemonManager {
         console.log('Latest Daemon Version: ', this.currentVersion);
         this.toldUserAboutUpdate = true;
         event.emit('daemonUpdate');
-      //}
+      }
     }
   }
 

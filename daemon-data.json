@@ -1,7 +1,7 @@
 {
-  "live_server_address": "https://s3.amazonaws.com",
-  "dev_server_address": "https://s3.amazonaws.com",
-  "daemon_url": "/api-r.ecc.network/v1/products/eccoind/",
+  "live_server_address": "https://ecc.network",
+  "dev_server_address": "https://ecc.network",
+  "daemon_url": "/api/v1/downloads/eccoin?platform=",
   "linux32": "linux32",
   "linux64": "linux64",
   "win32": "win32",
