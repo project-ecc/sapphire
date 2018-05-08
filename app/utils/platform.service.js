@@ -54,7 +54,8 @@ export function getSapphireDownloadUrl() {
     url += os.arch() === 'x32' ? sapphireConfig.win32 : sapphireConfig.win64;
   }
 
-  return url + "/versions.json";
+  // return url + "/versions.json";
+  return url;
 }
 
 export function grabWalletDir() {
