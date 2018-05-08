@@ -228,11 +228,14 @@ class DaemonManager {
 
   checkForUpdates() {
     //check that version value has been set and
+
     // the user has not yet been told about an update
     if(this.installedVersion !== -1 && !this.toldUserAboutUpdate){
       console.log("aaa: ", this.installedVersion)
       console.log("aaa: ", this.currentVersion)
+      // if(Tools.compareVersion(this.installedVersion, this.currentVersion) === -1 && this.currentVersion.replace(/\D/g,'') > REQUIRED_DAEMON_VERSION){
       if(Tools.compareVersion(this.installedVersion, this.currentVersion) === -1){
+
         console.log('Installed Daemon Version: ', this.installedVersion);
         console.log('Latest Daemon Version: ', this.currentVersion);
         this.toldUserAboutUpdate = true;
