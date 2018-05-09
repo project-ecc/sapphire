@@ -34,9 +34,7 @@ export function getDaemonDownloadUrl() {
     url += os.arch() === 'x32' ? daemonConfig.win32 : daemonConfig.win64;
   }
 
-  //below url for aws release.
-  // return url + "/versions.json";
-  return url;
+  return url + "/versions.json";
 }
 
 export function getSapphireDownloadUrl() {
@@ -54,8 +52,7 @@ export function getSapphireDownloadUrl() {
     url += os.arch() === 'x32' ? sapphireConfig.win32 : sapphireConfig.win64;
   }
 
-  // return url + "/versions.json";
-  return url;
+  return url + "/versions.json";
 }
 
 export function grabWalletDir() {

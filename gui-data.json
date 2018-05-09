@@ -1,7 +1,7 @@
 {
-  "live_server_address": "https://ecc.network",
-  "dev_server_address": "https://ecc.network",
-  "sapphire_url": "/api/v1/downloads/sapphire?platform=",
+  "live_server_address": "https://s3.amazonaws.com",
+  "dev_server_address": "https://s3.amazonaws.com",
+  "sapphire_url": "/api-r.ecc.network/v1/products/sapphire/",
   "linux32": "linux32",
   "linux64": "linux64",
   "win32": "win32",
