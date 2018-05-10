@@ -191,11 +191,25 @@ async function installGUI(guiVersion){
       console.log(err);
     }
 
-    runExec(walletDir+"script.bat", 1000).then(() => {
+    let path = `& "${walletDir}script.bat"`;
+
+    //create powershell
+    const ps = new shell({ //eslint-disable-line
+      executionPolicy: 'Bypass',
+      noProfile: true
+    });
+
+    //add command to start script
+    ps.addCommand(path);
+
+    //close on error and success
+    ps.invoke().then(() => {
       event.emit('close');
     })
-    .catch(() => {
-      event.emit('close');
+    .catch(err => {
+      console.log(err);
+      ps.dispose();
+      event.emit('close'); // TODO: dont close on error
     });
   }
 }
