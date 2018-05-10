@@ -5,7 +5,7 @@ import {getSapphireDownloadUrl, grabWalletDir} from "../utils/platform.service";
 import {version} from './../../package.json';
 import Tools from '../utils/tools';
 import {downloadFile} from "../utils/downloader";
-
+import shell from 'node-powershell';
 let cp = require('child_process');
 const homedir = require('os').homedir();
 const { exec } = require('child_process');
@@ -33,9 +33,8 @@ class GUIManager {
       }
     });
     // use this to manually throw an update message
-    // this.toldUserAboutUpdate = true;
-    // event.emit('guiUpdate');
-
+    //this.toldUserAboutUpdate = true;
+    //event.emit('guiUpdate');
   }
 
 
@@ -209,7 +208,7 @@ async function installGUI(guiVersion){
     .catch(err => {
       console.log(err);
       ps.dispose();
-      event.emit('close'); // TODO: dont close on error
+      event.emit('download-error', err);
     });
   }
 }
