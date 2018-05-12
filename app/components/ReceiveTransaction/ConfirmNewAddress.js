@@ -6,6 +6,7 @@ import * as actions from '../../actions';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
+import ansAddressesInfo from '../../utils/ansAddressesInfo';
 
 import $ from 'jquery';
 
@@ -24,6 +25,7 @@ class ConfirmNewAddress extends React.Component {
     this.handleChangeNameAddress = this.handleChangeNameAddress.bind(this);
     this.createNormalAddress = this.createNormalAddress.bind(this);
     this.getConfirmationText = this.getConfirmationText.bind(this);
+    this.saveNewlyCreatedAnsAddress = this.saveNewlyCreatedAnsAddress.bind(this);
   }
 
   componentWillMount(){
@@ -51,7 +53,6 @@ class ConfirmNewAddress extends React.Component {
     let newAddress;
     this.props.wallet.createNewAddress()
       .then(address => {
-        console.log(address);
         newAddress = address;
         return this.props.wallet.sendMoney(newAddress, 51);
       })
@@ -64,14 +65,20 @@ class ConfirmNewAddress extends React.Component {
       });
   }
 
+  saveNewlyCreatedAnsAddress(address){
+    const currentBlock = this.props.blockPayment;
+    ansAddressesInfo.get('addresses').push({address: address, creationBlock: currentBlock}).write();
+  }
+
   createANSAddress(address) {
     return this.props.wallet.createNewANSAddress(address, this.props.username)
-      .then(address => {
-        console.log(address);
-        event.emit('newAddress');
+      .then(response => {
+        console.log(response);
+        this.saveNewlyCreatedAnsAddress(address);
         this.props.setPopupLoading(false)
         this.props.setCreatingAddress(false);
         this.props.setUpgradingAddress(false);
+        event.emit('newAddress');
       })
       .catch(err => {
         this.props.setPopupLoading(false)
@@ -79,11 +86,6 @@ class ConfirmNewAddress extends React.Component {
       });
   }
 
-  componentDidLeave(callback) {
-  }
-
-  componentDidMount(){
-  }
 
   handleConfirm(){
     this.props.setPassword('');
@@ -135,7 +137,6 @@ class ConfirmNewAddress extends React.Component {
     batch.push(obj);
 
     this.props.wallet.command(batch).then((data) => {
-      console.log("data: ", data);
       data = data[0];
       if (data !== null && data.code === -14) {
         this.showWrongPassword();
@@ -235,6 +236,7 @@ const mapStateToProps = state => {
     account: state.application.newAddressAccount,
     wallet: state.application.wallet,
     passwordVal: state.application.password,
+    blockPayment: state.chains.blockPayment
   };
 };
 

@@ -16,6 +16,7 @@ let remote = require('electron').remote;
 const app = remote.app;
 import transactionsInfo from '../utils/transactionsInfo';
 import notificationsInfo from '../utils/notificationsInfo';
+import ansAddressesInfo from '../utils/ansAddressesInfo';
 import $ from 'jquery';
 const FeedMe = require('feedme');
 const https = require('https');
@@ -885,12 +886,19 @@ class DaemonConnector {
       }
     });
 
+    const currentBlock = this.store.getState().chains.blockPayment;
+
     const allAddressesWithANS = await Promise.all(normalAddresses.map(async (address) => {
       let retval;
       const ansRecord = await this.wallet.getANSRecord(address.address);
       //TODO include code to see if it was recently created and notify user if its been 3 blocks since its creation
 
-
+      const x = ansAddressesInfo.get('addresses').find({ address: address.address }).value()
+      if(x){
+        console.log("GOT ADDRESS:", address.address)
+        console.log("ans block: ", x.creationBlock)
+        console.log("current block: ", currentBlock)
+      }
 
       if (ansRecord && ansRecord.Name) {
         retval = {

@@ -43,7 +43,7 @@ class Send extends Component {
       Tools.highlightInput('#inputAddressSend', 1000)
     }
     if(this.props.address !== "" && this.props.amount !== "" && Number(this.props.amount) > 0){
-      if(this.props.amount > this.props.balance){
+      if(Number(this.props.amount) > Number(this.props.balance)){
         Tools.showTemporaryMessage('#message', this.props.lang.notEnoughBalance);
         Tools.highlightInput('#inputAmountSend', 2100)
       }

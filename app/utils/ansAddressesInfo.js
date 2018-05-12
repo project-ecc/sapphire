@@ -15,6 +15,6 @@ try{
   db = low( path, {storage});
 }
 
-db.defaults({addresses: {}}).write();
+db.defaults({addresses: []}).write();
 
 export default db;
