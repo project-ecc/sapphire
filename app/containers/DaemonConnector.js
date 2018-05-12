@@ -886,6 +886,10 @@ class DaemonConnector {
     const allAddressesWithANS = await Promise.all(normalAddresses.map(async (address) => {
       let retval;
       const ansRecord = await this.wallet.getANSRecord(address.address);
+      //TODO include code to see if it was recently created and notify user if its been 3 blocks since its creation
+
+
+
       if (ansRecord && ansRecord.Name) {
         retval = {
           account: address.account,
@@ -913,10 +917,16 @@ class DaemonConnector {
                         }
                       });
 
-    const toReturn = allAddressesWithANS.concat(toAppend);
-    console.log(toReturn)
-    //const toReturn = normalAddresses.concat(toAppend);
+    let toReturn = allAddressesWithANS.concat(toAppend);
+    toReturn = Object.values(toReturn).sort(function(a,b){
+      if(!b.ans || !a.ans){
+        return b.ans - a.ans
+      }
+      else{
+        return b.address < a.address
+      }
 
+    })
     this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
     //We need to have the addresses loaded to be able to index transactions
     this.currentAddresses = toReturn;
