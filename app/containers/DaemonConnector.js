@@ -149,16 +149,17 @@ class DaemonConnector {
     await this.wallet.getAllInfo().then( async (data) => {
       if(data){
         let highestBlock = data[0].headers == 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
-        console.log("highestBlock: ", highestBlock)
+        // remove .00 if 100%
+        let syncedPercentageDecimalFix;
+        let syncedPercentage = (data[0].blocks * 100) / data[0].headers;
+        syncedPercentage === 100 ? syncedPercentageDecimalFix = 0 : syncedPercentageDecimalFix = 2;
         data[0].headers = highestBlock;
-
-      console.log("current block: ", data[0].blocks)
 
         this.store.dispatch({type: SET_DAEMON_VERSION, payload: tools.formatVersion(data[0].version)});
         this.store.dispatch({type: WALLET_INFO, payload: data[0]});
         this.store.dispatch({type: CHAIN_INFO, payload: data[0]});
         this.store.dispatch({type: WALLET_INFO_SEC, payload: data[4]});
-        this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data[0].blocks == 0 || data[0].headers == 0 ? 0 : ((data[0].blocks * 100) / data[0].headers).toFixed(2)})
+        this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data[0].blocks == 0 || data[0].headers == 0 ? 0 : syncedPercentage.toFixed(syncedPercentageDecimalFix)});
         this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: data[1], type: this.store.getState().chains.transactionsType}});
         await this.getAddresses(data[2], data[3]);
       }
@@ -269,10 +270,11 @@ class DaemonConnector {
       })
     });
     ipcRenderer.on('download-error', (e, arg) => {
-      console.log('Download failure: ')
+      console.log('Download failure: '+ arg.message);
       this.store.dispatch({type: TOLD_USER_UPDATE_FAILED,
         payload: {
-          updateFailed: true
+          updateFailed: true,
+          downloadMessage: arg.message
         }
       });
       if(this.store.getState().startup.daemonUpdate){
