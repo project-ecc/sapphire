@@ -12,7 +12,6 @@ const Tools = require('../../utils/tools');
 class Contacts extends Component {
   constructor(props) {
     super(props);
-    this.handleChangeNewContactName = this.handleChangeNewContactName.bind(this);
     this.handleChangeNewContactAddress = this.handleChangeNewContactAddress.bind(this);
     this.addContact = this.addContact.bind(this);
     this.addNormalAddress = this.addNormalAddress.bind(this);
@@ -24,17 +23,6 @@ class Contacts extends Component {
       TweenMax.set('#addressNamePlaceHolder', {autoAlpha: 0});
     if(this.props.newContactAddress)
       TweenMax.set('#addressAccountPlaceHolder', {autoAlpha: 0});
-  }
-
-  handleChangeNewContactName(event){
-    const name = event.target.value;
-    if(name.length === 0)
-      TweenMax.set('#addressNamePlaceHolder', {autoAlpha: 1});
-    else
-      TweenMax.set('#addressNamePlaceHolder', {autoAlpha: 0});
-
-    this.props.setNewContactName(name);
-
   }
 
   handleChangeNewContactAddress(event){
@@ -134,7 +122,7 @@ class Contacts extends Component {
               placeholderId="addressNamePlaceHolder"
               placeHolderClassName="inputPlaceholder inputPlaceholderReceive"
               value={this.props.newContactName}
-              handleChange={this.handleChangeNewContactName.bind(this)}
+              updateRedux={this.props.setNewContactName}
               type="text"
               inputStyle={{textAlign: "left", margin: "0 0", width:"100%"}}
               inputId="inputName"

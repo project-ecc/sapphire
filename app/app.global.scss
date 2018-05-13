@@ -6,7 +6,6 @@
 @import "./styles/Sidebar.scss";
 @import "./styles/Home.scss";
 @import "./styles/Receive.scss";
-@import "./styles/Send.scss";
 @import "./styles/Transactions.scss";
 @import "./styles/Settings.scss";
 @import "./styles/Loading.scss";
@@ -190,6 +189,48 @@ aside{
 .inputDiv{
   position: relative;
   margin: 0 auto;
+  width: 100%;
+
+  & p{
+		width: 100%;
+    font-weight: bold;
+    font-size: 15px;
+    top: 5px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  & input{
+		font-size: 15px;
+    font-weight: 600;
+    background-color: transparent;
+    border: none;
+    text-align: center;
+    position: relative;
+    transition: border-bottom .3s;
+    width: 100%;
+  }
+
+  &--is-left{
+
+  	& p{
+	    text-align: left;
+  	}
+  	& input{
+  		text-align: left;
+  	}
+  }
+
+  &--is-active{
+  	& p{
+	    font-size: 13px;
+	    top: -14px;
+	    transition: all 0.1s;
+  	}
+  	& input{
+  		text-align: left;
+  	}
+  }
 }
 
 .inputPlaceholder{
@@ -250,9 +291,7 @@ aside{
   @include themify($themes) {
     border: themed('buttonBorder');
   }
-  position: absolute;
-  height: 36px;
-  width: 125px;
+  padding: 0px 30px;
   border-radius: 14px;
   font-size: 12px;
   line-height: 34px;
@@ -343,3 +382,5 @@ aside{
   display: none;
   opacity: 0;
 }
+
+@import "./styles/Send.scss";

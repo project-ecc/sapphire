@@ -1,49 +1,56 @@
 @import "./themes.scss";
 
+.Send{
+
+	&__form{
+		margin: 0px auto;
+		display: flex;
+    	justify-content: space-between;
+	    position: relative;
+		top: 70px;
+		max-width: 700px;
+	}
+
+	&__form-buttons{
+		width: 30%;
+		display: flex;
+	    flex-direction: column;
+	    justify-content: space-between;
+	    align-items: center;
+	}
+
+	&__form-clear-btn{
+		display: block;
+		cursor: pointer;
+		z-index: 2;
+	    margin-top: 12px;
+	}
+
+	&__inputs-wrapper{
+		width: 70%;
+	}
+
+	&__form-confirm-btn{
+		padding: 0px 45px;
+	}
+
+	&__message-status{
+		@include themify($themes) {
+			color: themed('eccTicker');
+		}
+		position: relative;
+		text-align: center;
+		font-size: 15px;
+		visibility: hidden;
+		top: 65px;
+	}
+}
+
 #rows{
 	overflow-y: scroll;
 	overflow-x: hidden;
 }
 
-.sendPlaceholder{
-	position:relative;
-	top: 64px;
-	width: 80%;
-	text-align: left !important;
-	font-size: 15px;
-	font-weight: 600;
-}
-.sendPlaceholderAmount{
-	top: 116px;
-}
-
-.sendButton{
-	display: inline-block;
-	text-align: center;
-	position: relative !important;
-	top: 27px;
-	left: 20px;
-}
-
-#message{
-	@include themify($themes) { 
-		color: themed('eccTicker');  
-	}
-	position: relative;
-	text-align: center;
-	font-size: 15px;
-	visibility: hidden;
-	top: 65px;
-}
-
-#clearButton{
-	position: relative;
-	top: 67px;
-	left: 50%;
-	margin-left: -38%;
-	cursor: pointer;
-	z-index: 2;
-}
 
 .tableColumContactFix{
 	padding-left: 10%;
@@ -61,8 +68,8 @@
 }
 
 #pleaseTypePassword{
-	@include themify($themes) { 
-		color: themed('bodyParagraphColor');  
+	@include themify($themes) {
+		color: themed('bodyParagraphColor');
 	}
 	font-size: 16px;
 	width: 400px;
@@ -72,8 +79,8 @@
 }
 
 .labelSend{
-	@include themify($themes) { 
-		color: themed('bodyParagraphColor');  
+	@include themify($themes) {
+		color: themed('bodyParagraphColor');
 	}
 	font-size: 16px;
 	width: 400px;
@@ -83,8 +90,8 @@
 }
 
 .labelAddressSend{
-	@include themify($themes) { 
-		color: themed('bodySecondaryParagraphColor');  
+	@include themify($themes) {
+		color: themed('bodySecondaryParagraphColor');
 	}
 	font-size: 14px;
 	width: 400px;
@@ -95,8 +102,8 @@
 }
 
 .labelAmountSend{
-	@include themify($themes) { 
-		color: themed('bodyParagraphColor');  
+	@include themify($themes) {
+		color: themed('bodyParagraphColor');
 	}
 	font-size: 16px;
 	width: 400px;

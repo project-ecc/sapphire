@@ -6,6 +6,7 @@ import AddressBook from './AddressBook';
 import * as actions from '../../actions';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import Input from '../Others/Input';
+import ConfirmButtonPopup from '../Others/ConfirmButtonPopup'
 
 import $ from 'jquery';
 
@@ -16,23 +17,12 @@ class Send extends Component {
     super(props);
     this.handleClear = this.handleClear.bind(this);
     this.confirmSend = this.confirmSend.bind(this);
-    this.handleChangeAmount = this.handleChangeAmount.bind(this);
-    this.handleChangeAddress = this.handleChangeAddress.bind(this);
-  }
-
-  componentDidMount(){
-    if(this.props.address)
-      TweenMax.set('#addressSend', {autoAlpha: 0});
-    if(this.props.amount)
-      TweenMax.set('#amountSend', {autoAlpha: 0});
   }
 
   handleClear() {
     this.props.setAmountSend("");
     this.props.setAddressSend("");
     this.props.setUsernameSend("");
-    TweenMax.set('#amountSend', {autoAlpha: 1});
-    TweenMax.set('#addressSend', {autoAlpha: 1});
   }
 
   confirmSend() {
@@ -62,61 +52,46 @@ class Send extends Component {
     }
   }
 
-  handleChangeAddress(event){
-    const address = event.target.value;
-    if(address.length === 0){
-      TweenMax.set('#addressSend', {autoAlpha: 1});
-      this.props.setUsernameSend("");
-    }
-    else
-      TweenMax.set('#addressSend', {autoAlpha: 0});
-
-    this.props.setAddressSend(address);
-  }
-
-  handleChangeAmount(event){
-    const amount = event.target.value;
-    if(amount.length === 0)
-      TweenMax.set('#amountSend', {autoAlpha: 1});
-    else
-      TweenMax.set('#amountSend', {autoAlpha: 0});
-
-    this.props.setAmountSend(amount);
-  }
-
   render() {
     let clearButton = require('../../../resources/images/clearButton-orange.png');
     return (
-      <div className="panel">
+      <div className="panel Send">
         <AddressBook sendPanel={true}/>
-          <p id="message">{ this.props.lang.addressCopiedBelow }</p>
-          <div style={{width: "632px", margin: "0 auto", marginTop: "10px"}}>
-            <Input
-              divStyle={{display: "inline"}}
-              placeholder= { this.props.lang.ansNameOrAddress }
-              placeholderId="addressSend"
-              placeHolderClassName="inputPlaceholder sendPlaceholder"
-              value={this.props.address}
-              handleChange={this.handleChangeAddress.bind(this)}
-              type="text"
-              inputStyle={{top: "60px", width: "80%", textAlign: "left", marginBottom: "50px"}}
-              inputId="inputAddressSend"
-              autoFocus={true}
-            />
-            <img id="clearButton" onClick={this.handleClear} src={clearButton}/>
-            <Input
-              divStyle={{display: "inline"}}
-              placeholder= { this.props.lang.amount }
-              placeholderId="amountSend"
-              placeHolderClassName="inputPlaceholder sendPlaceholder sendPlaceholderAmount"
-              value={this.props.amount}
-              handleChange={this.handleChangeAmount.bind(this)}
-              type="text"
-              inputStyle={{top: "30px", width: "80%", textAlign: "left"}}
-              inputId="inputAmountSend"
-            />
-            <div onClick={this.confirmSend} className="buttonPrimary sendButton">
-              Send
+          <p className="Send__message-status">{ this.props.lang.addressCopiedBelow }</p>
+          <div className="Send__form">
+            <div className="Send__inputs-wrapper">
+              <Input
+                divStyle={{display: "inline"}}
+                placeholder= { this.props.lang.ansNameOrAddress }
+                placeholderId="addressSend"
+                placeHolderClassName="inputPlaceholder sendPlaceholder"
+                value={this.props.address}
+                handleChange={this.props.setAddressSend}
+                type="text"
+                inputId="inputAddressSend"
+                style={{marginBottom: "25px"}}
+                autoFocus
+                isLeft
+              />
+              <Input
+                divStyle={{display: "inline"}}
+                placeholder= { this.props.lang.amount }
+                placeholderId="amountSend"
+                placeHolderClassName="inputPlaceholder sendPlaceholder sendPlaceholderAmount"
+                value={this.props.amount}
+                handleChange={this.props.setAmountSend}
+                type="text"
+                inputId="inputAmountSend"
+                isLeft
+              />
+            </div>
+            <div className="Send__form-buttons">
+              <img className="Send__form-clear-btn" onClick={this.handleClear} src={clearButton}/>
+              <ConfirmButtonPopup
+                className="Send__form-confirm-btn"
+                text="Send"
+                handleConfirm={this.confirmSend}
+              />
             </div>
           </div>
       </div>
