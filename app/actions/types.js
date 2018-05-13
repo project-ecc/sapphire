@@ -131,3 +131,4 @@ export const FILE_DOWNLOAD_STATUS = "file_download_status";
 export const TOLD_USER_UPDATE_FAILED = 'tell_user_update_failed';
 export const POPUP_LOADING = "popup_loading";
 export const RESET_STAKING_EARNINGS = "reset_staking_earnings";
+export const NEW_ADDRESS_NAME_POPUP = "new_address_name_popup";

@@ -96,6 +96,8 @@ class DaemonConnector {
     this.unencryptedWallet = false;
     this.heighestBlockFromServer = 0;
     this.heighestBlockFromServerInterval;
+    this.translator = this.store.getState().startup.lang;
+
 	}
 
   subscribeToEvents(){
@@ -893,14 +895,19 @@ class DaemonConnector {
       const ansRecord = await this.wallet.getANSRecord(address.address);
       //TODO include code to see if it was recently created and notify user if its been 3 blocks since its creation
 
-      const x = ansAddressesInfo.get('addresses').find({ address: address.address }).value()
-      if(x){
-        console.log("GOT ADDRESS:", address.address)
-        console.log("ans block: ", x.creationBlock)
-        console.log("current block: ", currentBlock)
+      let notReadyAnsAddress = ansAddressesInfo.get('addresses').find({ address: address.address }).value()
+      let shouldAdd = true;
+      if(notReadyAnsAddress){
+        if(currentBlock > notReadyAnsAddress.creationBlock + 3){
+          this.queueOrSendNotification(()=>{}, `${this.translator.ansReady}.\n\n${this.translator.username}: ${ansRecord.Name}`)
+          ansAddressesInfo.get('addresses').remove({ address: address.address }).write()
+        }
+        else{
+          shouldAdd = false;
+        }
       }
 
-      if (ansRecord && ansRecord.Name) {
+      if (shouldAdd && ansRecord && ansRecord.Name) {
         retval = {
           account: address.account,
           address: ansRecord.Name,

@@ -11,6 +11,7 @@ const lang = traduction();
 const { clipboard } = require('electron');
 const ansAddresImage = require('../../../resources/images/ans_address.png');
 var classNames = require('classnames');
+const Tools = require('../../utils/tools');
 
 class Receive extends Component {
 
@@ -22,6 +23,7 @@ class Receive extends Component {
     this.handleChangeAddressCreationToAns = this.handleChangeAddressCreationToAns.bind(this);
     this.handleChangeAddressCreationToNormal = this.handleChangeAddressCreationToNormal.bind(this);
     this.handleChangeNameAddress = this.handleChangeNameAddress.bind(this);
+    this.handleUpgradeAddress = this.handleUpgradeAddress.bind(this);
   }
 
   componentDidMount() {
@@ -90,9 +92,10 @@ class Receive extends Component {
     }
   }
 
-  handleCreateNewAddress(skipCheck) {
-    if(this.props.ansAddress && this.props.newAddressName === "" && !skipCheck){
-      //animate line
+  handleCreateNewAddress(type) {
+    console.log(type)
+    if(this.props.ansAddress && type === "new" && this.props.newAddressName === ""){
+      Tools.highlightInput('#ansUsernameInput', 1000)
     } else{
       this.props.setCreatingAddress(true);
     }
@@ -100,8 +103,8 @@ class Receive extends Component {
 
   handleUpgradeAddress() {
     this.props.setUpgradingAddress(true);
-    this.props.setCreateAddressAns(true);
-    this.handleCreateNewAddress(true);
+    //this.props.setCreateAddressAns(true);
+    this.handleCreateNewAddress();
   }
 
   rowClicked(address){
@@ -160,7 +163,6 @@ class Receive extends Component {
   }
 
   filterClicked(type){
-    console.log(type);
     if(type === "all")
       this.props.setFilterOwnAddresses("all");
     else if(type === "normal")
@@ -222,6 +224,7 @@ class Receive extends Component {
               type="text"
               inputStyle={{textAlign: "left", width:"100%", display: "inline-block"}}
               autoFocus={true}
+              inputId="ansUsernameInput"
             />
             {/*<Input
               divId="addressAccount"
@@ -235,8 +238,13 @@ class Receive extends Component {
               inputStyle={{textAlign: "left", width:"100%", display: "inline-block"}}
             />*/}
           </div>
-           <ConfirmButtonPopup handleConfirm={this.handleCreateNewAddress} style={{marginLeft: "20px", display: "inline-block", width: "auto", padding: "0px 20px"}} text={ this.props.ansAddress ? this.props.lang.createANSAddress : this.props.lang.createNormalAddress }/>
-            <p id="ansExplanation" style={{visibility: this.props.ansAddress ? "visible" : "hidden"}}>{ this.props.lang.ansCost1 } 50 <span className="ecc">ecc</span> { this.props.lang.ansCost2 }.</p>
+          <ConfirmButtonPopup
+            hasLoader={false}
+            handleConfirm={this.handleCreateNewAddress.bind(this, "new")}
+            style={{marginLeft: "20px", display: "inline-block", width: "auto", padding: "0px 20px"}}
+            text={ this.props.ansAddress ? this.props.lang.createANSAddress : this.props.lang.createNormalAddress}
+          />
+          <p id="ansExplanation" style={{visibility: this.props.ansAddress ? "visible" : "hidden"}}>{ this.props.lang.ansCost1 } 50 <span className="ecc">ecc</span> { this.props.lang.ansCost2 }.</p>
          </div>
 
          <div className="tableCustom">
@@ -281,7 +289,7 @@ class Receive extends Component {
         <div id="imageAns">
           <img src={ansAddresImage} />
           <p className="ansLabel">{ this.props.lang.ansAddresses }</p>
-          <p className="Receive__upgrade-text" style={{visibility: selectedAddress ? selectedAddress.ans ? "hidden" : "visible" : "hidden"}}>Upgrade to ANS address</p>
+          <p className="Receive__upgrade-text" onClick={this.handleUpgradeAddress} style={{visibility: selectedAddress ? selectedAddress.ans ? "hidden" : "visible" : "hidden"}}>Upgrade to ANS address</p>
           <div>
             <p id="addressCreatedSuccessfully"> { this.props.lang.addressCreatedSuccessfully }<br></br><span className="ecc" onClick={this.goToBackupPage.bind(this)}>{ this.props.lang.clickToBackupWallet }</span></p>
           </div>
@@ -302,6 +310,7 @@ const mapStateToProps = state => {
     filterAll: state.application.filterAllOwnAddresses,
     filterNormal: state.application.filterNormalOwnAddresses,
     filterAns: state.application.filterAnsOwnAddresses,
+    upgradingAddress: state.application.upgradingAddress
   };
 };
 

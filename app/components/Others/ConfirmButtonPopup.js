@@ -24,8 +24,12 @@ class ConfirmButtonPopup extends Component {
   }
 
   render() {
-      const loader = <EllipsisLoader />
-      const text = this.props.loading ? this.props.textLoading : this.props.text;
+      let hasLoader = true;
+      if(this.props.hasLoader === false)
+        hasLoader = false;
+
+      const loader = hasLoader ? <EllipsisLoader /> : null;
+      const text = hasLoader && this.props.loading ? this.props.textLoading : this.props.text;
       return (
         <div onClick={ this.props.loading ? () => {} : this.props.handleConfirm} id={this.props.buttonId ? this.props.buttonId : "confirmButtonPopup"} className="buttonPrimary" style={this.props.style? this.props.style : {bottom: "10px", left:"205px"}}>
           {text}
