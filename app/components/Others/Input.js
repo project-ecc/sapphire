@@ -8,6 +8,7 @@ class Input extends Component {
     this.handleOnFocus = this.handleOnFocus.bind(this);
     this.handleOnBlur = this.handleOnBlur.bind(this);
     this.placeholderId = "#" + this.props.placeholderId;
+    this.handleKeyPressed = this.handleKeyPressed.bind(this);
     this.state={focus: false}
   }
 
@@ -26,6 +27,18 @@ class Input extends Component {
     this.setState({focus: true})
   }
 
+  handleKeyPressed(event, callback){
+    if(!this.props.onSubmit) return;
+    if (event.key === 'Enter') {
+      this.props.onSubmit();
+      const value = event.target.value
+      if(value === ""){
+        this.setState({focus: false})
+      }
+    }
+
+  }
+
   render() {
     var inputClass = classNames({
       'inputDiv': true,
@@ -37,7 +50,7 @@ class Input extends Component {
     return (
       <div className={inputClass} id={this.props.divId ? this.props.divId : ""} style={this.props.style}>
         <p id={this.props.placeholderId}>{this.props.placeholder}</p>
-        <input onKeyPress={this.props.onKeyPress ? this.props.onKeyPress : null} onFocus={this.handleOnFocus} onBlur={this.handleOnBlur} id={this.props.inputId ? this.props.inputId : ""} className="inputCustom" type={this.props.type} value={this.props.value} onChange={this.handleChange}  autoFocus={this.props.autoFocus}></input>
+        <input onKeyPress={this.handleKeyPressed} onFocus={this.handleOnFocus} onBlur={this.handleOnBlur} id={this.props.inputId ? this.props.inputId : ""} className="inputCustom" type={this.props.type} value={this.props.value} onChange={this.handleChange}  autoFocus={this.props.autoFocus}></input>
       </div>
     );
   }

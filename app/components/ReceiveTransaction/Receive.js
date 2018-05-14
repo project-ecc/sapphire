@@ -221,6 +221,7 @@ class Receive extends Component {
               type="text"
               style={{width: "70%"}}
               inputId="ansUsernameInput"
+              onSubmit={this.handleCreateNewAddress.bind(this, "new")}
               autoFocus
               isLeft
             />

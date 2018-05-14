@@ -161,7 +161,7 @@ class SendConfirmation extends React.Component {
             style={{marginTop: "40px", width: "70%"}}
             type="password"
             autoFocus
-            onKeyPress={(event) => Tools.handleKeyPressed(event, this.handleConfirm)}
+            onSubmit={this.handleConfirm}
           />
         <div>
           <p id="wrongPassword" className="wrongPassword">Wrong password</p>

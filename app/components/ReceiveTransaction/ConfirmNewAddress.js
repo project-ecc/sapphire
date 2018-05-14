@@ -115,7 +115,7 @@ class ConfirmNewAddress extends React.Component {
     }
 
     this.props.setPopupLoading(true)
-    if (!this.props.ansAddress) {
+    if (!this.props.ansAddress && !this.props.upgradingAddress) {
       this.createNormalAddress();
     } else {
       this.unlockWallet(false, 5, () => {
@@ -183,7 +183,7 @@ class ConfirmNewAddress extends React.Component {
               inputId="passwordAnsId"
               style={{width: "70%"}}
               autoFocus
-              onKeyPress={(event) => Tools.handleKeyPressed(event, this.handleConfirm)}
+              onSubmit={this.handleConfirm}
             />
           </div>
           {successMessageToRender}
@@ -204,7 +204,7 @@ class ConfirmNewAddress extends React.Component {
               inputId="usernameAnsId"
               autoFocus={true}
               style={{width: "70%", marginBottom: "20px"}}
-              onKeyPress={(event) => Tools.handleKeyPressed(event, this.handleConfirm)}
+              onSubmit={this.handleConfirm}
             />
             <Input
               placeholder= { this.props.lang.password }
@@ -214,7 +214,7 @@ class ConfirmNewAddress extends React.Component {
               type="password"
               inputId="passwordAnsId"
               style={{width: "70%", marginBottom: "10px"}}
-              onKeyPress={(event) => Tools.handleKeyPressed(event, this.handleConfirm)}
+              onSubmit={this.handleConfirm}
             />
           </div>
            {successMessageToRender}

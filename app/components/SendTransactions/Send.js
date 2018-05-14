@@ -70,7 +70,7 @@ class Send extends Component {
                 style={{marginBottom: "25px"}}
                 autoFocus
                 isLeft
-                onKeyPress={(event) => Tools.handleKeyPressed(event, this.confirmSend)}
+                onSubmit={this.confirmSend}
               />
               <Input
                 placeholder= { this.props.lang.amount }
@@ -80,7 +80,7 @@ class Send extends Component {
                 type="text"
                 inputId="inputAmountSend"
                 isLeft
-                onKeyPress={(event) => Tools.handleKeyPressed(event, this.confirmSend)}
+                onSubmit={this.confirmSend}
               />
             </div>
             <div className="Send__form-buttons">

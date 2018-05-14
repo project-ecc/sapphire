@@ -99,7 +99,7 @@ class UnlockWallet extends React.Component {
             type="password"
             inputId="unlockWalletPassword"
             autoFocus
-            onKeyPress={(event) => Tools.handleKeyPressed(event, this.handleConfirm)}
+            onSubmit={this.handleConfirm}
           />
           <div>
             <p id="wrongPassword" >{ this.props.lang.wrongPassword }</p>
