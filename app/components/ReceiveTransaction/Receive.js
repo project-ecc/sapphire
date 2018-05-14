@@ -93,7 +93,6 @@ class Receive extends Component {
   }
 
   handleCreateNewAddress(type) {
-    console.log(type)
     if(this.props.ansAddress && type === "new" && this.props.newAddressName === ""){
       Tools.highlightInput('#ansUsernameInput', 1000)
     } else{

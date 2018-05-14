@@ -175,7 +175,7 @@ class ConfirmNewAddress extends React.Component {
           <div id="ConfirmNewAddress__content">
             <p className="confirmationText" style={{ marginBottom: '25px' }}>{ this.props.lang.ansCreateConfirm1 } <span className="ecc">{ this.props.lang.ansCreateConfirm2 }</span> { this.props.lang.ansCreateConfirm3 } "{this.props.username}".</p>
             <Input
-              placeholder= { this.props.lang.password }
+              placeholder={ this.props.lang.password }
               placeholderId= "password"
               value={this.props.passwordVal}
               handleChange={this.props.setPassword}
@@ -183,6 +183,7 @@ class ConfirmNewAddress extends React.Component {
               inputId="passwordAnsId"
               style={{width: "70%"}}
               autoFocus
+              onKeyPress={(event) => Tools.handleKeyPressed(event, this.handleConfirm)}
             />
           </div>
           {successMessageToRender}
@@ -203,6 +204,7 @@ class ConfirmNewAddress extends React.Component {
               inputId="usernameAnsId"
               autoFocus={true}
               style={{width: "70%", marginBottom: "20px"}}
+              onKeyPress={(event) => Tools.handleKeyPressed(event, this.handleConfirm)}
             />
             <Input
               placeholder= { this.props.lang.password }
@@ -212,6 +214,7 @@ class ConfirmNewAddress extends React.Component {
               type="password"
               inputId="passwordAnsId"
               style={{width: "70%", marginBottom: "10px"}}
+              onKeyPress={(event) => Tools.handleKeyPressed(event, this.handleConfirm)}
             />
           </div>
            {successMessageToRender}

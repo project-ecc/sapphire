@@ -37,7 +37,7 @@ class Input extends Component {
     return (
       <div className={inputClass} id={this.props.divId ? this.props.divId : ""} style={this.props.style}>
         <p id={this.props.placeholderId}>{this.props.placeholder}</p>
-        <input onFocus={this.handleOnFocus} onBlur={this.handleOnBlur} id={this.props.inputId ? this.props.inputId : ""} className="inputCustom" type={this.props.type} value={this.props.value} onChange={this.handleChange}  autoFocus={this.props.autoFocus}></input>
+        <input onKeyPress={this.props.onKeyPress ? this.props.onKeyPress : null} onFocus={this.handleOnFocus} onBlur={this.handleOnBlur} id={this.props.inputId ? this.props.inputId : ""} className="inputCustom" type={this.props.type} value={this.props.value} onChange={this.handleChange}  autoFocus={this.props.autoFocus}></input>
       </div>
     );
   }

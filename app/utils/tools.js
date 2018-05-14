@@ -534,6 +534,12 @@ module.exports = {
 
   //Animations end
 
+  handleKeyPressed(event, callBack){
+      if (event.key === 'Enter') {
+        callBack()
+      }
+  },
+
   createInstallScript(commands, path){
     let script = "";
     commands.map((line) => {

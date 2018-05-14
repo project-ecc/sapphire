@@ -161,11 +161,18 @@ class SendConfirmation extends React.Component {
             style={{marginTop: "40px", width: "70%"}}
             type="password"
             autoFocus
+            onKeyPress={(event) => Tools.handleKeyPressed(event, this.handleConfirm)}
           />
         <div>
           <p id="wrongPassword" className="wrongPassword">Wrong password</p>
         </div>
-        <ConfirmButtonPopup inputId={"#sendPasswordId"} handleConfirm={this.handleConfirm} text="Confirm" textLoading={this.props.lang.confirming} text={ this.props.lang.confirm }/>
+        <ConfirmButtonPopup
+          inputId={"#sendPasswordId"}
+          handleConfirm={this.handleConfirm}
+          text="Confirm"
+          textLoading={this.props.lang.confirming}
+          text={ this.props.lang.confirm }
+        />
       </div>
       );
     }
