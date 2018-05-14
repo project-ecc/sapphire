@@ -22,8 +22,6 @@ class ConfirmNewAddress extends React.Component {
     super();
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleChangeNameAddress = this.handleChangeNameAddress.bind(this);
     this.createNormalAddress = this.createNormalAddress.bind(this);
     this.getConfirmationText = this.getConfirmationText.bind(this);
     this.saveNewlyCreatedAnsAddress = this.saveNewlyCreatedAnsAddress.bind(this);
@@ -83,9 +81,8 @@ class ConfirmNewAddress extends React.Component {
         this.createdAddress = true;
         TweenMax.to('#ConfirmNewAddress__content', 0.2, {autoAlpha: 0, scale: 0.5});
         TweenMax.fromTo('#ConfirmNewAddress__success-message', 0.2, {autoAlpha: 0, scale: 0.2}, {autoAlpha: 1, scale: 1});
-        TweenMax.set('#unlockPanel', {height: "331px"});
-        TweenMax.set('#confirmButtonPopup', {position: "absolute"});
-        TweenMax.to('#unlockPanel', 0.3, {height: "220px"});
+        //TweenMax.set('#unlockPanel', {height: "331px"});
+        TweenMax.to('#unlockPanel', 1, {height: "220px", delay: 0.2});
         this.props.setPopupLoading(false)
       })
       .catch(err => {
@@ -131,30 +128,10 @@ class ConfirmNewAddress extends React.Component {
     }
   }
 
-  handleChangeNameAddress(event){
-    const name = event.target.value;
-    if(name.length === 0)
-      TweenMax.set('#addressNamePopupPlaceHolder', {autoAlpha: 1});
-    else
-      TweenMax.set('#addressNamePopupPlaceHolder', {autoAlpha: 0});
-
-    this.props.setNewAddressNamePopup(name);
-  }
-
   handleCancel(){
     this.props.setPassword('');
     this.props.setCreatingAddress(false);
     this.props.setUpgradingAddress(false);
-  }
-
-  handleChange(event) {
-    const pw = event.target.value;
-    if(pw.length === 0)
-      TweenMax.set('#password', {autoAlpha: 1});
-    else
-      TweenMax.set('#password', {autoAlpha: 0});
-
-    this.props.setPassword(pw);
   }
 
   unlockWallet(flag, time, callback){
@@ -198,16 +175,14 @@ class ConfirmNewAddress extends React.Component {
           <div id="ConfirmNewAddress__content">
             <p className="confirmationText" style={{ marginBottom: '25px' }}>{ this.props.lang.ansCreateConfirm1 } <span className="ecc">{ this.props.lang.ansCreateConfirm2 }</span> { this.props.lang.ansCreateConfirm3 } "{this.props.username}".</p>
             <Input
-              divStyle={{width: "400px", marginTop: "20px"}}
               placeholder= { this.props.lang.password }
               placeholderId= "password"
-              placeHolderClassName="inputPlaceholder inputPlaceholderUnlock"
               value={this.props.passwordVal}
-              handleChange={this.handleChange.bind(this)}
+              handleChange={this.props.setPassword}
               type="password"
               inputId="passwordAnsId"
-              inputStyle={{width: "400px", top: "20px", marginBottom: "30px"}}
-              autoFocus={true}
+              style={{width: "70%"}}
+              autoFocus
             />
           </div>
           {successMessageToRender}
@@ -220,27 +195,23 @@ class ConfirmNewAddress extends React.Component {
             <p className="confirmationText" style={{ marginBottom: '25px' }}>{renderHTML(this.props.lang.ansUsernameAndPassword)}.</p>
             <Input
               divId="addressName"
-              divStyle={{width: "400px", marginTop: "20px"}}
               placeholder= { this.props.lang.name }
-              placeHolderClassName="inputPlaceholder changePasswordInput"
               placeholderId="addressNamePopupPlaceHolder"
               value={this.props.usernamePopup}
-              handleChange={this.handleChangeNameAddress.bind(this)}
+              handleChange={this.props.setNewAddressNamePopup}
               type="text"
               inputId="usernameAnsId"
-              inputStyle={{width:"400px", display: "inline-block"}}
               autoFocus={true}
+              style={{width: "70%", marginBottom: "20px"}}
             />
             <Input
-              divStyle={{width: "400px", marginTop: "20px", marginBottom: "15px"}}
               placeholder= { this.props.lang.password }
               placeholderId= "password"
-              placeHolderClassName="inputPlaceholder inputPlaceholderUnlock changePasswordInput"
               value={this.props.passwordVal}
-              handleChange={this.handleChange.bind(this)}
+              handleChange={this.props.setPassword}
               type="password"
               inputId="passwordAnsId"
-              inputStyle={{width: "400px"}}
+              style={{width: "70%", marginBottom: "10px"}}
             />
           </div>
            {successMessageToRender}
@@ -259,18 +230,21 @@ class ConfirmNewAddress extends React.Component {
 
   render() {
      return (
-      <div style={{height: "auto !important", textAlign: "center", width: "535px"}}>
+      <div className="CreateAddressPopup">
         <CloseButtonPopup handleClose={this.handleCancel}/>
-        <p className="popupTitle">{ this.props.upgradingAddress ? this.props.lang.upgradingAns : this.props.lang.confirmNewAddress }</p>
-        {this.getConfirmationText()}
-        <p id="wrongPassword" style={{width: "75%", margin: "0 auto"}} className="wrongPassword">{ this.props.lang.wrongPassword }</p>
+        <div>
+          <p className="popupTitle">{ this.props.upgradingAddress ? this.props.lang.upgradingAns : this.props.lang.confirmNewAddress }</p>
+          {this.getConfirmationText()}
+          <p id="wrongPassword" style={{width: "75%", margin: "13px auto 66px"}} className="wrongPassword">{ this.props.lang.wrongPassword }</p>
+        </div>
         <ConfirmButtonPopup
           inputId="#passwordAnsId, #usernameAnsId"
           textLoading={this.props.lang.confirming}
           text={this.props.lang.confirm}
           handleConfirm={this.handleConfirm}
           text="Confirm"
-          style={{position: 'relative', marginTop: '30px', bottom: "10px", left:"205px"}}/>
+          className="CreateAddressPopup__form-confirm-btn"
+        />
       </div>
       );
     }

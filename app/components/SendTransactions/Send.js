@@ -34,13 +34,13 @@ class Send extends Component {
     }
     if(this.props.address !== "" && this.props.amount !== "" && Number(this.props.amount) > 0){
       if(Number(this.props.amount) > Number(this.props.balance)){
-        Tools.showTemporaryMessage('#message', this.props.lang.notEnoughBalance);
+        Tools.showTemporaryMessage('.Send__message-status', this.props.lang.notEnoughBalance);
         Tools.highlightInput('#inputAmountSend', 2100)
       }
       else{
         this.props.wallet.validate(this.props.address).then((isAddressValid) => {
         if (!isAddressValid.isvalid) {
-          Tools.showTemporaryMessage('#message', this.props.lang.invalidFailedAddress);
+          Tools.showTemporaryMessage('.Send__message-status', this.props.lang.invalidFailedAddress);
           Tools.highlightInput('#inputAddressSend', 2100)
         } else {
           this.props.setSendingECC(true);
@@ -61,10 +61,8 @@ class Send extends Component {
           <div className="Send__form">
             <div className="Send__inputs-wrapper">
               <Input
-                divStyle={{display: "inline"}}
                 placeholder= { this.props.lang.ansNameOrAddress }
                 placeholderId="addressSend"
-                placeHolderClassName="inputPlaceholder sendPlaceholder"
                 value={this.props.address}
                 handleChange={this.props.setAddressSend}
                 type="text"
@@ -74,10 +72,8 @@ class Send extends Component {
                 isLeft
               />
               <Input
-                divStyle={{display: "inline"}}
                 placeholder= { this.props.lang.amount }
                 placeholderId="amountSend"
-                placeHolderClassName="inputPlaceholder sendPlaceholder sendPlaceholderAmount"
                 value={this.props.amount}
                 handleChange={this.props.setAmountSend}
                 type="text"
@@ -91,6 +87,7 @@ class Send extends Component {
                 className="Send__form-confirm-btn"
                 text="Send"
                 handleConfirm={this.confirmSend}
+                hasLoader={false}
               />
             </div>
           </div>

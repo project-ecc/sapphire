@@ -127,7 +127,7 @@ class Receive extends Component {
     if(!this.props.ansAddress) return;
     this.props.setCreateAddressAns(false);
     //TweenMax.to('#addressAccount', 0.2, {top: -38});
-    TweenMax.fromTo('#ansExplanation', 0.2, {top: 15}, {top: -15, autoAlpha: 0});
+    TweenMax.to('#ansExplanation', 0.2, {autoAlpha: 0});
     TweenMax.to('#addressName', 0.2, {autoAlpha: 0.4});
     TweenMax.to('.tableCustom', 0.2, {top: 0});
     TweenMax.to('#imageAns', 0.2, {top: 6});
@@ -205,26 +205,25 @@ class Receive extends Component {
     const selectedAddress = this.props.selectedAddress;
 
     return (
-      <div className="panel">
-        <div id="headerReceive">
+      <div className="panel Receive">
+        <div className="Receive__header">
           <p className={this.props.ansAddress ? "typeSelectorReceive textSelected" : "typeSelectorReceive textSelectable"}  onClick={this.handleChangeAddressCreationToAns}>ANS</p>
           <span>/</span>
           <p className={this.props.ansAddress ? "typeSelectorReceive textSelectable" : "typeSelectorReceive textSelected"} onClick={this.handleChangeAddressCreationToNormal}>{ this.props.lang.normalAddress }</p>
         </div>
-        <div id="inputAddress">
-          <div style={{display: "inline-block", width: "70%", position: "relative"}}>
+        <div className="Receive__form">
+          <div className="Receive__form-wrapper">
             <Input
               divId="addressName"
-              divStyle={{display: "inline"}}
               placeholder= { this.props.lang.name }
-              placeHolderClassName="inputPlaceholder inputPlaceholderReceive"
               placeholderId="addressNamePlaceHolder"
               value={this.props.newAddressName}
-              handleChange={this.handleChangeNameAddress.bind(this)}
+              handleChange={this.props.setNewAddressName}
               type="text"
-              inputStyle={{textAlign: "left", width:"100%", display: "inline-block"}}
-              autoFocus={true}
+              style={{width: "70%"}}
               inputId="ansUsernameInput"
+              autoFocus
+              isLeft
             />
             {/*<Input
               divId="addressAccount"
@@ -237,14 +236,14 @@ class Receive extends Component {
               type="text"
               inputStyle={{textAlign: "left", width:"100%", display: "inline-block"}}
             />*/}
+            <ConfirmButtonPopup
+              hasLoader={false}
+              handleConfirm={this.handleCreateNewAddress.bind(this, "new")}
+              text={ this.props.ansAddress ? this.props.lang.createANSAddress : this.props.lang.createNormalAddress}
+              className="Receive__form-confirm-btn"
+            />
           </div>
-          <ConfirmButtonPopup
-            hasLoader={false}
-            handleConfirm={this.handleCreateNewAddress.bind(this, "new")}
-            style={{marginLeft: "20px", display: "inline-block", width: "auto", padding: "0px 20px"}}
-            text={ this.props.ansAddress ? this.props.lang.createANSAddress : this.props.lang.createNormalAddress}
-          />
-          <p id="ansExplanation" style={{visibility: this.props.ansAddress ? "visible" : "hidden"}}>{ this.props.lang.ansCost1 } 50 <span className="ecc">ecc</span> { this.props.lang.ansCost2 }.</p>
+          <p className="Receive__ans-explanation" style={{visibility: this.props.ansAddress ? "visible" : "hidden"}}>{ this.props.lang.ansCost1 } 50 <span className="ecc">ecc</span> { this.props.lang.ansCost2 }.</p>
          </div>
 
          <div className="tableCustom">

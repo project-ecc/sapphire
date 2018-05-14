@@ -5,7 +5,6 @@
 @import "~twemoji-awesome/dist/twemoji-awesome.min.css";
 @import "./styles/Sidebar.scss";
 @import "./styles/Home.scss";
-@import "./styles/Receive.scss";
 @import "./styles/Transactions.scss";
 @import "./styles/Settings.scss";
 @import "./styles/Loading.scss";
@@ -51,14 +50,6 @@
 }
 
 html,
-
-body {
-  /*background-image: -webkit-radial-gradient(top, circle cover, #24232f 0%, #181e35 80%);
-  background-image: -moz-radial-gradient(top, circle cover, #24232f 0%, #181e35 80%);
-  background-image: -o-radial-gradient(top, circle cover, #24232f 0%, #181e35 80%);
-  background-image: radial-gradient(top, circle cover, #24232f 0%, #181e35 80%);
-  height: 100%;*/
-}
 
 *:focus {
   outline: none !important;
@@ -192,15 +183,23 @@ aside{
   width: 100%;
 
   & p{
+	  @include themify($themes) {
+	    color: themed('inputPlaceHolderColor');
+	  }
 		width: 100%;
     font-weight: bold;
     font-size: 15px;
     top: 5px;
     text-align: center;
     transition: all 0.2s;
+    position: absolute;
   }
 
   & input{
+	  @include themify($themes) {
+	    color: themed('inputColor');
+	    border-bottom: themed('inputBorderBottom');
+	  }
 		font-size: 15px;
     font-weight: 600;
     background-color: transparent;
@@ -212,6 +211,7 @@ aside{
   }
 
   &--is-left{
+  	margin: 0px 0px;
 
   	& p{
 	    text-align: left;
@@ -227,33 +227,7 @@ aside{
 	    top: -14px;
 	    transition: all 0.1s;
   	}
-  	& input{
-  		text-align: left;
-  	}
   }
-}
-
-.inputPlaceholder{
-  @include themify($themes) {
-    color: themed('inputPlaceHolderColor');
-  }
-  position: absolute;
-  text-align: center;
-  font-size: 15px;
-}
-
-.inputCustom{
-  @include themify($themes) {
-    color: themed('inputColor');
-    border-bottom: themed('inputBorderBottom');
-  }
-  font-size: 15px;
-  font-weight: 600;
-  background-color: transparent;
-  border: none;
-  text-align: center;
-  position: relative;
-  transition: border-bottom .3s;
 }
 
 .inputCustomHighlight{
@@ -298,6 +272,16 @@ aside{
   font-weight: bold;
   cursor: pointer;
   text-align: center;
+  width: max-content;
+  margin: 0 auto;
+
+
+  &--is-popup-btn{
+  	position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    bottom: 10px;
+  }
 }
 
 .buttonPrimary:hover {
@@ -322,17 +306,16 @@ aside{
   overflow: hidden;
 }
 
-.unlockWallet{
-  height: 265px;
-}
 
-.wrongPassword{
+
+#wrongPassword{
   @include themify($themes) {
     color: themed('popupMessageText');
   }
   width: 100%;
   visibility: hidden;
   margin-bottom: 14px;
+  margin-top: 9px;
   font-size: 16px;
 }
 
@@ -384,3 +367,6 @@ aside{
 }
 
 @import "./styles/Send.scss";
+@import "./styles/UnlockWallet.scss";
+@import "./styles/Receive.scss";
+@import "./styles/CreateAddressPopup.scss";

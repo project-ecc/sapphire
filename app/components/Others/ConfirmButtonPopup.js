@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import $ from 'jquery';
 const Tools = require('../../utils/tools');
+var classNames = require('classnames');
 
 class ConfirmButtonPopup extends Component {
   constructor(props) {
@@ -28,7 +29,15 @@ class ConfirmButtonPopup extends Component {
       if(this.props.hasLoader === false)
         hasLoader = false;
 
-      const buttonClass = this.props.className ? "buttonPrimary " + this.props.className : "buttonPrimary";
+
+      var buttonClass = classNames({
+        'buttonPrimary': true,
+        'buttonPrimary--is-popup-btn': hasLoader
+      });
+
+      if(this.props.className){
+        buttonClass += " " + this.props.className;
+      }
 
       const loader = hasLoader ? <EllipsisLoader /> : null;
       const text = hasLoader && this.props.loading ? this.props.textLoading : this.props.text;

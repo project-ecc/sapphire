@@ -14,19 +14,10 @@ const Tools = require('../utils/tools');
 class UnlockWallet extends React.Component {
  constructor() {
     super();
-    this.handleChange = this.handleChange.bind(this);
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.unlockWallet = this.unlockWallet.bind(this);
-    // this._handleKeyPress = this._handleKeyPress.bind(this);
   }
-
-  _handleKeyPress = (e) => {
-   console.log(e);
-    if (e.key === 'Enter') {
-      this.handleConfirm();
-    }
-  };
 
   componentWillMount(){
     Tools.hideFunctionIcons();
@@ -73,16 +64,6 @@ class UnlockWallet extends React.Component {
     Tools.showFunctionIcons();
   }
 
-  handleChange(event) {
-    const pw = event.target.value;
-    if(pw.length === 0)
-      TweenMax.set('#password', {autoAlpha: 1});
-    else
-      TweenMax.set('#password', {autoAlpha: 0});
-
-    this.props.setPassword(pw);
-  }
-
   handleConfirm(){
     if(this.props.passwordVal === ""){
       Tools.showTemporaryMessage('#wrongPassword');
@@ -104,27 +85,32 @@ class UnlockWallet extends React.Component {
 
   render() {
      return (
-      <div className="unlockWallet">
+      <div className="UnlockWallet">
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">{ this.props.lang.unlockWallet }</p>
         <p style={{fontSize: "16px", width: "400px", textAlign: "left", margin: "0 auto", paddingTop: "20px"}}>{this.props.lang.unlockWalletExplanation1 + " " + this.props.lang.unlockWalletExplanation2} <span className="ecc">ECC</span>.</p>
+        <div className="UnlockWallet__form">
           <Input
-            divStyle={{width: "400px"}}
+            style={{marginTop: "25px"}}
             placeholder= { this.props.lang.password }
             placeholderId= "password"
-            placeHolderClassName="inputPlaceholder inputPlaceholderUnlock"
             value={this.props.passwordVal}
-            handleChange={this.handleChange.bind(this)}
+            handleChange={ this.props.setPassword}
             type="password"
-            inputStyle={{width: "400px", top: "20px", marginBottom: "30px"}}
-            onKeyPress={this._handleKeyPress}
             inputId="unlockWalletPassword"
-            autoFocus={true}
+            autoFocus
           />
-        <div>
-          <p id="wrongPassword" className="wrongPassword">{ this.props.lang.wrongPassword }</p>
+          <div>
+            <p id="wrongPassword" >{ this.props.lang.wrongPassword }</p>
+          </div>
         </div>
-        <ConfirmButtonPopup inputId="#unlockWalletPassword" handleConfirm={this.handleConfirm} textLoading={this.props.lang.confirming} text={ this.props.lang.confirm }/>
+        <ConfirmButtonPopup
+          inputId="#unlockWalletPassword"
+          handleConfirm={this.handleConfirm}
+          textLoading={this.props.lang.confirming}
+          text={ this.props.lang.confirm }
+          className="UnlockWallet__form-confirm-btn"
+        />
       </div>
       );
     }
