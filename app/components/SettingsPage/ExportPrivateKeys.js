@@ -151,7 +151,7 @@ class ExportPrivateKeys extends React.Component {
     TweenMax.to('#unlockPanel', 0.2, {css:{height: height +"px", top: "19%", minWidth:"570px", marginLeft:"-274px"}});
     TweenMax.to('#exportPrivKey', 0.2, {css:{height: height+"px"}});
     $('#confirmButtonPopup').text(this.props.lang.copyAll);
-    TweenMax.set('#confirmButtonPopup', {css:{left: "218px"}});
+    //TweenMax.set('#confirmButtonPopup', {css:{left: "218px"}});
     TweenMax.to('#confirmButtonPopup', 0.3, {autoAlpha: 1, delay: 0.8});
     TweenMax.set('#displayKeys p', {width: "450px"});
     this.props.setPanelExportingPrivateKeys(this.props.panelNumber+2);

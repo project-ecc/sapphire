@@ -22,7 +22,7 @@ class Input extends Component {
   }
 
   handleChange(event){
-    const value = event.target.value;
+    let value = event.target.value;
     this.props.handleChange(value)
     this.setState({focus: true})
   }
