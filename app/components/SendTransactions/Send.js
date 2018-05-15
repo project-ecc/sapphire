@@ -77,7 +77,7 @@ class Send extends Component {
                 placeholderId="amountSend"
                 value={this.props.amount}
                 handleChange={this.props.setAmountSend}
-                type="text"
+                type="number"
                 inputId="inputAmountSend"
                 isLeft
                 onSubmit={this.confirmSend}
