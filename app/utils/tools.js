@@ -6,6 +6,7 @@ import {getConfUri} from "./platform.service";
 import $ from 'jquery';
 var fsPath = require('fs-path');
 const settings = require('electron-settings');
+import { ipcRenderer } from 'electron';
 
 module.exports = {
 
@@ -459,14 +460,14 @@ module.exports = {
     }, 600)
   },
 
-  showTemporaryMessage: function (element, text, time=2000) {
+  showTemporaryMessage: function (element, text, time=2000, originalText) {
     if(text){
       $(element).text(text)
     }
 
     TweenMax.to(element, 0.2, {autoAlpha: 1, scale: 1, onComplete: () => {
       setTimeout(() => {
-        TweenMax.to(element, 0.2, {autoAlpha: 0, scale: 0.5});
+        TweenMax.to(element, 0.2, {autoAlpha: 0, scale: 0.5, onComplete: () => {if(originalText) $(element).text(originalText)}});
       }, time)
     }});
   },

@@ -1,46 +1,58 @@
 @import "./themes.scss";
 
+.Receive{
+	&__header{
+		text-align: center;
+		position: relative;
+		top: 25px;
+		font-size: 14px;
+
+		& span{
+			@include themify($themes) {
+				color: themed('bodySecondaryParagraphColor');
+			}
+			padding: 0px 20px;
+		}
+	}
+
+	&__form{
+		width: 750px;
+		margin: 0 auto;
+		position: relative;
+		margin-top: 60px;
+	}
+
+	&__form-wrapper{
+		display: flex;
+	    justify-content: space-between;
+	}
+
+	&__ans-explanation{
+		@include themify($themes) {
+			color: themed('bodySecondaryParagraphColor');
+		}
+		display: inline-block;
+		font-size: 14px;
+		position: relative;
+	}
+
+	&__form-confirm-btn{
+		margin: 0px 0px;
+	}
+}
+
 .inputPlaceholderReceive{
 	z-index: 0;
 	text-align: left !important;
 	top: 5px;
 }
 
-#ansExplanation{
-	@include themify($themes) { 
-		color: themed('bodySecondaryParagraphColor');  
-	}
-	display: inline-block;
-	font-size: 14px;
-	position: relative;
-	top: 15px;
-}
 
 .typeSelectorReceive{
 	display: inline-block;
 	cursor: pointer;
 }
 
-#headerReceive{
-	text-align: center; 
-	position: relative; 
-	top: 25px; 
-	font-size: 14px;
-}
-
-#headerReceive span{
-	@include themify($themes) { 
-		color: themed('bodySecondaryParagraphColor');  
-	}
-	padding: 0px 20px; 
-}
-
-#inputAddress{
-	width: 750px;
-	margin: 0 auto;
-	position: relative;
-	margin-top: 60px;
-}
 
 #tableFiltersReceive{
 	position: absolute;
@@ -76,13 +88,13 @@
 }
 
 #imageAns{
-	position: relative; 
+	position: relative;
 	top: 55px;
 }
 
 .ansLabel{
-	@include themify($themes) { 
-		color: themed('bodySecondaryParagraphColor');  
+	@include themify($themes) {
+		color: themed('bodySecondaryParagraphColor');
 	}
 	font-size: 14px;
 	display: inline-block;
@@ -93,8 +105,8 @@
 }
 
 #addressCreatedSuccessfully{
-	@include themify($themes) { 
-		color: themed('popupMessageText');  
+	@include themify($themes) {
+		color: themed('popupMessageText');
 	}
 	font-size: 15px;
 	display: inline-block;
@@ -111,8 +123,8 @@
 }
 
 #upgradeAns{
-	@include themify($themes) { 
-		color: themed('textSelected');  
+	@include themify($themes) {
+		color: themed('textSelected');
 	}
 	font-size: 13px;
 	display: inline-block;
@@ -121,10 +133,27 @@
 
 .confirmationText{
 	font-size: 16px;
-	width: 90%;
+	width: 80%;
 	margin: 0 auto;
 	text-align: center;
 	font-weight: 500;
 	margin-top:30px;
-	margin-bottom: 70px;
+}
+
+.Receive__ans-code{
+	font-size: 12px;
+    font-weight: bold;
+    color: #2e2e3a;
+}
+
+.Receive__upgrade-text{
+	display: inline-block;
+	position: absolute;
+    right: 0px;
+    font-size: 14px;
+    cursor: pointer;
+    padding-top: 3px;
+	@include themify($themes) {
+		color: themed('textSelected');
+	}
 }

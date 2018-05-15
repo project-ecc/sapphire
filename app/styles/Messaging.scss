@@ -10,8 +10,8 @@
 }
 
 #messagingTable{
-	@include themify($themes) { 
-		background-color: themed('homePanelsBackgroundColor');  
+	@include themify($themes) {
+		background-color: themed('homePanelsBackgroundColor');
 		box-shadow: themed('mainElementBoxShadow');
 	}
 	height: 95%;
@@ -27,8 +27,8 @@
 }
 
 #contacts{
-	@include themify($themes) { 
-		background-color: themed('bodyBackgroundColor');  
+	@include themify($themes) {
+		background-color: themed('bodyBackgroundColor');
 	}
 	width: 350px;
 	height: calc(100% - 47px);
@@ -51,7 +51,7 @@
 #searchBarMessaging{
 	height: 60px;
 	width: 100%;
-	@include themify($themes) { 
+	@include themify($themes) {
 		border-bottom: themed('newsItemBorderBottom');
 	}
 }
@@ -80,23 +80,31 @@
 }
 
 .chatPreview{
-	@include themify($themes) { 
+	@include themify($themes) {
 		border-bottom: themed('newsItemBorderBottom');
 	}
     height: 75px;
     position: relative;
     cursor: pointer;
     &:hover{
-		@include themify($themes) { 
+		@include themify($themes) {
 			background-color: themed('chatPreviewActiveBackgroundColor');
 		}
     }
 }
 
 .chatPreviewActive{
-	@include themify($themes) { 
+	@include themify($themes) {
 		background-color: themed('chatPreviewActiveBackgroundColor') !important;
 	}
+}
+
+#messagingInputDiv p{
+	@include themify($themes) {
+		color: themed('inputPlaceHolderColor');
+	}
+    position: absolute;
+    font-size: 15px;
 }
 
 .borderChatPreview{
@@ -130,7 +138,7 @@
 }
 
 .chatPreviewMessage{
-	@include themify($themes) { 
+	@include themify($themes) {
 		color: themed('chatPreviewColor');
 	}
     position: relative;
@@ -158,7 +166,7 @@
 	bottom: 0px;
 	height: 70px;
 	transition: all 0.3s;
-	@include themify($themes) { 
+	@include themify($themes) {
 		border-top: themed('newsItemBorderBottom');
 	}
 }
@@ -174,7 +182,7 @@
 }
 
 #messagingInput textarea{
-	@include themify($themes) { 
+	@include themify($themes) {
 		color: themed('bodyParagraphColor');
 	}
 	width: calc(100% - 150px);
@@ -206,8 +214,8 @@
 }
 
 .sendButtonActive{
-	@include themify($themes) { 
-		stroke: themed('eccTicker') !important;  
+	@include themify($themes) {
+		stroke: themed('eccTicker') !important;
 	}
 }
 
@@ -229,8 +237,8 @@
 }
 
 #messagingTopBar{
-	@include themify($themes) { 
-		background-color: themed('bodyBackgroundColor');  
+	@include themify($themes) {
+		background-color: themed('bodyBackgroundColor');
 	}
 	height: 80px;
 	width: 100%;
@@ -339,18 +347,18 @@
   	transition-timing-function: ease;
   	background-position: 0 -100%;
   	background-size: 100% 200%;
-	@include themify($themes) { 
-		background-image: themed('optionsHoverEffectBackgroundColor');  
+	@include themify($themes) {
+		background-image: themed('optionsHoverEffectBackgroundColor');
 	}
 }
 
-.circleOptionsButton { 
+.circleOptionsButton {
   transition-delay: 0ms;
 }
-.circleOptionsButton:nth-child(2) { 
+.circleOptionsButton:nth-child(2) {
   transition-delay: 40ms;
 }
-.circleOptionsButton:nth-child(3) { 
+.circleOptionsButton:nth-child(3) {
   transition-delay: 80ms;
 }
 
@@ -358,13 +366,13 @@
   background-position: 0 0%;
 }
 
-#optionsButton:hover > .circleOptionsButton { 
+#optionsButton:hover > .circleOptionsButton {
   transition-delay: 80ms;
 }
-#optionsButton:hover > .circleOptionsButton:nth-child(2) { 
+#optionsButton:hover > .circleOptionsButton:nth-child(2) {
   transition-delay: 40ms;
 }
-#optionsButton:hover > .circleOptionsButton:nth-child(3) { 
+#optionsButton:hover > .circleOptionsButton:nth-child(3) {
   transition-delay:0ms;
 }
 
@@ -384,16 +392,16 @@
 }
 
 .ownMessage{
-	@include themify($themes) { 
-		background-color: themed('ownMessagingBackgroundColor');  
+	@include themify($themes) {
+		background-color: themed('ownMessagingBackgroundColor');
 	}
 	border-top-right-radius: 0px;
 	margin-right: 15px;
 }
 
 .notOwnMessage{
-	@include themify($themes) { 
-		background-color: themed('notOwnMessagingBackgroundColor');  
+	@include themify($themes) {
+		background-color: themed('notOwnMessagingBackgroundColor');
 	}
 	border-top-left-radius: 0px;
 	margin-left: 15px;
@@ -404,8 +412,8 @@
 }
 
 .chatMessage span{
-	@include themify($themes) { 
-		color: themed('messageTimeColor');  
+	@include themify($themes) {
+		color: themed('messageTimeColor');
 	}
 	padding-left: 25px;
     font-size: 11px;
@@ -424,8 +432,8 @@
 }
 
 #warningMessaging{
-	@include themify($themes) { 
-		color: themed('popupColor');  
+	@include themify($themes) {
+		color: themed('popupColor');
 	}
 	width: 100%;
     right: 0px;
@@ -484,8 +492,8 @@
 }
 
 #warningMessagingSubtitle span{
-	@include themify($themes) { 
-		color: themed('popupSpanColor');  
+	@include themify($themes) {
+		color: themed('popupSpanColor');
 	}
 }
 
@@ -549,8 +557,8 @@
 		width: 100%;
 		height: calc(100% - 40px);
 		top: 40px;
-		@include themify($themes) { 
-			background-color: themed('bodyBackgroundColor');  
+		@include themify($themes) {
+			background-color: themed('bodyBackgroundColor');
 		}
 	}
 	#contacts{
@@ -590,8 +598,8 @@
 	}
 
 	.circleOptionsButton{
-		@include themify($themes) { 
-			background-color: themed('eccTicker') !important;  
+		@include themify($themes) {
+			background-color: themed('eccTicker') !important;
 		}
 	}
 }

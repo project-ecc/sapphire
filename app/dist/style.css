@@ -15277,12 +15277,28 @@ li.active.have-children span::after {
 
 .confirmationText {
   font-size: 16px;
-  width: 90%;
+  width: 80%;
   margin: 0 auto;
   text-align: center;
   font-weight: 500;
-  margin-top: 30px;
-  margin-bottom: 70px; }
+  margin-top: 30px; }
+
+.Receive__ans-code {
+  font-size: 12px;
+  font-weight: bold;
+  color: #2e2e3a; }
+
+.Receive__upgrade-text {
+  display: inline-block;
+  position: absolute;
+  right: 0px;
+  font-size: 14px;
+  cursor: pointer;
+  padding-top: 3px; }
+  .theme-defaultEcc .Receive__upgrade-text {
+    color: #aeacf3; }
+  .theme-darkEcc .Receive__upgrade-text {
+    color: #59aac3; }
 
 #rows {
   overflow-y: scroll;
