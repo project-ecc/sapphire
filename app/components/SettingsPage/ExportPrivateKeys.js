@@ -20,7 +20,6 @@ var jsPDF = require('jspdf');
 class ExportPrivateKeys extends React.Component {
   constructor() {
     super();
-    this.handleChange = this.handleChange.bind(this);
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.showWrongPassword = this.showWrongPassword.bind(this);
@@ -53,15 +52,6 @@ class ExportPrivateKeys extends React.Component {
 
   componentWillMount(){
     this.setState({toDisplay: {}})
-  }
-
-  handleChange(event) {
-    const pw = event.target.value;
-    if(pw.length === 0)
-      TweenMax.set('#password', {autoAlpha: 1});
-    else
-      TweenMax.set('#password', {autoAlpha: 0});
-    this.props.setPassword(pw);
   }
 
   handleCancel(){
@@ -119,16 +109,15 @@ class ExportPrivateKeys extends React.Component {
         <p style={{fontSize: "16px", width: "450px", margin: "0 auto",textAlign: "justify"}}>{ this.props.lang.exportWarning }</p>
         <div>
           <Input
-            divStyle={{width: "400px", marginTop: "15px"}}
+            style={{width: "80%", marginTop: "34px"}}
             placeholder= { this.props.lang.password }
             placeholderId= "password"
-            placeHolderClassName="inputPlaceholder inputPlaceholderUnlock"
             value={this.props.passwordVal}
-            handleChange={this.handleChange.bind(this)}
+            handleChange={this.props.setPassword}
             type="password"
-            inputStyle={{width: "400px", top: "20px", marginBottom: "30px"}}
             inputId="exportPrivKeyId"
-            autoFocus={true}
+            autoFocus
+            onSubmit={this.handlePanels}
           />
           <p id="wrongPassword" className="wrongPassword">{ this.props.lang.wrongPassword }</p>
         </div>
@@ -223,7 +212,7 @@ class ExportPrivateKeys extends React.Component {
     TweenMax.to('#exportOptions', 0.3, {css: {left:"0%"}});
     TweenMax.to('#confirmButtonPopup', 0.3, {x: "-450px", autoAlpha: 0});
     setTimeout(() => {
-      TweenMax.set('#confirmButtonPopup', {x: "0px"});
+      TweenMax.set('#confirmButtonPopup', {x: "-50%"});
     }, 300)
     this.props.setPanelExportingPrivateKeys(this.props.panelNumber+1);
     this.props.setPassword("");
@@ -318,8 +307,10 @@ class ExportPrivateKeys extends React.Component {
         <p style={{fontSize: "16px", width: "440px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"25px", textAlign: "left"}}>
           {this.props.lang.exportPrivKeyDesc}
         </p>
-        <div onClick={this.handleDisplayKeys}  className="buttonPrimary" style={{top: "130px", left:"115px"}}>{this.props.lang.viewOnScreen}</div>
-        <div onClick={this.handlePanels} className="buttonPrimary" style={{top: "130px", left:"293px"}}>{this.props.lang.exportToPdf}</div>
+        <div style={{display: "flex", width: "80%", margin: "0 auto", marginTop: "35px"}}>
+          <div onClick={this.handleDisplayKeys}  className="buttonPrimary" style={{top: "130px", left:"115px"}}>{this.props.lang.viewOnScreen}</div>
+          <div onClick={this.handlePanels} className="buttonPrimary" style={{top: "130px", left:"293px"}}>{this.props.lang.exportToPdf}</div>
+        </div>
       </div>
     )
   }
@@ -384,7 +375,7 @@ class ExportPrivateKeys extends React.Component {
         {this.getLocationToExportPanel()}
         {this.renderdisplayKeys()}
 
-        <ConfirmButtonPopup inputId="#exportPrivKeyId" handleConfirm={this.handlePanels} textLoading={this.props.lang.confirming} text={this.props.lang.next}/>
+        <ConfirmButtonPopup inputId="#exportPrivKeyId" handleConfirm={this.handlePanels} textLoading={this.props.lang.next} text={this.props.lang.next}/>
       </div>
     );
   }
