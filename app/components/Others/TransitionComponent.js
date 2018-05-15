@@ -24,10 +24,6 @@ class TransitionComponent extends React.Component {
       this.props.animateIn(this.refs.animate, this.props.resetWillChange.bind(this), callback, 0.5);
       this.props.setGenericAnimationToTrue();
     }
-    else if(this.props.animationType === "test"){
-      console.log("here")
-      this.props.animateIn(this.refs.animate, callback);
-    }
     else callback();
   }
 
@@ -39,10 +35,6 @@ class TransitionComponent extends React.Component {
       this.props.animateIn(this.refs.animate, this.props.updatingApplication, this.props.animateLogo, callback);
     }
     else if(this.props.animationType === "setupStep"){
-      this.props.animateIn(this.refs.animate, callback);
-    }
-    else if(this.props.animationType === "test"){
-      console.log("here2")
       this.props.animateIn(this.refs.animate, callback);
     }
     else callback();
