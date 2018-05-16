@@ -23,31 +23,45 @@ class Send extends Component {
     this.props.setAmountSend("");
     this.props.setAddressSend("");
     this.props.setUsernameSend("");
+    this.props.setAddressOrUsernameSend("");
   }
 
-  confirmSend() {
+  async confirmSend() {
     if(this.props.amount === "" || isNaN(this.props.amount) === 1){
       Tools.highlightInput('#inputAmountSend', 1000)
     }
-    if(this.props.address === ""){
+    if(this.props.addressOrUsername === ""){
       Tools.highlightInput('#inputAddressSend', 1000)
     }
-    if(this.props.address !== "" && this.props.amount !== "" && Number(this.props.amount) > 0){
+    if(this.props.addressOrUsername !== "" && this.props.amount !== "" && Number(this.props.amount) > 0){
       if(Number(this.props.amount) > Number(this.props.balance)){
         Tools.showTemporaryMessage('.Send__message-status', this.props.lang.notEnoughBalance);
         Tools.highlightInput('#inputAmountSend', 2100)
       }
       else{
-        this.props.wallet.validate(this.props.address).then((isAddressValid) => {
-        if (!isAddressValid.isvalid) {
+        let result;
+        try{
+          result = await Tools.searchForUsernameOrAddress(this.props.wallet, this.props.addressOrUsername);
+          if(result.ans && result.addresses.length === 1){
+            this.props.setUsernameSend(result.addresses[0].Name, "#"+result.addresses[0].Code);
+            this.props.setAddressSend(result.addresses[0].Address);
+          }
+          else if(result.ans && result.addresses.length > 1){
+            this.props.setMultipleAnsAddresses(result.addresses);
+          }
+          else{
+            this.props.setAddressSend(result.addresses[0].address);
+          }
+        }catch(err){
+          console.log("err: ", err)
+        }
+
+        if (!result) {
           Tools.showTemporaryMessage('.Send__message-status', this.props.lang.invalidFailedAddress);
           Tools.highlightInput('#inputAddressSend', 2100)
         } else {
           this.props.setSendingECC(true);
         }
-        }).catch((err) => {
-          console.log(err);
-        });
       }
     }
   }
@@ -63,8 +77,8 @@ class Send extends Component {
               <Input
                 placeholder= { this.props.lang.ansNameOrAddress }
                 placeholderId="addressSend"
-                value={this.props.address}
-                handleChange={this.props.setAddressSend}
+                value={this.props.addressOrUsername}
+                handleChange={this.props.setAddressOrUsernameSend}
                 type="text"
                 inputId="inputAddressSend"
                 style={{marginBottom: "25px"}}
@@ -101,8 +115,7 @@ class Send extends Component {
 const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
-    address: state.application.addressSend,
-    name: state.application.userNameToSend,
+    addressOrUsername: state.application.addressOrUsernameSend,
     amount: state.application.amountSend,
     balance: state.chains.balance,
     wallet: state.application.wallet

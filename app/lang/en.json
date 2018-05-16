@@ -8,7 +8,7 @@
     "ansExplanation1": "Type the name of an ",
     "ansExplanation2": "ANS contact",
     "ansExplanation3": "and click to add him or fill the Address input (+ optional Name) to add a regular address.",
-
+    "foundMultipleUsernames": "addresses were found using the username you provided. Please select the correct username from the list below. Make sure the username code matches the code you were given",
     "staking": "Staking",
     "balance": "Balance",
     "total": "Total",
@@ -64,7 +64,7 @@
     "pleaseWait": "This process may take a few minutes to finish. Please do not close the application.",
     "importedAddress": "Imported the address successfully",
     "importAnotherAddress": "Import another address",
-    "invalidFailedAddress": "Invalid address",
+    "invalidFailedAddress": "Not a valid address or ANS username",
 
     "importExistingWallet": "Import an existing wallet if you have one",
     "importingYourWallet": "Importing your wallet",

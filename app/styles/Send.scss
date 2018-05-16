@@ -110,3 +110,31 @@
 	margin: 0 auto;
 	padding-top: 25px;
 }
+
+.ansAddressesList{
+    border-radius: 14px;
+    @include themify($themes) {
+        background-color: themed('homePanelsBackgroundColor');
+    }
+    width: 320px;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 100px;
+    overflow: auto;
+
+}
+
+.ansAddressesList-item{
+	margin: 10px 0px;
+	font-size: 15px;
+	cursor: pointer;
+}
+
+.multipleAddresses {
+	width: 450px;
+    font-size: 15px;
+    text-align: justify;
+    margin: 0 auto;
+    margin-top: 20px;
+}

@@ -97,7 +97,6 @@ class DaemonConnector {
     this.heighestBlockFromServer = 0;
     this.heighestBlockFromServerInterval;
     this.translator = this.store.getState().startup.lang;
-
 	}
 
   subscribeToEvents(){
@@ -148,7 +147,6 @@ class DaemonConnector {
     }
     if(!this.hasLoadedTransactionsFromDb)
       await this.loadTransactionFromDb();
-
     await this.wallet.getAllInfo().then( async (data) => {
       if(data){
         let highestBlock = data[0].headers == 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
