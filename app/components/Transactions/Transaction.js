@@ -165,9 +165,6 @@ class Transaction extends Component {
         <div id="transactionAddresses" style={{height:"90%", position: "relative", top: "25px"}}>
           <div className="tableHeaderNormal">
             <p className="tableHeaderTitle tableHeaderTitleSmall">{ this.props.lang.transactions }</p>
-
-            {/* commenting out Transactions filter dropdown until supported
-
             <div className="dropdownFilterSelector" style={{position: "absolute", right: "40px", top: "9px", height:"30px", padding:"0 0", width :"210px", textAlign:"center"}} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
               <div className="selectFilterSelector" style={{border: "none", position:"relative", top: "-1px", height: "30px"}}>
                 <p className="normalWeight">{this.getValue(this.props.type)}</p>
@@ -184,8 +181,6 @@ class Transaction extends Component {
                   <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="-1">{ this.props.lang.orphaned }</li>
               </ul>
             </div>
-            */}
-
           </div>
           <div style={{width: "100%", marginTop: "5px", padding: "0 0"}}>
             <div className="row rowDynamic">
