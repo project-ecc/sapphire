@@ -187,6 +187,7 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
+    "arch": "^2.1.0",
     "auto-launch": "^5.0.5",
     "bootstrap": "^4.1.0",
     "bootstrap-material-design": "^0.5.10",

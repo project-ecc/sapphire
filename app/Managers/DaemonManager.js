@@ -5,6 +5,7 @@ const request = require('request-promise-native');
 const homedir = require('os').homedir();
 const event = require('../utils/eventhandler');
 const os = require('os');
+let arch = require('arch');
 const extract = require('extract-zip');
 const https = require('https');
 const checksum = require('checksum');
@@ -29,7 +30,7 @@ class DaemonManager {
     this.currentVersion = -1;
     this.walletDat = false;
     this.downloading = false;
-    this.arch = os.arch();
+    this.arch = arch();
     this.os = process.platform;
     this.arch = process.arch;
     this.running = false;

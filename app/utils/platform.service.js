@@ -1,14 +1,14 @@
 import daemonConfig from '../../daemon-data.json';
 import sapphireConfig from '../../gui-data.json';
 const homedir = require('os').homedir();
-const os = require('os');
+let arch = require('arch');
 
 let serverUrl = process.env.NODE_ENV === 'production' ? daemonConfig.live_server_address : daemonConfig.dev_server_address;
 
 export function getPlatformFileName() {
   if (process.platform === 'linux') {
 
-    return os.arch() === 'x32' ? 'eccoind-linux32' : 'eccoind-linux64';
+    return arch() === 'x86' ? 'eccoind-linux32' : 'eccoind-linux64';
 
   } else if (process.platform === 'darwin') {
 
@@ -16,7 +16,7 @@ export function getPlatformFileName() {
 
   } else if (process.platform.indexOf('win') > -1) {
 
-    return os.arch() === 'x32' ? 'eccoind-win32.exe' : 'eccoind-win64.exe';
+    return arch() === 'x86' ? 'eccoind-win32.exe' : 'eccoind-win64.exe';
   }
 }
 
@@ -25,13 +25,13 @@ export function getDaemonDownloadUrl() {
   let url = serverUrl + daemonConfig.daemon_url;
 
   if (process.platform === 'linux') {
-    url += os.arch() === 'x32' ? daemonConfig.linux32 : daemonConfig.linux64;
+    url += arch() === 'x86' ? daemonConfig.linux32 : daemonConfig.linux64;
 
   } else if (process.platform === 'darwin') {
     url += daemonConfig.osx;
 
   } else if (process.platform.indexOf('win') > -1) {
-    url += os.arch() === 'x32' ? daemonConfig.win32 : daemonConfig.win64;
+    url += arch() === 'x86' ? daemonConfig.win32 : daemonConfig.win64;
   }
 
   return url + "/versions.json";
@@ -42,14 +42,14 @@ export function getSapphireDownloadUrl() {
   let url = serverUrl + sapphireConfig.sapphire_url;
 
   if (process.platform === 'linux') {
-    url += os.arch() === 'x32' ? sapphireConfig.linux32 : sapphireConfig.linux64;
+    url += arch() === 'x86' ? sapphireConfig.linux32 : sapphireConfig.linux64;
 
   } else if (process.platform === 'darwin') {
     url += sapphireConfig.osx;
 
   } else if (process.platform.indexOf('win') > -1) {
 
-    url += os.arch() === 'x32' ? sapphireConfig.win32 : sapphireConfig.win64;
+    url += arch() === 'x86' ? sapphireConfig.win32 : sapphireConfig.win64;
   }
 
   return url + "/versions.json";
