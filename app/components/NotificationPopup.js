@@ -36,7 +36,7 @@ class NotificationPopup extends React.Component {
     });
     $('#earningsNotification').on("click", () => {
       this.props.setSelectedPanel("transactions");
-      this.props.setTransactionsData(this.props.transactions, "generate");
+      this.props.setTransactionsData(this.props.transactions, "all");
       this.props.selectedSideBar("wallet", "transactions");
       this.props.setNotifications(false);
     });
