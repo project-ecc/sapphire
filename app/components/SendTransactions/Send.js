@@ -46,10 +46,10 @@ class Send extends Component {
             this.props.setUsernameSend(result.addresses[0].Name, "#"+result.addresses[0].Code);
             this.props.setAddressSend(result.addresses[0].Address);
           }
-          else if(result.ans && result.addresses.length > 1){
+          else if(result && result.ans && result.addresses.length > 1){
             this.props.setMultipleAnsAddresses(result.addresses);
           }
-          else{
+          else if(result){
             this.props.setAddressSend(result.addresses[0].address);
           }
         }catch(err){
@@ -59,8 +59,6 @@ class Send extends Component {
         if (!result) {
           Tools.showTemporaryMessage('.Send__message-status', this.props.lang.invalidFailedAddress);
           Tools.highlightInput('#inputAddressSend', 2100)
-        } else {
-          this.props.setSendingECC(true);
         }
       }
     }

@@ -12,7 +12,6 @@ const Tools = require('../../utils/tools');
 class Contacts extends Component {
   constructor(props) {
     super(props);
-    this.handleChangeNewContactAddress = this.handleChangeNewContactAddress.bind(this);
     this.addContact = this.addContact.bind(this);
     this.addNormalAddress = this.addNormalAddress.bind(this);
     this.resetFields = this.resetFields.bind(this);
@@ -21,31 +20,14 @@ class Contacts extends Component {
   componentDidMount(){
     if(this.props.newContactName)
       TweenMax.set('#addressNamePlaceHolder', {autoAlpha: 0});
-    if(this.props.newContactAddress)
-      TweenMax.set('#addressAccountPlaceHolder', {autoAlpha: 0});
-  }
-
-  handleChangeNewContactAddress(event){
-    const address = event.target.value;
-    if(address.length === 0)
-      TweenMax.set('#addressAccountPlaceHolder', {autoAlpha: 1});
-    else
-      TweenMax.set('#addressAccountPlaceHolder', {autoAlpha: 0});
-
-    this.props.setNewContactAddress(address);
   }
 
   addContact(){
-    if(this.props.newContactName === "" && this.props.newContactAddress === ""){
+    if(this.props.newContactName === ""){
       Tools.highlightInput("#inputName, #inputAddressVal", 1000)
     }
-    else if(this.props.newContactAddress !== ""){
-      //normal address
-      console.log("adding normal address");
-      this.addNormalAddress();
-    }
     else{
-      //ANS address
+      this.addNormalAddress();
     }
   }
 
@@ -64,43 +46,57 @@ class Contacts extends Component {
     TweenMax.to('#addressInvalid', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
   }
 
-  addNormalAddress() {
-    this.props.wallet.validate(this.props.newContactAddress).then((isAddressValid) => {
-      console.log(isAddressValid);
-        if (isAddressValid.isvalid) {
-          const tt = low.get('friends').find({ address: this.props.newContactAddress }).value();
-          if (tt) {
-            this.addressAlreadyExists();
-            this.resetFields();
+  async addNormalAddress() {
+    let result;
+    let code = "";
+    let ans = false;
+    let address = "";
+    let name = "";
 
-          } else {
-            const name = this.props.newContactName;
-            const address = this.props.newContactAddress;
-            if (address !== '') {
-              low.get('friends').push({ name, address }).write();
-              const friendList = low.get('friends').value();
-              this.props.setContacts(friendList);
-              //this is a temporary workaround because setContacts is not triggering a re-render of AddressBook.js
-              this.props.setHoveredAddress(["a"]);
-              this.resetFields();
-              this.addressAddedSuccessfuly();
-            }
-          }
-        }
-        else{
-          this.addressInvalid();
-          this.resetFields(false);
-        }
+    try{
+      result = await Tools.searchForUsernameOrAddress(this.props.wallet, this.props.newContactName);
+      console.log(result)
+      if(result.ans && result.addresses.length === 1){
+        name = result.addresses[0].Name;
+        address = result.addresses[0].Address;
+        code = result.addresses[0].Code;
+        ans = true;
+      }
+      else if(result.ans && result.addresses.length > 1){
+        this.props.setMultipleAnsAddresses(result.addresses);
+      }
+      else{
+        address = result.addresses[0].address;
+        ans = false;
+      }
+    }catch(err){
+      console.log("err: ", err)
+    }
 
-    }).catch((err) => {
-      console.log(err);
-    });
+    if (!result) {
+      Tools.showTemporaryMessage('#addressInvalid');
+      this.resetFields(false);
+    }
+    else{
+      const tt = low.get('friends').find({ address: address }).value();
+      if (tt) {
+        this.addressAlreadyExists();
+        this.resetFields();
+      }
+      else {
+        console.log(address)
+        low.get('friends').push({ name, address, ans, code }).write();
+        const friendList = low.get('friends').value();
+        this.props.setContacts(friendList);
+        //this is a temporary workaround because setContacts is not triggering a re-render of AddressBook.js
+        this.props.setHoveredAddress(["a"]);
+        this.resetFields();
+        this.addressAddedSuccessfuly();
+      }
+    }
   }
 
-
   resetFields(){
-    this.props.setNewContactAddress("");
-    TweenMax.set('#addressAccountPlaceHolder', {autoAlpha: 1});
     this.props.setNewContactName("");
     TweenMax.set('#addressNamePlaceHolder', {autoAlpha: 1});
   }
@@ -114,36 +110,21 @@ class Contacts extends Component {
           <p id="addressAdded" className="contactsMessage">{ this.props.lang.contactAddedSuccessfully }</p>
           <p id="addressInvalid" className="contactsMessage">{ this.props.lang.invalidAddress }</p>
         </div>
-        <div id="inputAddress" style={{width: "750px", margin: "0 auto", position: "relative", marginTop:"80px"}}>
-          <div style={{display: "inline-block", width: "70%", position: "relative"}}>
+        <div id="inputAddress" style={{width: "650px", margin: "0 auto", display:"flex", justifyContent: "space-between", marginTop:"100px"}}>
             <Input
-              divStyle={{}}
-              placeholder= { this.props.lang.name }
+              placeholder= { this.props.lang.ansNameOrAddress }
               placeholderId="addressNamePlaceHolder"
-              placeHolderClassName="inputPlaceholder inputPlaceholderReceive"
               value={this.props.newContactName}
-              updateRedux={this.props.setNewContactName}
+              handleChange={this.props.setNewContactName}
               type="text"
-              inputStyle={{textAlign: "left", margin: "0 0", width:"100%"}}
               inputId="inputName"
-              autoFocus={true}
+              style={{width: "75%", paddingRight: "30px"}}
+              autoFocus
+              isLeft
             />
-            <Input
-              divStyle={{position: "relative",  marginTop: "10px"}}
-              placeholder= { this.props.lang.address }
-              placeholderId="addressAccountPlaceHolder"
-              placeHolderClassName="inputPlaceholder inputPlaceholderReceive"
-              value={this.props.newContactAddress}
-              handleChange={this.handleChangeNewContactAddress.bind(this)}
-              type="text"
-              inputStyle={{textAlign: "left", margin: "0 0", width:"100%"}}
-              inputId="inputAddressVal"
-            />
-          </div>
             <div onClick={this.addContact} className="buttonPrimary addContactButton">
             { this.props.lang.addContact }
             </div>
-            <p id="ansExplanation" style={{display: "inline-block", fontSize: "14px", position: "relative", top:"15px", width:"660px"}}>{ this.props.lang.ansExplanation1 } <span className="ecc">{ this.props.lang.ansExplanation2 }</span> { this.props.lang.ansExplanation3 }</p>
           </div>
       </div>
     );
@@ -154,7 +135,6 @@ const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
     newContactName: state.application.newContactName,
-    newContactAddress: state.application.newContactAddress,
     wallet: state.application.wallet
   };
 };
