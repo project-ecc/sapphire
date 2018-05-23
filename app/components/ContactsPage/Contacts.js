@@ -59,6 +59,7 @@ class Contacts extends Component {
     let ans = false;
     let address = "";
     let name = "";
+    let multipleAddresses = false;
     this.addingContact = true;
     try{
       result = await Tools.searchForUsernameOrAddress(this.props.wallet, this.props.newContactName);
@@ -70,7 +71,7 @@ class Contacts extends Component {
         ans = true;
       }
       else if(result.ans && result.addresses.length > 1){
-        this.props.setMultipleAnsAddresses(result.addresses);
+        multipleAddresses = true;
       }
       else{
         address = result.addresses[0].address;
@@ -91,7 +92,12 @@ class Contacts extends Component {
         this.resetFields();
       }
       else {
-        this.props.setAddingContact(true, {name, address, code, ans});
+        if(!multipleAddresses){
+          this.props.setAddingContact(true, {name, address, code, ans});
+        }
+        else{
+          this.props.setAddingContact(true, {multipleAddresses: result.addresses});
+        }
         console.log(address)
         low.get('friends').push({ name, address, ans, code }).write();
         const friendList = low.get('friends').value();
