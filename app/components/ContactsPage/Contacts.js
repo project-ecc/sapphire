@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import React, { Component } from 'react';
+import TransitionGroup from 'react-transition-group/TransitionGroup';
 import { traduction } from '../../lang/lang';
 const homedir = require('os').homedir();
 import * as actions from '../../actions';
@@ -9,12 +10,14 @@ import low from '../../utils/low';
 import Input from '../Others/Input';
 const Tools = require('../../utils/tools');
 
+
 class Contacts extends Component {
   constructor(props) {
     super(props);
     this.addContact = this.addContact.bind(this);
     this.addNormalAddress = this.addNormalAddress.bind(this);
     this.resetFields = this.resetFields.bind(this);
+    this.addingContact = false;
   }
 
   componentDidMount(){
@@ -29,6 +32,10 @@ class Contacts extends Component {
     else{
       this.addNormalAddress();
     }
+  }
+
+  componentWillUnmount(){
+    this.props.setAddingContact(false);
   }
 
   addressAlreadyExists(){
@@ -52,7 +59,7 @@ class Contacts extends Component {
     let ans = false;
     let address = "";
     let name = "";
-
+    this.addingContact = true;
     try{
       result = await Tools.searchForUsernameOrAddress(this.props.wallet, this.props.newContactName);
       console.log(result)
@@ -84,6 +91,7 @@ class Contacts extends Component {
         this.resetFields();
       }
       else {
+        this.props.setAddingContact(true, {name, address, code, ans});
         console.log(address)
         low.get('friends').push({ name, address, ans, code }).write();
         const friendList = low.get('friends').value();
@@ -111,21 +119,21 @@ class Contacts extends Component {
           <p id="addressInvalid" className="contactsMessage">{ this.props.lang.invalidAddress }</p>
         </div>
         <div id="inputAddress" style={{width: "650px", margin: "0 auto", display:"flex", justifyContent: "space-between", marginTop:"100px"}}>
-            <Input
-              placeholder= { this.props.lang.ansNameOrAddress }
-              placeholderId="addressNamePlaceHolder"
-              value={this.props.newContactName}
-              handleChange={this.props.setNewContactName}
-              type="text"
-              inputId="inputName"
-              style={{width: "75%", paddingRight: "30px"}}
-              autoFocus
-              isLeft
-            />
-            <div onClick={this.addContact} className="buttonPrimary addContactButton">
-            { this.props.lang.addContact }
-            </div>
+          <Input
+            placeholder= { this.props.lang.ansNameOrAddress }
+            placeholderId="addressNamePlaceHolder"
+            value={this.props.newContactName}
+            handleChange={this.props.setNewContactName}
+            type="text"
+            inputId="inputName"
+            style={{width: "75%", paddingRight: "30px"}}
+            autoFocus
+            isLeft
+          />
+          <div onClick={this.addContact} className="buttonPrimary addContactButton">
+          { this.props.lang.addContact }
           </div>
+        </div>
       </div>
     );
   }

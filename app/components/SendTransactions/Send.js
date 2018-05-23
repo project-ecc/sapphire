@@ -60,6 +60,9 @@ class Send extends Component {
           Tools.showTemporaryMessage('.Send__message-status', this.props.lang.invalidFailedAddress);
           Tools.highlightInput('#inputAddressSend', 2100)
         }
+        else{
+          this.props.setSendingECC(true);
+        }
       }
     }
   }
