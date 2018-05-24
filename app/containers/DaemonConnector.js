@@ -50,6 +50,7 @@ class DaemonConnector {
     this.setupTransactionsDB = this.setupTransactionsDB.bind(this);
     this.closeDb = this.closeDb.bind(this);
     this.processTransactions = this.processTransactions.bind(this);
+    this.checkValues = this.checkValues.bind(this);
     this.getRawTransaction = this.getRawTransaction.bind(this);
     this.insertIntoDb = this.insertIntoDb.bind(this);
     this.loadTransactionFromDb = this.loadTransactionFromDb.bind(this);
@@ -607,9 +608,9 @@ class DaemonConnector {
         confirmations = transactions[i].confirmations;
         if(!this.transactionsMap[txId]){
             this.transactionsMap[txId] = [];
-            this.transactionsMap[txId].push(address)
         }
         this.transactionsMap[txId].push({
+          txId: txId,
           time: time,
           amount: amount,
           category: category,
@@ -632,8 +633,25 @@ class DaemonConnector {
     }
   }
 
+  checkValues(original, current){
+    if(current.category !== 'generate'){
+      if(current.txId === original.txId) {
+        return (current.amount + original.amount === 0 || current.amount - original.amount === 0)
+          || (current.amount === original.amount);
+      }
+      return false;
+    }
+    else {
+      return false;
+    }
+
+  }
+
   processTransactions(){
     let entries = [];
+    let rewards = [];
+    const self = this
+
     /*let auxCurrentAddresses = [];
     let currentAddresses = this.store.getState().application.userAddresses;
     for(let i = 0; i < currentAddresses.length; i++)
@@ -642,12 +660,30 @@ class DaemonConnector {
     //process transactions
     for (const key of Object.keys(this.transactionsMap)) {
       let values = this.transactionsMap[key];
+
       for(let i = 1; i < values.length; i++){
-        if(values[i].category == "generate" && values[i].amount > 0){
-          entries.push({...values[i], txId: key});
-          break;
-        }
+
+          var found = entries.find(function(element) {
+            return self.checkValues(values[i], element) ;
+          });
+          if(found === undefined){
+            if (values[i].category === 'generate'){
+              rewards.push({...values[i], txId: key});
+            }else{
+              entries.push({...values[i], txId: key});
+            }
+
+          }else{
+            console.log('element found')
+            console.log(found)
+            console.log('current Element')
+            console.log(values[i])
+            delete entries[found];
+          }
+
       }
+
+
       //the opposite means its staking transactions
       //if(!(values.length == 3 && values[1].category == "send" && values[2].category == "send")){
 
@@ -687,6 +723,8 @@ class DaemonConnector {
           }
         }*/
       }
+      console.log(entries)
+      console.log(rewards);
       this.transactionsMap = {};
     this.insertIntoDb(entries)
   }
