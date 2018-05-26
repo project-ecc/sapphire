@@ -539,7 +539,7 @@ class DaemonConnector {
   setupTransactionsDB(){
     this.db = new sqlite3.Database(app.getPath('userData') + '/transactions');
     this.db.serialize(() => {
-      this.db.run("CREATE TABLE IF NOT EXISTS transactions (transaction_id VAARCHAR(64) PRIMARY KEY, time INTEGER, amount DECIMAL(11,8), category, address, fee DECIMAL(2,8), confirmations INTEGER);");
+      this.db.run("CREATE TABLE IF NOT EXISTS transactions (transaction_id VAARCHAR(64), time INTEGER, amount DECIMAL(11,8), category, address, fee DECIMAL(2,8), confirmations INTEGER);");
       this.db.run("CREATE TABLE IF NOT EXISTS pendingTransactions (transaction_id VAARCHAR(64));");
     });
 
@@ -632,24 +632,59 @@ class DaemonConnector {
       this.processTransactions();
     }
   }
+  //let closestPoint = binarySearch(data,target, 0, data.length-1)
+  // binarySearch = (d, t, s, e) => {
+  //   const m = Math.floor((s + e)/2);
+  //   if (t == d[m].svgX) return d[m];
+  //   if (e — 1 === s) return Math.abs(d[s].svgX — t) > Math.abs(d[e].svgX — t) ? d[e] : d[s];
+  //   if (t > d[m].svgX) return binarySearch(d,t,m,e);
+  //   if (t < d[m].svgX) return binarySearch(d,t,s,m);
+  // }
 
   checkValues(original, current){
-    if(current.category !== 'generate'){
-      if(current.txId === original.txId) {
-        return (current.amount + original.amount === 0 || current.amount - original.amount === 0)
-          || (current.amount === original.amount);
+    // if they are not a staking reward
+      // if they have the same TX ID
+    if(current.txId === original.txId) {
+      console.log('ids match')
+
+      console.log('original ele')
+      console.log(original)
+      console.log('current Element')
+      console.log(current)
+        // if original == send
+      if(original.category === "send" && current.category === "receive"){
+        if(current.amount + original.amount === 0){
+          console.log('change transaction' + current.amount)
+          return true;
+        }
+
+        return false;
+      } else if (original.category === "receive" && current.category === "send") {
+        if(original.amount + current.amount === 0){
+          console.log('change transaction' + original.amount)
+          return true;
+        }
+        return false;
+
+      } else if(original.category === "send" && current.category === "send"){
+        original.category = "staked";
+        current.category = "staked";
+        console.log('coins sent for staking')
+        return false;
       }
-      return false;
+
+
+
+      return (current.amount + original.amount === 0 || current.amount - original.amount === 0 || current.amount === original.amount);
     }
-    else {
-      return false;
-    }
+    return false;
 
   }
 
   processTransactions(){
     let entries = [];
     let rewards = [];
+    let staked = [];
     const self = this
 
     /*let auxCurrentAddresses = [];
@@ -659,26 +694,27 @@ class DaemonConnector {
 
     //process transactions
     for (const key of Object.keys(this.transactionsMap)) {
+
       let values = this.transactionsMap[key];
 
       for(let i = 1; i < values.length; i++){
 
+        if(values[i].category === "generate"){
+          rewards.push({...values[i], txId: key});
+          continue;
+        }
+
+
           var found = entries.find(function(element) {
             return self.checkValues(values[i], element) ;
           });
+
           if(found === undefined){
-            if (values[i].category === 'generate'){
-              rewards.push({...values[i], txId: key});
-            }else{
-              entries.push({...values[i], txId: key});
-            }
+            entries.push({...values[i], txId: key});
 
           }else{
-            console.log('element found')
-            console.log(found)
-            console.log('current Element')
-            console.log(values[i])
-            delete entries[found];
+            console.log("Array index: " +entries.indexOf(found))
+            console.log(delete entries[found]);
           }
 
       }
