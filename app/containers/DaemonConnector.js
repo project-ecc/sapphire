@@ -147,24 +147,32 @@ class DaemonConnector {
     }
     if(!this.hasLoadedTransactionsFromDb)
       await this.loadTransactionFromDb();
-    await this.wallet.getAllInfo().then( async (data) => {
-      if(data){
-        let highestBlock = data[0].headers == 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
-        // remove .00 if 100%
-        let syncedPercentage = (data[0].blocks * 100) / data[0].headers;
-        syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
+    try{
+      await this.wallet.getAllInfo().then( async (data) => {
+        if(data){
+          let highestBlock = data[0].headers == 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
+          // remove .00 if 100%
+          let syncedPercentage = (data[0].blocks * 100) / data[0].headers;
+          syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
 
-        data[0].headers = highestBlock;
+          data[0].headers = highestBlock;
 
-        this.store.dispatch({type: SET_DAEMON_VERSION, payload: tools.formatVersion(data[0].version)});
-        this.store.dispatch({type: WALLET_INFO, payload: data[0]});
-        this.store.dispatch({type: CHAIN_INFO, payload: data[0]});
-        this.store.dispatch({type: WALLET_INFO_SEC, payload: data[4]});
-        this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data[0].blocks == 0 || data[0].headers == 0 ? 0 : syncedPercentage});
-        this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: data[1], type: this.store.getState().chains.transactionsType}});
-        await this.getAddresses(data[2], data[3]);
-      }
-    });
+          this.store.dispatch({type: SET_DAEMON_VERSION, payload: tools.formatVersion(data[0].version)});
+          this.store.dispatch({type: WALLET_INFO, payload: data[0]});
+          this.store.dispatch({type: CHAIN_INFO, payload: data[0]});
+          this.store.dispatch({type: WALLET_INFO_SEC, payload: data[4]});
+          this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data[0].blocks == 0 || data[0].headers == 0 ? 0 : syncedPercentage});
+          this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: data[1], type: this.store.getState().chains.transactionsType}});
+          await this.getAddresses(data[2], data[3]);
+        }
+      });
+    }catch(err){
+      console.log(err);
+      setTimeout(() => {
+        this.mainCycle();
+      }, this.firstRun && this.transactionsIndexed ? 1000 : 4000);
+      return;
+    }
     if(!this.firstRun && !this.isIndexingTransactions && this.transactionsIndexed){
       this.loadTransactionsForProcessing();
     }
