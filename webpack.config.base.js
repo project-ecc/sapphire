@@ -6,9 +6,7 @@ import path from 'path';
 import webpack from 'webpack';
 
 export default {
-  externals: {
-    sqlite3: 'sqlite3',
-  },
+  externals: ['pg', 'sqlite3', 'tedious', 'pg-hstore'],
 
   module: {
     rules: [{

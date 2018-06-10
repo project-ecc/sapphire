@@ -235,6 +235,7 @@
     "redux-thunk": "^2.2.0",
     "request-progress": "^3.0.0",
     "rss-to-json": "^1.0.4",
+    "sequelize": "^4.37.10",
     "source-map-support": "^0.4.15",
     "sqlite3": "^3.1.13",
     "twemoji-awesome": "^1.0.6"
