@@ -51,7 +51,6 @@ class DaemonConnector {
     this.setupTransactionsDB = this.setupTransactionsDB.bind(this);
     this.closeDb = this.closeDb.bind(this);
     this.processTransactions = this.processTransactions.bind(this);
-    this.checkValues = this.checkValues.bind(this);
     this.getRawTransaction = this.getRawTransaction.bind(this);
     this.insertIntoDb = this.insertIntoDb.bind(this);
     this.loadTransactionFromDb = this.loadTransactionFromDb.bind(this);

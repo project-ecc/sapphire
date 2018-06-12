@@ -12,6 +12,8 @@ const db = new Sequelize({
   storage: app.getPath('userData') +'/database.sqlite'
 })
 
+
+// define the Transaction Model
 const Transaction = db.define('transactions', {
   id: {
     type: Sequelize.INTEGER,
@@ -22,14 +24,22 @@ const Transaction = db.define('transactions', {
   time: Sequelize.INTEGER,
   amount: Sequelize.DECIMAL(11, 8) ,
   category: Sequelize.STRING,
-  address: Sequelize.STRING,
   fee: Sequelize.DECIMAL(2, 8) ,
   confirmations: Sequelize.INTEGER,
   status: Sequelize.STRING
-}); // used to define the Table Product
+});
+
+
+//define the Address model
+const Address = db.define('addresses', {
+  address: Sequelize.STRING,
+  current_balance: Sequelize.BIGINT
+});
+
+Transaction.belongsTo(Address)
+Address.hasMany(Transaction)
 
 db.sync();
-
 
 /**
  * Functions all below here for manipulating the data.
@@ -39,19 +49,46 @@ db.sync();
 
 function addTransaction(transaction, pending = false) {
 
-  Transaction.create({
-    transaction_id: transaction.txId,
-    time: transaction.time,
-    amount: transaction.amount,
-    category: transaction.category,
-    address: transaction.address,
-    fee: transaction.fee,
-    confirmations: transaction.confirmations,
-    status: pending === false ? "confirmed" : "pending"
+  const add = Address
+    .findOrCreate({where: {address: transaction.address}})
+    .spread((address, created) => {
+      console.log(address.get({
+        plain: true
+      }))
+      console.log(created)
 
-  }).then(transaction => {
-    return transaction;
-  })
+      Transaction.create({
+        transaction_id: transaction.txId,
+        time: transaction.time,
+        amount: transaction.amount,
+        category: transaction.category,
+        address: transaction.address,
+        fee: transaction.fee,
+        confirmations: transaction.confirmations,
+        status: pending === false ? "confirmed" : "pending"
+
+      }
+        ).then(transaction => {
+          add.addTransaction(transaction)
+        return transaction;
+      })
+
+      /*
+       findOrCreate returns an array containing the object that was found or created and a boolean that will be true if a new object was created and false if not, like so:
+
+      [ {
+          username: 'sdepold',
+          job: 'Technical Lead JavaScript',
+          id: 1,
+          createdAt: Fri Mar 22 2013 21: 28: 34 GMT + 0100(CET),
+          updatedAt: Fri Mar 22 2013 21: 28: 34 GMT + 0100(CET)
+        },
+        true
+       ]
+
+   In the example above, the "spread" on line 39 divides the array into its 2 parts and passes them as arguments to the callback function defined beginning at line 39, which treats them as "user" and "created" in this case. (So "user" will be the object from index 0 of the returned array and "created" will equal "true".)
+      */
+    })
 }
 
 
@@ -90,6 +127,8 @@ export {
   addTransaction,
   getTransactionById,
   getTransactionsBytxId,
-  updateTransaction
+  updateTransaction,
+  Address,
+  Transaction
 }
 
