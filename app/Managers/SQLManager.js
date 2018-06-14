@@ -32,12 +32,49 @@ const Transaction = db.define('transactions', {
 
 //define the Address model
 const Address = db.define('addresses', {
-  address: Sequelize.STRING,
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  address:{
+    type: Sequelize.STRING,
+    unique: true
+  },
   current_balance: Sequelize.BIGINT
 });
 
+const AnsRecord = db.define('ans_record', {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  name: Sequelize.STRING,
+  code: Sequelize.STRING,
+  expire_time: Sequelize.BIGINT,
+  payment_hash: Sequelize.STRING,
+  service_hash: Sequelize.STRING
+});
+
+const Contacts = db.define('contacts', {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  name: Sequelize.STRING,
+  address: Sequelize.STRING
+})
+
+const ReduxTimeCecker = db.define('time_checker', {
+  // TODO
+})
+
 Transaction.belongsTo(Address)
 Address.hasMany(Transaction)
+AnsRecord.belongsTo(Address)
+
 
 db.sync();
 
@@ -50,7 +87,11 @@ db.sync();
 function addTransaction(transaction, pending = false) {
 
   const add = Address
-    .findOrCreate({where: {address: transaction.address}})
+    .findOrCreate({
+        where: {
+          address: transaction.address
+        }
+      })
     .spread((address, created) => {
       console.log(address.get({
         plain: true
