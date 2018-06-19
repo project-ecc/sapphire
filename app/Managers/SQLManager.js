@@ -125,6 +125,21 @@ function getTransactionById(modelId){
     // with id 123. if such an entry is not defined you will get null
   })
 }
+
+function getAllTransactions(limit = 100, offset = 0) {
+  return new Promise((resolve, reject) => {
+    Transaction.findAll({
+      include: [{
+        model: Address,
+        where: { id: Sequelize.col('transactions.addressId') }
+      }],
+      offset: offset,
+      limit: limit
+    }).then(transactions => {
+      resolve(transactions);
+    })
+  });
+}
 function getTransactionsBytxId(transactionId){
 
   // search for specific attributes - hash usage
@@ -153,7 +168,6 @@ export {
   getTransactionById,
   getTransactionsBytxId,
   updateTransaction,
-  Address,
-  Transaction
+  getAllTransactions
 }
 
