@@ -67,7 +67,7 @@ const Contacts = db.define('contacts', {
   address: Sequelize.STRING
 })
 
-const ReduxTimeCecker = db.define('time_checker', {
+const ReduxTimeChecker = db.define('time_checker', {
   // TODO
 })
 
@@ -85,51 +85,35 @@ db.sync();
  */
 
 function addTransaction(transaction, pending = false) {
-
-  const add = Address
-    .findOrCreate({
+  return new Promise((fulfill, reject) => {
+    Address
+      .findOrCreate({
         where: {
           address: transaction.address
         }
       })
-    .spread((address, created) => {
-      console.log(address.get({
-        plain: true
-      }))
-      console.log(created)
+      .spread((address, created) => {
+        console.log(address.get({
+          plain: true
+        }))
+        console.log(created)
+        Transaction.create({
+            transaction_id: transaction.txId,
+            time: transaction.time,
+            amount: transaction.amount,
+            category: transaction.category,
+            address: transaction.address,
+            fee: transaction.fee,
+            confirmations: transaction.confirmations,
+            status: pending === false ? "confirmed" : "pending"
 
-      Transaction.create({
-        transaction_id: transaction.txId,
-        time: transaction.time,
-        amount: transaction.amount,
-        category: transaction.category,
-        address: transaction.address,
-        fee: transaction.fee,
-        confirmations: transaction.confirmations,
-        status: pending === false ? "confirmed" : "pending"
-
-      }
+          }
         ).then(transaction => {
-          add.addTransaction(transaction)
-        return transaction;
+          address.addTransaction(transaction).then(fulfill)
+          return transaction;
+        })
       })
-
-      /*
-       findOrCreate returns an array containing the object that was found or created and a boolean that will be true if a new object was created and false if not, like so:
-
-      [ {
-          username: 'sdepold',
-          job: 'Technical Lead JavaScript',
-          id: 1,
-          createdAt: Fri Mar 22 2013 21: 28: 34 GMT + 0100(CET),
-          updatedAt: Fri Mar 22 2013 21: 28: 34 GMT + 0100(CET)
-        },
-        true
-       ]
-
-   In the example above, the "spread" on line 39 divides the array into its 2 parts and passes them as arguments to the callback function defined beginning at line 39, which treats them as "user" and "created" in this case. (So "user" will be the object from index 0 of the returned array and "created" will equal "true".)
-      */
-    })
+  });
 }
 
 

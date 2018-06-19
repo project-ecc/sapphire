@@ -777,7 +777,7 @@ class DaemonConnector {
       this.store.dispatch({type: SELECTED_SIDEBAR, payload: {parent: "walletSelected", child: "transactionsSelected"}})
   }
 
-  insertIntoDb(entries){
+  async insertIntoDb(entries){
     this.openDb();
     let statement = "BEGIN TRANSACTION;";
     let lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
@@ -793,7 +793,7 @@ class DaemonConnector {
           this.store.dispatch({type: PENDING_TRANSACTION, payload: entry.txId})
       }
 
-      addTransaction(entry, Number(entry.confirmations) < 30)
+      await addTransaction(entry, Number(entry.confirmations) < 30)
       //update with 1 new staking reward since previous ones have already been loaded on startup
       if(this.transactionsIndexed){
         this.store.dispatch({type: STAKING_REWARD, payload: entries[i]})
