@@ -1,16 +1,17 @@
 const Sequelize = require('sequelize');
 const sqlite3 = require('sqlite3');
 let remote = require('electron').remote;
+import { orm as db } from "../utils/database/db";
 const app = remote.app;
 // create the database
-const db = new Sequelize({
-  // sqlite! now!
-  dialect: 'sqlite',
-
-  // the storage engine for sqlite
-  // - default ':memory:'
-  storage: app.getPath('userData') +'/database.sqlite'
-})
+// const db = new Sequelize({
+//   // sqlite! now!
+//   dialect: 'sqlite',
+//
+//   // the storage engine for sqlite
+//   // - default ':memory:'
+//   storage: app.getPath('userData') +'/database.sqlite'
+// })
 
 
 // define the Transaction Model
@@ -151,6 +152,10 @@ function getTransactionsBytxId(transactionId){
     return transactions
     // projects will be an array of Project instances with the specified name
   });
+}
+
+function checkForMostRecentTransaction(){
+
 }
 
 function updateTransaction(id, ogTransaction){
