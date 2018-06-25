@@ -16,6 +16,7 @@ let remote = require('electron').remote;
 const app = remote.app;
 import transactionsInfo from '../utils/transactionsInfo';
 import notificationsInfo from '../utils/notificationsInfo';
+import {orm} from "../utils/database/db";
 import {addTransaction} from '../Managers/SQLManager'
 import $ from 'jquery';
 const FeedMe = require('feedme');

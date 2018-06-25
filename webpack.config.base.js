@@ -6,7 +6,7 @@ import path from 'path';
 import webpack from 'webpack';
 
 export default {
-  externals: ['pg', 'sqlite3', 'tedious', 'pg-hstore'],
+  externals: ['pg', 'sqlite3', 'tedious', 'pg-hstore', 'mysql2', 'mssql', 'sqlite', 'postgres', 'mysql'],
 
   module: {
     rules: [{

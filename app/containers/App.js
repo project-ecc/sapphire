@@ -23,6 +23,7 @@ import GenericPanel from './GenericPanel';
 import TransitionComponent from '../components/Others/TransitionComponent';
 import ActionResultPopup from '../components/SettingsPage/ActionResultPopup';
 
+
 import $ from 'jquery';
 
 const settings = require('electron').remote.require('electron-settings');

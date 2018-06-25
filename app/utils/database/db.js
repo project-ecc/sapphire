@@ -1,17 +1,22 @@
-var Connection 		= require('sequelize-connect');
-let remote = require('electron').remote;
-const app = remote.app;
+const Connection = require('sequelize-connect');
+const Sequelize = require('sequelize');
+const sqlite3 = require('sqlite3');
+const remote = require('electron').remote;
 
-export let orm = new Connection(
+const app = remote.app;
+export const orm = new Connection(
+  '',
+  '',
+  '',
   {
     // sqlite! now!
     dialect: 'sqlite',
 
     // the storage engine for sqlite
     // - default ':memory:'
-    storage: app.getPath('userData') +'/database.sqlite'
+    storage: `${app.getPath('userData')}/database.sqlite`
   }
 )
-.then(function(instance){
-  return instance
+.then((instance) => {
+  return instance;
 });
