@@ -1,6 +1,7 @@
 const homedir = require('os').homedir();
 const { exec, execFile } = require('child_process');
 const os = require('os');
+let arch = require('arch');
 
 function installGUI(){
 	console.log("installing GUI...");
@@ -11,7 +12,7 @@ function installGUI(){
     const walletDir = `${homedir}/.eccoin-wallet/`;
 
     const fileName = 'sapphire';
-    const architecture = os.arch() === 'x32' ? 'linux32' : 'linux64';
+    const architecture = arch() === 'x86' ? 'linux32' : 'linux64';
     const fullPath = walletDir + fileName + '-v' + guiVersion + '-' + architecture;
 
     runExec(`chmod +x ${fullPath} && ${fullPath}`, 1000).then(() => {
@@ -42,7 +43,7 @@ function installGUI(){
     const walletDir = `${homedir}\\.eccoin-wallet\\`;
 
     const fileName = 'sapphire';
-    const architecture = os.arch() === 'x32' ? 'win32' : 'win64';
+    const architecture = arch() === 'x86' ? 'win32' : 'win64';
     const fullPath = walletDir + fileName + '-v' + guiVersion + '-' + architecture + '.exe';
 
     console.log(fullPath)

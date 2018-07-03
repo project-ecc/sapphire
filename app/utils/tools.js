@@ -4,6 +4,7 @@ const os = require('os');
 import {TweenMax} from "gsap";
 import {getConfUri} from "./platform.service";
 import $ from 'jquery';
+import { ipcRenderer } from 'electron';
 var fsPath = require('fs-path');
 const settings = require('electron-settings');
 import { ipcRenderer } from 'electron';

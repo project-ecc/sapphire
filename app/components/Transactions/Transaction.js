@@ -26,6 +26,7 @@ class Transaction extends Component {
     });
     $(".extraInfoTransaction").hide();
     this.updateTable();
+    this.props.setEarningsChecked(new Date().getTime());
   }
 
   componentWillUnmount() {
@@ -148,7 +149,7 @@ class Transaction extends Component {
       case "all": return this.props.lang.all;
       case "send" : return this.props.lang.sent;
       case "generate":
-        this.props.setEarningsChecked(new Date().getTime());
+        //this.props.setEarningsChecked(new Date().getTime());
         return this.props.lang.earned;
       case "receive": return this.props.lang.received;
     }
@@ -184,7 +185,7 @@ class Transaction extends Component {
               </ul>
             </div>
             */}
-            
+
           </div>
           <div style={{width: "100%", marginTop: "5px", padding: "0 0"}}>
             <div className="row rowDynamic">

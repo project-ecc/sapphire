@@ -24,6 +24,7 @@ const dialog = require('electron').dialog;
 const settings = require('electron-settings');
 const event = require('./utils/eventhandler');
 
+let arch = require('arch');
 var fs = require('fs');
 var AutoLaunch = require('auto-launch');
 let autoECCLauncher = new AutoLaunch({
@@ -93,7 +94,7 @@ app.on('ready', async () => {
   //delete downloaded update if it exists.
   if (process.platform === 'linux') {
 
-    const architecture = os.arch() === 'x32' ? 'linux32' : 'linux64';
+    const architecture = arch() === 'x86' ? 'linux32' : 'linux64';
     fullPath = walletDir + fileName + '-v' + version + '-' + architecture;
 
   }
@@ -103,7 +104,7 @@ app.on('ready', async () => {
   }
   else if (process.platform.indexOf('win') > -1) {
 
-    const architecture = os.arch() === 'x32' ? 'win32' : 'win64';
+    const architecture = arch() === 'x86' ? 'win32' : 'win64';
     fullPath = walletDir + fileName + '-v' + version + '-' + architecture + '.exe';
 
   }

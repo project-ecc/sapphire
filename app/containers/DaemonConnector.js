@@ -703,7 +703,8 @@ class DaemonConnector {
 
   goToEarningsPanel(){
       this.store.dispatch({type: SELECTED_PANEL, payload: "transactions"});
-      this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: this.store.getState().chains.transactionsData, type: "generate"}});
+      //TODO replace all by generate when transactions are sorted properly
+      this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: this.store.getState().chains.transactionsData, type: "all"}});
       this.store.dispatch({type: SELECTED_SIDEBAR, payload: {parent: "walletSelected", child: "transactionsSelected"}})
   }
 

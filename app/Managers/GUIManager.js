@@ -1,6 +1,7 @@
 const request = require('request-promise-native');
 const event = require('../utils/eventhandler');
 const os = require('os');
+let arch = require('arch');
 import {getSapphireDownloadUrl, grabWalletDir} from "../utils/platform.service";
 import {version} from './../../package.json';
 import Tools from '../utils/tools';
@@ -15,7 +16,7 @@ class GUIManager {
   constructor() {
     this.path = grabWalletDir();
     this.os = require("os");
-    this.arch = os.arch();
+    this.arch = arch();
     this.os = process.platform;
     this.arch = process.arch;
     this.installedVersion = version;
@@ -127,7 +128,7 @@ async function installGUI(guiVersion){
     const walletDir = `${homedir}/.eccoin-wallet/`;
 
     const fileName = 'sapphire';
-    const architecture = os.arch() === 'x32' ? 'linux32' : 'linux64';
+    const architecture = arch() === 'x86' ? 'linux32' : 'linux64';
     let fullPath = walletDir + fileName + '-v' + guiVersion + '-' + architecture;
 
 
@@ -180,7 +181,7 @@ async function installGUI(guiVersion){
     const walletDir = `${homedir}\\.eccoin-wallet\\`;
 
     const fileName = 'sapphire';
-    const architecture = os.arch() === 'x32' ? 'win32' : 'win64';
+    const architecture = arch() === 'x86' ? 'win32' : 'win64';
     const execName = fileName + '-v' + guiVersion + '-' + architecture + '.exe';
 
     try{
