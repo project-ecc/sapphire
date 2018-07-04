@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import {getAllTransactions} from "../../Managers/SQLManager";
+import {getAllTransactions} from "../../Managers/SQLManager";
 
 import { traduction } from '../../lang/lang';
 import * as actions from '../../actions';
@@ -19,10 +19,6 @@ class Transaction extends Component {
     this.onItemClick = this.onItemClick.bind(this);
     this.handleNextClicked = this.handleNextClicked.bind(this);
     this.handlePreviousClicked = this.handlePreviousClicked.bind(this);
-    // getAllTransactions().
-    // then(transactions => {
-    //   console.log(transactions)
-    // });
   }
 
   componentDidMount() {
@@ -38,17 +34,17 @@ class Transaction extends Component {
     $( window ).off('resize');
   }
 
-  handleNextClicked(){
+  async handleNextClicked(){
     if(this.props.requesting || this.props.data.length < 100) return;
-    this.getAllTransactions(this.props.page + 1);
+    await this.getAllTransactions(this.props.page + 1);
   }
 
-  handlePreviousClicked(){
+  async handlePreviousClicked(){
     if(this.props.requesting || this.props.page === 0) return;
-    this.getAllTransactions(this.props.page - 1);
+    await this.getAllTransactions(this.props.page - 1);
   }
 
-  getAllTransactions(page) {
+  async getAllTransactions(page) {
     this.props.wallet.getTransactions(null, 100, 100 * page).then((data) => {
         this.props.setTransactionsData(data, this.props.type);
         this.props.setTransactionsPage(page);
@@ -56,6 +52,14 @@ class Transaction extends Component {
         //$(".extraInfoTransaction").hide();
     }).catch((err) => {
         console.log("error getting transactions: ", err)
+    });
+
+    return new Promise((resolve, reject) => {
+      getAllTransactions().
+      then(transactions => {
+        console.log(transactions)
+        resolve(transactions)
+      });
     });
   }
 
@@ -78,6 +82,7 @@ class Transaction extends Component {
  updateTable(){
     $('#rows').css("height", $('#transactionAddresses').height()-204);
     let numberOfChildren = this.props.data.length;
+    console.log(this.props.data)
     let totalSize = numberOfChildren * 40; //40px height of each row
     let sizeOfContainer = $('#transactionAddresses').height()-204;
     if(sizeOfContainer < totalSize){

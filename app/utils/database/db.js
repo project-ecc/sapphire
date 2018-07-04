@@ -45,7 +45,8 @@ Object.values(models)
 
 const db = {
   ...models,
-  sequelize
+  sequelize,
+  Sequelize
 };
 
 module.exports = db;

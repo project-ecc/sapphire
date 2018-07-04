@@ -54,11 +54,12 @@ function getAllTransactions(limit = 100, offset = 0) {
     Transaction.findAll({
       include: [{
         model: Address,
-        where: { id: Sequelize.col('transactions.addressId') }
+        where: { id: db.Sequelize.col('transactions.addressId') }
       }],
       offset,
       limit
     }).then(transactions => {
+      console.log(transactions)
       resolve(transactions);
     });
   });
