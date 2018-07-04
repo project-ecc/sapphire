@@ -15,19 +15,19 @@ const sqlite3 = require('sqlite3');
 let remote = require('electron').remote;
 const app = remote.app;
 import transactionsInfo from '../utils/transactionsInfo';
-import notificationsInfo from '../utils/notificationsInfo';
-import {orm} from "../utils/database/db";
 import {addTransaction} from '../Managers/SQLManager'
 import $ from 'jquery';
 const FeedMe = require('feedme');
 const https = require('https');
 const Tools = require('../utils/tools');
 const request = require('request');
+import db from '../../app/utils/database/db'
 
 //this class acts as a bridge between wallet.js (daemon) and the redux store
 class DaemonConnector {
 
 	constructor(store){
+	  db.sequelize.sync()
 		this.store = store;
 		this.daemonAvailable = false;
     this.wallet = store.getState().application.wallet;

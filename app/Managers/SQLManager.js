@@ -1,14 +1,6 @@
-const Connection = require('sequelize-connect');
-const remote = require('electron').remote;
-
-const app = remote.app;
-
-const orm = new Connection(); // singleton pattern - returns the created instance
-const sequelize = orm.sequelize;
-const Sequelize = orm.Sequelize;
-const models    = orm.models;
-const Transaction = models.Transaction;
-const Address      = models.Address;
+import db from '../../app/utils/database/db'
+const Address = db.Address;
+const Transaction = db.Transaction
 
 /**
  * Functions all below here for manipulating the data.

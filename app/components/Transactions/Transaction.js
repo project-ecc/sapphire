@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {getAllTransactions} from "../../Managers/SQLManager";
+// import {getAllTransactions} from "../../Managers/SQLManager";
 
 import { traduction } from '../../lang/lang';
 import * as actions from '../../actions';
@@ -19,10 +19,10 @@ class Transaction extends Component {
     this.onItemClick = this.onItemClick.bind(this);
     this.handleNextClicked = this.handleNextClicked.bind(this);
     this.handlePreviousClicked = this.handlePreviousClicked.bind(this);
-    getAllTransactions().
-    then(transactions => {
-      console.log(transactions)
-    });
+    // getAllTransactions().
+    // then(transactions => {
+    //   console.log(transactions)
+    // });
   }
 
   componentDidMount() {
