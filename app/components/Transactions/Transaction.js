@@ -273,12 +273,12 @@ class Transaction extends Component {
                       <p style={{ margin: '0px' }}><span>{moment(t.time * 1000).format('MMMM Do')}</span></p>
                     </div>
                     <div className="col-sm-6 transactionAddress" style={{paddingLeft: "4%", paddingTop: "9px"}}>
-                      {category} <p style={{ margin: '0px' }}><span className="desc2 transactionAddress"> {t.address}</span></p><p>{time}</p>
+                      {category} <p style={{ margin: '0px' }}><span className="desc2 transactionAddress"> {t.address}</span></p><p style={{fontSize: "12px" }}>{time}</p>
                     </div>
 
                     <div className="col-sm-4" style={{paddingTop: "9px"}}>
-                      <p style={{ margin: '0px' }}>{t.amount}</p>
-                      <p style={{ margin: '0px', fontWeight: "50%" }}>{this.renderStatus(t.confirmations)}</p>
+                      <p style={{ margin: '0px' }}>{t.amount} ECC</p>
+                      <p style={{ margin: '0px', fontSize: "12px" }}>{this.renderStatus(t.confirmations)}</p>
                     </div>
                     <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{paddingLeft: "4%", width: "100%", paddingTop: "11px", paddingBottom: "11px", cursor:"default", zIndex:"2", display:"none"}}>
                       <div className="col-sm-8">

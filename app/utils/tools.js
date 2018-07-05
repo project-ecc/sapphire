@@ -7,7 +7,6 @@ import $ from 'jquery';
 import { ipcRenderer } from 'electron';
 var fsPath = require('fs-path');
 const settings = require('electron-settings');
-import { ipcRenderer } from 'electron';
 
 module.exports = {
 
