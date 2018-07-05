@@ -71,7 +71,6 @@ class Send extends Component {
     let clearButton = require('../../../resources/images/clearButton-orange.png');
     return (
       <div className="panel Send">
-        <AddressBook sendPanel={true}/>
           <p className="Send__message-status">{ this.props.lang.addressCopiedBelow }</p>
           <div className="Send__form">
             <div className="Send__inputs-wrapper">
@@ -108,6 +107,7 @@ class Send extends Component {
               />
             </div>
           </div>
+        <AddressBook sendPanel={true}/>
       </div>
     );
   }

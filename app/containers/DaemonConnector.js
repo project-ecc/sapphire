@@ -17,16 +17,21 @@ const app = remote.app;
 import transactionsInfo from '../utils/transactionsInfo';
 import notificationsInfo from '../utils/notificationsInfo';
 import ansAddressesInfo from '../utils/ansAddressesInfo';
+
+import {addTransaction} from '../Managers/SQLManager'
+
 import $ from 'jquery';
 const FeedMe = require('feedme');
 const https = require('https');
 const Tools = require('../utils/tools');
 const request = require('request');
+import db from '../../app/utils/database/db'
 
 //this class acts as a bridge between wallet.js (daemon) and the redux store
 class DaemonConnector {
 
 	constructor(store){
+	  db.sequelize.sync()
 		this.store = store;
 		this.daemonAvailable = false;
     this.wallet = store.getState().application.wallet;
@@ -548,7 +553,7 @@ class DaemonConnector {
   setupTransactionsDB(){
     this.db = new sqlite3.Database(app.getPath('userData') + '/transactions');
     this.db.serialize(() => {
-      this.db.run("CREATE TABLE IF NOT EXISTS transactions (transaction_id VAARCHAR(64) PRIMARY KEY, time INTEGER, amount DECIMAL(11,8), category, address, fee DECIMAL(2,8), confirmations INTEGER);");
+      this.db.run("CREATE TABLE IF NOT EXISTS transactions (transaction_id VAARCHAR(64), time INTEGER, amount DECIMAL(11,8), category, address, fee DECIMAL(2,8), confirmations INTEGER);");
       this.db.run("CREATE TABLE IF NOT EXISTS pendingTransactions (transaction_id VAARCHAR(64));");
     });
 
@@ -604,6 +609,9 @@ class DaemonConnector {
       this.from = transactions[0].time;
     }
 
+    //console.log(transactions)
+    // console.log(JSON.stringify(transactions))
+
     //load transactions into transactionsMap for processing
     for (let i = 0; i < transactions.length; i++) {
       time = transactions[i].time;
@@ -613,13 +621,13 @@ class DaemonConnector {
         amount = transactions[i].amount;
         category = transactions[i].category;
         address = transactions[i].address;
-        fee = transactions[i].fee == undefined ? 0 : transactions[i].fee;
+        fee = transactions[i].fee === undefined ? 0 : transactions[i].fee;
         confirmations = transactions[i].confirmations;
         if(!this.transactionsMap[txId]){
             this.transactionsMap[txId] = [];
-            this.transactionsMap[txId].push(address)
         }
         this.transactionsMap[txId].push({
+          txId: txId,
           time: time,
           amount: amount,
           category: category,
@@ -642,62 +650,137 @@ class DaemonConnector {
     }
   }
 
+  similarity(s1, s2) {
+    let longer = s1;
+    let shorter = s2;
+    if (s1.length < s2.length) {
+      longer = s2;
+      shorter = s1;
+    }
+    let longerLength = longer.length;
+    if (longerLength === 0) {
+      return 1.0;
+    }
+    return (longerLength - this.editDistance(longer, shorter)) / parseFloat(longerLength);
+  }
+
+  editDistance(s1, s2) {
+    s1 = s1.toLowerCase();
+    s2 = s2.toLowerCase();
+
+    let costs = [];
+    for (let i = 0; i <= s1.length; i++) {
+      let lastValue = i;
+      for (let j = 0; j <= s2.length; j++) {
+        if (i === 0)
+          costs[j] = j;
+        else {
+          if (j > 0) {
+            let newValue = costs[j - 1];
+            if (s1.charAt(i - 1) !== s2.charAt(j - 1))
+              newValue = Math.min(Math.min(newValue, lastValue),
+                costs[j]) + 1;
+            costs[j - 1] = lastValue;
+            lastValue = newValue;
+          }
+        }
+      }
+      if (i > 0)
+        costs[s2.length] = lastValue;
+    }
+    return costs[s2.length];
+  }
+
   processTransactions(){
     let entries = [];
-    /*let auxCurrentAddresses = [];
-    let currentAddresses = this.store.getState().application.userAddresses;
-    for(let i = 0; i < currentAddresses.length; i++)
-      auxCurrentAddresses.push(currentAddresses[i].address)*/
+    let rewards = [];
+    let staked = [];
+    let change = [];
+    const self = this
 
     //process transactions
     for (const key of Object.keys(this.transactionsMap)) {
+
       let values = this.transactionsMap[key];
-      for(let i = 1; i < values.length; i++){
-        if(values[i].category == "generate" && values[i].amount > 0){
-          entries.push({...values[i], txId: key});
+      let generatedFound = false;
+
+
+      // check if current values array contains a staked transaction, if it does flag the rest of them as category staked
+      restartLoop:
+        while (true) {
+          for(let i = 0; i <= values.length - 1; i++) {
+            if (values[i].category === "generate" && generatedFound === false) {
+              generatedFound = true
+              continue restartLoop;
+            }
+            if(generatedFound) {
+              if(values[i].category !== "generate") {
+                values[i].category = "staked";
+              }
+              rewards.push({...values[i], txId: key})
+            }
+          }
           break;
         }
-      }
-      //the opposite means its staking transactions
-      //if(!(values.length == 3 && values[1].category == "send" && values[2].category == "send")){
 
-        //earned from staking
-        //if(values.length == 4 && values[3].category == "generate" && values[3].amount > 0){
-          //entries.push({...values[3], txId: key})
-        //}
-        //received transactions
-        /*else if(values.length == 2 && values[1].category == "receive"){
-            entries.push({...values[1], txId: key})
-        }
-        //same wallet transaction
-        else if(values.length == 5){
-          entries.push({...values[2], txId: key})
-          entries.push({...values[4], txId: key})
-        }
-        //sent transactions
-        else if(values.length == 3 || values.length == 4){
-          console.log(values.length)
-          for(let i = 1; i < values.length; i++){
-            console.log(values[i].amount)
-            console.log(values[i].address)
-            console.log(values[i].category)
-          }
-          let address = this.transactionsMap[key][0];
-          let netAmount = 0;
-          for(let i = 1; i < values.length; i++){
-            netAmount += values[i].amount;
-          }
-          if(netAmount < 0){
-            for(let i = 1; i < values.length; i++){
-              if(!auxCurrentAddresses.includes(values[i].address) && values[i].category == "send"){
-                entries.push({...values[i], txId: key})
-              }
+      // if the above condition doesnt fit calculate the lev
+      if (!generatedFound){
+        for(let i = 0; i <= values.length - 1; i++){
+
+          entries.push({...values[i], txId: key});
+
+          for(let j = 0; j < entries.length - 1; j++ ){
+            let original = entries[j];
+            let current = values[i];
+            if(current.txId === original.txId) {
+              console.log('txId match')
+
+              // if original == send
+              if(original.category === "receive" && current.category === "send" || original.category === "send" && current.category === "receive"){
+                if(this.similarity(original.amount.toString(), current.amount.toString()) > 0.6){
+                  console.log('original ele')
+                  console.log(original)
+                  console.log('current Element')
+                  console.log(current)
+                  console.log('change transaction' + current.amount)
+
+                  console.log('Sim value')
+                  console.log(this.similarity(original.amount.toString(), current.amount.toString()))
+
+                  current.category = "change";
+                  original.category = "change";
+                  change.push({...current, txId: key});
+                  change.push({...original, txId: key});
+                  entries.splice(entries.indexOf(original), 1);
+                  entries.splice(entries.indexOf(current), 1);
+                } else {
+                  console.log('similarity too low')
+                  console.log(this.similarity(original.amount.toString(), current.amount.toString()))
+                }
+              } else{
+                console.log('Sim value')
+                console.log(this.similarity(original.amount.toString(), current.amount.toString()))
+                console.log('original ele')
+                console.log(original)
+                console.log('current Element')
+                console.log(current)
+                console.log('values dont line up')
               }
             }
           }
-        }*/
+
+        }
       }
-      this.transactionsMap = {};
+      generatedFound = false;
+    }
+
+    // console.log(entries);
+    // console.log(rewards);
+    // console.log(staked);
+    this.transactionsMap = {};
+    entries = entries.concat(rewards, staked, change);
+    // console.log(entries.length)
+    // console.log(JSON.stringify(entries))
     this.insertIntoDb(entries)
   }
 
@@ -708,7 +791,7 @@ class DaemonConnector {
       this.store.dispatch({type: SELECTED_SIDEBAR, payload: {parent: "walletSelected", child: "transactionsSelected"}})
   }
 
-  insertIntoDb(entries){
+  async insertIntoDb(entries){
     this.openDb();
     let statement = "BEGIN TRANSACTION;";
     let lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
@@ -723,6 +806,8 @@ class DaemonConnector {
           statement += `INSERT INTO pendingtransactions VALUES('${entry.txId}');`;
           this.store.dispatch({type: PENDING_TRANSACTION, payload: entry.txId})
       }
+
+      await addTransaction(entry, Number(entry.confirmations) < 30)
       //update with 1 new staking reward since previous ones have already been loaded on startup
       if(this.transactionsIndexed){
         this.store.dispatch({type: STAKING_REWARD, payload: entries[i]})

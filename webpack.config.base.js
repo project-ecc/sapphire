@@ -4,11 +4,21 @@
 
 import path from 'path';
 import webpack from 'webpack';
+import fs from 'fs'
+
+var nodeModules = {};
+fs.readdirSync('node_modules')
+  .filter(function(x) {
+    return ['.bin'].indexOf(x) === -1;
+  })
+  .forEach(function(mod) {
+    nodeModules[mod] = 'commonjs ' + mod;
+  });
 
 export default {
-  externals: {
-    sqlite3: 'sqlite3',
-  },
+
+
+  externals: [ nodeModules],
 
   module: {
     rules: [{
