@@ -99,6 +99,14 @@
 	}
 }
 
+#messagingInputDiv p{
+	@include themify($themes) {
+		color: themed('inputPlaceHolderColor');
+	}
+    position: absolute;
+    font-size: 15px;
+}
+
 .borderChatPreview{
 	width: 7px;
 	height: 7px;
@@ -168,7 +176,7 @@
 }
 
 #messagingInputOptions{
-	width: 65px;
+	width: 150px;
 	//background-color: white;
 	height: 100%;
 }
@@ -177,8 +185,7 @@
 	@include themify($themes) {
 		color: themed('bodyParagraphColor');
 	}
-	width: calc(100% - 95px);
-    margin-right: 27px;
+	width: calc(100% - 150px);
     background-color: transparent;
     border: none;
     padding-left: 10px;
@@ -197,6 +204,11 @@
 	width: 100px;
 }
 
+#messagingInput svg{
+    position: absolute;
+    right: 5px;
+}
+
 #messagingInput circle, #messagingInput polyline{
 	stroke: #394b5a;
 }
@@ -213,8 +225,6 @@
 
 #circleMessaging{
 	top: 15px;
-	position: absolute;
-    right: 12px;
 }
 
 .addCursorPointer{
@@ -223,8 +233,7 @@
 
 #messagingSendButton{
 	position: relative;
-    height: 100%;
-    right: 0px;
+	right: 20px;
 }
 
 #messagingTopBar{
@@ -380,7 +389,6 @@
     font-weight: 500;
 	margin-top: 5px;
 	width: max-content;
-	word-wrap: break-word;
 }
 
 .ownMessage{

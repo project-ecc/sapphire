@@ -7,6 +7,7 @@ import $ from 'jquery';
 import { ipcRenderer } from 'electron';
 var fsPath = require('fs-path');
 const settings = require('electron-settings');
+import { ipcRenderer } from 'electron';
 
 module.exports = {
 
@@ -17,6 +18,68 @@ module.exports = {
       context.props.addNewMessage({id: id, message: {body: message, mine: false, date: new Date(), emoji: emoji}, activeContactName: address})
     }, delay)
 
+  },
+
+  searchForUsernameOrAddress(wallet, addressOrUsername){
+    return new Promise( async (resolve, reject) => {
+      try{
+        const response = await wallet.validate(addressOrUsername);
+        let username;
+        let code;
+        //try to find ans username, if it exists
+        if(response.isvalid){
+          let ansAddress = await wallet.getAnsRecord(addressOrUsername, "PTR");
+          if(ansAddress[0].Code !== ""){
+            code = ansAddress[0].Code;
+            username = ansAddress[0].Name;
+            resolve({ans: true, addresses:[ansAddress[0]]});
+          }
+          else{
+            resolve({ans: false, addresses:[response]});
+          }
+        }
+        //looks up for a specific ans username
+        else if(addressOrUsername.indexOf('#') !== -1){
+          let arr = addressOrUsername.split('#');
+          username = arr[0];
+          code = arr[1];
+          let ansAddress = await wallet.getAnsRecord(username, "A");
+          //multiple usernames
+          if(ansAddress){
+            ansAddress.map((val) => {
+              if(val.Code == code){
+                resolve({ans: true, addresses:[val]});
+                return;
+              }
+            })
+            reject();
+          }
+          else{
+            reject();
+          }
+        }
+        //case where it may return a list of addresses using the same username
+        else{
+          let ansAddress = await wallet.getAnsRecord(addressOrUsername, "A");
+          let toReturn = [];
+          if(ansAddress){
+            let foundCode = false;
+            ansAddress.map((val) => {
+              toReturn.push(val);
+            })
+            if(toReturn.length > 0){
+              resolve({ans: true, addresses: toReturn});
+            }
+            else{
+              reject();
+            }
+          }
+        }
+
+      }catch(err){
+        reject();
+      }
+    });
   },
 
   //MISC
@@ -460,14 +523,14 @@ module.exports = {
     }, 600)
   },
 
-  showTemporaryMessage: function (element, text, time=2000) {
+  showTemporaryMessage: function (element, text, time=2000, originalText) {
     if(text){
       $(element).text(text)
     }
 
     TweenMax.to(element, 0.2, {autoAlpha: 1, scale: 1, onComplete: () => {
       setTimeout(() => {
-        TweenMax.to(element, 0.2, {autoAlpha: 0, scale: 0.5});
+        TweenMax.to(element, 0.2, {autoAlpha: 0, scale: 0.5, onComplete: () => {if(originalText) $(element).text(originalText)}});
       }, time)
     }});
   },

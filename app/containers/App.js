@@ -23,6 +23,7 @@ import GenericPanel from './GenericPanel';
 import TransitionComponent from '../components/Others/TransitionComponent';
 import ActionResultPopup from '../components/SettingsPage/ActionResultPopup';
 
+import ContactPopup from '../components/ContactsPage/ContactPopup';
 
 import $ from 'jquery';
 
@@ -140,6 +141,9 @@ class App extends Component<Props> {
     }
     else if(this.props.unlocking){
       component = <UnlockWallet />
+    }
+    else if(this.props.addingContact){
+      component = <ContactPopup />
     }
     else if(this.props.closingApplication){
       component = <ClosingApplication />;
@@ -335,7 +339,8 @@ const mapStateToProps = state => {
     importingWalletWithSetupDone: state.startup.importingWalletWithSetupDone,
     actionPopupResult: state.application.actionPopupResult,
     actionPopupMessage: state.application.actionPopupMessage,
-    actionPopupStatus: state.application.actionPopupStatus
+    actionPopupStatus: state.application.actionPopupStatus,
+    addingContact: state.application.addingContact
   };
 };
 

@@ -26,39 +26,6 @@ class ChangePassword extends React.Component {
     this.props.setNewPassword("");
   }
 
-  handlePasswordChange(event) {
-    let pw = event.target.value;
-    if(pw.length === 0){
-      TweenMax.set('#enterPassword', {autoAlpha: 1});
-    }
-    else
-      TweenMax.set('#enterPassword', {autoAlpha: 0});
-
-    this.props.setPassword(pw);
-  }
-
-  handlePasswordConfirmationChange(event){
-    let pw = event.target.value;
-    if(pw.length === 0){
-      TweenMax.set('#enterPasswordRepeat', {autoAlpha: 1});
-    }
-    else
-      TweenMax.set('#enterPasswordRepeat', {autoAlpha: 0});
-
-    this.props.passwordConfirmation(pw)
-  }
-
-  handleNewPasswordChange(event){
-    let pw = event.target.value;
-    if(pw.length === 0){
-      TweenMax.set('#enterPasswordConfirmation', {autoAlpha: 1});
-    }
-    else
-      TweenMax.set('#enterPasswordConfirmation', {autoAlpha: 0});
-
-    this.props.setNewPassword(pw)
-  }
-
   changePassword(){
     let wasStaking = this.props.isStaking;
     this.props.wallet.walletChangePassphrase(this.props.passwordVal, this.props.newPassword).then((data)=>{
@@ -105,40 +72,37 @@ class ChangePassword extends React.Component {
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">{ this.props.lang.changePassword }</p>
         <Input
-          divStyle={{marginTop: "45px", width: "300px"}}
           placeholder= { this.props.lang.currentPassword }
           placeholderId="enterPassword"
-          placeHolderClassName="inputPlaceholder changePasswordInput"
           value={this.props.passwordVal}
-          handleChange={this.handlePasswordChange.bind(this)}
+          handleChange={this.props.setPassword}
           type="password"
           inputId="enterPasswordId"
-          inputStyle={{width: "300px"}}
-          autoFocus={true}
+          onSubmit={this.handleConfirm}
+          style={{marginTop: "30px", marginBottom: "25px", width: "60%"}}
+          autoFocus
         />
         <Input
-          divStyle={{marginTop: "20px", width: "300px"}}
           placeholder= {  this.props.lang.newPassword}
           placeholderId="enterPasswordRepeat"
-          placeHolderClassName="inputPlaceholder changePasswordInput"
           value={this.props.passwordValConfirmation}
-          handleChange={this.handlePasswordConfirmationChange.bind(this)}
+          handleChange={this.props.passwordConfirmation}
           type="password"
           inputId="newPasswordId"
-          inputStyle={{width: "300px"}}
+          onSubmit={this.handleConfirm}
+          style={{marginBottom: "25px", width: "60%"}}
         />
         <Input
-          divStyle={{marginTop: "20px", width: "300px"}}
           placeholder= { this.props.lang.repeatPassword }
           placeholderId="enterPasswordConfirmation"
-          placeHolderClassName="inputPlaceholder changePasswordInput"
           value={this.props.newPassword}
-          handleChange={this.handleNewPasswordChange.bind(this)}
+          handleChange={this.props.setNewPassword}
           type="password"
           inputId="repeatNewPasswordId"
-          inputStyle={{width: "300px"}}
+          onSubmit={this.handleConfirm}
+          style={{width: "60%"}}
         />
-        <p id="wrongPassword" className="wrongPassword" style= {{paddingTop:"10px"}}>{ this.props.lang.wrongPassword }</p>
+        <p id="wrongPassword" className="wrongPassword" style= {{paddingTop:"10px", marginTop:"0px"}}>{ this.props.lang.wrongPassword }</p>
         <ConfirmButtonPopup inputId={"#enterPasswordId, #enterPasswordId, #repeatNewPasswordId"} handleConfirm={this.handleConfirm} textLoading={this.props.lang.confirming} text={ this.props.lang.confirm }/>
       </div>
       );

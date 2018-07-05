@@ -15,7 +15,11 @@ const sqlite3 = require('sqlite3');
 let remote = require('electron').remote;
 const app = remote.app;
 import transactionsInfo from '../utils/transactionsInfo';
+import notificationsInfo from '../utils/notificationsInfo';
+import ansAddressesInfo from '../utils/ansAddressesInfo';
+
 import {addTransaction} from '../Managers/SQLManager'
+
 import $ from 'jquery';
 const FeedMe = require('feedme');
 const https = require('https');
@@ -97,6 +101,7 @@ class DaemonConnector {
     this.unencryptedWallet = false;
     this.heighestBlockFromServer = 0;
     this.heighestBlockFromServerInterval;
+    this.translator = this.store.getState().startup.lang;
 	}
 
   subscribeToEvents(){
@@ -147,26 +152,32 @@ class DaemonConnector {
     }
     if(!this.hasLoadedTransactionsFromDb)
       await this.loadTransactionFromDb();
+    try{
+      await this.wallet.getAllInfo().then( async (data) => {
+        if(data){
+          let highestBlock = data[0].headers == 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
+          // remove .00 if 100%
+          let syncedPercentage = (data[0].blocks * 100) / data[0].headers;
+          syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
 
-    await this.wallet.getAllInfo().then( async (data) => {
-      if(data){
-        let highestBlock = data[0].headers == 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
+          data[0].headers = highestBlock;
 
-        // remove .00 if 100%
-        let syncedPercentage = (data[0].blocks * 100) / data[0].headers;
-        syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
-
-        data[0].headers = highestBlock;
-
-        this.store.dispatch({type: SET_DAEMON_VERSION, payload: tools.formatVersion(data[0].version)});
-        this.store.dispatch({type: WALLET_INFO, payload: data[0]});
-        this.store.dispatch({type: CHAIN_INFO, payload: data[0]});
-        this.store.dispatch({type: WALLET_INFO_SEC, payload: data[4]});
-        this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data[0].blocks == 0 || data[0].headers == 0 ? 0 : syncedPercentage});
-        this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: data[1], type: this.store.getState().chains.transactionsType}});
-        await this.getAddresses(data[2], data[3]);
-      }
-    });
+          this.store.dispatch({type: SET_DAEMON_VERSION, payload: tools.formatVersion(data[0].version)});
+          this.store.dispatch({type: WALLET_INFO, payload: data[0]});
+          this.store.dispatch({type: CHAIN_INFO, payload: data[0]});
+          this.store.dispatch({type: WALLET_INFO_SEC, payload: data[4]});
+          this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data[0].blocks == 0 || data[0].headers == 0 ? 0 : syncedPercentage});
+          this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: data[1], type: this.store.getState().chains.transactionsType}});
+          await this.getAddresses(data[2], data[3]);
+        }
+      });
+    }catch(err){
+      console.log(err);
+      setTimeout(() => {
+        this.mainCycle();
+      }, this.firstRun && this.transactionsIndexed ? 1000 : 4000);
+      return;
+    }
     if(!this.firstRun && !this.isIndexingTransactions && this.transactionsIndexed){
       this.loadTransactionsForProcessing();
     }
@@ -385,7 +396,9 @@ class DaemonConnector {
         if (!error && response.statusCode == 200) {
           let json = JSON.parse(body);
           let height = json.block_height;
+          console.log("Server height: ", height)
           let localHeight = self.store.getState().chains.headersPayment;
+          console.log("Local height: ", self.store.getState().chains.headersPayment)
           if(localHeight >= height){
             clearInterval(self.heighestBlockFromServerInterval);
             resolve(localHeight);
@@ -967,23 +980,39 @@ class DaemonConnector {
       }
     });
 
-    /*const allAddressesWithANS = await Promise.all(normalAddresses.map(async (address) => {
+    const currentBlock = this.store.getState().chains.blockPayment;
+
+    const allAddressesWithANS = await Promise.all(normalAddresses.map(async (address) => {
       let retval;
       const ansRecord = await this.wallet.getANSRecord(address.address);
-      if (ansRecord.Name) {
+      //TODO include code to see if it was recently created and notify user if its been 3 blocks since its creation
+
+      let notReadyAnsAddress = ansAddressesInfo.get('addresses').find({ address: address.address }).value()
+      let shouldAdd = true;
+      if(notReadyAnsAddress){
+        if(currentBlock > notReadyAnsAddress.creationBlock + 3){
+          this.queueOrSendNotification(()=>{}, `${this.translator.ansReady}.\n\n${this.translator.username}: ${ansRecord.Name}`)
+          ansAddressesInfo.get('addresses').remove({ address: address.address }).write()
+        }
+        else{
+          shouldAdd = false;
+        }
+      }
+
+      if (shouldAdd && ansRecord && ansRecord.Name) {
         retval = {
           account: address.account,
           address: ansRecord.Name,
           normalAddress: address.address,
           amount: address.amount,
+          code: ansRecord.Code,
           ans: true,
         }
       } else {
         retval = address;
       }
-
       return retval;
-    }));*/
+    }));
 
     const toAppend = allReceived
                       .filter(address => address.amount === 0)
@@ -997,9 +1026,16 @@ class DaemonConnector {
                         }
                       });
 
-    //const toReturn = allAddressesWithANS.concat(toAppend);
-    const toReturn = normalAddresses.concat(toAppend);
+    let toReturn = allAddressesWithANS.concat(toAppend);
+    toReturn = Object.values(toReturn).sort(function(a,b){
+      if(!b.ans || !a.ans){
+        return b.ans - a.ans
+      }
+      else{
+        return b.address < a.address
+      }
 
+    })
     this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
     //We need to have the addresses loaded to be able to index transactions
     this.currentAddresses = toReturn;
