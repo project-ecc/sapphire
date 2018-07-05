@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import $ from 'jquery';
 const Tools = require('../../utils/tools');
+var classNames = require('classnames');
 
 class ConfirmButtonPopup extends Component {
   constructor(props) {
@@ -24,10 +25,24 @@ class ConfirmButtonPopup extends Component {
   }
 
   render() {
-      const loader = <EllipsisLoader />
-      const text = this.props.loading ? this.props.textLoading : this.props.text;
+      let hasLoader = true;
+      if(this.props.hasLoader === false)
+        hasLoader = false;
+
+
+      var buttonClass = classNames({
+        'buttonPrimary': true,
+        'buttonPrimary--is-popup-btn': hasLoader
+      });
+
+      if(this.props.className){
+        buttonClass += " " + this.props.className;
+      }
+
+      const loader = hasLoader ? <EllipsisLoader /> : null;
+      const text = hasLoader && this.props.loading ? this.props.textLoading : this.props.text;
       return (
-        <div onClick={ this.props.loading ? () => {} : this.props.handleConfirm} id={this.props.buttonId ? this.props.buttonId : "confirmButtonPopup"} className="buttonPrimary" style={this.props.style? this.props.style : {bottom: "10px", left:"205px"}}>
+        <div onClick={ this.props.loading ? () => {} : this.props.handleConfirm} id={this.props.buttonId ? this.props.buttonId : "confirmButtonPopup"} className={buttonClass}>
           {text}
           {this.props.loading && loader}
         </div>

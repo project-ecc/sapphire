@@ -28,6 +28,23 @@ export default class Wallet {
     });
   }
 
+  getAnsRecord(toLookup, type){
+    return new Promise((resolve, reject) => {
+      let batch = [];
+      batch.push({method: "getansrecord", parameters: [toLookup, type]})
+
+      client.command(batch).then((response) => {
+        try{
+          if(responses[0].name === "RpcError")
+            return resolve(undefined);
+        }catch(e){}
+        return resolve(response[0]);
+      }).catch((err) => {
+        return resolve(undefined);
+      });
+    });
+  }
+
   getAllInfo(){
     return new Promise((resolve, reject) => {
       let batch = [];
@@ -155,8 +172,8 @@ export default class Wallet {
 
   getANSRecord(address) {
     return new Promise((resolve, reject) => {
-      client.getANSRecord(address).then(record => {
-        return resolve(record);
+      client.command([{method: "getansrecord", parameters: [address, "PTR"]}]).then(record => {
+        return resolve(record[0][0]);
       }).catch(err => {
         return reject(err);
       })

@@ -15026,7 +15026,7 @@ li.active.have-children span::after {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
   -webkit-tap-highlight-color: transparent; }
 
 .react-toggle-screenreader-only {
@@ -15277,12 +15277,28 @@ li.active.have-children span::after {
 
 .confirmationText {
   font-size: 16px;
-  width: 90%;
+  width: 80%;
   margin: 0 auto;
   text-align: center;
   font-weight: 500;
-  margin-top: 30px;
-  margin-bottom: 70px; }
+  margin-top: 30px; }
+
+.Receive__ans-code {
+  font-size: 12px;
+  font-weight: bold;
+  color: #2e2e3a; }
+
+.Receive__upgrade-text {
+  display: inline-block;
+  position: absolute;
+  right: 0px;
+  font-size: 14px;
+  cursor: pointer;
+  padding-top: 3px; }
+  .theme-defaultEcc .Receive__upgrade-text {
+    color: #aeacf3; }
+  .theme-darkEcc .Receive__upgrade-text {
+    color: #59aac3; }
 
 #rows {
   overflow-y: scroll;
@@ -16037,11 +16053,11 @@ i.fa.fa-chevron-down {
 ::-webkit-scrollbar-track {
   border-radius: 8px; }
   .theme-defaultEcc ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 0px rgba(0, 0, 0, 0);
-    background-color: rgba(0, 0, 0, 0); }
+    -webkit-box-shadow: inset 0 0 0px transparent;
+    background-color: transparent; }
   .theme-darkEcc ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 0px rgba(0, 0, 0, 0);
-    background-color: rgba(0, 0, 0, 0); }
+    -webkit-box-shadow: inset 0 0 0px transparent;
+    background-color: transparent; }
 
 ::-webkit-scrollbar-thumb {
   border-radius: 10px; }
@@ -17133,11 +17149,12 @@ i.fa.fa-chevron-down {
   float: left; }
 
 #messagingInputOptions {
-  width: 150px;
+  width: 65px;
   height: 100%; }
 
 #messagingInput textarea {
-  width: calc(100% - 150px);
+  width: calc(100% - 95px);
+  margin-right: 27px;
   background-color: transparent;
   border: none;
   padding-left: 10px;
@@ -17157,10 +17174,6 @@ i.fa.fa-chevron-down {
 #messagingInputTools {
   width: 100px; }
 
-#messagingInput svg {
-  position: absolute;
-  right: 5px; }
-
 #messagingInput circle, #messagingInput polyline {
   stroke: #394b5a; }
 
@@ -17174,14 +17187,17 @@ i.fa.fa-chevron-down {
   stroke-width: 0.55 !important; }
 
 #circleMessaging {
-  top: 15px; }
+  top: 15px;
+  position: absolute;
+  right: 12px; }
 
 .addCursorPointer {
   cursor: pointer; }
 
 #messagingSendButton {
   position: relative;
-  right: 20px; }
+  height: 100%;
+  right: 0px; }
 
 #messagingTopBar {
   height: 80px;
@@ -17319,7 +17335,8 @@ i.fa.fa-chevron-down {
   box-shadow: 0px 1px 8px -7px #0e0f13;
   font-weight: 500;
   margin-top: 5px;
-  width: max-content; }
+  width: max-content;
+  word-wrap: break-word; }
 
 .ownMessage {
   border-top-right-radius: 0px;
