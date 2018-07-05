@@ -761,12 +761,12 @@ class DaemonConnector {
       generatedFound = false;
     }
 
-    console.log(entries);
-    console.log(rewards);
-    console.log(staked);
+    // console.log(entries);
+    // console.log(rewards);
+    // console.log(staked);
     this.transactionsMap = {};
-    entries = entries.concat(rewards, staked);
-    console.log(entries.length)
+    entries = entries.concat(rewards, staked, change);
+    // console.log(entries.length)
     // console.log(JSON.stringify(entries))
     this.insertIntoDb(entries)
   }

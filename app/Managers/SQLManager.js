@@ -49,7 +49,7 @@ function getTransactionById(modelId) {
   });
 }
 
-function getAllTransactions(limit = 100, offset = 0) {
+async function getAllTransactions(limit = 100, offset = 0) {
   return new Promise((resolve, reject) => {
     Transaction.findAll({
       include: [{
@@ -57,7 +57,11 @@ function getAllTransactions(limit = 100, offset = 0) {
         where: { id: db.Sequelize.col('transactions.addressId') }
       }],
       offset,
-      limit
+      limit,
+      order: [
+        ['time', 'DESC'],
+      ],
+      group: ['transaction_id']
     }).then(transactions => {
       console.log(transactions)
       resolve(transactions);

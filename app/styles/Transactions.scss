@@ -1,15 +1,15 @@
 @import "./styles/themes.scss";
 
 .transactionInfoTitle{
-  @include themify($themes) { 
-    color: themed('bodySecondaryParagraphColor');  
+  @include themify($themes) {
+    color: themed('bodySecondaryParagraphColor');
   }
   font-weight: 600;
 }
 
 #transactionAddresses{
-  @include themify($themes) { 
-    background-color: themed('homePanelsBackgroundColor');  
+  @include themify($themes) {
+    background-color: themed('homePanelsBackgroundColor');
     box-shadow: themed('mainElementBoxShadow');
   }
 }
@@ -19,9 +19,9 @@
   position: relative;
 }
 
-.buttonTransaction{ 
-  @include themify($themes) { 
-    border: themed('buttonBorder');  
+.buttonTransaction{
+  @include themify($themes) {
+    border: themed('buttonBorder');
   }
   position: relative;
   bottom: -36px;
@@ -36,7 +36,7 @@
 }
 
 .buttonTransaction:hover{
-  @include themify($themes) { 
+  @include themify($themes) {
     background-color: themed('buttonBorderedHoverColor');
     color: themed('buttonBorderedFontColor');
   }
@@ -47,8 +47,8 @@
 }
 
 .dropdownFilterSelector {
-  @include themify($themes) { 
-    color: themed('bodyParagraphColor');  
+  @include themify($themes) {
+    color: themed('bodyParagraphColor');
     background-color: themed('transactionsFilterBackgroundColor');
   }
   width: 300px;
@@ -69,8 +69,8 @@
 }
 
 .dropdownFilterSelector .selectFilterSelector i {
-    @include themify($themes) { 
-      color: themed('bodyParagraphColor');  
+    @include themify($themes) {
+      color: themed('bodyParagraphColor');
     }
     font-size: 13px;
     cursor: pointer;
@@ -87,8 +87,8 @@
 }
 
 .dropdownFilterSelector .dropdown-menuFilterSelector {
-    @include themify($themes) { 
-      background-color: themed('transactionsFilterBackgroundColor');  
+    @include themify($themes) {
+      background-color: themed('transactionsFilterBackgroundColor');
       border: themed('transactionsFilterBorder');
     }
     position: absolute;
@@ -108,7 +108,7 @@
     padding: 8px;
     transition: all .2s ease-in-out;
     cursor: pointer
-} 
+}
 
 .dropdownFilterSelector .dropdown-menuFilterSelector {
     padding: 0;
@@ -116,14 +116,14 @@
 }
 
 .dropdownFilterSelector .dropdown-menuFilterSelector li:hover {
-    @include themify($themes) { 
-      background-color: themed('homePanelsBackgroundColor');  
+    @include themify($themes) {
+      background-color: themed('homePanelsBackgroundColor');
     }
 }
 
 .dropdownFilterSelector .dropdown-menuFilterSelector li:active {
-    @include themify($themes) { 
-      background-color: themed('homePanelsBackgroundColor');  
+    @include themify($themes) {
+      background-color: themed('homePanelsBackgroundColor');
     }
 }
 
@@ -142,4 +142,63 @@ i.fa.fa-chevron-down{
         font-size: 13px;
         font-weight: 600;
     }
+}
+
+.container-1{
+  width: 300px;
+  vertical-align: middle;
+  white-space: nowrap;
+  position: relative;
+}
+
+.container-1 input#search{
+  width: 300px;
+  height: 35px;
+  background: #2b303b;
+  border: none;
+  font-size: 10pt;
+  float: left;
+  color: #262626;
+  padding-left: 45px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  margin-top:6px;
+
+
+  -webkit-transition: background .55s ease;
+  -moz-transition: background .55s ease;
+  -ms-transition: background .55s ease;
+  -o-transition: background .55s ease;
+  transition: background .55s ease;
+}
+
+.container-1 input#search::-webkit-input-placeholder {
+  color: #65737e;
+}
+
+.container-1 input#search:-moz-placeholder { /* Firefox 18- */
+  color: #65737e;
+}
+
+.container-1 input#search::-moz-placeholder {  /* Firefox 19+ */
+  color: #65737e;
+}
+
+.container-1 input#search:-ms-input-placeholder {
+  color: #65737e;
+}
+
+.container-1 .icon{
+  position: absolute;
+  top: 50%;
+  margin-left: 17px;
+  margin-top: 9px;
+  z-index: 1;
+  color: #4f5b66;
+}
+
+.container-1 input#search:hover, .container-1 input#search:focus, .container-1 input#search:active{
+  outline:none;
+  background: #ffffff;
 }

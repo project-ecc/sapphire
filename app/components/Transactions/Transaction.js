@@ -4,6 +4,8 @@ import {getAllTransactions} from "../../Managers/SQLManager";
 
 import { traduction } from '../../lang/lang';
 import * as actions from '../../actions';
+var moment = require('moment');
+moment.locale('en');
 
 import $ from 'jquery';
 
@@ -45,18 +47,22 @@ class Transaction extends Component {
   }
 
   async getAllTransactions(page) {
-    this.props.wallet.getTransactions(null, 100, 100 * page).then((data) => {
+    // this.props.wallet.getTransactions(null, 100, 100 * page).then((data) => {
+    //     this.props.setTransactionsData(data, this.props.type);
+    //     this.props.setTransactionsPage(page);
+    //     this.updateTable();
+    //     //$(".extraInfoTransaction").hide();
+    // }).catch((err) => {
+    //     console.log("error getting transactions: ", err)
+    // });
+
+    return new Promise((resolve, reject) => {
+      getAllTransactions(100, 100 * page).
+      then(transactions => {
+
         this.props.setTransactionsData(data, this.props.type);
         this.props.setTransactionsPage(page);
         this.updateTable();
-        //$(".extraInfoTransaction").hide();
-    }).catch((err) => {
-        console.log("error getting transactions: ", err)
-    });
-
-    return new Promise((resolve, reject) => {
-      getAllTransactions().
-      then(transactions => {
         console.log(transactions)
         resolve(transactions)
       });
@@ -82,7 +88,7 @@ class Transaction extends Component {
  updateTable(){
     $('#rows').css("height", $('#transactionAddresses').height()-204);
     let numberOfChildren = this.props.data.length;
-    console.log(this.props.data)
+    // console.log(this.props.data)
     let totalSize = numberOfChildren * 40; //40px height of each row
     let sizeOfContainer = $('#transactionAddresses').height()-204;
     if(sizeOfContainer < totalSize){
@@ -175,37 +181,59 @@ class Transaction extends Component {
       <div style={{height: "100%", width: "100%", paddingLeft: "20px", paddingRight: "10px", overflowX: "hidden"}}>
         <div id="transactionAddresses" style={{height:"90%", position: "relative", top: "25px"}}>
           <div className="tableHeaderNormal">
-            <p className="tableHeaderTitle tableHeaderTitleSmall">{ this.props.lang.transactions }</p>
 
-            {/* commenting out Transactions filter dropdown until supported
-            <div className="dropdownFilterSelector" style={{position: "absolute", right: "40px", top: "9px", height:"30px", padding:"0 0", width :"210px", textAlign:"center"}} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
-              <div className="selectFilterSelector" style={{border: "none", position:"relative", top: "-1px", height: "30px"}}>
-                <p className="normalWeight">{this.getValue(this.props.type)}</p>
-                <i className="fa fa-chevron-down"></i>
+            <div className="row">
+              <div className="col-sm-6">
+                <p className="tableHeaderTitle tableHeaderTitleSmall">{ this.props.lang.transactions }  </p>
               </div>
-              <input type="hidden" name="gender"></input>
-              <ul className="dropdown-menuFilterSelector normalWeight" style={{margin: "0 0"}}>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="all">{ this.props.lang.all }</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="receive">{ this.props.lang.received }</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="send">{ this.props.lang.sent }</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="generate">{ this.props.lang.earned }</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="1">{ this.props.lang.confirmed }</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="0">{ this.props.lang.pending }</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="-1">{ this.props.lang.orphaned }</li>
-              </ul>
+              <div className="col-sm-6">
+                <div className="row">
+                  <div className="col-sm-6">
+                    <div className="box">
+                      <div className="container-1">
+                        <span className="icon"><i className="fa fa-search"></i></span>
+                        <input type="search" id="search" placeholder="Search..." />
+                      </div>
+                    </div>
+                    {/*<input placeholder="search.." type="text"/>*/}
+                  </div>
+                  <div className="col-sm-6">
+                    {
+                      <div className="dropdownFilterSelector" style={{width: "100px", marginLeft: "100px", top: "6px", height:"35px", padding:"0 0", textAlign:"center"}} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
+                        <div className="selectFilterSelector" style={{border: "none", position:"relative", top: "-1px", height: "30px"}}>
+                          <p className="normalWeight">{this.getValue(this.props.type)}</p>
+                          <i className="fa fa-chevron-down"></i>
+                        </div>
+                        <input type="hidden" name="gender"></input>
+                        <ul className="dropdown-menuFilterSelector normalWeight" style={{margin: "0 0"}}>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="all">{ this.props.lang.all }</li>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="receive">{ this.props.lang.received }</li>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="send">{ this.props.lang.sent }</li>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="generate">{ this.props.lang.earned }</li>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="1">{ this.props.lang.confirmed }</li>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="0">{ this.props.lang.pending }</li>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="-1">{ this.props.lang.orphaned }</li>
+                        </ul>
+                      </div>
+                    }
+                  </div>
+                </div>
+
+
+
+              </div>
             </div>
-            */}
 
           </div>
-          <div style={{width: "100%", marginTop: "5px", padding: "0 0"}}>
+          <div style={{width: "100%", marginTop: "15px", padding: "0 0"}}>
             <div className="row rowDynamic">
-              <div className="col-sm-6 headerAddresses tableRowHeader" style={{paddingLeft: "4%"}}>{ this.props.lang.type }</div>
-              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.amount }</div>
-              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.status }</div>
-              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.time }</div>
+              <div className="col-sm-4 headerAddresses tableRowHeader" style={{paddingLeft: "4%"}}>{ this.props.lang.date }</div>
+              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.info }</div>
+              <div id="addressHeader" className="col-sm-6 headerAddresses tableRowHeader" style={{textAlign: "center"}}>{ this.props.lang.amount } & {this.props.lang.status}</div>
             </div>
           <div id="rows" style={{height: "500px", width: "100%", padding: "0 0", overflowY: "scroll"}}>
             {data.map((t, index) => {
+              // console.log(t, index)
 
               if (this.props.type === 'all'
               || this.props.type === t.category
@@ -219,16 +247,20 @@ class Transaction extends Component {
 
                 let category = t.category;
                 if (category === 'generate') {
-                  category = lang.stakedMin;
+                  category = <span className="icon"><i className="fa fa-trophy"></i> {lang.reward}</span>
+
+                  //category = lang.stakedMin;
                 }
                 if (category === 'staked') {
-                  category = lang.staked;
+                  category = <span className="icon"><i className="fa fa-shopping-basket"></i> {lang.staked}</span>
                 }
                 else if (category === 'send') {
-                  category = lang.sent;
+                  category = <span className="icon"><i className="fa fa-arrow-left"></i> {lang.sent}</span>
+                  // category = lang.sent;
                 }
                 else if (category === 'receive') {
-                  category = lang.received;
+                  category = <span className="icon"><i className="fa fa-arrow-right"></i> {lang.received}</span>
+                  // category = lang.received;
                 }
                 else if (category === 'immature') {
                   category = lang.immature;
@@ -236,22 +268,22 @@ class Transaction extends Component {
 
                 return (
                   <div className= {counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} style={{cursor: "pointer", fontSize: "15px", minHeight: "40px"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
+
+                    <div className="col-sm-2" style={{paddingTop: "9px"}}>
+                      <p style={{ margin: '0px' }}><span>{moment(t.time * 1000).format('MMMM Do')}</span></p>
+                    </div>
                     <div className="col-sm-6 transactionAddress" style={{paddingLeft: "4%", paddingTop: "9px"}}>
-                      <p style={{ margin: '0px' }}><span>{category}</span><span className="desc2 transactionAddress"> ({t.address})</span></p>
+                      {category} <p style={{ margin: '0px' }}><span className="desc2 transactionAddress"> {t.address}</span></p><p>{time}</p>
                     </div>
-                    <div className="col-sm-2" style={{paddingTop: "9px"}}>
-                      <p style={{ margin: '0px' }}><span>{t.amount} ecc</span></p>
-                    </div>
-                    <div className="col-sm-2" style={{paddingTop: "9px"}}>
-                      <p style={{ margin: '0px' }}>{this.renderStatus(t.confirmations)}</p>
-                    </div>
-                    <div className="col-sm-2" style={{paddingTop: "9px"}}>
-                      <p style={{ margin: '0px' }}><span>{time}</span></p>
+
+                    <div className="col-sm-4" style={{paddingTop: "9px"}}>
+                      <p style={{ margin: '0px' }}>{t.amount}</p>
+                      <p style={{ margin: '0px', fontWeight: "50%" }}>{this.renderStatus(t.confirmations)}</p>
                     </div>
                     <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{paddingLeft: "4%", width: "100%", paddingTop: "11px", paddingBottom: "11px", cursor:"default", zIndex:"2", display:"none"}}>
                       <div className="col-sm-8">
                         <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.dateString}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{(new Date(t.time * 1000)).toString()}</span></p>
+                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{(new Date(t.time * 1000).toDateString()).toString()}</span></p>
                       </div>
                       <div className="col-sm-4">
                         <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.confirmations}</span></p>
