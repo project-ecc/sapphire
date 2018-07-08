@@ -59,8 +59,7 @@ class Transaction extends Component {
     return new Promise((resolve, reject) => {
       getAllTransactions(100, 100 * page).
       then(transactions => {
-
-        this.props.setTransactionsData(data, this.props.type);
+        this.props.setTransactionsData(transactions, "all");
         this.props.setTransactionsPage(page);
         this.updateTable();
         console.log(transactions)
@@ -242,7 +241,7 @@ class Transaction extends Component {
               || (this.props.type === -1 && t.confirmations < 0)){
                 if(this.props.type === "generate" && t.amount === 0) return null;
                 counter++;
-                const iTime = new Date(t.time * 1000);
+                const iTime = new Date(t.time);
                 let time = Tools.calculateTimeSince(this.props.lang, today, iTime);
 
                 let category = t.category;

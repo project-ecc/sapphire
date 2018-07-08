@@ -5,6 +5,7 @@ module.exports = function (sequelize, DataTypes) {
       primaryKey: true,
       autoIncrement: true
     },
+    is_main: DataTypes.BOOLEAN,
     transaction_id: DataTypes.STRING,
     time: DataTypes.INTEGER,
     amount: DataTypes.DECIMAL(11, 8),

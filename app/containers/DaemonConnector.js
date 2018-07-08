@@ -15,10 +15,13 @@ const sqlite3 = require('sqlite3');
 let remote = require('electron').remote;
 const app = remote.app;
 import transactionsInfo from '../utils/transactionsInfo';
-import notificationsInfo from '../utils/notificationsInfo';
 import ansAddressesInfo from '../utils/ansAddressesInfo';
 
-import {addTransaction} from '../Managers/SQLManager'
+import {
+  addTransaction, addAddress, deleteAddressByName, truncateTransactions,
+  getAllTransactions, getAllRewardTransactions, getAllPendingTransactions, deletePendingTransaction,
+  getLatestTransaction
+} from '../Managers/SQLManager'
 
 import $ from 'jquery';
 const FeedMe = require('feedme');
@@ -31,7 +34,7 @@ import db from '../../app/utils/database/db'
 class DaemonConnector {
 
 	constructor(store){
-	  db.sequelize.sync()
+	  db.sequelize.sync();
 		this.store = store;
 		this.daemonAvailable = false;
     this.wallet = store.getState().application.wallet;
@@ -53,30 +56,30 @@ class DaemonConnector {
     this.loadTransactionsForProcessing = this.loadTransactionsForProcessing.bind(this);
     this.needToReloadTransactions = this.needToReloadTransactions.bind(this);
     this.updateProcessedAddresses = this.updateProcessedAddresses.bind(this);
-    this.setupTransactionsDB = this.setupTransactionsDB.bind(this);
-    this.closeDb = this.closeDb.bind(this);
+    // this.setupTransactionsDB = this.setupTransactionsDB.bind(this);
+    // this.closeDb = this.closeDb.bind(this);
     this.processTransactions = this.processTransactions.bind(this);
     this.getRawTransaction = this.getRawTransaction.bind(this);
     this.insertIntoDb = this.insertIntoDb.bind(this);
     this.loadTransactionFromDb = this.loadTransactionFromDb.bind(this);
     this.checkIfTransactionsNeedToBeDeleted = this.checkIfTransactionsNeedToBeDeleted.bind(this);
     this.processPendingTransactions = this.processPendingTransactions.bind(this);
-    this.removeTransactionFromDb = this.removeTransactionFromDb.bind(this);
+    // this.removeTransactionFromDb = this.removeTransactionFromDb.bind(this);
     this.removeTransactionFromMemory = this.removeTransactionFromMemory.bind(this);
     this.goToEarningsPanel = this.goToEarningsPanel.bind(this);
     this.createWallet = this.createWallet.bind(this);
     this.subscribeToEvents();
     this.currentAddresses = [];
     this.processedAddresses = transactionsInfo.get('addresses').value();
-    this.from = transactionsInfo.get('info').value().processedFrom;
+    this.from = getLatestTransaction().then((t => {return t.time}));
     this.currentFrom = this.from;
     this.db = undefined;
     this.transactionsPage = 0;
     this.transactionsToRequest = 1000;
-    this.transactionsIndexed = transactionsInfo.get('info').value().done;
+    this.transactionsIndexed = getAllTransactions().then((t => {return t > 0}));
     this.transactionsMap = {};
     this.runningMainCycle = false;
-    this.setupTransactionsDB();
+    // this.setupTransactionsDB();
     this.firstRun = true;
     this.hasLoadedTransactionsFromDb = false;
     this.checkStartupStatusInterval = setInterval(()=>{
@@ -167,19 +170,20 @@ class DaemonConnector {
           this.store.dispatch({type: CHAIN_INFO, payload: data[0]});
           this.store.dispatch({type: WALLET_INFO_SEC, payload: data[4]});
           this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data[0].blocks == 0 || data[0].headers == 0 ? 0 : syncedPercentage});
-          this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: data[1], type: this.store.getState().chains.transactionsType}});
+          let transactionData = await getAllTransactions();
+          this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: transactionData , type: "all"}});
           await this.getAddresses(data[2], data[3]);
         }
       });
     }catch(err){
       console.log(err);
-      setTimeout(() => {
-        this.mainCycle();
+      setTimeout(async () => {
+        await this.mainCycle();
       }, this.firstRun && this.transactionsIndexed ? 1000 : 4000);
       return;
     }
     if(!this.firstRun && !this.isIndexingTransactions && this.transactionsIndexed){
-      this.loadTransactionsForProcessing();
+      await this.loadTransactionsForProcessing();
     }
     //RETHINK THIS -> needs to happen when user is 100% synced...
     //this.processPendingTransactions();
@@ -210,8 +214,8 @@ class DaemonConnector {
       this.notifyUserOfApplicationUpdate();
     }
 
-    setTimeout(() => {
-      this.mainCycle();
+    setTimeout(async () => {
+      await this.mainCycle();
     }, this.firstRun && this.transactionsIndexed ? 1000 : 4000);
   }
 
@@ -306,8 +310,6 @@ class DaemonConnector {
       }
     });
   }
-
-
 
   handleDaemonUpdated(){
     this.store.dispatch({type: UPDATE_AVAILABLE, payload: {guiUpdate: false, daemonUpdate: false}})
@@ -524,7 +526,7 @@ class DaemonConnector {
 
   needToReloadTransactions(){
     for(let i = 0; i < this.currentAddresses.length; i++){
-      if(this.processedAddresses == undefined || !this.processedAddresses.includes(this.currentAddresses[i].address)){
+      if(this.processedAddresses === undefined || !this.processedAddresses.includes(this.currentAddresses[i].address)){
         return true;
       }
     }
@@ -532,42 +534,52 @@ class DaemonConnector {
   }
 
   //if addresses were added or removed, re-index transactions
-  updateProcessedAddresses(){
-    transactionsInfo.set('info', {done: false, processedFrom: 0, processedUpTo: 0}).write();
-    transactionsInfo.set('addresses', []).write();
-
+  async updateProcessedAddresses(){
     for(let i = 0; i < this.currentAddresses.length; i++){
       let currentAddress = this.currentAddresses[i].address;
-      transactionsInfo.get('addresses').push(currentAddress).write();
       this.processedAddresses.push(currentAddress)
     }
     this.store.dispatch({type: RESET_STAKING_EARNINGS});
     this.from = 0;
     this.transactionsIndexed = false;
-    this.db = new sqlite3.Database(app.getPath('userData') + '/transactions');
-    this.db.run("DELETE FROM TRANSACTIONS;");
-    this.db.run("DELETE FROM PENDINGTRANSACTIONS;");
-    this.closeDb()
+    await truncateTransactions();
+
+    // transactionsInfo.set('info', {done: false, processedFrom: 0, processedUpTo: 0}).write();
+    // transactionsInfo.set('addresses', []).write();
+    //
+    // for(let i = 0; i < this.currentAddresses.length; i++){
+    //   let currentAddress = this.currentAddresses[i].address;
+    //   transactionsInfo.get('addresses').push(currentAddress).write();
+    //   this.processedAddresses.push(currentAddress)
+    // }
+    // this.store.dispatch({type: RESET_STAKING_EARNINGS});
+    // this.from = 0;
+    // this.transactionsIndexed = false;
+    // this.db = new sqlite3.Database(app.getPath('userData') + '/transactions');
+    // this.db.run("DELETE FROM TRANSACTIONS;");
+    // this.db.run("DELETE FROM PENDINGTRANSACTIONS;");
+    // await truncateTransactions();
+    // this.closeDb()
   }
 
-  setupTransactionsDB(){
-    this.db = new sqlite3.Database(app.getPath('userData') + '/transactions');
-    this.db.serialize(() => {
-      this.db.run("CREATE TABLE IF NOT EXISTS transactions (transaction_id VAARCHAR(64), time INTEGER, amount DECIMAL(11,8), category, address, fee DECIMAL(2,8), confirmations INTEGER);");
-      this.db.run("CREATE TABLE IF NOT EXISTS pendingTransactions (transaction_id VAARCHAR(64));");
-    });
+  // setupTransactionsDB(){
+  //   this.db = new sqlite3.Database(app.getPath('userData') + '/transactions');
+  //   this.db.serialize(() => {
+  //     this.db.run("CREATE TABLE IF NOT EXISTS transactions (transaction_id VAARCHAR(64), time INTEGER, amount DECIMAL(11,8), category, address, fee DECIMAL(2,8), confirmations INTEGER);");
+  //     this.db.run("CREATE TABLE IF NOT EXISTS pendingTransactions (transaction_id VAARCHAR(64));");
+  //   });
+  //
+  // }
 
-  }
+  // closeDb(){
+  //   if(this.db && this.db.open)
+  //     this.db.close();
+  // }
 
-  closeDb(){
-    if(this.db && this.db.open)
-      this.db.close();
-  }
-
-  openDb(){
-    if(!this.db || !this.db.open)
-      this.db = new sqlite3.Database(app.getPath('userData') + '/transactions');
-  }
+  // openDb(){
+  //   if(!this.db || !this.db.open)
+  //     this.db = new sqlite3.Database(app.getPath('userData') + '/transactions');
+  // }
 
   orderTransactions(data) {
     const aux = [];
@@ -577,15 +589,15 @@ class DaemonConnector {
     return aux;
   }
 
-  checkIfTransactionsNeedToBeDeleted(){
+  async checkIfTransactionsNeedToBeDeleted(){
     if(this.needToReloadTransactions())
-      this.updateProcessedAddresses();
+      await this.updateProcessedAddresses();
   }
 
   async loadTransactionsForProcessing(){
     this.isIndexingTransactions = true;
 
-    this.checkIfTransactionsNeedToBeDeleted();
+    await this.checkIfTransactionsNeedToBeDeleted();
 
     let txId = "";
     let time = 0;
@@ -593,13 +605,12 @@ class DaemonConnector {
     let category = "";
     let address = "";
     let fee = 0;
-    let shouldAdd = false;
     let confirmations = 0;
     let shouldRequestAnotherPage = false;
     let transactions = await this.wallet.getTransactions("*", this.transactionsToRequest, this.transactionsToRequest * this.transactionsPage);
-    if(transactions == null){
-      setTimeout(()=>{
-        this.loadTransactionsForProcessing();
+    if(transactions === null){
+      setTimeout(async ()=>{
+        await this.loadTransactionsForProcessing();
       }, 1000)
     }
 
@@ -608,9 +619,6 @@ class DaemonConnector {
     if(transactions.length > 0 && this.transactionsPage == 0){
       this.from = transactions[0].time;
     }
-
-    //console.log(transactions)
-    // console.log(JSON.stringify(transactions))
 
     //load transactions into transactionsMap for processing
     for (let i = 0; i < transactions.length; i++) {
@@ -633,62 +641,21 @@ class DaemonConnector {
           category: category,
           address: address,
           fee: fee,
-          confirmations: confirmations
+          confirmations: confirmations,
+          is_main: false
         });
       }else{
         shouldRequestAnotherPage = false;
       }
     }
 
-    if(transactions.length == this.transactionsToRequest && shouldRequestAnotherPage){
+    if(transactions.length === this.transactionsToRequest && shouldRequestAnotherPage){
       this.transactionsPage++;
-      this.loadTransactionsForProcessing();
-
+      await this.loadTransactionsForProcessing();
     }
     else{
       this.processTransactions();
     }
-  }
-
-  similarity(s1, s2) {
-    let longer = s1;
-    let shorter = s2;
-    if (s1.length < s2.length) {
-      longer = s2;
-      shorter = s1;
-    }
-    let longerLength = longer.length;
-    if (longerLength === 0) {
-      return 1.0;
-    }
-    return (longerLength - this.editDistance(longer, shorter)) / parseFloat(longerLength);
-  }
-
-  editDistance(s1, s2) {
-    s1 = s1.toLowerCase();
-    s2 = s2.toLowerCase();
-
-    let costs = [];
-    for (let i = 0; i <= s1.length; i++) {
-      let lastValue = i;
-      for (let j = 0; j <= s2.length; j++) {
-        if (i === 0)
-          costs[j] = j;
-        else {
-          if (j > 0) {
-            let newValue = costs[j - 1];
-            if (s1.charAt(i - 1) !== s2.charAt(j - 1))
-              newValue = Math.min(Math.min(newValue, lastValue),
-                costs[j]) + 1;
-            costs[j - 1] = lastValue;
-            lastValue = newValue;
-          }
-        }
-      }
-      if (i > 0)
-        costs[s2.length] = lastValue;
-    }
-    return costs[s2.length];
   }
 
   processTransactions(){
@@ -696,7 +663,6 @@ class DaemonConnector {
     let rewards = [];
     let staked = [];
     let change = [];
-    const self = this
 
     //process transactions
     for (const key of Object.keys(this.transactionsMap)) {
@@ -716,6 +682,8 @@ class DaemonConnector {
             if(generatedFound) {
               if(values[i].category !== "generate") {
                 values[i].category = "staked";
+              } else {
+                values[i].is_main = true;
               }
               rewards.push({...values[i], txId: key})
             }
@@ -737,16 +705,7 @@ class DaemonConnector {
 
               // if original == send
               if(original.category === "receive" && current.category === "send" || original.category === "send" && current.category === "receive"){
-                if(this.similarity(original.amount.toString(), current.amount.toString()) > 0.6){
-                  console.log('original ele')
-                  console.log(original)
-                  console.log('current Element')
-                  console.log(current)
-                  console.log('change transaction' + current.amount)
-
-                  console.log('Sim value')
-                  console.log(this.similarity(original.amount.toString(), current.amount.toString()))
-
+                if(tools.similarity(original.amount.toString(), current.amount.toString()) > 0.6){
                   current.category = "change";
                   original.category = "change";
                   change.push({...current, txId: key});
@@ -755,15 +714,11 @@ class DaemonConnector {
                   entries.splice(entries.indexOf(current), 1);
                 } else {
                   console.log('similarity too low')
-                  console.log(this.similarity(original.amount.toString(), current.amount.toString()))
+                  console.log(tools.similarity(original.amount.toString(), current.amount.toString()))
                 }
               } else{
                 console.log('Sim value')
-                console.log(this.similarity(original.amount.toString(), current.amount.toString()))
-                console.log('original ele')
-                console.log(original)
-                console.log('current Element')
-                console.log(current)
+                console.log(tools.similarity(original.amount.toString(), current.amount.toString()))
                 console.log('values dont line up')
               }
             }
@@ -772,6 +727,12 @@ class DaemonConnector {
         }
       }
       generatedFound = false;
+    }
+
+
+    // Set every transaction still left in entries as the main transaction.
+    for(let j = 0; j <= entries.length - 1; j++) {
+      entries[j].is_main = true;
     }
 
     // console.log(entries);
@@ -792,62 +753,113 @@ class DaemonConnector {
   }
 
   async insertIntoDb(entries){
-    this.openDb();
-    let statement = "BEGIN TRANSACTION;";
+
     let lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
     let earningsCountNotif = 0;
     let earningsTotalNotif = 0;
     let shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
+
     for (let i = 0; i < entries.length; i++) {
       let entry = entries[i];
       entry.time = entry.time * 1000;
-      statement += `INSERT INTO transactions VALUES('${entry.txId}', ${entry.time}, ${entry.amount}, '${entry.category}', '${entry.address}', ${entry.fee}, '${entry.confirmations}');`;
+
       if(Number(entry.confirmations) < 30){
-          statement += `INSERT INTO pendingtransactions VALUES('${entry.txId}');`;
-          this.store.dispatch({type: PENDING_TRANSACTION, payload: entry.txId})
+        this.store.dispatch({type: PENDING_TRANSACTION, payload: entry.txId})
       }
 
       await addTransaction(entry, Number(entry.confirmations) < 30)
       //update with 1 new staking reward since previous ones have already been loaded on startup
       if(this.transactionsIndexed){
-        this.store.dispatch({type: STAKING_REWARD, payload: entries[i]})
+        if(entry.category === "generate"){
+          this.store.dispatch({type: STAKING_REWARD, payload: entries[i]})
+        }
       }
-      if(entry.time > lastCheckedEarnings && shouldNotifyEarnings){
-        this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: entry.amount, date: entry.time}});
-        earningsCountNotif++;
-        earningsTotalNotif += entry.amount;
+      if(entry.category === "generate"){
+        if(entry.time > lastCheckedEarnings && shouldNotifyEarnings){
+          this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: entry.amount, date: entry.time}});
+          earningsCountNotif++;
+          earningsTotalNotif += entry.amount;
+        }
       }
     }
 
     if(shouldNotifyEarnings && earningsCountNotif > 0){
       earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
       let title = `Staking reward - ${earningsTotalNotif} ECC`;
-      const body = earningsCountNotif == 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`;
+      const body = earningsCountNotif === 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`;
       const callback = () => {this.goToEarningsPanel();}
       this.queueOrSendNotification(callback, body);
     }
-
-    statement += "COMMIT;";
-    if(entries.length > 0){
-      this.db.exec(statement, (err)=>{
-        if(err)
-          console.log(err);
-        this.closeDb();
-      });
-    }
-    else this.closeDb();
 
     //no more transactions to process, mark as done to avoid spamming the daemon
     if(!this.transactionsIndexed){
       this.transactionsIndexed = true;
       this.store.dispatch({type: INDEXING_TRANSACTIONS, payload: false});
-      this.store.dispatch({type: STAKING_REWARD, payload: entries})
+      let rewards = await getAllRewardTransactions();
+      this.store.dispatch({type: STAKING_REWARD, payload: rewards})
     }
 
     this.transactionsPage = 0;
     this.currentFrom = this.from;
-    transactionsInfo.set('info', {done: this.transactionsIndexed, processedFrom: this.from}).write();
     this.isIndexingTransactions = false;
+
+
+    // this.openDb();
+    // let statement = "BEGIN TRANSACTION;";
+    // let lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
+    // let earningsCountNotif = 0;
+    // let earningsTotalNotif = 0;
+    // let shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
+    // for (let i = 0; i < entries.length; i++) {
+    //   let entry = entries[i];
+    //   entry.time = entry.time * 1000;
+    //   statement += `INSERT INTO transactions VALUES('${entry.txId}', ${entry.time}, ${entry.amount}, '${entry.category}', '${entry.address}', ${entry.fee}, '${entry.confirmations}');`;
+    //   if(Number(entry.confirmations) < 30){
+    //       statement += `INSERT INTO pendingtransactions VALUES('${entry.txId}');`;
+    //       this.store.dispatch({type: PENDING_TRANSACTION, payload: entry.txId})
+    //   }
+    //
+    //   await addTransaction(entry, Number(entry.confirmations) < 30)
+    //   //update with 1 new staking reward since previous ones have already been loaded on startup
+    //   if(this.transactionsIndexed){
+    //     this.store.dispatch({type: STAKING_REWARD, payload: entries[i]})
+    //   }
+    //   if(entry.time > lastCheckedEarnings && shouldNotifyEarnings){
+    //     this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: entry.amount, date: entry.time}});
+    //     earningsCountNotif++;
+    //     earningsTotalNotif += entry.amount;
+    //   }
+    // }
+    //
+    // if(shouldNotifyEarnings && earningsCountNotif > 0){
+    //   earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
+    //   let title = `Staking reward - ${earningsTotalNotif} ECC`;
+    //   const body = earningsCountNotif == 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`;
+    //   const callback = () => {this.goToEarningsPanel();}
+    //   this.queueOrSendNotification(callback, body);
+    // }
+    //
+    // statement += "COMMIT;";
+    // if(entries.length > 0){
+    //   this.db.exec(statement, (err)=>{
+    //     if(err)
+    //       console.log(err);
+    //     this.closeDb();
+    //   });
+    // }
+    // else this.closeDb();
+    //
+    // //no more transactions to process, mark as done to avoid spamming the daemon
+    // if(!this.transactionsIndexed){
+    //   this.transactionsIndexed = true;
+    //   this.store.dispatch({type: INDEXING_TRANSACTIONS, payload: false});
+    //   this.store.dispatch({type: STAKING_REWARD, payload: entries})
+    // }
+    //
+    // this.transactionsPage = 0;
+    // this.currentFrom = this.from;
+    // transactionsInfo.set('info', {done: this.transactionsIndexed, processedFrom: this.from}).write();
+    // this.isIndexingTransactions = false;
   }
 
   async processPendingTransactions(){
@@ -856,17 +868,34 @@ class DaemonConnector {
       let id = pendingTransactions[i];
       let rawT = await this.getRawTransaction(id);
       rawT.confirmations = -1;
-      if(rawT.confirmations >= 30 || rawT.confirmations == -1){
+      if(rawT.confirmations >= 30 || rawT.confirmations === -1){
         let deleteFromTransactions = false;
 
-        if(rawT.confirmations == -1)
+        if(rawT.confirmations === -1)
           deleteFromTransactions = true;
 
-        if(await this.removeTransactionFromDb(id, deleteFromTransactions)){
+        if(await deletePendingTransaction(id)){
           this.removeTransactionFromMemory(id, deleteFromTransactions);
         }
       }
     }
+
+    // let pendingTransactions = this.store.getState().application.pendingTransactions;
+    // for(let i = 0; i < pendingTransactions.length; i++){
+    //   let id = pendingTransactions[i];
+    //   let rawT = await this.getRawTransaction(id);
+    //   rawT.confirmations = -1;
+    //   if(rawT.confirmations >= 30 || rawT.confirmations === -1){
+    //     let deleteFromTransactions = false;
+    //
+    //     if(rawT.confirmations === -1)
+    //       deleteFromTransactions = true;
+    //
+    //     if(await this.removeTransactionFromDb(id, deleteFromTransactions)){
+    //       this.removeTransactionFromMemory(id, deleteFromTransactions);
+    //     }
+    //   }
+    // }
   }
 
   removeTransactionFromMemory(transactionId, deleteFromTransactions){
@@ -879,7 +908,7 @@ class DaemonConnector {
     if(deleteFromTransactions){
       let transactions = this.store.getState().application.stakingRewards;
       for(let i = 0; i < transactions.length; i++){
-        if(transactions[i].transaction_id == transactionId){
+        if(transactions[i].transaction_id === transactionId){
           let index = transactions.indexOf(transactions[i]);
           transactions.splice(index, 1);
           this.store.dispatch({type: STAKING_REWARD, payload: transactions});
@@ -890,47 +919,84 @@ class DaemonConnector {
     }
   }
 
-  removeTransactionFromDb(transferId, deleteFromTransactions){
-    return new Promise((resolve, reject) => {
-      this.openDb();
-      let sql = `DELETE FROM pendingtransactions where transaction_id = '${transferId}';`;
-      if(deleteFromTransactions)
-        sql+= `DELETE FROM transactions where transaction_id = '${transferId}';`;
+  // removeTransactionFromDb(transferId, deleteFromTransactions){
+  //   return new Promise((resolve, reject) => {
+  //     this.openDb();
+  //     let sql = `DELETE FROM pendingtransactions where transaction_id = '${transferId}';`;
+  //     if(deleteFromTransactions)
+  //       sql+= `DELETE FROM transactions where transaction_id = '${transferId}';`;
+  //
+  //     this.db.exec(sql, (err)=> {
+  //       if(err){
+  //         console.log("error deleting from transactions: ", err);
+  //         reject(false);
+  //         return;
+  //       }
+  //       this.closeDb();
+  //       resolve(true);
+  //     });
+  //   });
+  // }
 
-      this.db.exec(sql, (err)=> {
-        if(err){
-          console.log("error deleting from transactions: ", err);
-          reject(false);
-          return;
+  async loadTransactionFromDb(){
+    return new Promise(async (resolve, reject) => {
+
+      let lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
+      let earningsCountNotif = 0;
+      let earningsTotalNotif = 0;
+      let shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
+
+
+      //map all income from transactions
+      let transactions = await getAllTransactions();
+      transactions.map((transaction) => {
+        let time = transaction.time;
+        let amount = transaction.amount;
+        if(time > lastCheckedEarnings && shouldNotifyEarnings){
+          this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}});
+          earningsCountNotif++;
+          earningsTotalNotif += amount;
         }
-        this.closeDb();
-        resolve(true);
       });
-    });
-  }
 
-  loadTransactionFromDb(){
-    return new Promise((resolve, reject) => {
-      this.openDb();
-      let sql = `SELECT * FROM transactions ORDER BY time DESC;`;
-      this.db.all(sql, [], (err, rows) => {
-        if (err) {
-          console.log("ERROR GETTING TRANSACTIONS: ", err);
-        }
-        let lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
-        let earningsCountNotif = 0;
-        let earningsTotalNotif = 0;
-        let shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
-        rows.map((transaction) => {
-          let time = transaction.time;
-          let amount = transaction.amount;
-          if(time > lastCheckedEarnings && shouldNotifyEarnings){
-            this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}});
-            earningsCountNotif++;
-            earningsTotalNotif += amount;
-          }
+      //map all rewards from staking rewards
+      let rewards = await getAllRewardTransactions();
 
-        });
+      this.store.dispatch({type: STAKING_REWARD, payload: rewards});
+
+
+      // map all pending transaction
+      let pendingTransactions = await getAllPendingTransactions();
+
+      let aux = [];
+      pendingTransactions.map((val) => {
+        aux.push(val.transaction_id)
+      });
+      this.store.dispatch({type: PENDING_TRANSACTION, payload: aux});
+
+      // TODO: make this do some better error handling.
+      resolve();
+
+      // this.openDb();
+      // let sql = `SELECT * FROM transactions ORDER BY time DESC;`;
+      // this.db.all(sql, [], (err, rows) => {
+      //   if (err) {
+      //     console.log("ERROR GETTING TRANSACTIONS: ", err);
+      //   }
+      //   let lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
+      //   let earningsCountNotif = 0;
+      //   let earningsTotalNotif = 0;
+      //   let shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
+      //   rows.map((transaction) => {
+      //     let time = transaction.time;
+      //     let amount = transaction.amount;
+      //     if(time > lastCheckedEarnings && shouldNotifyEarnings){
+      //       this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}});
+      //       earningsCountNotif++;
+      //       earningsTotalNotif += amount;
+      //     }
+      //
+      //   });
         //this is an issue
         /*if(shouldNotifyEarnings && earningsCountNotif > 0){
           earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
@@ -939,23 +1005,23 @@ class DaemonConnector {
           const callback = () => {this.goToEarningsPanel();}
           this.queueOrSendNotification(callback, body);
         }*/
-        this.store.dispatch({type: STAKING_REWARD, payload: rows})
-      });
+      //   this.store.dispatch({type: STAKING_REWARD, payload: rows})
+      // });
 
-      sql = `SELECT * FROM pendingTransactions;`;
-      this.db.all(sql, [], (err, rows) => {
-        if (err) {
-          console.log("ERROR GETTING TRANSACTIONS: ", err);
-        }
-        let aux = [];
-        rows.map((val) => {
-          aux.push(val.transaction_id)
-        });
-        this.store.dispatch({type: PENDING_TRANSACTION, payload: aux});
-        this.closeDb();
-        this.hasLoadedTransactionsFromDb = true;
-        resolve();
-      });
+      // sql = `SELECT * FROM pendingTransactions;`;
+      // this.db.all(sql, [], (err, rows) => {
+      //   if (err) {
+      //     console.log("ERROR GETTING TRANSACTIONS: ", err);
+      //   }
+      //   let aux = [];
+      //   rows.map((val) => {
+      //     aux.push(val.transaction_id)
+      //   });
+      //   this.store.dispatch({type: PENDING_TRANSACTION, payload: aux});
+      //   this.closeDb();
+      //   this.hasLoadedTransactionsFromDb = true;
+      //   resolve();
+      // });
     });
   }
 
@@ -992,6 +1058,9 @@ class DaemonConnector {
       if(notReadyAnsAddress){
         if(currentBlock > notReadyAnsAddress.creationBlock + 3){
           this.queueOrSendNotification(()=>{}, `${this.translator.ansReady}.\n\n${this.translator.username}: ${ansRecord.Name}`)
+
+          // TODO: add address to db.
+          await deleteAddressByName(address.address);
           ansAddressesInfo.get('addresses').remove({ address: address.address }).write()
         }
         else{
@@ -1040,7 +1109,7 @@ class DaemonConnector {
     //We need to have the addresses loaded to be able to index transactions
     this.currentAddresses = toReturn;
     if(!this.transactionsIndexed && this.firstRun && this.currentAddresses.length > 0 && !this.isIndexingTransactions){
-      this.loadTransactionsForProcessing();
+      await this.loadTransactionsForProcessing();
       this.store.dispatch({type: INDEXING_TRANSACTIONS, payload: true})
     }
   }
