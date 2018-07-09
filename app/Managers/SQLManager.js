@@ -105,9 +105,11 @@ async function getAllTransactionsWithAddress(limit = null, offset = 0) {
   });
 }
 
-async function getAllTransactions(limit = null, offset = 0){
+async function getAllTransactions(limit = null, offset = 0, where = null){
   return new Promise((resolve, reject) => {
     Transaction.findAll({
+      include: [{ all: true, nested: true }],
+      where,
       offset,
       limit,
       order: [
@@ -130,7 +132,6 @@ async function getLatestTransaction(){
       },
       order: [['time', 'DESC']]
     }).then(transaction => {
-      console.log(transaction)
       resolve(transaction);
     }).error(err => {
       reject(err);
@@ -197,7 +198,53 @@ async function getAllRewardTransactions(){
  */
 
 async function addAddress(address, withAns = false){
+  return new Promise((fulfill, reject) => {
+    Address
+      .findOrCreate({
+        where: {
+          address: address.normalAddress
+        },
+        defaults: {
+          current_balance: address.amount,
+          address: address.normalAddress
+        }
+      })
+      .spread((newAddress, created) => {
+        if (withAns){
+          AnsRecord
+          .findOrCreate({
+            where: {
+              name: address.address
+            },
+            defaults: {
+              code: address.code,
+              expire_time: address.expiryTime,
+            }
+          }).spread((ansRecord, created) => {
+            ansRecord.setAddress(newAddress).then(fulfill);
+            return ansRecord;
+          }).error(err => {
+            console.log(err);
+            reject(err);
+          });
+        }
+        return newAddress;
+      }).error(err => {
+        console.log(err);
+        reject(err);
+    });
+  });
+}
 
+async function getAllAddresses() {
+  return new Promise((resolve, reject) => {
+    Address.findAll({
+    }).then(addresses => {
+      resolve(addresses);
+    }).error(err => {
+      reject(err)
+    });
+  });
 }
 
 async function deleteAddressById(id){
@@ -267,6 +314,10 @@ export {
   getAllRewardTransactions,
   getAllTransactionsWithAddress,
   deletePendingTransaction,
-  getLatestTransaction
+  getLatestTransaction,
+  Address,
+  AnsRecord,
+  Transaction,
+  getAllAddresses
 };
 

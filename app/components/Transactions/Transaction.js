@@ -4,7 +4,8 @@ import {getAllTransactions} from "../../Managers/SQLManager";
 
 import { traduction } from '../../lang/lang';
 import * as actions from '../../actions';
-var moment = require('moment');
+let moment = require('moment');
+
 moment.locale('en');
 
 import $ from 'jquery';
@@ -56,13 +57,18 @@ class Transaction extends Component {
     //     console.log("error getting transactions: ", err)
     // });
 
-    return new Promise((resolve, reject) => {
-      getAllTransactions(100, 100 * page).
-      then(transactions => {
+    return new Promise(async (resolve, reject) => {
+      let where = {
+        is_main: 1
+      };
+
+
+      await getAllTransactions(100, 100 * page, where)
+        .then(transactions => {
         this.props.setTransactionsData(transactions, "all");
         this.props.setTransactionsPage(page);
         this.updateTable();
-        console.log(transactions)
+        //console.log(transactions)
         resolve(transactions)
       });
     });
@@ -123,7 +129,7 @@ class Transaction extends Component {
   }
 
   shouldComponentUpdate(state){
-    if(this.props.page == state.page && this.props.page > 0 && this.props.type === state.type) return false;
+    if(this.props.page === state.page && this.props.page > 0 && this.props.type === state.type) return false;
     return true;
   }
   componentWillReceiveProps(){
@@ -171,7 +177,8 @@ class Transaction extends Component {
   }
 
   render() {
-    const data = this.orderTransactions(this.props.data);
+    // const data = this.orderTransactions(this.props.data);
+    const data = this.props.data
     const today = new Date();
     let counter = -1;
     const rowClassName = "row normalWeight tableRowCustom tableRowCustomTransactions";
@@ -217,9 +224,6 @@ class Transaction extends Component {
                     }
                   </div>
                 </div>
-
-
-
               </div>
             </div>
 
@@ -232,7 +236,7 @@ class Transaction extends Component {
             </div>
           <div id="rows" style={{height: "500px", width: "100%", padding: "0 0", overflowY: "scroll"}}>
             {data.map((t, index) => {
-              // console.log(t, index)
+              console.log(t, index)
 
               if (this.props.type === 'all'
               || this.props.type === t.category
@@ -272,7 +276,7 @@ class Transaction extends Component {
                       <p style={{ margin: '0px' }}><span>{moment(t.time * 1000).format('MMMM Do')}</span></p>
                     </div>
                     <div className="col-sm-6 transactionAddress" style={{paddingLeft: "4%", paddingTop: "9px"}}>
-                      {category} <p style={{ margin: '0px' }}><span className="desc2 transactionAddress"> {t.address}</span></p><p style={{fontSize: "12px" }}>{time}</p>
+                      {category} <p style={{ margin: '0px' }}><span className="desc2 transactionAddress"> {t.address.ans_record != null ? t.address.ans_record.name : t.address.address}</span></p><p style={{fontSize: "12px" }}>{time}</p>
                     </div>
 
                     <div className="col-sm-4" style={{paddingTop: "9px"}}>
@@ -290,11 +294,11 @@ class Transaction extends Component {
                       </div>
                       <div className="col-sm-8">
                         <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.transactionId}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 transactionId selectableText">{t.txid}</span></p>
+                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 transactionId selectableText">{t.transaction_id}</span></p>
                       </div>
                       <div className="col-sm-4">
                         <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.transactionFee}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">...</span></p>
+                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{t.fee}</span></p>
                       </div>
                     </div>
                   </div>
@@ -315,6 +319,10 @@ class Transaction extends Component {
         </div>
       </div>
     );
+  }
+
+  renderOtherTransactions() {
+
   }
 }
 

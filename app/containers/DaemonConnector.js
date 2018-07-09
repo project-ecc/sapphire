@@ -20,7 +20,7 @@ import ansAddressesInfo from '../utils/ansAddressesInfo';
 import {
   addTransaction, addAddress, deleteAddressByName, truncateTransactions,
   getAllTransactions, getAllRewardTransactions, getAllPendingTransactions, deletePendingTransaction,
-  getLatestTransaction
+  getLatestTransaction, getAllAddresses
 } from '../Managers/SQLManager'
 
 import $ from 'jquery';
@@ -36,7 +36,6 @@ class DaemonConnector {
 	constructor(store){
 	  db.sequelize.sync();
 		this.store = store;
-		this.daemonAvailable = false;
     this.wallet = store.getState().application.wallet;
     this.setupDone = false;
     this.partialSetup = false;
@@ -56,30 +55,27 @@ class DaemonConnector {
     this.loadTransactionsForProcessing = this.loadTransactionsForProcessing.bind(this);
     this.needToReloadTransactions = this.needToReloadTransactions.bind(this);
     this.updateProcessedAddresses = this.updateProcessedAddresses.bind(this);
-    // this.setupTransactionsDB = this.setupTransactionsDB.bind(this);
-    // this.closeDb = this.closeDb.bind(this);
     this.processTransactions = this.processTransactions.bind(this);
     this.getRawTransaction = this.getRawTransaction.bind(this);
     this.insertIntoDb = this.insertIntoDb.bind(this);
     this.loadTransactionFromDb = this.loadTransactionFromDb.bind(this);
     this.checkIfTransactionsNeedToBeDeleted = this.checkIfTransactionsNeedToBeDeleted.bind(this);
     this.processPendingTransactions = this.processPendingTransactions.bind(this);
-    // this.removeTransactionFromDb = this.removeTransactionFromDb.bind(this);
     this.removeTransactionFromMemory = this.removeTransactionFromMemory.bind(this);
     this.goToEarningsPanel = this.goToEarningsPanel.bind(this);
     this.createWallet = this.createWallet.bind(this);
     this.subscribeToEvents();
     this.currentAddresses = [];
-    this.processedAddresses = transactionsInfo.get('addresses').value();
-    this.from = getLatestTransaction().then((t => {return t.time}));
+    this.processedAddresses = null;
+    this.from = null
     this.currentFrom = this.from;
     this.db = undefined;
     this.transactionsPage = 0;
     this.transactionsToRequest = 1000;
-    this.transactionsIndexed = getAllTransactions().then((t => {return t > 0}));
+    this.transactionsIndexed = false;
+
     this.transactionsMap = {};
     this.runningMainCycle = false;
-    // this.setupTransactionsDB();
     this.firstRun = true;
     this.hasLoadedTransactionsFromDb = false;
     this.checkStartupStatusInterval = setInterval(()=>{
@@ -149,6 +145,14 @@ class DaemonConnector {
   }
 
   async mainCycle(){
+    this.processedAddresses = await getAllAddresses();
+    this.from = await getLatestTransaction().time;
+    this.transactionsIndexed = await getAllTransactions(null, 0) > 0;
+
+    console.log("transactions indexed: " + this.transactionsIndexed);
+    console.log("from time: " + this.from);
+    console.log("processed Addresses: " + this.processedAddresses);
+
     if(this.store.getState().startup.updatingApp){
       this.runningMainCycle = false;
       return;
@@ -158,7 +162,7 @@ class DaemonConnector {
     try{
       await this.wallet.getAllInfo().then( async (data) => {
         if(data){
-          let highestBlock = data[0].headers == 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
+          let highestBlock = data[0].headers === 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
           // remove .00 if 100%
           let syncedPercentage = (data[0].blocks * 100) / data[0].headers;
           syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
@@ -169,13 +173,19 @@ class DaemonConnector {
           this.store.dispatch({type: WALLET_INFO, payload: data[0]});
           this.store.dispatch({type: CHAIN_INFO, payload: data[0]});
           this.store.dispatch({type: WALLET_INFO_SEC, payload: data[4]});
-          this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data[0].blocks == 0 || data[0].headers == 0 ? 0 : syncedPercentage});
-          let transactionData = await getAllTransactions();
+          this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data[0].blocks === 0 || data[0].headers === 0 ? 0 : syncedPercentage});
+
+          //grab transaction that is main
+          let where = {
+            is_main: 1
+          };
+
+          let transactionData = await getAllTransactions(null, 0, where);
           this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: transactionData , type: "all"}});
           await this.getAddresses(data[2], data[3]);
         }
       });
-    }catch(err){
+    } catch(err) {
       console.log(err);
       setTimeout(async () => {
         await this.mainCycle();
@@ -357,8 +367,8 @@ class DaemonConnector {
     this.unsubscribeFromSetupEvents();
   }
 
-  stateCheckerInitialStartup(){
-    this.wallet.getInfo().then((data) => {
+  async stateCheckerInitialStartup(){
+    this.wallet.getInfo().then(async (data) => {
       if(!data.encrypted){
         this.unencryptedWallet = true;
       }
@@ -371,12 +381,12 @@ class DaemonConnector {
       }
       if(!this.runningMainCycle){
         this.runningMainCycle = true;
-        this.mainCycle();
+        await this.mainCycle();
       }
       clearInterval(this.checkStartupStatusInterval);
     })
     .catch((err) => {
-      if (err.message == 'Loading block index...' || err.message == 'Activating best chain...' || err.message == "Loading wallet...") {
+      if (err.message === 'Loading block index...' || err.message === 'Activating best chain...' || err.message === "Loading wallet...") {
         if(!this.loadingBlockIndexPayment){
           this.loadingBlockIndexPayment = true;
           this.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: true})
@@ -525,8 +535,10 @@ class DaemonConnector {
   //DATABASE RELATED CODE (EARNINGS FROM STAKING)
 
   needToReloadTransactions(){
+    console.log(this.currentAddresses)
     for(let i = 0; i < this.currentAddresses.length; i++){
       if(this.processedAddresses === undefined || !this.processedAddresses.includes(this.currentAddresses[i].address)){
+        console.log('in here.')
         return true;
       }
     }
@@ -561,25 +573,6 @@ class DaemonConnector {
     // await truncateTransactions();
     // this.closeDb()
   }
-
-  // setupTransactionsDB(){
-  //   this.db = new sqlite3.Database(app.getPath('userData') + '/transactions');
-  //   this.db.serialize(() => {
-  //     this.db.run("CREATE TABLE IF NOT EXISTS transactions (transaction_id VAARCHAR(64), time INTEGER, amount DECIMAL(11,8), category, address, fee DECIMAL(2,8), confirmations INTEGER);");
-  //     this.db.run("CREATE TABLE IF NOT EXISTS pendingTransactions (transaction_id VAARCHAR(64));");
-  //   });
-  //
-  // }
-
-  // closeDb(){
-  //   if(this.db && this.db.open)
-  //     this.db.close();
-  // }
-
-  // openDb(){
-  //   if(!this.db || !this.db.open)
-  //     this.db = new sqlite3.Database(app.getPath('userData') + '/transactions');
-  // }
 
   orderTransactions(data) {
     const aux = [];
@@ -654,11 +647,11 @@ class DaemonConnector {
       await this.loadTransactionsForProcessing();
     }
     else{
-      this.processTransactions();
+      await this.processTransactions();
     }
   }
 
-  processTransactions(){
+  async processTransactions(){
     let entries = [];
     let rewards = [];
     let staked = [];
@@ -742,7 +735,7 @@ class DaemonConnector {
     entries = entries.concat(rewards, staked, change);
     // console.log(entries.length)
     // console.log(JSON.stringify(entries))
-    this.insertIntoDb(entries)
+    await this.insertIntoDb(entries)
   }
 
   goToEarningsPanel(){
@@ -802,64 +795,6 @@ class DaemonConnector {
     this.transactionsPage = 0;
     this.currentFrom = this.from;
     this.isIndexingTransactions = false;
-
-
-    // this.openDb();
-    // let statement = "BEGIN TRANSACTION;";
-    // let lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
-    // let earningsCountNotif = 0;
-    // let earningsTotalNotif = 0;
-    // let shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
-    // for (let i = 0; i < entries.length; i++) {
-    //   let entry = entries[i];
-    //   entry.time = entry.time * 1000;
-    //   statement += `INSERT INTO transactions VALUES('${entry.txId}', ${entry.time}, ${entry.amount}, '${entry.category}', '${entry.address}', ${entry.fee}, '${entry.confirmations}');`;
-    //   if(Number(entry.confirmations) < 30){
-    //       statement += `INSERT INTO pendingtransactions VALUES('${entry.txId}');`;
-    //       this.store.dispatch({type: PENDING_TRANSACTION, payload: entry.txId})
-    //   }
-    //
-    //   await addTransaction(entry, Number(entry.confirmations) < 30)
-    //   //update with 1 new staking reward since previous ones have already been loaded on startup
-    //   if(this.transactionsIndexed){
-    //     this.store.dispatch({type: STAKING_REWARD, payload: entries[i]})
-    //   }
-    //   if(entry.time > lastCheckedEarnings && shouldNotifyEarnings){
-    //     this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: entry.amount, date: entry.time}});
-    //     earningsCountNotif++;
-    //     earningsTotalNotif += entry.amount;
-    //   }
-    // }
-    //
-    // if(shouldNotifyEarnings && earningsCountNotif > 0){
-    //   earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
-    //   let title = `Staking reward - ${earningsTotalNotif} ECC`;
-    //   const body = earningsCountNotif == 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`;
-    //   const callback = () => {this.goToEarningsPanel();}
-    //   this.queueOrSendNotification(callback, body);
-    // }
-    //
-    // statement += "COMMIT;";
-    // if(entries.length > 0){
-    //   this.db.exec(statement, (err)=>{
-    //     if(err)
-    //       console.log(err);
-    //     this.closeDb();
-    //   });
-    // }
-    // else this.closeDb();
-    //
-    // //no more transactions to process, mark as done to avoid spamming the daemon
-    // if(!this.transactionsIndexed){
-    //   this.transactionsIndexed = true;
-    //   this.store.dispatch({type: INDEXING_TRANSACTIONS, payload: false});
-    //   this.store.dispatch({type: STAKING_REWARD, payload: entries})
-    // }
-    //
-    // this.transactionsPage = 0;
-    // this.currentFrom = this.from;
-    // transactionsInfo.set('info', {done: this.transactionsIndexed, processedFrom: this.from}).write();
-    // this.isIndexingTransactions = false;
   }
 
   async processPendingTransactions(){
@@ -919,25 +854,6 @@ class DaemonConnector {
     }
   }
 
-  // removeTransactionFromDb(transferId, deleteFromTransactions){
-  //   return new Promise((resolve, reject) => {
-  //     this.openDb();
-  //     let sql = `DELETE FROM pendingtransactions where transaction_id = '${transferId}';`;
-  //     if(deleteFromTransactions)
-  //       sql+= `DELETE FROM transactions where transaction_id = '${transferId}';`;
-  //
-  //     this.db.exec(sql, (err)=> {
-  //       if(err){
-  //         console.log("error deleting from transactions: ", err);
-  //         reject(false);
-  //         return;
-  //       }
-  //       this.closeDb();
-  //       resolve(true);
-  //     });
-  //   });
-  // }
-
   async loadTransactionFromDb(){
     return new Promise(async (resolve, reject) => {
 
@@ -976,52 +892,6 @@ class DaemonConnector {
 
       // TODO: make this do some better error handling.
       resolve();
-
-      // this.openDb();
-      // let sql = `SELECT * FROM transactions ORDER BY time DESC;`;
-      // this.db.all(sql, [], (err, rows) => {
-      //   if (err) {
-      //     console.log("ERROR GETTING TRANSACTIONS: ", err);
-      //   }
-      //   let lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
-      //   let earningsCountNotif = 0;
-      //   let earningsTotalNotif = 0;
-      //   let shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
-      //   rows.map((transaction) => {
-      //     let time = transaction.time;
-      //     let amount = transaction.amount;
-      //     if(time > lastCheckedEarnings && shouldNotifyEarnings){
-      //       this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}});
-      //       earningsCountNotif++;
-      //       earningsTotalNotif += amount;
-      //     }
-      //
-      //   });
-        //this is an issue
-        /*if(shouldNotifyEarnings && earningsCountNotif > 0){
-          earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
-          let title = `Staking reward - ${earningsTotalNotif} ECC`;
-          const body = earningsCountNotif == 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`;
-          const callback = () => {this.goToEarningsPanel();}
-          this.queueOrSendNotification(callback, body);
-        }*/
-      //   this.store.dispatch({type: STAKING_REWARD, payload: rows})
-      // });
-
-      // sql = `SELECT * FROM pendingTransactions;`;
-      // this.db.all(sql, [], (err, rows) => {
-      //   if (err) {
-      //     console.log("ERROR GETTING TRANSACTIONS: ", err);
-      //   }
-      //   let aux = [];
-      //   rows.map((val) => {
-      //     aux.push(val.transaction_id)
-      //   });
-      //   this.store.dispatch({type: PENDING_TRANSACTION, payload: aux});
-      //   this.closeDb();
-      //   this.hasLoadedTransactionsFromDb = true;
-      //   resolve();
-      // });
     });
   }
 
@@ -1061,7 +931,6 @@ class DaemonConnector {
 
           // TODO: add address to db.
           await deleteAddressByName(address.address);
-          ansAddressesInfo.get('addresses').remove({ address: address.address }).write()
         }
         else{
           shouldAdd = false;
@@ -1075,6 +944,7 @@ class DaemonConnector {
           normalAddress: address.address,
           amount: address.amount,
           code: ansRecord.Code,
+          expiryTime: ansRecord.ExpireTime,
           ans: true,
         }
       } else {
@@ -1082,6 +952,8 @@ class DaemonConnector {
       }
       return retval;
     }));
+
+    console.log("All addresses with ans", allAddressesWithANS);
 
     const toAppend = allReceived
                       .filter(address => address.amount === 0)
@@ -1103,12 +975,18 @@ class DaemonConnector {
       else{
         return b.address < a.address
       }
+    });
 
-    })
+    //put addresses in the database
+    for (let i = 0 ; i < toReturn.length - 1; i++){
+      await addAddress(toReturn[i], toReturn[i].ans);
+    }
     this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
     //We need to have the addresses loaded to be able to index transactions
     this.currentAddresses = toReturn;
+    console.log("All addresses without null balances", toReturn);
     if(!this.transactionsIndexed && this.firstRun && this.currentAddresses.length > 0 && !this.isIndexingTransactions){
+      console.log('indexing in address loop.')
       await this.loadTransactionsForProcessing();
       this.store.dispatch({type: INDEXING_TRANSACTIONS, payload: true})
     }
@@ -1124,46 +1002,6 @@ class DaemonConnector {
       });
     });
   }
-
-   /*async processRawTransaction(transactionId, address){
-    let self = this;
-    return new Promise((resolve, reject) => {
-      this.wallet.getRawTransaction(transactionId).then(async (data) => {
-        let inputs = data.vin.length;
-        if(inputs > 2){
-          resolve(true);
-          return;
-        }
-        for(let i = 0; i < data.vin.length; i++){
-          let txId = data.vin[i].txid;
-          let txRaw = await self.getRawTransaction(txId);
-          let amount = 0;
-          let addressVout = "";
-          for(let j = 0; j < txRaw.vout.length; j++){
-            let vout = txRaw.vout[j];
-            if(vout.scriptPubKey != undefined && vout.scriptPubKey.addresses != undefined && vout.value > amount){
-              amount = vout.value;
-              addressVout = vout.scriptPubKey.addresses[0];
-            }
-          }
-          if(addressVout == address){
-            resolve(false);
-            return;
-          }
-        }
-        resolve(true);
-      }).catch((err) => {
-        reject(null);
-      });
-    });*/
-
-  /*
-    this.getChainInfo();
-    this.getWalletInfo();
-    this.getTransactions();
-    this.setupTransactionsDB();
-    this.getAddresses();
-  }*/
-  }
+}
 
 module.exports = DaemonConnector;
