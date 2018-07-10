@@ -4,7 +4,7 @@ import {getAllTransactions} from "../../Managers/SQLManager";
 
 import { traduction } from '../../lang/lang';
 import * as actions from '../../actions';
-let moment = require('moment');
+const moment = require('moment');
 
 moment.locale('en');
 
@@ -22,14 +22,17 @@ class Transaction extends Component {
     this.onItemClick = this.onItemClick.bind(this);
     this.handleNextClicked = this.handleNextClicked.bind(this);
     this.handlePreviousClicked = this.handlePreviousClicked.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.state = {
+      searchValue: ''
+    }
   }
 
   async componentDidMount() {
-    console.log('in here for some reason')
     const where = {
       is_main: 1
     };
-    const transactions = await getAllTransactions(100, 100 , where);
+    const transactions = await getAllTransactions(100, 0, where);
     this.props.setTransactionsData(transactions, "all");
     this.props.setTransactionsPage(0);
     this.updateTable();
@@ -44,6 +47,12 @@ class Transaction extends Component {
 
   componentWillUnmount() {
     $( window ).off('resize');
+  }
+
+  handleChange(e) {
+    console.log('handle change called');
+    this.setState({searchValue: e.value})
+
   }
 
   async handleNextClicked(){
@@ -111,14 +120,6 @@ class Transaction extends Component {
     event.stopPropagation();
   }
 
-  orderTransactions(data) {
-    const aux = [];
-    for (let i = data.length - 1; i >= 0; i -= 1) {
-      aux.push(data[i]);
-    }
-    return aux;
-  }
-
   shouldComponentUpdate(state){
     if(this.props.page === state.page && this.props.page > 0 && this.props.type === state.type) return false;
     return true;
@@ -142,18 +143,25 @@ class Transaction extends Component {
 
   }
 
-  onItemClick(event) {
-    let type = event.currentTarget.dataset.id;
+  async onItemClick(event) {
+    const type = event.currentTarget.dataset.id;
     console.log('type')
     console.log(this.props.type)
     if(type === this.props.type) return;
-    console.log(data)
-    let data = this.props.data;
-    this.props.setTransactionsData(data, type);
+    const where = {
+      is_main: 1
+    };
+    if(type !== 'all'){
+      where.category = type;
+    }
+    console.log(where)
+    const transactions = await getAllTransactions(100, 0, where);
+    this.props.setTransactionsData(transactions, type);
+    this.props.setTransactionsPage(0);
     $(".extraInfoTransaction").hide();
     $(".extraInfoTransaction").each(function() {
       $(this).attr('sd', 'false');
-    })
+    });
   }
 
   getValue(val){
@@ -192,10 +200,9 @@ class Transaction extends Component {
                     <div className="box">
                       <div className="container-1">
                         <span className="icon"><i className="fa fa-search"></i></span>
-                        <input type="search" id="search" placeholder="Search..." />
+                        <input value={this.state.searchValue} onChange={(e) => {this.handleChange(e)}} type="search" id="search" placeholder="Search..." />
                       </div>
                     </div>
-                    {/*<input placeholder="search.." type="text"/>*/}
                   </div>
                   <div className="col-sm-6">
                     {
