@@ -149,23 +149,32 @@ class DaemonConnector {
       this.processedAddresses.push(addresses[i].address);
     }
     const latestTransaction = await getLatestTransaction();
-    console.log(latestTransaction)
+    // console.log(latestTransaction)
     this.from = latestTransaction != null ? latestTransaction.time : null;
 
     const allTransactions = await getAllTransactions();
     this.transactionsIndexed = allTransactions.length > 0;
-    this.hasLoadedTransactionsFromDb = allTransactions.length > 0;
 
-    console.log("processed Addresses: " + this.processedAddresses);
-    console.log("from time: " + this.from);
+
+
+    // console.log("processed Addresses: " + this.processedAddresses);
+    // console.log("from time: " + this.from);
     console.log("transactions indexed: " + this.transactionsIndexed);
 
     if(this.store.getState().startup.updatingApp){
       this.runningMainCycle = false;
       return;
     }
-    if(!this.hasLoadedTransactionsFromDb)
+    if(!this.hasLoadedTransactionsFromDb){
       await this.loadTransactionFromDb();
+      //grab transaction that is main
+      let where = {
+        is_main: 1
+      };
+      let transactionData = await getAllTransactions(null, 0, where);
+      this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: transactionData , type: "all"}});
+      this.hasLoadedTransactionsFromDb = true
+    }
     try{
       await this.wallet.getAllInfo().then( async (data) => {
         if(data){
@@ -182,15 +191,6 @@ class DaemonConnector {
           this.store.dispatch({type: CHAIN_INFO, payload: data[0]});
           this.store.dispatch({type: WALLET_INFO_SEC, payload: data[4]});
           this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data[0].blocks === 0 || data[0].headers === 0 ? 0 : syncedPercentage});
-
-          //grab transaction that is main
-          let where = {
-            is_main: 1
-          };
-
-          let transactionData = await getAllTransactions(null, 0, where);
-          this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: transactionData , type: "all"}});
-
         }
       });
     } catch(err) {
@@ -200,7 +200,8 @@ class DaemonConnector {
       }, this.firstRun && this.transactionsIndexed ? 1000 : 4000);
       return;
     }
-    if(!this.firstRun && !this.isIndexingTransactions && this.transactionsIndexed){
+    if(!this.firstRun && !this.isIndexingTransactions && !this.transactionsIndexed){
+      console.log('im doing it')
       await this.loadTransactionsForProcessing();
     }
     //RETHINK THIS -> needs to happen when user is 100% synced...
@@ -544,8 +545,8 @@ class DaemonConnector {
   //DATABASE RELATED CODE (EARNINGS FROM STAKING)
 
   needToReloadTransactions(){
-    console.log(this.currentAddresses)
-    console.log(this.processedAddresses)
+    // console.log(this.currentAddresses)
+    // console.log(this.processedAddresses)
     for(let i = 0; i < this.currentAddresses.length -1; i++){
       if(this.processedAddresses === undefined || !this.processedAddresses.includes(this.currentAddresses[i].address)){
         console.log("addresses undifined", this.processedAddresses === undefined)
@@ -701,13 +702,13 @@ class DaemonConnector {
                   entries.splice(entries.indexOf(original), 1);
                   entries.splice(entries.indexOf(current), 1);
                 } else {
-                  console.log('similarity too low')
-                  console.log(tools.similarity(original.amount.toString(), current.amount.toString()))
+                  // console.log('similarity too low')
+                  // console.log(tools.similarity(original.amount.toString(), current.amount.toString()))
                 }
               } else{
-                console.log('Sim value')
-                console.log(tools.similarity(original.amount.toString(), current.amount.toString()))
-                console.log('values dont line up')
+                // console.log('Sim value')
+                // console.log(tools.similarity(original.amount.toString(), current.amount.toString()))
+                // console.log('values dont line up')
               }
             }
           }
@@ -959,7 +960,6 @@ class DaemonConnector {
       const contents = await addAddress(address, address.ans);
       return contents;
     }));
-    console.log('make it here')
     this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
     //We need to have the addresses loaded to be able to index transactions
     this.currentAddresses = normalAddresses;

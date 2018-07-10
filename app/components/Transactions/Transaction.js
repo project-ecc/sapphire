@@ -25,6 +25,7 @@ class Transaction extends Component {
   }
 
   async componentDidMount() {
+    console.log('in here for some reason')
     const where = {
       is_main: 1
     };
@@ -143,7 +144,10 @@ class Transaction extends Component {
 
   onItemClick(event) {
     let type = event.currentTarget.dataset.id;
+    console.log('type')
+    console.log(this.props.type)
     if(type === this.props.type) return;
+    console.log(data)
     let data = this.props.data;
     this.props.setTransactionsData(data, type);
     $(".extraInfoTransaction").hide();
