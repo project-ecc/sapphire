@@ -50,8 +50,7 @@ class Transaction extends Component {
   }
 
   handleChange(e) {
-    console.log('handle change called');
-    this.setState({searchValue: e.value})
+    console.log('handle change called', e.value);
 
   }
 
