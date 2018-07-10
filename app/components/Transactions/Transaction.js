@@ -23,9 +23,6 @@ class Transaction extends Component {
     this.handleNextClicked = this.handleNextClicked.bind(this);
     this.handlePreviousClicked = this.handlePreviousClicked.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.state = {
-      searchValue: ''
-    }
   }
 
   async componentDidMount() {
@@ -69,7 +66,7 @@ class Transaction extends Component {
       is_main: 1
     };
     const transactions = await getAllTransactions(100, 100 * page, where);
-    this.props.setTransactionsData(transactions, "all");
+    this.props.setTransactionsData(transactions, this.props.type);
     this.props.setTransactionsPage(page);
     this.updateTable();
   }
@@ -199,7 +196,7 @@ class Transaction extends Component {
                     <div className="box">
                       <div className="container-1">
                         <span className="icon"><i className="fa fa-search"></i></span>
-                        <input value={this.state.searchValue} onChange={(e) => {this.handleChange(e)}} type="search" id="search" placeholder="Search..." />
+                        <input onChange={(e) => {this.handleChange(e)}} type="search" id="search" placeholder="Search..." />
                       </div>
                     </div>
                   </div>
@@ -230,9 +227,9 @@ class Transaction extends Component {
           </div>
           <div style={{width: "100%", marginTop: "15px", padding: "0 0"}}>
             <div className="row rowDynamic">
-              <div className="col-sm-4 headerAddresses tableRowHeader" style={{paddingLeft: "4%"}}>{ this.props.lang.date }</div>
-              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.info }</div>
-              <div id="addressHeader" className="col-sm-6 headerAddresses tableRowHeader" style={{textAlign: "center"}}>{ this.props.lang.amount } & {this.props.lang.status}</div>
+              <div className="col-sm-2 headerAddresses tableRowHeader text-left" style={{paddingLeft: "4%"}}>{ this.props.lang.date }</div>
+              <div id="addressHeader" className="col-sm-5 headerAddresses tableRowHeader text-left">{ this.props.lang.info }</div>
+              <div id="addressHeader" className="col-sm-5 headerAddresses tableRowHeader text-left" style={{textAlign: "center"}}>{ this.props.lang.amount } & {this.props.lang.status}</div>
             </div>
           <div id="rows" style={{height: "500px", width: "100%", padding: "0 0", overflowY: "scroll"}}>
             {data.map((t, index) => {
