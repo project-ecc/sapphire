@@ -14,21 +14,20 @@ const tools = require('../utils/tools');
 const sqlite3 = require('sqlite3');
 let remote = require('electron').remote;
 const app = remote.app;
-import transactionsInfo from '../utils/transactionsInfo';
 import ansAddressesInfo from '../utils/ansAddressesInfo';
 
 import {
   addTransaction, addAddress, deleteAddressByName, truncateTransactions,
   getAllTransactions, getAllRewardTransactions, getAllPendingTransactions, deletePendingTransaction,
   getLatestTransaction, getAllAddresses
-} from '../Managers/SQLManager'
+} from '../Managers/SQLManager';
 
 import $ from 'jquery';
 const FeedMe = require('feedme');
 const https = require('https');
 const Tools = require('../utils/tools');
 const request = require('request');
-import db from '../../app/utils/database/db'
+const db = require('../../app/utils/database/db')
 
 //this class acts as a bridge between wallet.js (daemon) and the redux store
 class DaemonConnector {
@@ -69,7 +68,6 @@ class DaemonConnector {
     this.processedAddresses = null;
     this.from = null
     this.currentFrom = this.from;
-    this.db = undefined;
     this.transactionsPage = 0;
     this.transactionsToRequest = 1000;
     this.transactionsIndexed = false;
@@ -145,13 +143,22 @@ class DaemonConnector {
   }
 
   async mainCycle(){
-    this.processedAddresses = await getAllAddresses();
-    this.from = await getLatestTransaction().time;
-    this.transactionsIndexed = await getAllTransactions(null, 0) > 0;
+    this.processedAddresses = [];
+    const addresses = await getAllAddresses();
+    for (let i = 0; i < addresses.length - 1; i++){
+      this.processedAddresses.push(addresses[i].address);
+    }
+    const latestTransaction = await getLatestTransaction();
+    console.log(latestTransaction)
+    this.from = latestTransaction != null ? latestTransaction.time : null;
 
-    console.log("transactions indexed: " + this.transactionsIndexed);
-    console.log("from time: " + this.from);
+    const allTransactions = await getAllTransactions();
+    this.transactionsIndexed = allTransactions.length > 0;
+    this.hasLoadedTransactionsFromDb = allTransactions.length > 0;
+
     console.log("processed Addresses: " + this.processedAddresses);
+    console.log("from time: " + this.from);
+    console.log("transactions indexed: " + this.transactionsIndexed);
 
     if(this.store.getState().startup.updatingApp){
       this.runningMainCycle = false;
@@ -162,6 +169,7 @@ class DaemonConnector {
     try{
       await this.wallet.getAllInfo().then( async (data) => {
         if(data){
+          await this.getAddresses(data[2], data[3]);
           let highestBlock = data[0].headers === 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
           // remove .00 if 100%
           let syncedPercentage = (data[0].blocks * 100) / data[0].headers;
@@ -182,7 +190,7 @@ class DaemonConnector {
 
           let transactionData = await getAllTransactions(null, 0, where);
           this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: transactionData , type: "all"}});
-          await this.getAddresses(data[2], data[3]);
+
         }
       });
     } catch(err) {
@@ -314,6 +322,7 @@ class DaemonConnector {
     });
 
     event.on('runMainCycle', () => {
+      console.log('run main cycle')
       if(!this.runningMainCycle){
         this.firstRun = true;
         this.mainCycle();
@@ -324,8 +333,8 @@ class DaemonConnector {
   handleDaemonUpdated(){
     this.store.dispatch({type: UPDATE_AVAILABLE, payload: {guiUpdate: false, daemonUpdate: false}})
     this.firstRun = true;
-    this.checkStartupStatusInterval = setInterval(()=>{
-      this.stateCheckerInitialStartup();
+    this.checkStartupStatusInterval = setInterval(async()=>{
+      await this.stateCheckerInitialStartup();
     }, 2000)
   }
 
@@ -536,9 +545,12 @@ class DaemonConnector {
 
   needToReloadTransactions(){
     console.log(this.currentAddresses)
-    for(let i = 0; i < this.currentAddresses.length; i++){
+    console.log(this.processedAddresses)
+    for(let i = 0; i < this.currentAddresses.length -1; i++){
       if(this.processedAddresses === undefined || !this.processedAddresses.includes(this.currentAddresses[i].address)){
-        console.log('in here.')
+        console.log("addresses undifined", this.processedAddresses === undefined)
+        console.log("processes address doesnt contain current address",  !this.processedAddresses.includes(this.currentAddresses[i].address));
+        console.log('current address',this.currentAddresses[i].address )
         return true;
       }
     }
@@ -555,23 +567,6 @@ class DaemonConnector {
     this.from = 0;
     this.transactionsIndexed = false;
     await truncateTransactions();
-
-    // transactionsInfo.set('info', {done: false, processedFrom: 0, processedUpTo: 0}).write();
-    // transactionsInfo.set('addresses', []).write();
-    //
-    // for(let i = 0; i < this.currentAddresses.length; i++){
-    //   let currentAddress = this.currentAddresses[i].address;
-    //   transactionsInfo.get('addresses').push(currentAddress).write();
-    //   this.processedAddresses.push(currentAddress)
-    // }
-    // this.store.dispatch({type: RESET_STAKING_EARNINGS});
-    // this.from = 0;
-    // this.transactionsIndexed = false;
-    // this.db = new sqlite3.Database(app.getPath('userData') + '/transactions');
-    // this.db.run("DELETE FROM TRANSACTIONS;");
-    // this.db.run("DELETE FROM PENDINGTRANSACTIONS;");
-    // await truncateTransactions();
-    // this.closeDb()
   }
 
   orderTransactions(data) {
@@ -722,7 +717,6 @@ class DaemonConnector {
       generatedFound = false;
     }
 
-
     // Set every transaction still left in entries as the main transaction.
     for(let j = 0; j <= entries.length - 1; j++) {
       entries[j].is_main = true;
@@ -814,23 +808,6 @@ class DaemonConnector {
         }
       }
     }
-
-    // let pendingTransactions = this.store.getState().application.pendingTransactions;
-    // for(let i = 0; i < pendingTransactions.length; i++){
-    //   let id = pendingTransactions[i];
-    //   let rawT = await this.getRawTransaction(id);
-    //   rawT.confirmations = -1;
-    //   if(rawT.confirmations >= 30 || rawT.confirmations === -1){
-    //     let deleteFromTransactions = false;
-    //
-    //     if(rawT.confirmations === -1)
-    //       deleteFromTransactions = true;
-    //
-    //     if(await this.removeTransactionFromDb(id, deleteFromTransactions)){
-    //       this.removeTransactionFromMemory(id, deleteFromTransactions);
-    //     }
-    //   }
-    // }
   }
 
   removeTransactionFromMemory(transactionId, deleteFromTransactions){
@@ -978,12 +955,14 @@ class DaemonConnector {
     });
 
     //put addresses in the database
-    for (let i = 0 ; i < toReturn.length - 1; i++){
-      await addAddress(toReturn[i], toReturn[i].ans);
-    }
+    await Promise.all(toReturn.map(async (address) => {
+      const contents = await addAddress(address, address.ans);
+      return contents;
+    }));
+    console.log('make it here')
     this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
     //We need to have the addresses loaded to be able to index transactions
-    this.currentAddresses = toReturn;
+    this.currentAddresses = normalAddresses;
     console.log("All addresses without null balances", toReturn);
     if(!this.transactionsIndexed && this.firstRun && this.currentAddresses.length > 0 && !this.isIndexingTransactions){
       console.log('indexing in address loop.')

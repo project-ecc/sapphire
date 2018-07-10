@@ -24,12 +24,20 @@ class Transaction extends Component {
     this.handlePreviousClicked = this.handlePreviousClicked.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const where = {
+      is_main: 1
+    };
+    const transactions = await getAllTransactions(100, 100 , where);
+    this.props.setTransactionsData(transactions, "all");
+    this.props.setTransactionsPage(0);
+    this.updateTable();
+    //console.log(transactions)
+
     $( window ).on('resize', () => {
       this.updateTable();
     });
     $(".extraInfoTransaction").hide();
-    this.updateTable();
     this.props.setEarningsChecked(new Date().getTime());
   }
 
@@ -42,36 +50,19 @@ class Transaction extends Component {
     await this.getAllTransactions(this.props.page + 1);
   }
 
-  async handlePreviousClicked(){
-    if(this.props.requesting || this.props.page === 0) return;
+  async handlePreviousClicked() {
+    if (this.props.requesting || this.props.page === 0) return;
     await this.getAllTransactions(this.props.page - 1);
   }
 
   async getAllTransactions(page) {
-    // this.props.wallet.getTransactions(null, 100, 100 * page).then((data) => {
-    //     this.props.setTransactionsData(data, this.props.type);
-    //     this.props.setTransactionsPage(page);
-    //     this.updateTable();
-    //     //$(".extraInfoTransaction").hide();
-    // }).catch((err) => {
-    //     console.log("error getting transactions: ", err)
-    // });
-
-    return new Promise(async (resolve, reject) => {
-      let where = {
-        is_main: 1
-      };
-
-
-      await getAllTransactions(100, 100 * page, where)
-        .then(transactions => {
-        this.props.setTransactionsData(transactions, "all");
-        this.props.setTransactionsPage(page);
-        this.updateTable();
-        //console.log(transactions)
-        resolve(transactions)
-      });
-    });
+    const where = {
+      is_main: 1
+    };
+    const transactions = await getAllTransactions(100, 100 * page, where);
+    this.props.setTransactionsData(transactions, "all");
+    this.props.setTransactionsPage(page);
+    this.updateTable();
   }
 
   renderStatus(opt) {
@@ -93,7 +84,6 @@ class Transaction extends Component {
  updateTable(){
     $('#rows').css("height", $('#transactionAddresses').height()-204);
     let numberOfChildren = this.props.data.length;
-    // console.log(this.props.data)
     let totalSize = numberOfChildren * 40; //40px height of each row
     let sizeOfContainer = $('#transactionAddresses').height()-204;
     if(sizeOfContainer < totalSize){
@@ -236,7 +226,7 @@ class Transaction extends Component {
             </div>
           <div id="rows" style={{height: "500px", width: "100%", padding: "0 0", overflowY: "scroll"}}>
             {data.map((t, index) => {
-              console.log(t, index)
+             // console.log(t, index)
 
               if (this.props.type === 'all'
               || this.props.type === t.category
@@ -286,7 +276,7 @@ class Transaction extends Component {
                     <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{paddingLeft: "4%", width: "100%", paddingTop: "11px", paddingBottom: "11px", cursor:"default", zIndex:"2", display:"none"}}>
                       <div className="col-sm-8">
                         <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.dateString}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{(new Date(t.time * 1000).toDateString()).toString()}</span></p>
+                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{(new Date(t.time).toDateString()).toString()}</span></p>
                       </div>
                       <div className="col-sm-4">
                         <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.confirmations}</span></p>

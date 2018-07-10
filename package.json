@@ -139,6 +139,7 @@
     "electron": "^1.8.4",
     "electron-builder": "^19.56.2",
     "electron-devtools-installer": "^2.2.0",
+    "electron-rebuild": "^1.8.1",
     "enzyme": "^2.9.1",
     "enzyme-to-json": "^1.5.1",
     "eslint": "^3.19.0",

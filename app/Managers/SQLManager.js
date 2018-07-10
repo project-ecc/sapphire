@@ -1,4 +1,4 @@
-import db from '../../app/utils/database/db'
+const db = require('../../app/utils/database/db')
 const Address = db.Address;
 const Transaction = db.Transaction;
 const AnsRecord = db.AnsRecord;
@@ -18,9 +18,9 @@ async function addTransaction(transaction, pending = false) {
         }
       })
       .spread((address, created) => {
-        console.log(address.get({
-          plain: true
-        }));
+        // console.log(address.get({
+        //   plain: true
+        // }));
         Transaction.create({
           transaction_id: transaction.txId,
           time: transaction.time,
@@ -131,8 +131,8 @@ async function getLatestTransaction(){
         //your where conditions, or without them if you need ANY entry
       },
       order: [['time', 'DESC']]
-    }).then(transaction => {
-      resolve(transaction);
+    }).then(transactions => {
+      resolve(transactions[0]);
     }).error(err => {
       reject(err);
     });
@@ -228,6 +228,7 @@ async function addAddress(address, withAns = false){
             reject(err);
           });
         }
+        fulfill(newAddress);
         return newAddress;
       }).error(err => {
         console.log(err);
