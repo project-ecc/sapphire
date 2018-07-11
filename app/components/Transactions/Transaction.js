@@ -293,7 +293,7 @@ class Transaction extends Component {
                   <div className= {counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} style={{cursor: "pointer", fontSize: "15px", minHeight: "40px"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
 
                     <div className="col-sm-2" style={{paddingTop: "9px"}}>
-                      <p style={{ margin: '0px' }}><span>{moment(t.time * 1000).format('MMMM Do')}</span></p>
+                      <p style={{ margin: '0px' }}><span>{moment(t.time).format('MMMM Do')}</span></p>
                     </div>
                     <div className="col-sm-6 transactionAddress" style={{paddingLeft: "4%", paddingTop: "9px"}}>
                       {category} <p style={{ margin: '0px' }}><span className="desc2 transactionAddress"> {t.address.ans_record != null ? t.address.ans_record.name : t.address.address}</span></p><p style={{fontSize: "12px" }}>{time}</p>
