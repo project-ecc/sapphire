@@ -19,7 +19,7 @@ import ansAddressesInfo from '../utils/ansAddressesInfo';
 import {
   addTransaction, addAddress, deleteAddressByName, truncateTransactions,
   getAllTransactions, getAllRewardTransactions, getAllPendingTransactions, deletePendingTransaction,
-  getLatestTransaction, getAllAddresses
+  getLatestTransaction, getAllAddresses, updatePendingTransaction
 } from '../Managers/SQLManager';
 
 import $ from 'jquery';
@@ -151,11 +151,9 @@ class DaemonConnector {
     const latestTransaction = await getLatestTransaction();
     // console.log(latestTransaction)
     this.from = latestTransaction != null ? latestTransaction.time : null;
-
+    this.currentFrom = this.from
     const allTransactions = await getAllTransactions();
     this.transactionsIndexed = allTransactions.length > 0;
-
-
 
     // console.log("processed Addresses: " + this.processedAddresses);
     // console.log("from time: " + this.from);
@@ -171,7 +169,7 @@ class DaemonConnector {
       let where = {
         is_main: 1
       };
-      let transactionData = await getAllTransactions(null, 0, where);
+      let transactionData = await getAllTransactions(100, 0, where);
       this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: transactionData , type: "all"}});
       this.hasLoadedTransactionsFromDb = true
     }
@@ -184,7 +182,18 @@ class DaemonConnector {
           let syncedPercentage = (data[0].blocks * 100) / data[0].headers;
           syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
 
+          if(data[0].blocks >= highestBlock && this.transactionsIndexed){
+            await this.processPendingTransactions();
+          }
           data[0].headers = highestBlock;
+
+          // check the latest transactions against the current from
+          const result = (data[1].filter(transaction =>{
+           return transaction.time * 1000 > this.currentFrom
+          }))
+          if (result.length > 0){
+            await this.loadTransactionsForProcessing()
+          }
 
           this.store.dispatch({type: SET_DAEMON_VERSION, payload: tools.formatVersion(data[0].version)});
           this.store.dispatch({type: WALLET_INFO, payload: data[0]});
@@ -201,11 +210,8 @@ class DaemonConnector {
       return;
     }
     if(!this.firstRun && !this.isIndexingTransactions && !this.transactionsIndexed){
-      console.log('im doing it')
       await this.loadTransactionsForProcessing();
     }
-    //RETHINK THIS -> needs to happen when user is 100% synced...
-    //this.processPendingTransactions();
 
     if(this.transactionsIndexed){
       if(this.partialSetup && !this.unencryptedWallet){
@@ -606,13 +612,13 @@ class DaemonConnector {
     transactions = this.orderTransactions(transactions);
 
     if(transactions.length > 0 && this.transactionsPage == 0){
-      this.from = transactions[0].time;
+      this.from = transactions[0].time * 1000;
     }
 
     //load transactions into transactionsMap for processing
     for (let i = 0; i < transactions.length; i++) {
       time = transactions[i].time;
-      if(time > this.currentFrom || !this.transactionsIndexed){
+      if(time * 1000 > this.currentFrom || !this.transactionsIndexed){
         shouldRequestAnotherPage = true;
         txId = transactions[i].txid;
         amount = transactions[i].amount;
@@ -793,21 +799,15 @@ class DaemonConnector {
   }
 
   async processPendingTransactions(){
-    let pendingTransactions = this.store.getState().application.pendingTransactions;
+	  let pendingTransactions = await getAllPendingTransactions()
+    // let pendingTransactions = this.store.getState().application.pendingTransactions;
     for(let i = 0; i < pendingTransactions.length; i++){
-      let id = pendingTransactions[i];
+      let id = pendingTransactions[i].transaction_id;
       let rawT = await this.getRawTransaction(id);
-      rawT.confirmations = -1;
-      if(rawT.confirmations >= 30 || rawT.confirmations === -1){
-        let deleteFromTransactions = false;
-
-        if(rawT.confirmations === -1)
-          deleteFromTransactions = true;
-
-        if(await deletePendingTransaction(id)){
-          this.removeTransactionFromMemory(id, deleteFromTransactions);
-        }
-      }
+      await updatePendingTransaction(id, rawT.confirmations);
+      // if(await deletePendingTransaction(id)){
+      //   this.removeTransactionFromMemory(id, deleteFromTransactions);
+      // }
     }
   }
 

@@ -23,7 +23,8 @@ const sequelize = new Sequelize({
 
   // the storage engine for sqlite
   // - default ':memory:'
-  storage: app.getPath('userData') +'/database.sqlite'
+  storage: app.getPath('userData') +'/database.sqlite',
+  logging:false
 })
 // pass your sequelize config here
 

@@ -2,6 +2,7 @@ const db = require('../../app/utils/database/db')
 const Address = db.Address;
 const Transaction = db.Transaction;
 const AnsRecord = db.AnsRecord;
+const Op = db.Sequelize.Op;
 
 /**
  * Functions all below here for manipulating the data.
@@ -10,7 +11,7 @@ const AnsRecord = db.AnsRecord;
  */
 
 async function addTransaction(transaction, pending = false) {
-  return new Promise((fulfill, reject) => {
+  return new Promise((resolve, reject) => {
     Address
       .findOrCreate({
         where: {
@@ -34,7 +35,7 @@ async function addTransaction(transaction, pending = false) {
 
         }
         ).then(transaction => {
-          address.addTransaction(transaction).then(fulfill);
+          address.addTransaction(transaction).then(resolve);
           return transaction;
         }).error(err => {
           reject(err)
@@ -55,6 +56,28 @@ async function deleteTransactionById(transactionId) {
 
 async function deleteTransactionByName(txId){
 
+}
+
+async function updatePendingTransaction(txId, confirmations){
+  return new Promise((resolve, reject) => {
+    let status = confirmations > 30 ? "confirmed": "pending";
+    Transaction.update(
+      {
+        status: status,
+        confirmations: confirmations
+      },
+      {
+        where:
+          {
+            transaction_id: txId
+          }
+      }
+    ).then(result =>
+        resolve(result)
+      ).catch(err =>
+        reject(err)
+      );
+  });
 }
 
 async function deletePendingTransaction(txId){
@@ -123,6 +146,43 @@ async function getAllTransactions(limit = null, offset = 0, where = null){
   });
 }
 
+async function searchAllTransactions(searchTerm) {
+  return new Promise((resolve, reject) => {
+    const term = searchTerm.toLowerCase();
+    const where = {
+      is_main: 1,
+      $or: [{
+        transaction_id: {
+          [Op.like]: `%${term}%`
+        },
+      }, {
+        amount: {
+          [Op.like]: `%${term}%`
+        }
+      },{
+        confirmations: {
+          [Op.like]: `%${term}%`
+        }
+      },{
+        category: {
+          [Op.like]: `%${term}%`
+        }
+      }]
+    };
+    Transaction.findAll({
+      include: [{ all: true, nested: true }],
+      where,
+      order: [
+        ['time', 'DESC'],
+      ]
+    }).then(transactions => {
+      resolve(transactions);
+    }).error(err => {
+      reject(err);
+    });
+  });
+}
+
 async function getLatestTransaction(){
   return new Promise((resolve, reject) => {
     Transaction.findAll({
@@ -171,7 +231,6 @@ async function getAllPendingTransactions(){
         status: "pending"
       },
     }).then(transactions => {
-      console.log(transactions)
       resolve(transactions);
     }).error(err => {
       reject(err)
@@ -319,6 +378,8 @@ export {
   Address,
   AnsRecord,
   Transaction,
-  getAllAddresses
+  getAllAddresses,
+  searchAllTransactions,
+  updatePendingTransaction
 };
 

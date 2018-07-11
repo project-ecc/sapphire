@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {getAllTransactions} from "../../Managers/SQLManager";
+import {getAllTransactions, searchAllTransactions} from "../../Managers/SQLManager";
 
 import { traduction } from '../../lang/lang';
 import * as actions from '../../actions';
@@ -23,6 +23,11 @@ class Transaction extends Component {
     this.handleNextClicked = this.handleNextClicked.bind(this);
     this.handlePreviousClicked = this.handlePreviousClicked.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.state = {
+      searchValue: '',
+      typing: false,
+      typingTimeout: 0
+    };
   }
 
   async componentDidMount() {
@@ -46,9 +51,31 @@ class Transaction extends Component {
     $( window ).off('resize');
   }
 
-  handleChange(e) {
-    console.log('handle change called', e.value);
+  componentDidUpdate(lastProps, nextProps){
+    // console.log(lastProps);
+    // console.log(nextProps);
+  }
 
+  handleChange(e) {
+    const self = this;
+
+    if (self.state.typingTimeout) {
+      clearTimeout(self.state.typingTimeout);
+    }
+
+    self.setState({
+      searchValue: e.target.value,
+      typing: false,
+      typingTimeout: setTimeout(async () => {
+        console.log("searchvalue state:", this.state.searchValue)
+        const transactions = await searchAllTransactions(this.state.searchValue);
+        console.log(transactions)
+        this.props.setTransactionsData(transactions, "all");
+        this.props.setTransactionsPage(0);
+        this.updateTable();
+      }, 300)
+    });
+    console.log('handle change called', e.target.value);
   }
 
   async handleNextClicked(){
@@ -133,10 +160,6 @@ class Transaction extends Component {
   handleDrowDownUnfocus(){
     $('.dropdownFilterSelector').removeClass('active');
     $('.dropdownFilterSelector').find('.dropdown-menuFilterSelector').slideUp(300);
-  }
-
-  componentDidUpdate(){
-
   }
 
   async onItemClick(event) {
