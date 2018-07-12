@@ -31,11 +31,8 @@ class Transaction extends Component {
   }
 
   async componentDidMount() {
-    const where = {
-      is_main: 1
-    };
-    const transactions = await getAllTransactions(100, 0, where);
-    this.props.setTransactionsData(transactions, "all");
+
+    this.props.setTransactionsData(this.props.data, "all");
     this.props.setTransactionsPage(0);
     this.updateTable();
     //console.log(transactions)
@@ -63,19 +60,38 @@ class Transaction extends Component {
       clearTimeout(self.state.typingTimeout);
     }
 
-    self.setState({
-      searchValue: e.target.value,
-      typing: false,
-      typingTimeout: setTimeout(async () => {
-        // console.log("searchvalue state:", this.state.searchValue)
-        const transactions = await searchAllTransactions(this.state.searchValue);
-        // console.log(transactions)
-        this.props.setTransactionsData(transactions, "all");
+    this.setState({
+      searchValue: e.target.value
+    }, async() => {
+      if (this.state.searchValue && this.state.searchValue.length > 1) {
+        if (this.state.searchValue.length % 2 === 0) {
+          self.setState({
+            typing: false,
+            typingTimeout: setTimeout(() => {
+              // console.log("searchvalue state:", this.state.searchValue)
+              searchAllTransactions(this.state.searchValue).then(transactions =>{
+                this.props.setTransactionsData(transactions, "all");
+                this.props.setTransactionsPage(0);
+                this.updateTable();
+              }).catch(err =>{
+                console.log(err)
+              });
+            }, 1000)
+          });
+        }
+      }else {
+        const where = {
+          is_main: 1
+        }
+        const transactions = await getAllTransactions(100, 0, where);
+        this.props.setTransactionsData(transactions, this.props.type);
         this.props.setTransactionsPage(0);
         this.updateTable();
-      }, 300)
-    });
-    console.log('handle change called', e.target.value);
+      }
+    })
+
+
+    // console.log('handle change called', e.target.value);
   }
 
   async handleNextClicked(){
@@ -103,7 +119,7 @@ class Transaction extends Component {
       return (
         <span className="desc_p">{ this.props.lang.pending }</span>
       );
-    } else if (opt > 0) {
+    } else if (opt > 30) {
       return (
         <span className="desc_c ecc">{ this.props.lang.confirmed }</span>
       );
