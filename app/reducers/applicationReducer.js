@@ -213,9 +213,9 @@ export default(state = INITIAL_STATE, action) => {
 			var rewardsLastWeek = 0;
 			var totalRewards = 0;
 			action.payload.map((transaction) => {
-				if(transaction.time >= timeOneMonthAgo)
+				if(transaction.time * 1000 >= timeOneMonthAgo)
 					rewardsLastMonth += transaction.amount;
-				if(transaction.time >= timeOneWeekAgo)
+				if(transaction.time * 1000 >= timeOneWeekAgo)
 					rewardsLastWeek += transaction.amount;
 				totalRewards += transaction.amount;
 			});

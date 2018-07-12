@@ -18,8 +18,8 @@ import ansAddressesInfo from '../utils/ansAddressesInfo';
 
 import {
   addTransaction, addAddress, deleteAddressByName, truncateTransactions,
-  getAllTransactions, getAllRewardTransactions, getAllPendingTransactions, deletePendingTransaction,
-  getLatestTransaction, getAllAddresses, updatePendingTransaction
+  getAllTransactions, getAllRewardTransactions, getAllPendingTransactions,
+  getLatestTransaction, getAllAddresses, updatePendingTransaction, updateTransactionsConfirmations
 } from '../Managers/SQLManager';
 
 import $ from 'jquery';
@@ -42,6 +42,7 @@ class DaemonConnector {
     this.handlePartialSetup = this.handlePartialSetup.bind(this);
     this.handleInitialSetup = this.handleInitialSetup.bind(this);
     this.handleSetupDone = this.handleSetupDone.bind(this);
+    this.updateConfirmations = this.updateConfirmations.bind(this);
     this.ListenToSetupEvents();
     this.step = 1;
     this.loadingBlockIndexPayment = false;
@@ -99,6 +100,7 @@ class DaemonConnector {
     this.heighestBlockFromServer = 0;
     this.heighestBlockFromServerInterval;
     this.translator = this.store.getState().startup.lang;
+    this.latestBlockTime = 0
 	}
 
   subscribeToEvents(){
@@ -165,11 +167,11 @@ class DaemonConnector {
     }
     if(!this.hasLoadedTransactionsFromDb){
       await this.loadTransactionFromDb();
-      //grab transaction that is main
-      let where = {
+      // grab transaction that is main
+      const where = {
         is_main: 1
       };
-      let transactionData = await getAllTransactions(100, 0, where);
+      const transactionData = await getAllTransactions(100, 0, where);
       this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: transactionData , type: "all"}});
       this.hasLoadedTransactionsFromDb = true
     }
@@ -193,6 +195,16 @@ class DaemonConnector {
           }))
           if (result.length > 0){
             await this.loadTransactionsForProcessing()
+          }
+
+          // update all transactions confirmations.
+          const blockChainInfo = await this.wallet.getBlockChainInfo();
+          const latestBlockTime = blockChainInfo.mediantime
+
+          if(this.latestBlockTime < latestBlockTime && !this.firstRun){
+            this.latestBlockTime = latestBlockTime;
+            this.updateConfirmations()
+            this.hasLoadedTransactionsFromDb = false;
           }
 
           this.store.dispatch({type: SET_DAEMON_VERSION, payload: tools.formatVersion(data[0].version)});
@@ -517,7 +529,6 @@ class DaemonConnector {
           this.store.dispatch({type: ECC_POST, payload: posts});
           //update render
           this.store.dispatch({type: POSTS_PER_CONTAINER, payload: this.store.getState().application.postsPerContainerEccNews})
-
         }
         if(post && post.date > lastCheckedNews && this.store.getState().notifications.newsNotificationsEnabled ){
           totalNews++;
@@ -551,20 +562,15 @@ class DaemonConnector {
   //DATABASE RELATED CODE (EARNINGS FROM STAKING)
 
   needToReloadTransactions(){
-    // console.log(this.currentAddresses)
-    // console.log(this.processedAddresses)
     for(let i = 0; i < this.currentAddresses.length -1; i++){
       if(this.processedAddresses === undefined || !this.processedAddresses.includes(this.currentAddresses[i].address)){
-        console.log("addresses undifined", this.processedAddresses === undefined)
-        console.log("processes address doesnt contain current address",  !this.processedAddresses.includes(this.currentAddresses[i].address));
-        console.log('current address',this.currentAddresses[i].address )
         return true;
       }
     }
     return false;
   }
 
-  //if addresses were added or removed, re-index transactions
+  // if addresses were added or removed, re-index transactions
   async updateProcessedAddresses(){
     for(let i = 0; i < this.currentAddresses.length; i++){
       let currentAddress = this.currentAddresses[i].address;
@@ -615,7 +621,7 @@ class DaemonConnector {
       this.from = transactions[0].time * 1000;
     }
 
-    //load transactions into transactionsMap for processing
+    // load transactions into transactionsMap for processing
     for (let i = 0; i < transactions.length; i++) {
       time = transactions[i].time;
       if(time * 1000 > this.currentFrom || !this.transactionsIndexed){
@@ -664,7 +670,6 @@ class DaemonConnector {
 
       let values = this.transactionsMap[key];
       let generatedFound = false;
-
 
       // check if current values array contains a staked transaction, if it does flag the rest of them as category staked
       restartLoop:
@@ -769,7 +774,7 @@ class DaemonConnector {
         }
       }
       if(entry.category === "generate"){
-        if(entry.time > lastCheckedEarnings && shouldNotifyEarnings){
+        if(entry.time * 1000 > lastCheckedEarnings && shouldNotifyEarnings){
           this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: entry.amount, date: entry.time}});
           earningsCountNotif++;
           earningsTotalNotif += entry.amount;
@@ -842,11 +847,12 @@ class DaemonConnector {
 
 
       //map all income from transactions
-      let transactions = await getAllTransactions();
+      this.store.dispatch({type: RESET_STAKING_EARNINGS});
+      let transactions = await getAllRewardTransactions();
       transactions.map((transaction) => {
         let time = transaction.time;
         let amount = transaction.amount;
-        if(time > lastCheckedEarnings && shouldNotifyEarnings){
+        if(time * 1000 > lastCheckedEarnings && shouldNotifyEarnings){
           this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}});
           earningsCountNotif++;
           earningsTotalNotif += amount;
@@ -875,14 +881,27 @@ class DaemonConnector {
 
   //MISC METHODS
 
+  async updateConfirmations(){
+    getAllTransactions()
+      .then(async (transactionData) =>{
+        await Promise.all(transactionData.map(async (transaction) => {
+          const rawTransaction = await this.getRawTransaction(transaction.transaction_id);
+          const transactionUpdated = await updateTransactionsConfirmations(transaction.transaction_id, rawTransaction.confirmations);
+          // console.log(transactionUpdated)
+        }));
+    }).catch(errors => {
+      console.log(errors)
+    });
+
+  }
+
   queueOrSendNotification(callback, body){
     if(this.store.getState().startup.loading || this.store.getState().startup.loader || !this.store.getState().startup.setupDone){
       this.queuedNotifications.push({callback: callback, body: body})
-    }
-    else
+    } else {
       Tools.sendOSNotification(body, callback);
+    }
   }
-
   async getAddresses(allReceived, allAddresses){
     const normalAddresses = [].concat.apply([], allAddresses).map(group => {
       return {
@@ -931,7 +950,7 @@ class DaemonConnector {
       return retval;
     }));
 
-    console.log("All addresses with ans", allAddressesWithANS);
+    // console.log("All addresses with ans", allAddressesWithANS);
 
     const toAppend = allReceived
                       .filter(address => address.amount === 0)
@@ -963,20 +982,20 @@ class DaemonConnector {
     this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
     //We need to have the addresses loaded to be able to index transactions
     this.currentAddresses = normalAddresses;
-    console.log("All addresses without null balances", toReturn);
+    // console.log("All addresses without null balances", toReturn);
     if(!this.transactionsIndexed && this.firstRun && this.currentAddresses.length > 0 && !this.isIndexingTransactions){
-      console.log('indexing in address loop.')
+      // console.log('indexing in address loop.')
       await this.loadTransactionsForProcessing();
       this.store.dispatch({type: INDEXING_TRANSACTIONS, payload: true})
     }
   }
 
- getRawTransaction(transactionId){
+  getRawTransaction(transactionId){
     return new Promise((resolve, reject) => {
       this.wallet.getRawTransaction(transactionId).then((data) => {
         resolve(data);
       }).catch((err) => {
-        console.log("error getting getRawTransaction");
+        // console.log("error getting getRawTransaction");
         resolve(null)
       });
     });

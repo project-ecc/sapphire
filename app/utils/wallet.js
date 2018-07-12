@@ -225,6 +225,11 @@ export default class Wallet {
     return result;
   }
 
+  async getBlockChainInfo(){
+    const result = await client.getBlockchainInfo();
+    return result;
+  }
+
   async getblockhash(hash) {
     const result = await client.getBlockHash(hash);
     return result;

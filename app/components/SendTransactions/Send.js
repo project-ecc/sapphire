@@ -71,6 +71,7 @@ class Send extends Component {
     let clearButton = require('../../../resources/images/clearButton-orange.png');
     return (
       <div className="panel Send">
+        <div><h1>SEND VALUE</h1></div>
           <p className="Send__message-status">{ this.props.lang.addressCopiedBelow }</p>
           <div className="Send__form">
             <div className="Send__inputs-wrapper">

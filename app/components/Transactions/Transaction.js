@@ -67,9 +67,9 @@ class Transaction extends Component {
       searchValue: e.target.value,
       typing: false,
       typingTimeout: setTimeout(async () => {
-        console.log("searchvalue state:", this.state.searchValue)
+        // console.log("searchvalue state:", this.state.searchValue)
         const transactions = await searchAllTransactions(this.state.searchValue);
-        console.log(transactions)
+        // console.log(transactions)
         this.props.setTransactionsData(transactions, "all");
         this.props.setTransactionsPage(0);
         this.updateTable();
@@ -164,8 +164,8 @@ class Transaction extends Component {
 
   async onItemClick(event) {
     const type = event.currentTarget.dataset.id;
-    console.log('type')
-    console.log(this.props.type)
+    // console.log('type')
+    // console.log(this.props.type)
     if(type === this.props.type) return;
     const where = {
       is_main: 1
@@ -173,7 +173,7 @@ class Transaction extends Component {
     if(type !== 'all'){
       where.category = type;
     }
-    console.log(where)
+    // console.log(where)
     const transactions = await getAllTransactions(100, 0, where);
     this.props.setTransactionsData(transactions, type);
     this.props.setTransactionsPage(0);

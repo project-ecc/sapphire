@@ -73,6 +73,25 @@ async function updatePendingTransaction(txId, confirmations){
           }
       }
     ).then(result =>
+      resolve(result)
+    ).catch(err =>
+      reject(err)
+    );
+  });
+}
+
+async function updateTransactionsConfirmations(txId, confirmations){
+  return new Promise((resolve, reject) => {
+    Transaction.update(
+      {
+        confirmations: confirmations
+      },
+      {
+        where: {
+          transaction_id: txId
+        }
+      }
+      ).then(result =>
         resolve(result)
       ).catch(err =>
         reject(err)
@@ -380,6 +399,7 @@ export {
   Transaction,
   getAllAddresses,
   searchAllTransactions,
-  updatePendingTransaction
+  updatePendingTransaction,
+  updateTransactionsConfirmations
 };
 
