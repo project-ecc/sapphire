@@ -887,7 +887,7 @@ class DaemonConnector {
         await Promise.all(transactionData.map(async (transaction) => {
           const rawTransaction = await this.getRawTransaction(transaction.transaction_id);
           const transactionUpdated = await updateTransactionsConfirmations(transaction.transaction_id, rawTransaction.confirmations);
-          // console.log(transactionUpdated)
+          return transactionUpdated;
         }));
     }).catch(errors => {
       console.log(errors)

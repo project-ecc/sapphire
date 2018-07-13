@@ -26,8 +26,10 @@ class Transaction extends Component {
     this.state = {
       searchValue: '',
       typing: false,
-      typingTimeout: 0
+      typingTimeout: 0,
+      transactionData: props.data
     };
+    console.log(this.state.transactionData)
   }
 
   async componentDidMount() {
@@ -35,7 +37,6 @@ class Transaction extends Component {
     this.props.setTransactionsData(this.props.data, "all");
     this.props.setTransactionsPage(0);
     this.updateTable();
-    //console.log(transactions)
 
     $( window ).on('resize', () => {
       this.updateTable();
@@ -54,46 +55,23 @@ class Transaction extends Component {
   }
 
   handleChange(e) {
-    const self = this;
-
-    if (self.state.typingTimeout) {
-      clearTimeout(self.state.typingTimeout);
+    if(e.target.value === ''){
+      this.setState({
+        transactionData: this.props.data
+      })
+      return;
     }
 
-    this.setState({
-      searchValue: e.target.value
-    }, async() => {
-      if (this.state.searchValue && this.state.searchValue.length > 1) {
-        if (this.state.searchValue.length % 2 === 0) {
-          self.setState({
-            typing: false,
-            typingTimeout: setTimeout(() => {
-              // console.log("searchvalue state:", this.state.searchValue)
-              searchAllTransactions(this.state.searchValue).then(transactions =>{
-                this.props.setTransactionsData(transactions, "all");
-                this.props.setTransactionsPage(0);
-                this.updateTable();
-              }).catch(err =>{
-                console.log(err)
-              });
-            }, 1000)
-          });
-        }
-      }else {
-        const where = {
-          is_main: 1
-        }
-        const transactions = await getAllTransactions(100, 0, where);
-        this.props.setTransactionsData(transactions, this.props.type);
-        this.props.setTransactionsPage(0);
-        this.updateTable();
+    const result =  this.props.data.filter(transaction => {
+      for (const key in transaction) {
+        if (String(transaction[key]).toLowerCase().indexOf(String(e.target.value).toLowerCase()) >= 0) return transaction;
       }
+    });
+
+    this.setState({
+      transactionData: result
     })
-
-
-    // console.log('handle change called', e.target.value);
   }
-
   async handleNextClicked(){
     if(this.props.requesting || this.props.data.length < 100) return;
     await this.getAllTransactions(this.props.page + 1);
@@ -115,7 +93,7 @@ class Transaction extends Component {
   }
 
   renderStatus(opt) {
-    if (opt === 0) {
+    if (opt < 30) {
       return (
         <span className="desc_p">{ this.props.lang.pending }</span>
       );
@@ -215,7 +193,7 @@ class Transaction extends Component {
 
   render() {
     // const data = this.orderTransactions(this.props.data);
-    const data = this.props.data
+    const data = this.state.transactionData
     const today = new Date();
     let counter = -1;
     const rowClassName = "row normalWeight tableRowCustom tableRowCustomTransactions";
@@ -266,9 +244,9 @@ class Transaction extends Component {
           </div>
           <div style={{width: "100%", marginTop: "15px", padding: "0 0"}}>
             <div className="row rowDynamic">
-              <div className="col-sm-2 headerAddresses tableRowHeader text-left" style={{paddingLeft: "4%"}}>{ this.props.lang.date }</div>
-              <div id="addressHeader" className="col-sm-5 headerAddresses tableRowHeader text-left">{ this.props.lang.info }</div>
-              <div id="addressHeader" className="col-sm-5 headerAddresses tableRowHeader text-left" style={{textAlign: "center"}}>{ this.props.lang.amount } & {this.props.lang.status}</div>
+              <div className="col-sm-3 headerAddresses tableRowHeader text-left" style={{paddingLeft: "4%"}}>{ this.props.lang.date }</div>
+              <div id="addressHeader" className="col-sm-4 headerAddresses tableRowHeader text-left">{ this.props.lang.info }</div>
+              <div id="addressHeader" className="col-sm-5 headerAddresses tableRowHeader" style={{textAlign: "right"}}>{ this.props.lang.amount } & {this.props.lang.status}</div>
             </div>
           <div id="rows" style={{height: "500px", width: "100%", padding: "0 0", overflowY: "scroll"}}>
             {data.map((t, index) => {
@@ -283,7 +261,7 @@ class Transaction extends Component {
                 counter++;
                 const iTime = new Date(t.time);
                 let time = Tools.calculateTimeSince(this.props.lang, today, iTime);
-               
+
                 let category_label;
                 let category = t.category;
                 if (category === 'generate') {
@@ -314,7 +292,7 @@ class Transaction extends Component {
                     <div className="col-sm-5 text-center" style={{paddingTop: "9px"}}>
                        {category}
                       <div className="transactionAddress text-left" >
-                       <p style={{ margin: '0px', display:"inline",color:"#d2d2d2"}}><span className="desc2 transactionAddress"> {t.address.ans_record != null ? t.address.ans_record.name : t.address.address}</span></p><p style={{fontSize: "12px", color:"#8e8e8e" }}> {category_label} {time}</p>
+                       <p style={{ margin: '0px', display:"inline",color:"#d2d2d2"}}><span className="desc2 transactionAddress"> {t["address.ans_record.name"] != null ? t['address.ans_record.name'] : t['address.address']}</span></p><p style={{fontSize: "12px", color:"#8e8e8e" }}> {category_label} {time}</p>
                       </div>
                     </div>
                     <div className="col-sm-3 text-right" style={{paddingTop: "9px", textAlign: "right"}}>

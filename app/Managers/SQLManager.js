@@ -152,6 +152,7 @@ async function getAllTransactions(limit = null, offset = 0, where = null){
     Transaction.findAll({
       include: [{ all: true, nested: true }],
       where,
+      raw: true,
       offset,
       limit,
       order: [
