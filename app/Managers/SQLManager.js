@@ -10,12 +10,15 @@ const Op = db.Sequelize.Op;
  * @param pending
  */
 
-async function addTransaction(transaction, pending = false) {
+async function addTransaction(transaction, pending = false, belongsToMe = false) {
   return new Promise((resolve, reject) => {
     Address
       .findOrCreate({
         where: {
           address: transaction.address
+        },
+        defaults: {
+          is_mine: belongsToMe
         }
       })
       .spread((address, created) => {
@@ -276,7 +279,7 @@ async function getAllRewardTransactions(){
  * Address functions
  */
 
-async function addAddress(address, withAns = false){
+async function addAddress(address, withAns = false, belongsToMe = false){
   return new Promise((fulfill, reject) => {
     Address
       .findOrCreate({
@@ -285,7 +288,8 @@ async function addAddress(address, withAns = false){
         },
         defaults: {
           current_balance: address.amount,
-          address: address.normalAddress
+          address: address.normalAddress,
+          is_mine: belongsToMe
         }
       })
       .spread((newAddress, created) => {
@@ -375,6 +379,55 @@ async function deleteAnsRecordByName(recordName) {
     return affectedRows > 1;
   })
 }
+
+
+/**
+ * Contacts functions
+ */
+
+async function addContact(contactObject){
+  return new Promise((fulfill, reject) => {
+    Address
+      .findOrCreate({
+        where: {
+          address: address.normalAddress
+        },
+        defaults: {
+          current_balance: address.amount,
+          address: address.normalAddress
+        }
+      })
+      .spread((newAddress, created) => {
+        if (withAns){
+          AnsRecord
+            .findOrCreate({
+              where: {
+                name: address.address
+              },
+              defaults: {
+                code: address.code,
+                expire_time: address.expiryTime,
+              }
+            }).spread((ansRecord, created) => {
+            ansRecord.setAddress(newAddress).then(fulfill);
+            return ansRecord;
+          }).error(err => {
+            console.log(err);
+            reject(err);
+          });
+        }
+        fulfill(newAddress);
+        return newAddress;
+      }).error(err => {
+      console.log(err);
+      reject(err);
+    });
+  });
+}
+
+/**
+ * export functions.
+ */
 export {
   addTransaction,
   getAllTransactions,
@@ -401,6 +454,7 @@ export {
   getAllAddresses,
   searchAllTransactions,
   updatePendingTransaction,
-  updateTransactionsConfirmations
+  updateTransactionsConfirmations,
+  addContact
 };
 

@@ -9,13 +9,14 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING,
       unique: true
     },
-    current_balance: DataTypes.BIGINT
+    current_balance: DataTypes.BIGINT,
+    is_mine: DataTypes.BOOLEAN
   });
 
   // class association method
   Address.associate = function (models) {
     Address.hasMany(models.Transaction);
-    Address.hasOne(models.AnsRecord);
+    Address.hasMany(models.AnsRecord);
   };
 
   return Address;
