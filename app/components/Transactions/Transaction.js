@@ -29,7 +29,6 @@ class Transaction extends Component {
       typingTimeout: 0,
       transactionData: props.data
     };
-    console.log(this.state.transactionData)
   }
 
   async componentDidMount() {
@@ -75,11 +74,13 @@ class Transaction extends Component {
   async handleNextClicked(){
     if(this.props.requesting || this.props.data.length < 100) return;
     await this.getAllTransactions(this.props.page + 1);
+    $("#rows").animate({ scrollTop: 0 }, "fast");
   }
 
   async handlePreviousClicked() {
     if (this.props.requesting || this.props.page === 0) return;
     await this.getAllTransactions(this.props.page - 1);
+    $("#rows").animate({ scrollTop: 0 }, "fast");
   }
 
   async getAllTransactions(page) {
@@ -89,6 +90,9 @@ class Transaction extends Component {
     const transactions = await getAllTransactions(100, 100 * page, where);
     this.props.setTransactionsData(transactions, this.props.type);
     this.props.setTransactionsPage(page);
+    this.setState({
+      transactionData: this.props.data
+    });
     this.updateTable();
   }
 
