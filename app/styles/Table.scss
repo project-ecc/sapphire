@@ -51,10 +51,12 @@
   font-size: 15px;
   @include themify($themes) { 
     color: themed('tableRowColor'); 
+    border-color:themed('bodyBackgroundColor'); 
   }
   margin: 0 0;
   width: 100%;
   height: 40px;
+  border-top: 2px solid;
 }
 
 .tableRowCustomTransactions{
@@ -89,9 +91,19 @@
 }
 
 .tableRowEven{
+/*
   @include themify($themes) { 
     background-color: themed('tableRowEven'); 
   }
+  */
+}
+
+.extraInfoTransaction{
+
+  @include themify($themes) { 
+    background-color: themed('bodyBackgroundColor'); 
+  }
+  
 }
 
 .tableRowSelected{
