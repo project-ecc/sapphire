@@ -71,24 +71,13 @@ class Send extends Component {
     let clearButton = require('../../../resources/images/clearButton-orange.png');
     return (
       <div className="panel Send">
-        <div className="homeSection text-center" style={{marginTop: "45px !important", marginRight: "0px !important",
-        marginLeft: "0px !important"}} id="balanceInfo">
-          <div className="row" style={{margin: "0px 0px"}}>
-            <div className="col-sm-4"  style={{padding: "0 0"}}>
-              <p className="homePanelTitleTwo stakingBalance">{ this.props.lang.staking }</p>
-              <p className="normalWeight">{this.props.stakingVal} <span className="ecc">ecc</span></p>
-              <div style={{width: "52px", margin: "0 auto", marginTop: "10px"}}>
+        <div style={{marginTop: "45px"}}>
+          <div className="text-center" style={{marginTop: "100px !important"}} id="balanceInfo">
+            <div className="row" style={{margin: "0px 0px", textAlign: "center"}}>
+              <div className="col-sm-12"  style={{padding: "0 0"}}>
+                <p className="normalWeight homePanelTitleOne" id="balance" style={{fontSize: "20px"}}>Available { this.props.lang.balance }</p>
+                <p className="normalWeight" style={{fontSize: "20px"}}>{this.props.balance} <span className="ecc">ecc</span></p>
               </div>
-            </div>
-            <div className="col-sm-4"  style={{padding: "0 0"}}>
-              <p className="normalWeight homePanelTitleOne" id="balance" style={{fontSize: "20px"}}>{ this.props.lang.balance }</p>
-              <p className="normalWeight" style={{fontSize: "20px"}}>{this.props.balance} <span className="ecc">ecc</span></p>
-              <p className="totalBalance homePanelTitleTwo">{ this.props.lang.total }</p>
-              <p className="normalWeight">{this.props.total} <span className="ecc">ecc</span></p>
-            </div>
-            <div className="col-sm-4"  style={{padding: "0 0", marginTop: "45px"}}>
-              <p className="homePanelTitleTwo">{ this.props.lang.unconfirmed }</p>
-              <p className="normalWeight">{this.props.unconfirmed} <span className="ecc">ecc</span></p>
             </div>
           </div>
         </div>

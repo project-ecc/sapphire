@@ -885,9 +885,13 @@ class DaemonConnector {
     getAllTransactions()
       .then(async (transactionData) =>{
         await Promise.all(transactionData.map(async (transaction) => {
-          const rawTransaction = await this.getRawTransaction(transaction.transaction_id);
-          const transactionUpdated = await updateTransactionsConfirmations(transaction.transaction_id, rawTransaction.confirmations);
-          return transactionUpdated;
+          try {
+            const rawTransaction = await this.getRawTransaction(transaction.transaction_id);
+            const transactionUpdated = await updateTransactionsConfirmations(transaction.transaction_id, rawTransaction.confirmations);
+            return transactionUpdated;
+          }catch (err){
+            console.log(err)
+          }
         }));
     }).catch(errors => {
       console.log(errors)
@@ -995,8 +999,8 @@ class DaemonConnector {
       this.wallet.getRawTransaction(transactionId).then((data) => {
         resolve(data);
       }).catch((err) => {
-        // console.log("error getting getRawTransaction");
-        resolve(null)
+        console.log("error getting getRawTransaction");
+        reject(err)
       });
     });
   }
