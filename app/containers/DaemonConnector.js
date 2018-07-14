@@ -145,18 +145,19 @@ class DaemonConnector {
   }
 
   async mainCycle(){
-    this.processedAddresses = [];
-    const addresses = await getAllAddresses();
-    for (let i = 0; i < addresses.length - 1; i++){
-      this.processedAddresses.push(addresses[i].address);
+    if(!this.isIndexingTransactions){
+      this.processedAddresses = [];
+      const addresses = await getAllAddresses();
+      for (let i = 0; i < addresses.length - 1; i++){
+        this.processedAddresses.push(addresses[i].address);
+      }
+      const latestTransaction = await getLatestTransaction();
+      // console.log(latestTransaction)
+      this.from = latestTransaction !== null ? latestTransaction.time : null;
+      this.currentFrom = this.from
+      const allTransactions = await getAllTransactions();
+      this.transactionsIndexed = allTransactions.length > 0;
     }
-    const latestTransaction = await getLatestTransaction();
-    // console.log(latestTransaction)
-    this.from = latestTransaction != null ? latestTransaction.time : null;
-    this.currentFrom = this.from
-    const allTransactions = await getAllTransactions();
-    this.transactionsIndexed = allTransactions.length > 0;
-
     // console.log("processed Addresses: " + this.processedAddresses);
     // console.log("from time: " + this.from);
     console.log("transactions indexed: " + this.transactionsIndexed);
@@ -885,9 +886,13 @@ class DaemonConnector {
     getAllTransactions()
       .then(async (transactionData) =>{
         await Promise.all(transactionData.map(async (transaction) => {
-          const rawTransaction = await this.getRawTransaction(transaction.transaction_id);
-          const transactionUpdated = await updateTransactionsConfirmations(transaction.transaction_id, rawTransaction.confirmations);
-          return transactionUpdated;
+          try {
+            const rawTransaction = await this.getRawTransaction(transaction.transaction_id);
+            const transactionUpdated = await updateTransactionsConfirmations(transaction.transaction_id, rawTransaction.confirmations);
+            return transactionUpdated;
+          }catch (err){
+            console.log(err)
+          }
         }));
     }).catch(errors => {
       console.log(errors)
@@ -995,8 +1000,8 @@ class DaemonConnector {
       this.wallet.getRawTransaction(transactionId).then((data) => {
         resolve(data);
       }).catch((err) => {
-        // console.log("error getting getRawTransaction");
-        resolve(null)
+        console.log("error getting getRawTransaction");
+        reject(err)
       });
     });
   }

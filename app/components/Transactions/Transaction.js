@@ -25,11 +25,8 @@ class Transaction extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.state = {
       searchValue: '',
-      typing: false,
-      typingTimeout: 0,
       transactionData: props.data
     };
-    console.log(this.state.transactionData)
   }
 
   async componentDidMount() {
@@ -75,20 +72,28 @@ class Transaction extends Component {
   async handleNextClicked(){
     if(this.props.requesting || this.props.data.length < 100) return;
     await this.getAllTransactions(this.props.page + 1);
+    $("#rows").animate({ scrollTop: 0 }, "fast");
   }
 
   async handlePreviousClicked() {
     if (this.props.requesting || this.props.page === 0) return;
     await this.getAllTransactions(this.props.page - 1);
+    $("#rows").animate({ scrollTop: 0 }, "fast");
   }
 
   async getAllTransactions(page) {
     const where = {
       is_main: 1
     };
-    const transactions = await getAllTransactions(100, 100 * page, where);
+
+    let transactionOffset = page === 0 ? 0 : 100
+
+    const transactions = await getAllTransactions(100, transactionOffset * page, where);
     this.props.setTransactionsData(transactions, this.props.type);
     this.props.setTransactionsPage(page);
+    this.setState({
+      transactionData: this.props.data
+    });
     this.updateTable();
   }
 
@@ -97,7 +102,7 @@ class Transaction extends Component {
       return (
         <span className="desc_p">{ this.props.lang.pending }</span>
       );
-    } else if (opt > 30) {
+    } else if (opt >= 30) {
       return (
         <span className="desc_c ecc">{ this.props.lang.confirmed }</span>
       );

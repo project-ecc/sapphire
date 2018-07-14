@@ -71,7 +71,16 @@ class Send extends Component {
     let clearButton = require('../../../resources/images/clearButton-orange.png');
     return (
       <div className="panel Send">
-        <div><h1>SEND VALUE</h1></div>
+        <div style={{marginTop: "45px"}}>
+          <div className="text-center" style={{marginTop: "100px !important"}} id="balanceInfo">
+            <div className="row" style={{margin: "0px 0px", textAlign: "center"}}>
+              <div className="col-sm-12"  style={{padding: "0 0"}}>
+                <p className="normalWeight homePanelTitleOne" id="balance" style={{fontSize: "20px"}}>Available { this.props.lang.balance }</p>
+                <p className="normalWeight" style={{fontSize: "20px"}}>{this.props.balance} <span className="ecc">ecc</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
           <p className="Send__message-status">{ this.props.lang.addressCopiedBelow }</p>
           <div className="Send__form">
             <div className="Send__inputs-wrapper">
@@ -115,11 +124,21 @@ class Send extends Component {
 }
 
 const mapStateToProps = state => {
+  let balance = !state.chains.balance ? 0 : state.chains.balance;
+  let staking = !state.chains.staking ? 0 : state.chains.staking;
+  let newMint = !state.chains.newMint ? 0 : state.chains.newMint;
+  let unconfirmedBalance = !state.chains.unconfirmedBalance ? 0 : state.chains.unconfirmedBalance;
+  let immatureBalance = !state.chains.immatureBalance ? 0 : state.chains.immatureBalance;
   return{
+    staking: state.chains.isStaking,
+    balance: Tools.formatNumber(balance),
+    //temporary fix...
+    total: Tools.formatNumber(balance + staking + newMint + unconfirmedBalance + immatureBalance),
+    unconfirmed: Tools.formatNumber(unconfirmedBalance),
+    stakingVal: Tools.formatNumber(staking),
     lang: state.startup.lang,
     addressOrUsername: state.application.addressOrUsernameSend,
     amount: state.application.amountSend,
-    balance: state.chains.balance,
     wallet: state.application.wallet
   };
 };
