@@ -256,6 +256,8 @@ class Transaction extends Component {
           <div id="rows" style={{height: "500px", width: "100%", padding: "0 0", overflowY: "scroll"}}>
             {data.map((t, index) => {
              // console.log(t, index)
+             //  console.log(t)
+
 
               if (this.props.type === 'all'
               || this.props.type === t.category
@@ -297,7 +299,7 @@ class Transaction extends Component {
                     <div className="col-sm-5 text-center" style={{paddingTop: "9px"}}>
                        {category}
                       <div className="transactionAddress text-left" >
-                       <p style={{ margin: '0px', display:"inline",color:"#d2d2d2"}}><span className="desc2 transactionAddress"> {t["address.ans_record.name"] != null ? t['address.ans_record.name'] : t['address.address']}</span></p><p style={{fontSize: "12px", color:"#8e8e8e" }}> {category_label} {time}</p>
+                       <p style={{ margin: '0px', display:"inline",color:"#d2d2d2"}}><span className="desc2 transactionAddress"> {t["address.ansrecords.name"] != null ? t['address.ansrecords.name'] : t['address.address']}</span></p><p style={{fontSize: "12px", color:"#8e8e8e" }}> {category_label} {time}</p>
                       </div>
                     </div>
                     <div className="col-sm-3 text-right" style={{paddingTop: "9px", textAlign: "right"}}>

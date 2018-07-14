@@ -66,7 +66,7 @@ class DaemonConnector {
     this.createWallet = this.createWallet.bind(this);
     this.subscribeToEvents();
     this.currentAddresses = [];
-    this.processedAddresses = null;
+    this.processedAddresses = [];
     this.from = null
     this.currentFrom = this.from;
     this.transactionsPage = 0;
@@ -146,18 +146,18 @@ class DaemonConnector {
 
   async mainCycle(){
     if(!this.isIndexingTransactions){
-      this.processedAddresses = [];
       const addresses = await getAllAddresses();
       for (let i = 0; i < addresses.length - 1; i++){
         this.processedAddresses.push(addresses[i].address);
       }
       const latestTransaction = await getLatestTransaction();
-      // console.log(latestTransaction)
-      this.from = latestTransaction !== null ? latestTransaction.time : null;
+      console.log(latestTransaction)
+      this.from = latestTransaction != null ? latestTransaction.time : null;
       this.currentFrom = this.from
       const allTransactions = await getAllTransactions();
       this.transactionsIndexed = allTransactions.length > 0;
     }
+    console.log('in here')
     // console.log("processed Addresses: " + this.processedAddresses);
     // console.log("from time: " + this.from);
     console.log("transactions indexed: " + this.transactionsIndexed);
@@ -166,7 +166,7 @@ class DaemonConnector {
       this.runningMainCycle = false;
       return;
     }
-    if(!this.hasLoadedTransactionsFromDb){
+    if(!this.hasLoadedTransactionsFromDb && this.transactionsIndexed){
       await this.loadTransactionFromDb();
       // grab transaction that is main
       const where = {
@@ -179,6 +179,7 @@ class DaemonConnector {
     try{
       await this.wallet.getAllInfo().then( async (data) => {
         if(data){
+          console.log(data)
           await this.getAddresses(data[2], data[3]);
           let highestBlock = data[0].headers === 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
           // remove .00 if 100%
@@ -767,7 +768,7 @@ class DaemonConnector {
         this.store.dispatch({type: PENDING_TRANSACTION, payload: entry.txId})
       }
 
-      await addTransaction(entry, Number(entry.confirmations) < 30)
+      await addTransaction(entry, Number(entry.confirmations) < 30, false)
       //update with 1 new staking reward since previous ones have already been loaded on startup
       if(this.transactionsIndexed){
         if(entry.category === "generate"){
@@ -891,11 +892,11 @@ class DaemonConnector {
             const transactionUpdated = await updateTransactionsConfirmations(transaction.transaction_id, rawTransaction.confirmations);
             return transactionUpdated;
           }catch (err){
-            console.log(err)
+            // console.log(err)
           }
         }));
     }).catch(errors => {
-      console.log(errors)
+      // console.log(errors)
     });
 
   }
@@ -932,7 +933,7 @@ class DaemonConnector {
           this.queueOrSendNotification(()=>{}, `${this.translator.ansReady}.\n\n${this.translator.username}: ${ansRecord.Name}`)
 
           // TODO: add address to db.
-          await deleteAddressByName(address.address);
+          // await deleteAddressByName(address.address);
         }
         else{
           shouldAdd = false;
@@ -981,7 +982,8 @@ class DaemonConnector {
 
     //put addresses in the database
     await Promise.all(toReturn.map(async (address) => {
-      const contents = await addAddress(address, address.ans);
+      const contents = await addAddress(address, address.ans, true);
+      // console.log(contents)
       return contents;
     }));
     this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
@@ -1000,7 +1002,7 @@ class DaemonConnector {
       this.wallet.getRawTransaction(transactionId).then((data) => {
         resolve(data);
       }).catch((err) => {
-        console.log("error getting getRawTransaction");
+        // console.log("error getting getRawTransaction");
         reject(err)
       });
     });

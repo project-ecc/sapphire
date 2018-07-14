@@ -9,7 +9,9 @@ module.exports = function (sequelize, DataTypes) {
       code: DataTypes.STRING,
       expire_time: DataTypes.BIGINT,
       payment_hash: DataTypes.STRING,
-      service_hash: DataTypes.STRING
+      service_hash: DataTypes.STRING,
+      creation_block: DataTypes.INTEGER,
+      is_live: DataTypes.BOOLEAN
     },
     {
       indexes: [
@@ -17,7 +19,11 @@ module.exports = function (sequelize, DataTypes) {
           unique: true,
           fields: ['name', 'code']
         }
-      ]
+      ],
+      name: {
+        singular: "ansrecord",
+        plural: "ansrecords"
+      }
     }
   );
 

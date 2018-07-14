@@ -31,11 +31,13 @@ const sequelize = new Sequelize({
 const Transaction = require("./model/Transaction.model");
 const AnsRecord = require("./model/AnsRecord.model");
 const Address = require("./model/Address.model");
+const Contact = require("./model/Contact.model");
 //
 const models = {
+  Address: Address(sequelize, Sequelize),
   Transaction: Transaction(sequelize, Sequelize),
   AnsRecord: AnsRecord(sequelize, Sequelize),
-  Address: Address(sequelize, Sequelize)
+  Contact: Contact(sequelize, Sequelize)
 };
 //
 // // Run `.associate` if it exists,

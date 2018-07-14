@@ -2,6 +2,7 @@ import $ from 'jquery';
 import React, { Component } from 'react';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import { traduction } from '../../lang/lang';
+import {addContact} from "../../Managers/SQLManager";
 const homedir = require('os').homedir();
 import * as actions from '../../actions';
 import { connect } from 'react-redux';
@@ -98,6 +99,8 @@ class Contacts extends Component {
         else{
           this.props.setAddingContact(true, {multipleAddresses: result.addresses});
         }
+
+        // await addContact();
         console.log(address)
         low.get('friends').push({ name, address, ans, code }).write();
         const friendList = low.get('friends').value();
