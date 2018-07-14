@@ -209,7 +209,7 @@ class Transaction extends Component {
           <div className="tableHeaderNormal">
 
             <div className="row">
-              <div className="col-sm-6">
+              <div className="col-sm-5">
                 <p className="tableHeaderTitle tableHeaderTitleSmall">{ this.props.lang.transactions }  </p>
               </div>
               <div className="col-sm-6">
@@ -290,17 +290,17 @@ class Transaction extends Component {
                 }
 
                 return (
-                  <div className= {counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} style={{padding:"6px 0 0 0",cursor: "pointer", fontSize: "15px", minHeight: "50px", justifyContent:"space-around"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
-                    <div className="col-sm-2" style={{paddingTop: "9px"}}>
+                  <div className= {counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} style={{padding:"14px 0 0 0",cursor: "pointer", fontSize: "15px", minHeight: "50px", justifyContent:"space-around"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
+                    <div className="col-sm-2" style={{}}>
                       <p style={{ margin: '0px' }}><span>{moment(t.time).format('MMMM Do')}</span></p>
                     </div>
-                    <div className="col-sm-5 text-center" style={{paddingTop: "9px 0"}}>
+                    <div className="col-sm-5 text-center" style={{marginBottom: "12px"}}>
                        {category}
                       <div className="transactionAddress text-left" >
                        <p style={{ margin: '0px', display:"inline",color:"#d2d2d2"}}><span className="desc2 transactionAddress"> {t["address.ans_record.name"] != null ? t['address.ans_record.name'] : t['address.address']}</span></p><p style={{fontSize: "12px", color:"#8e8e8e" }}> {category_label} {time}</p>
                       </div>
                     </div>
-                    <div className="col-sm-3 text-right" style={{paddingTop: "9px", textAlign: "right"}}>
+                    <div className="col-sm-3 text-right" style={{ textAlign: "right"}}>
                       <p style={{ margin: '0px' }}>{t.amount} ECC</p>
                       <p style={{ margin: '0px', fontSize: "12px" }}>{this.renderStatus(t.confirmations)}</p>
                     </div>
