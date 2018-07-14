@@ -145,18 +145,19 @@ class DaemonConnector {
   }
 
   async mainCycle(){
-    this.processedAddresses = [];
-    const addresses = await getAllAddresses();
-    for (let i = 0; i < addresses.length - 1; i++){
-      this.processedAddresses.push(addresses[i].address);
+    if(!this.isIndexingTransactions){
+      this.processedAddresses = [];
+      const addresses = await getAllAddresses();
+      for (let i = 0; i < addresses.length - 1; i++){
+        this.processedAddresses.push(addresses[i].address);
+      }
+      const latestTransaction = await getLatestTransaction();
+      // console.log(latestTransaction)
+      this.from = latestTransaction !== null ? latestTransaction.time : null;
+      this.currentFrom = this.from
+      const allTransactions = await getAllTransactions();
+      this.transactionsIndexed = allTransactions.length > 0;
     }
-    const latestTransaction = await getLatestTransaction();
-    // console.log(latestTransaction)
-    this.from = latestTransaction != null ? latestTransaction.time : null;
-    this.currentFrom = this.from
-    const allTransactions = await getAllTransactions();
-    this.transactionsIndexed = allTransactions.length > 0;
-
     // console.log("processed Addresses: " + this.processedAddresses);
     // console.log("from time: " + this.from);
     console.log("transactions indexed: " + this.transactionsIndexed);
