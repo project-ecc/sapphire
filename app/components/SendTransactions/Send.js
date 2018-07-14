@@ -71,7 +71,27 @@ class Send extends Component {
     let clearButton = require('../../../resources/images/clearButton-orange.png');
     return (
       <div className="panel Send">
-        <div><h1>SEND VALUE</h1></div>
+        <div className="homeSection text-center" style={{marginTop: "45px !important", marginRight: "0px !important",
+        marginLeft: "0px !important"}} id="balanceInfo">
+          <div className="row" style={{margin: "0px 0px"}}>
+            <div className="col-sm-4"  style={{padding: "0 0"}}>
+              <p className="homePanelTitleTwo stakingBalance">{ this.props.lang.staking }</p>
+              <p className="normalWeight">{this.props.stakingVal} <span className="ecc">ecc</span></p>
+              <div style={{width: "52px", margin: "0 auto", marginTop: "10px"}}>
+              </div>
+            </div>
+            <div className="col-sm-4"  style={{padding: "0 0"}}>
+              <p className="normalWeight homePanelTitleOne" id="balance" style={{fontSize: "20px"}}>{ this.props.lang.balance }</p>
+              <p className="normalWeight" style={{fontSize: "20px"}}>{this.props.balance} <span className="ecc">ecc</span></p>
+              <p className="totalBalance homePanelTitleTwo">{ this.props.lang.total }</p>
+              <p className="normalWeight">{this.props.total} <span className="ecc">ecc</span></p>
+            </div>
+            <div className="col-sm-4"  style={{padding: "0 0", marginTop: "45px"}}>
+              <p className="homePanelTitleTwo">{ this.props.lang.unconfirmed }</p>
+              <p className="normalWeight">{this.props.unconfirmed} <span className="ecc">ecc</span></p>
+            </div>
+          </div>
+        </div>
           <p className="Send__message-status">{ this.props.lang.addressCopiedBelow }</p>
           <div className="Send__form">
             <div className="Send__inputs-wrapper">
@@ -115,11 +135,21 @@ class Send extends Component {
 }
 
 const mapStateToProps = state => {
+  let balance = !state.chains.balance ? 0 : state.chains.balance;
+  let staking = !state.chains.staking ? 0 : state.chains.staking;
+  let newMint = !state.chains.newMint ? 0 : state.chains.newMint;
+  let unconfirmedBalance = !state.chains.unconfirmedBalance ? 0 : state.chains.unconfirmedBalance;
+  let immatureBalance = !state.chains.immatureBalance ? 0 : state.chains.immatureBalance;
   return{
+    staking: state.chains.isStaking,
+    balance: Tools.formatNumber(balance),
+    //temporary fix...
+    total: Tools.formatNumber(balance + staking + newMint + unconfirmedBalance + immatureBalance),
+    unconfirmed: Tools.formatNumber(unconfirmedBalance),
+    stakingVal: Tools.formatNumber(staking),
     lang: state.startup.lang,
     addressOrUsername: state.application.addressOrUsernameSend,
     amount: state.application.amountSend,
-    balance: state.chains.balance,
     wallet: state.application.wallet
   };
 };
