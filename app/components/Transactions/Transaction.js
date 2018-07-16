@@ -206,25 +206,25 @@ class Transaction extends Component {
     return (
       <div style={{height: "100%", width: "100%", paddingLeft: "20px", paddingRight: "10px", overflowX: "hidden"}}>
         <div id="transactionAddresses" style={{height:"90%", position: "relative", top: "25px"}}>
-          <div className="tableHeaderNormal">
+          <div className="tableHeaderNormal" style={{display:"flex", alignItems:"center"}}>
 
-            <div className="row">
-              <div className="col-sm-5">
+            <div className="row" style={{justifyContent:"space-between", width:"100%"}}>
+              <div className="col-sm-2">
                 <p className="tableHeaderTitle tableHeaderTitleSmall">{ this.props.lang.transactions }  </p>
               </div>
-              <div className="col-sm-6">
-                <div className="row">
-                  <div className="col-sm-6">
+              <div className="col-sm-8" style={{display:"flex",justifyContent:"flex-end"}}>
+                
+                  <div className="col-sm-5">
                     <div className="box">
-                      <div className="container-1">
+                      <div className="container-1" style={{width:"100%", maxWidth:"300px", display:"flex",alignItems:"center"}}>
                         <span className="icon"><i className="fa fa-search"></i></span>
                         <input onChange={(e) => {this.handleChange(e)}} type="search" id="search" placeholder="Search..." />
                       </div>
                     </div>
                   </div>
-                  <div className="col-sm-6">
+                  <div className="col-sm-3" style={{textAlign:"right", maxWidth"150px",display:"flex",alignItems:"center"}}>
                     {
-                      <div className="dropdownFilterSelector" style={{width: "100px", marginLeft: "100px", top: "6px", height:"35px", padding:"0 0", textAlign:"center"}} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
+                      <div className="dropdownFilterSelector" style={{width: "100px", /*marginLeft: "100px",*/ top: "6px", height:"35px", padding:"0 0", textAlign:"center"}} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
                         <div className="selectFilterSelector" style={{border: "none", position:"relative", top: "-1px", height: "30px"}}>
                           <p className="normalWeight">{this.getValue(this.props.type)}</p>
                           <i className="fa fa-chevron-down"></i>
@@ -242,16 +242,16 @@ class Transaction extends Component {
                       </div>
                     }
                   </div>
-                </div>
+                
               </div>
             </div>
 
           </div>
-          <div style={{width: "100%", marginTop: "15px", padding: "0 0"}}>
+          <div style={{width: "100%", /*marginTop: "15px"*/alignItems:"center", padding: "0 0"}}>
             <div className="row rowDynamic">
-              <div className="col-sm-3 headerAddresses tableRowHeader text-left" style={{paddingLeft: "4%"}}>{ this.props.lang.date }</div>
-              <div id="addressHeader" className="col-sm-4 headerAddresses tableRowHeader text-left">{ this.props.lang.info }</div>
-              <div id="addressHeader" className="col-sm-5 headerAddresses tableRowHeader" style={{textAlign: "right"}}>{ this.props.lang.amount } & {this.props.lang.status}</div>
+              <div className="col-sm-3 headerAddresses tableRowHeader text-left" style={{/*paddingLeft: "4%"*/}}>{ this.props.lang.date }</div>
+              <div id="addressHeader" className="col-sm-6 headerAddresses tableRowHeader text-left">{ this.props.lang.info }</div>
+              <div id="addressHeader" className="col-sm-3 headerAddresses tableRowHeader" style={{textAlign: "right"}}>{ this.props.lang.amount } & {this.props.lang.status}</div>
             </div>
           <div id="rows" style={{height: "500px", width: "100%", padding: "0 0", overflowY: "scroll"}}>
             {data.map((t, index) => {
@@ -272,19 +272,19 @@ class Transaction extends Component {
                 let category_label;
                 let category = t.category;
                 if (category === 'generate') {
-                  category = <span className="icon"  style={{float: "left", paddingRight:"14px", fontSize:"24px", color:"#8e8e8e"}}><i className="fa fa-trophy"></i></span>
+                  category = <span className="icon"  style={{float: "left", paddingRight:"14px", fontSize:"24px" /*,color:"#8e8e8e"*/}}><i className="fa fa-trophy"></i></span>
                   category_label = lang.stakedMin;
                 }
                 if (category === 'staked') {
-                  category = <span className="icon" style={{float: "left", paddingRight:"14px", fontSize:"24px", color:"#8e8e8e"}}><i className="fa fa-shopping-basket"></i> </span>
+                  category = <span className="icon" style={{float: "left", paddingRight:"14px", fontSize:"24px" /*,color:"#8e8e8e"*/}}><i className="fa fa-shopping-basket"></i> </span>
                   category_label = lang.staked;
                 }
                 else if (category === 'send') {
-                  category = <span className="icon" style={{float: "left", paddingRight:"14px", fontSize:"24px", color:"#8e8e8e"}}><i className="fa fa-upload"></i> </span>
+                  category = <span className="icon" style={{float: "left", paddingRight:"14px", fontSize:"24px" /*,color:"#8e8e8e"*/}}><i className="fa fa-upload"></i> </span>
                   category_label = lang.sent;
                 }
                 else if (category === 'receive') {
-                  category = <span className="icon" style={{float: "left", paddingRight:"14px", fontSize:"24px", color:"#8e8e8e"}}><i className="fa fa-download"></i></span>
+                  category = <span className="icon" style={{float: "left", paddingRight:"14px", fontSize:"24px"/*, color:"#8e8e8e"*/}}><i className="fa fa-download"></i></span>
                   category_label = lang.received;
                 }
                 else if (category === 'immature') {
@@ -292,11 +292,11 @@ class Transaction extends Component {
                 }
 
                 return (
-                  <div className= {counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} style={{padding:"14px 0 0 0",cursor: "pointer", fontSize: "15px", minHeight: "50px", justifyContent:"space-around"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
-                    <div className="col-sm-2" style={{}}>
+                  <div className= {counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} style={{padding:"0",cursor: "pointer", fontSize: "15px", justifyContent:"space-around"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
+                    <div className="col-sm-3" style={{}}>
                       <p style={{ margin: '0px' }}><span>{moment(t.time).format('MMMM Do')}</span></p>
                     </div>
-                    <div className="col-sm-5 text-center" style={{marginBottom: "12px"}}>
+                    <div className="col-sm-6 text-center" style={{}}>
                        {category}
                       <div className="transactionAddress text-left" >
                        <p style={{ margin: '0px', display:"inline",color:"#d2d2d2"}}><span className="desc2 transactionAddress"> {t["address.ansrecords.name"] != null ? t['address.ansrecords.name'] : t['address.address']}</span></p><p style={{fontSize: "12px", color:"#8e8e8e" }}> {category_label} {time}</p>
