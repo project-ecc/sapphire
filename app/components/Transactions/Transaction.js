@@ -208,23 +208,23 @@ class Transaction extends Component {
         <div id="transactionAddresses" style={{height:"90%", position: "relative", top: "25px"}}>
           <div className="tableHeaderNormal" style={{display:"flex", alignItems:"center"}}>
 
-            <div className="row" style={{justifyContent:"space-between", width:"100%"}}>
+            <div className="row" style={{justifyContent:"space-between", width:"100%", margin:"0"}}>
               <div className="col-sm-2">
                 <p className="tableHeaderTitle tableHeaderTitleSmall">{ this.props.lang.transactions }  </p>
               </div>
-              <div className="col-sm-8" style={{display:"flex",justifyContent:"flex-end"}}>
+              <div className="col-sm-8" style={{display:"flex",justifyContent:"flex-end",padding:"0"}}>
                 
-                  <div className="col-sm-5">
-                    <div className="box">
+                  <div className="col-sm-6" style={{display:"flex",alignItems:"center", maxWidth:"300px"}}>
+                    <div className="box" style={{width:"100%"}}>
                       <div className="container-1" style={{width:"100%", maxWidth:"300px", display:"flex",alignItems:"center"}}>
-                        <span className="icon"><i className="fa fa-search"></i></span>
+                        <span className="icon" style={{marginTop:"0",top:"0"}}><i className="fa fa-search"></i></span>
                         <input onChange={(e) => {this.handleChange(e)}} type="search" id="search" placeholder="Search..." />
                       </div>
                     </div>
                   </div>
-                  <div className="col-sm-3" style={{textAlign:"right", maxWidth"150px",display:"flex",alignItems:"center"}}>
+                  <div className="col-sm-3" style={{textAlign:"right", maxWidth:"150px",display:"flex",alignItems:"center"}}>
                     {
-                      <div className="dropdownFilterSelector" style={{width: "100px", /*marginLeft: "100px",*/ top: "6px", height:"35px", padding:"0 0", textAlign:"center"}} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
+                      <div className="dropdownFilterSelector" style={{/*width: "100px", marginLeft: "100px", top: "6px",*/ height:"35px", padding:"0 0", textAlign:"center"}} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
                         <div className="selectFilterSelector" style={{border: "none", position:"relative", top: "-1px", height: "30px"}}>
                           <p className="normalWeight">{this.getValue(this.props.type)}</p>
                           <i className="fa fa-chevron-down"></i>
