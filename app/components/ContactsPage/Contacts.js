@@ -2,7 +2,7 @@ import $ from 'jquery';
 import React, { Component } from 'react';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import { traduction } from '../../lang/lang';
-import {addContact} from "../../Managers/SQLManager";
+import {addContact, findContact} from "../../Managers/SQLManager";
 const homedir = require('os').homedir();
 import * as actions from '../../actions';
 import { connect } from 'react-redux';
@@ -87,8 +87,10 @@ class Contacts extends Component {
       this.resetFields(false);
     }
     else{
-      const tt = low.get('friends').find({ address: address }).value();
-      if (tt) {
+      const tt = await findContact(address)
+      console.log(tt)
+      // const tt = low.get('friends').find({ address: address }).value();
+      if (tt.length > 0) {
         this.addressAlreadyExists();
         this.resetFields();
       }

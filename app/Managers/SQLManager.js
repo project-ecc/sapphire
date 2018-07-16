@@ -2,6 +2,7 @@ const db = require('../../app/utils/database/db')
 const Address = db.Address;
 const Transaction = db.Transaction;
 const AnsRecord = db.AnsRecord;
+const Contact = db.Contact;
 const Op = db.Sequelize.Op;
 
 /**
@@ -425,6 +426,33 @@ async function addContact(contactObject){
   });
 }
 
+async function findContact(name){
+  return new Promise((resolve, reject) => {
+    Contact.findAll({
+      include: [
+        {
+          model: Address,
+          where: {
+            id: db.Sequelize.col('contacts.addressId'),
+            address: name
+          }
+        },
+        {
+          model: AnsRecord,
+          where: {
+            id: db.Sequelize.col('contacts.ansrecordId'),
+            name: name
+          }
+        }
+      ]
+    }).then(transactions => {
+      resolve(transactions);
+    }).error(err => {
+      reject(err)
+    });
+  });
+}
+
 /**
  * export functions.
  */
@@ -455,6 +483,7 @@ export {
   searchAllTransactions,
   updatePendingTransaction,
   updateTransactionsConfirmations,
-  addContact
+  addContact,
+  findContact
 };
 
