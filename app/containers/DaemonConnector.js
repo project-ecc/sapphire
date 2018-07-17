@@ -147,8 +147,10 @@ class DaemonConnector {
   async mainCycle(){
     if(!this.isIndexingTransactions){
       const addresses = await getAllAddresses();
-      for (let i = 0; i < addresses.length - 1; i++){
-        this.processedAddresses.push(addresses[i].address);
+      if(addresses.length > 0){
+        for (let i = 0; i < addresses.length - 1; i++){
+          this.processedAddresses.push(addresses[i].address);
+        }
       }
       const latestTransaction = await getLatestTransaction();
       console.log(latestTransaction)
@@ -168,6 +170,7 @@ class DaemonConnector {
     }
     if(!this.hasLoadedTransactionsFromDb && this.transactionsIndexed){
       await this.loadTransactionFromDb();
+      console.log('transactions loaded')
       // grab transaction that is main
       const where = {
         is_main: 1
@@ -175,6 +178,7 @@ class DaemonConnector {
       const transactionData = await getAllTransactions(100, 0, where);
       this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: transactionData , type: "all"}});
       this.hasLoadedTransactionsFromDb = true
+      console.log('transactions transactions put in db')
     }
     try{
       await this.wallet.getAllInfo().then( async (data) => {
@@ -186,7 +190,8 @@ class DaemonConnector {
           let syncedPercentage = (data[0].blocks * 100) / data[0].headers;
           syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
 
-          if(data[0].blocks >= highestBlock && this.transactionsIndexed){
+          console.log('getting highest block to update pending');
+          if(data[0].blocks >= highestBlock && this.transactionsIndexed && !this.firstRun){
             await this.processPendingTransactions();
           }
           data[0].headers = highestBlock;
@@ -195,7 +200,7 @@ class DaemonConnector {
           const result = (data[1].filter(transaction =>{
            return transaction.time * 1000 > this.currentFrom
           }))
-          if (result.length > 0){
+          if (result.length > 0 && !this.firstRun){
             await this.loadTransactionsForProcessing()
           }
 
@@ -841,7 +846,7 @@ class DaemonConnector {
 
   async loadTransactionFromDb(){
     return new Promise(async (resolve, reject) => {
-
+      console.log('loading from db')
       let lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
       let earningsCountNotif = 0;
       let earningsTotalNotif = 0;
@@ -990,6 +995,7 @@ class DaemonConnector {
     //We need to have the addresses loaded to be able to index transactions
     this.currentAddresses = normalAddresses;
     // console.log("All addresses without null balances", toReturn);
+    console.log('in address function')
     if(!this.transactionsIndexed && this.firstRun && this.currentAddresses.length > 0 && !this.isIndexingTransactions){
       // console.log('indexing in address loop.')
       await this.loadTransactionsForProcessing();
