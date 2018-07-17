@@ -217,7 +217,7 @@ class Transaction extends Component {
                   <div className="col-sm-6" style={{display:"flex",alignItems:"center", maxWidth:"300px"}}>
                     <div className="box" style={{width:"100%"}}>
                       <div className="container-1" style={{width:"100%", maxWidth:"300px", display:"flex",alignItems:"center"}}>
-                        <span className="icon" style={{marginTop:"0",top:"0"}}><i className="fa fa-search"></i></span>
+                        <span className="icon" style={{marginTop:"5px",top:"0"}}><i className="fa fa-search"></i></span>
                         <input onChange={(e) => {this.handleChange(e)}} type="search" id="search" placeholder="Search..." />
                       </div>
                     </div>
