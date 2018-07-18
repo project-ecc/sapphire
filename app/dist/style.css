@@ -15225,7 +15225,7 @@ li.active.have-children span::after {
 .headerAddresses {
   position: relative;
   font-size: 14px;
-  padding-top: 16px; }
+  /*padding-top: 16px;*/ }
 
 .headerAddressFix {
   padding-left: 5%; }

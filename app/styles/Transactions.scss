@@ -158,7 +158,7 @@ i.fa.fa-chevron-down{
   border: none;
   font-size: 10pt;
   float: left;
-  color: #878a90;
+  /*color: #878a90;*/
   padding-left: 45px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -167,7 +167,9 @@ i.fa.fa-chevron-down{
 
    @include themify($themes) {
       background-color: themed('tableExtraBackgroundColor');
+      color: themed('bodyParagraphColor');
     }
+
 
   -webkit-transition: background .55s ease;
   -moz-transition: background .55s ease;
@@ -204,5 +206,9 @@ i.fa.fa-chevron-down{
 .container-1 input#search:hover, .container-1 input#search:focus, .container-1 input#search:active{
   outline:none;
  /* background: #ffffff;*/
-  color: #ffffff;
+  
+   @include themify($themes) {
+      color: themed('dropdownFilterSelector');
+    }
+    
 }

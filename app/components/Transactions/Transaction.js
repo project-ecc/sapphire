@@ -209,7 +209,7 @@ class Transaction extends Component {
           <div className="tableHeaderNormal" style={{display:"flex", alignItems:"center"}}>
 
             <div className="row" style={{justifyContent:"space-between", width:"100%", margin:"0"}}>
-              <div className="col-sm-2">
+              <div className="col-sm-3">
                 <p className="tableHeaderTitle tableHeaderTitleSmall">{ this.props.lang.transactions }  </p>
               </div>
               <div className="col-sm-8" style={{display:"flex",justifyContent:"flex-end",padding:"0"}}>
@@ -248,7 +248,7 @@ class Transaction extends Component {
 
           </div>
           <div style={{width: "100%", /*marginTop: "15px"*/alignItems:"center", padding: "0 0"}}>
-            <div className="row rowDynamic">
+            <div className="row rowDynamic" style={{alignItems:"center"}}>
               <div className="col-sm-3 headerAddresses tableRowHeader text-left" style={{/*paddingLeft: "4%"*/}}>{ this.props.lang.date }</div>
               <div id="addressHeader" className="col-sm-6 headerAddresses tableRowHeader text-left">{ this.props.lang.info }</div>
               <div id="addressHeader" className="col-sm-3 headerAddresses tableRowHeader" style={{textAlign: "right"}}>{ this.props.lang.amount } & {this.props.lang.status}</div>
@@ -296,10 +296,10 @@ class Transaction extends Component {
                     <div className="col-sm-3" style={{}}>
                       <p style={{ margin: '0px' }}><span>{moment(t.time).format('MMMM Do')}</span></p>
                     </div>
-                    <div className="col-sm-6 text-center" style={{}}>
+                    <div className="col-sm-6 text-center" style={{paddingTop:"4px",paddingBottom:"4px"}}>
                        {category}
                       <div className="transactionAddress text-left" >
-                       <p style={{ margin: '0px', display:"inline",color:"#d2d2d2"}}><span className="desc2 transactionAddress"> {t["address.ansrecords.name"] != null ? t['address.ansrecords.name'] : t['address.address']}</span></p><p style={{fontSize: "12px", color:"#8e8e8e" }}> {category_label} {time}</p>
+                       <p style={{ margin: '0px', display:"inline"}}><span className="desc2 transactionAddress"> {t["address.ansrecords.name"] != null ? t['address.ansrecords.name'] : t['address.address']}</span></p><p className="transactionInfoTitle" style={{fontSize: "12px"}}> {category_label} {time}</p>
                       </div>
                     </div>
                     <div className="col-sm-3 text-right" style={{ textAlign: "right"}}>
