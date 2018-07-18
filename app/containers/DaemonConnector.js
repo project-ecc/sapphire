@@ -986,11 +986,9 @@ class DaemonConnector {
     });
 
     //put addresses in the database
-    await Promise.all(toReturn.map(async (address) => {
-      const contents = await addAddress(address, address.ans, true);
-      // console.log(contents)
-      return contents;
-    }));
+    for (const address in toReturn){
+      await addAddress(address, address.ans, true);
+    }
     this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
     //We need to have the addresses loaded to be able to index transactions
     this.currentAddresses = normalAddresses;
