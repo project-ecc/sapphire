@@ -33,7 +33,6 @@ const db = require('../../app/utils/database/db')
 class DaemonConnector {
 
 	constructor(store){
-	  db.sequelize.sync();
 		this.store = store;
     this.wallet = store.getState().application.wallet;
     this.setupDone = false;
@@ -415,9 +414,11 @@ class DaemonConnector {
         this.store.dispatch({type: UPDATING_APP, payload: false})
       }
       if(!this.runningMainCycle){
+        await db.sequelize.sync();
         this.runningMainCycle = true;
         await this.mainCycle();
       }
+      // sync database before loading anything else.
       clearInterval(this.checkStartupStatusInterval);
     })
     .catch((err) => {
@@ -812,14 +813,10 @@ class DaemonConnector {
 
   async processPendingTransactions(){
 	  let pendingTransactions = await getAllPendingTransactions()
-    // let pendingTransactions = this.store.getState().application.pendingTransactions;
-    for(let i = 0; i < pendingTransactions.length; i++){
-      let id = pendingTransactions[i].transaction_id;
+    for(const pending in pendingTransactions){
+      let id = pending.transaction_id;
       let rawT = await this.getRawTransaction(id);
       await updatePendingTransaction(id, rawT.confirmations);
-      // if(await deletePendingTransaction(id)){
-      //   this.removeTransactionFromMemory(id, deleteFromTransactions);
-      // }
     }
   }
 

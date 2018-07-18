@@ -86,9 +86,10 @@ class Transaction extends Component {
       is_main: 1
     };
 
-    let transactionOffset = page === 0 ? 0 : 100
+    console.log('page: ', page)
 
-    const transactions = await getAllTransactions(100, transactionOffset * page, where);
+
+    const transactions = await getAllTransactions(100, 100 * page, where);
     this.props.setTransactionsData(transactions, this.props.type);
     this.props.setTransactionsPage(page);
     this.setState({
