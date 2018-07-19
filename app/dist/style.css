@@ -14770,7 +14770,7 @@ hr.on-light {
     background-color: #1c2340;
     box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.2); }
   .theme-darkEcc .sidebar {
-    background-color: #191b21;
+    background-color: #22252d;
     box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.2); }
 
 .sidebarlist {
@@ -14958,7 +14958,7 @@ li.active.have-children span::after {
     background-color: #1c2340;
     -webkit-box-shadow: 0 4px 11px -6px black; }
   .theme-darkEcc .homeSection {
-    background-color: #191b21;
+    background-color: #22252d;
     -webkit-box-shadow: 0 4px 11px -6px black; }
 
 *, *:before, *:after {

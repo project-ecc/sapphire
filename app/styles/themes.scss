@@ -145,7 +145,7 @@ $themes: (
     topBarNotificationCounterBackgroundColor: rgba(0, 0, 0, 0.55),
 
     //TABLES
-    tableBackgroundColor: #191b21,
+    tableBackgroundColor: #22252d,
     tableHeaderColorTitle: #b9b9b9,
     tableHeaderBoxShadow: 0 2px 4px -3px rgba(0, 0, 0, 0.74),
     tableHeaderDescription: #464b5a,
@@ -153,10 +153,10 @@ $themes: (
     tableRowSelected: #1a1d23,
     tableRowColor: #bfbfbf,
     tableRowHeaderColor: #464b5a,
-    tableExtraBackgroundColor: #15171d,
+    tableExtraBackgroundColor: #1c1c23,
 
     //HOME PANEL
-    homePanelsBackgroundColor: #191b21,
+    homePanelsBackgroundColor: #22252d,
     homeTextSelectable: #85899e,
     homePanelTitleOneColor: #cecece,
     homePanelTitleTwo: #464b5a,
@@ -165,7 +165,7 @@ $themes: (
     homePanelToggleThumbBackgroundColor: #FAFAFA,
 
     //SIDEBAR
-    sidebarBackgroundColor: #191b21,
+    sidebarBackgroundColor: #22252d,
     sidebarBoxShadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.2),
     sidebarSelectedItemColor: #c39c59,
     sidebarItemColor: #cecece,
@@ -247,7 +247,8 @@ $themes: (
     scrollbarThumbBackgroundColor: #14161b,
 
     //TRANSACTIONS FILTER
-    transactionsFilterBackgroundColor: #15171d,
+   /* transactionsFilterBackgroundColor: #15171d,*/
+    transactionsFilterBackgroundColor: #1c1c23,
     transactionsFilterBorder: 1px solid #13151b,
 
     //INITIAL SETUP
