@@ -104,6 +104,7 @@ class Contacts extends Component {
 
         // await addContact();
         console.log(address)
+        await addContact({name, address, code, ans}, result.ans)
         low.get('friends').push({ name, address, ans, code }).write();
         const friendList = low.get('friends').value();
         this.props.setContacts(friendList);

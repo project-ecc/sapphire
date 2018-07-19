@@ -152,13 +152,16 @@ async function getAllTransactionsWithAddress(limit = null, offset = 0) {
 }
 
 async function getAllTransactions(limit = null, offset = 0, where = null){
+  console.log('limit:', limit)
+  console.log('offset:', offset)
+  console.log('where:', where)
   return new Promise((resolve, reject) => {
     Transaction.findAll({
       include: [{ all: true, nested: true }],
       where,
       raw: true,
+      limit: limit,
       offset,
-      limit,
       order: [
         ['time', 'DESC'],
       ]
@@ -293,7 +296,12 @@ async function addAddress(address, withAns = false, belongsToMe = false){
           is_mine: belongsToMe
         }
       })
-      .spread((newAddress, created) => {
+      .spread(async (newAddress, created) => {
+        console.log('created: ', created)
+        if(!created){
+          newAddress.is_mine = belongsToMe
+          await newAddress.save()
+        }
         if (withAns){
           AnsRecord
           .findOrCreate({
@@ -386,39 +394,36 @@ async function deleteAnsRecordByName(recordName) {
  * Contacts functions
  */
 
-async function addContact(contactObject){
+async function addContact(contactObject, withAns = false){
   return new Promise((fulfill, reject) => {
-    Address
+    Contact
       .findOrCreate({
         where: {
-          address: address.normalAddress
-        },
-        defaults: {
-          current_balance: address.amount,
-          address: address.normalAddress
+          name: contactObject.name
         }
       })
-      .spread((newAddress, created) => {
+      .spread((newContact, created) => {
         if (withAns){
           AnsRecord
             .findOrCreate({
               where: {
-                name: address.address
+                name: contactObject.name,
+                code: contactObject.code
               },
               defaults: {
-                code: address.code,
-                expire_time: address.expiryTime,
+                name: contactObject.name,
+                code: contactObject.code
               }
             }).spread((ansRecord, created) => {
-            ansRecord.setAddress(newAddress).then(fulfill);
+            //ansRecord.setAddress(newAddress).then(fulfill);
             return ansRecord;
           }).error(err => {
             console.log(err);
             reject(err);
           });
         }
-        fulfill(newAddress);
-        return newAddress;
+        fulfill(newContact);
+        return newContact;
       }).error(err => {
       console.log(err);
       reject(err);
