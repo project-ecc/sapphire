@@ -247,7 +247,7 @@ class DaemonConnector {
       }
       if(this.firstRun){
         this.firstRun=false;
-        this.store.dispatch({type: LOADING, payload:false})
+        this.store.dispatch({type: LOADING, payload:{isLoading: false, loadingMessage: ''}})
         if(this.store.getState().startup.importWalletTemp){
           this.store.dispatch({type: IMPORT_WALLET_TEMPORARY, payload: {importWalletTemp: false, importWallet: true}})
         }
@@ -428,7 +428,7 @@ class DaemonConnector {
           this.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: true})
         }
         if(!this.store.getState().startup.initialSetup){
-          this.store.dispatch({type: LOADING, payload: true})
+          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: 'Loading block index..'}})
         }
       }
     });
