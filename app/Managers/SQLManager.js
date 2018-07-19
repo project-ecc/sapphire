@@ -11,15 +11,12 @@ const Op = db.Sequelize.Op;
  * @param pending
  */
 
-async function addTransaction(transaction, pending = false, belongsToMe = false) {
+async function addTransaction(transaction, pending = false) {
   return new Promise((resolve, reject) => {
     Address
       .findOrCreate({
         where: {
           address: transaction.address
-        },
-        defaults: {
-          is_mine: belongsToMe
         }
       })
       .spread((address, created) => {
@@ -284,8 +281,8 @@ async function getAllRewardTransactions(){
  */
 
 async function addAddress(address, withAns = false, belongsToMe = false){
-  return new Promise((fulfill, reject) => {
-    Address
+  return new Promise(async (fulfill, reject) => {
+    await Address
       .findOrCreate({
         where: {
           address: address.normalAddress
@@ -299,11 +296,14 @@ async function addAddress(address, withAns = false, belongsToMe = false){
       .spread(async (newAddress, created) => {
         console.log('created: ', created)
         if(!created){
+          console.log('address not created')
+          newAddress.current_balance = address.amount
           newAddress.is_mine = belongsToMe
           await newAddress.save()
         }
+
         if (withAns){
-          AnsRecord
+          await AnsRecord
           .findOrCreate({
             where: {
               name: address.address
@@ -312,7 +312,7 @@ async function addAddress(address, withAns = false, belongsToMe = false){
               code: address.code,
               expire_time: address.expiryTime,
             }
-          }).spread((ansRecord, created) => {
+          }).spread(async (ansRecord, created) => {
             ansRecord.setAddress(newAddress).then(fulfill);
             return ansRecord;
           }).error(err => {
