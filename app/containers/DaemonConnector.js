@@ -152,7 +152,7 @@ class DaemonConnector {
         }
       }
       const latestTransaction = await getLatestTransaction();
-      console.log(latestTransaction)
+      // console.log(latestTransaction)
       this.from = latestTransaction != null ? latestTransaction.time : null;
       this.currentFrom = this.from
       const allTransactions = await getAllTransactions();
@@ -209,7 +209,7 @@ class DaemonConnector {
 
           if(this.latestBlockTime < latestBlockTime && !this.firstRun){
             this.latestBlockTime = latestBlockTime;
-            this.updateConfirmations()
+            await this.updateConfirmations()
             this.hasLoadedTransactionsFromDb = false;
           }
 
@@ -813,7 +813,8 @@ class DaemonConnector {
 
   async processPendingTransactions(){
 	  let pendingTransactions = await getAllPendingTransactions()
-    for(const pending in pendingTransactions){
+    for (const [index, pending] of pendingTransactions.entries()) {
+      // handle the response
       let id = pending.transaction_id;
       let rawT = await this.getRawTransaction(id);
       await updatePendingTransaction(id, rawT.confirmations);
@@ -985,14 +986,13 @@ class DaemonConnector {
     //put addresses in the database
     console.log(toReturn)
 
-    for(const [index, address] of toReturn.entries()) {
-      // handle the response
-      console.log('address', address)
-      console.log('index', index)
-      const response = await addAddress(address, address.ans, true);
-      console.log('response', response)
+    if(normalAddresses.length > this.currentAddresses.length) {
+      for (const [index, address] of toReturn.entries()) {
+        // handle the response
+        await addAddress(address, address.ans, true);
+      }
+      this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
     }
-    this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
     //We need to have the addresses loaded to be able to index transactions
     this.currentAddresses = normalAddresses;
     // console.log("All addresses without null balances", toReturn);
