@@ -306,7 +306,8 @@ async function addAddress(address, withAns = false, belongsToMe = false){
           await AnsRecord
           .findOrCreate({
             where: {
-              name: address.address
+              name: address.address,
+              code: address.code,
             },
             defaults: {
               code: address.code,
@@ -395,17 +396,31 @@ async function deleteAnsRecordByName(recordName) {
  */
 
 async function addContact(contactObject, withAns = false){
-  return new Promise((fulfill, reject) => {
-    Contact
+  console.log(contactObject)
+  return new Promise(async (resolve, reject) => {
+    await Contact
       .findOrCreate({
         where: {
           name: contactObject.name
+        },
+        defaults: {
+          name: contactObject.name
         }
       })
-      .spread((newContact, created) => {
+      .spread(async (newContact, created) => {
+        console.log(newContact);
+        const address = await Address.findOrCreate({
+          where: {
+            address: contactObject.address
+          },
+          defaults: {
+            address: contactObject.address,
+            is_mine: false
+          }
+        });
+        newContact.setAddress(address[0]);
         if (withAns){
-          AnsRecord
-            .findOrCreate({
+         const ansRecord = await AnsRecord.findOrCreate({
               where: {
                 name: contactObject.name,
                 code: contactObject.code
@@ -414,16 +429,12 @@ async function addContact(contactObject, withAns = false){
                 name: contactObject.name,
                 code: contactObject.code
               }
-            }).spread((ansRecord, created) => {
-            //ansRecord.setAddress(newAddress).then(fulfill);
-            return ansRecord;
-          }).error(err => {
-            console.log(err);
-            reject(err);
-          });
+         });
+         newContact.setAnsrecord(ansRecord[0]);
         }
-        fulfill(newContact);
-        return newContact;
+
+        await newContact.save()
+        resolve(newContact)
       }).error(err => {
       console.log(err);
       reject(err);
@@ -432,26 +443,52 @@ async function addContact(contactObject, withAns = false){
 }
 
 async function findContact(name){
-  return new Promise((resolve, reject) => {
-    Contact.findAll({
+  return new Promise(async(resolve, reject) => {
+    await Contact.findAll({
       include: [
         {
           model: Address,
           where: {
-            id: db.Sequelize.col('contacts.addressId'),
-            address: name
+            id: db.Sequelize.col('contacts.addressId')
           }
         },
         {
           model: AnsRecord,
           where: {
-            id: db.Sequelize.col('contacts.ansrecordId'),
-            name: name
+            id: db.Sequelize.col('contacts.ansrecordId')
+          }
+        }
+      ],
+      where: {
+        name: name
+      }
+    }).then(transactions => {
+      resolve(transactions);
+    }).error(err => {
+      reject(err)
+    });
+  });
+}
+
+async function getContacts(){
+  return new Promise(async (resolve, reject) => {
+    await Contact.findAll({
+      include: [
+        {
+          model: Address,
+          where: {
+            id: db.Sequelize.col('contacts.addressId')
+          }
+        },
+        {
+          model: AnsRecord,
+          where: {
+            id: db.Sequelize.col('contacts.ansrecordId')
           }
         }
       ]
-    }).then(transactions => {
-      resolve(transactions);
+    }).then(contacts => {
+      resolve(contacts);
     }).error(err => {
       reject(err)
     });
@@ -489,6 +526,7 @@ export {
   updatePendingTransaction,
   updateTransactionsConfirmations,
   addContact,
-  findContact
+  findContact,
+  getContacts
 };
 

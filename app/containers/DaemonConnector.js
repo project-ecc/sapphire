@@ -929,11 +929,14 @@ class DaemonConnector {
       const ansRecord = await this.wallet.getANSRecord(address.address);
       //TODO include code to see if it was recently created and notify user if its been 3 blocks since its creation
 
+
+      //TODO: redo this whole block of code
       let notReadyAnsAddress = ansAddressesInfo.get('addresses').find({ address: address.address }).value()
       let shouldAdd = true;
       if(notReadyAnsAddress){
         if(currentBlock > notReadyAnsAddress.creationBlock + 3){
-          this.queueOrSendNotification(()=>{}, `${this.translator.ansReady}.\n\n${this.translator.username}: ${ansRecord.Name}`)
+          //
+          // this.queueOrSendNotification(()=>{}, `${this.translator.ansReady}.\n\n${this.translator.username}: ${ansRecord.Name}`)
 
           // TODO: add address to db.
           // await deleteAddressByName(address.address);
@@ -986,13 +989,13 @@ class DaemonConnector {
     //put addresses in the database
     console.log(toReturn)
 
-    if(normalAddresses.length > this.currentAddresses.length) {
+    // if(normalAddresses.length > this.currentAddresses.length) {
       for (const [index, address] of toReturn.entries()) {
         // handle the response
         await addAddress(address, address.ans, true);
       }
       this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
-    }
+    // }
     //We need to have the addresses loaded to be able to index transactions
     this.currentAddresses = normalAddresses;
     // console.log("All addresses without null balances", toReturn);
