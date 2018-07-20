@@ -15284,8 +15284,8 @@ li.active.have-children span::after {
   margin-top: 30px; }
 
 .Receive__ans-code {
-  font-size: 12px;
-  font-weight: bold;
+ /* font-size: 12px;
+  font-weight: bold;*/
   color: #2e2e3a; }
 
 .Receive__upgrade-text {
