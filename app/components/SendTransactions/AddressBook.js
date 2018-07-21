@@ -9,6 +9,7 @@ import $ from 'jquery';
 
 const Tools = require('../../utils/tools');
 const { clipboard } = require('electron');
+import {getContacts} from "../../Managers/SQLManager";
 
 class AddressBook extends Component {
   constructor(props) {
@@ -19,15 +20,16 @@ class AddressBook extends Component {
     this.getHeaderText = this.getHeaderText.bind(this);
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
+    this.loadContacts = this.loadContacts.bind(this);
   }
 
   componentDidMount() {
-    const friendList = low.get('friends').value();
-    this.props.setContacts(friendList);
+    this.loadContacts();
+
     $( window ).on('resize', () => {
       this.updateTable(this.props.friends);
     });
-    this.updateTable(friendList);
+
   }
 
   updateTable(friendList){
@@ -62,15 +64,22 @@ class AddressBook extends Component {
 
   rowClicked(friend) {
     if(!this.props.sendPanel) return;
-    clipboard.writeText(friend.address);
+    clipboard.writeText(friend.address.address);
     $('#message').text(this.props.lang.addressCopiedBelow);
     TweenMax.fromTo('#message', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
     TweenMax.to('#message', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
     TweenMax.set('#addressSend', {autoAlpha: 0});
-    this.props.setAddressSend(friend.address);
+    this.props.setAddressSend(friend.address.address);
     if(friend.name === "")
       this.props.setUsernameSend(undefined);
     else this.props.setUsernameSend(friend.name);
+  }
+
+  async loadContacts(){
+    const friendList = await getContacts();
+    this.props.setContacts(friendList);
+
+    this.updateTable(friendList);
   }
 
   getHeaderText(){
@@ -100,6 +109,8 @@ class AddressBook extends Component {
     this.forceUpdate();
   }
 
+  editContact(friend){}
+
   render() {
     let bin = Tools.getIconForTheme("deleteContact", false);
     let rowClassName = "row normalWeight tableRowCustom";
@@ -118,16 +129,18 @@ class AddressBook extends Component {
             </div>
           <div id="rows" style={{width: "100%", padding: "0 0"}}>
           {this.props.friends.map((friend, index) => {
+            console.log(friend)
             return (
               <div className= {index % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} onClick={this.rowClicked.bind(this, friend)} onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default"}} key={`friend_${index}`}>
                 <div className={this.props.sendPanel ? "col-sm-4 tableColumn tableColumContactFix" : "col-sm-4 tableColumn tableColumContactFix selectableText"}>
-                  {friend.name}
+                  {friend.ansrecord != null ? friend.ansrecord.name + '#' + friend.ansrecord.code: friend.name}
                 </div>
                 <div className={this.props.sendPanel ? "col-sm-7 tableColumn" : "col-sm-7 tableColumn selectableText"}>
-                  {friend.address}
+                  {friend.address.address}
                 </div>
                 <div className="col-sm-1 tableColumn">
                   <img className="deleteContactIcon" onClick={this.deleteAddress.bind(this, friend)} style={{visibility: this.props.hoveredAddress === friend ? "visible" : "hidden"}}src={bin}/>
+                  <img className="deleteContactIcon" onClick={this.editContact.bind(this, friend)} style={{marginLeft: '5px', visibility: this.props.hoveredAddress === friend ? "visible" : "hidden"}}src={bin}/>
                 </div>
               </div>
             );

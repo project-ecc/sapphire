@@ -106,12 +106,11 @@ class Transaction extends Component {
     this.setState({
       transactionData: transactions
     });
+    this.updateTable();
     $(".extraInfoTransaction").hide();
     $(".extraInfoTransaction").each(function() {
       $(this).attr('sd', 'false');
     });
-    this.updateTable();
-    this.props.setPopupLoading(false)
   }
 
   renderStatus(opt) {
