@@ -753,10 +753,15 @@ class DaemonConnector {
   }
 
   goToEarningsPanel(){
+    const where = {
+      is_main: 1,
+      category: 'generate'
+    };
+    getAllTransactions(100, 0, where).then(transactions => {
+      this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: transactions, type: "generate"}});
       this.store.dispatch({type: SELECTED_PANEL, payload: "transactions"});
-      //TODO replace all by generate when transactions are sorted properly
-      this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: this.store.getState().chains.transactionsData, type: "all"}});
-      this.store.dispatch({type: SELECTED_SIDEBAR, payload: {parent: "walletSelected", child: "transactionsSelected"}})
+      this.store.dispatch({type: SELECTED_SIDEBAR, payload: {parent: "walletSelected", child: "transactionsSelected"}});
+    });
   }
 
   async insertIntoDb(entries){

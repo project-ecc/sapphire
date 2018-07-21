@@ -294,9 +294,9 @@ async function addAddress(address, withAns = false, belongsToMe = false){
         }
       })
       .spread(async (newAddress, created) => {
-        console.log('created: ', created)
+        //console.log('created: ', created)
         if(!created){
-          console.log('address not created')
+          //console.log('address not created')
           newAddress.current_balance = address.amount
           newAddress.is_mine = belongsToMe
           await newAddress.save()
