@@ -158,7 +158,7 @@ async function getAllTransactions(limit = null, offset = 0, where = null){
       where,
       raw: true,
       limit: limit,
-      offset,
+      offset: offset,
       order: [
         ['time', 'DESC'],
       ]
