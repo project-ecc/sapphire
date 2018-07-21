@@ -214,7 +214,7 @@ class Transaction extends Component {
                 <p className="tableHeaderTitle tableHeaderTitleSmall">{ this.props.lang.transactions }  </p>
               </div>
               <div className="col-sm-8" style={{display:"flex",justifyContent:"flex-end",padding:"0"}}>
-                
+
                   <div className="col-sm-6" style={{display:"flex",alignItems:"center", maxWidth:"300px"}}>
                     <div className="box" style={{width:"100%"}}>
                       <div className="container-1" style={{width:"100%", maxWidth:"300px", display:"flex",alignItems:"center"}}>
@@ -243,7 +243,7 @@ class Transaction extends Component {
                       </div>
                     }
                   </div>
-                
+
               </div>
             </div>
 
@@ -300,7 +300,7 @@ class Transaction extends Component {
                     <div className="col-sm-6 text-center" style={{paddingTop:"4px",paddingBottom:"4px"}}>
                        {category}
                       <div className="transactionAddress text-left" >
-                       <p style={{ margin: '0px', display:"inline"}}><span className="desc2 transactionAddress"> {t["address.ansrecords.name"] != null ? t['address.ansrecords.name'] : t['address.address']}</span></p><p className="transactionInfoTitle" style={{fontSize: "12px"}}> {category_label} {time}</p>
+                       <p style={{ margin: '0px', display:"inline"}}><span className="desc2 transactionAddress"> {t["address.ansrecords.name"] != null ? t['address.ansrecords.name']+ t['address.ansrecords.code'] : t['address.address']}</span></p><p className="transactionInfoTitle" style={{fontSize: "12px"}}> {category_label} {time}</p>
                       </div>
                     </div>
                     <div className="col-sm-3 text-right" style={{ textAlign: "right"}}>

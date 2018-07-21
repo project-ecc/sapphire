@@ -152,7 +152,7 @@ class DaemonConnector {
         }
       }
       const latestTransaction = await getLatestTransaction();
-      console.log(latestTransaction)
+      // console.log(latestTransaction)
       this.from = latestTransaction != null ? latestTransaction.time : null;
       this.currentFrom = this.from
       const allTransactions = await getAllTransactions();
@@ -209,7 +209,7 @@ class DaemonConnector {
 
           if(this.latestBlockTime < latestBlockTime && !this.firstRun){
             this.latestBlockTime = latestBlockTime;
-            this.updateConfirmations()
+            await this.updateConfirmations()
             this.hasLoadedTransactionsFromDb = false;
           }
 
@@ -247,7 +247,7 @@ class DaemonConnector {
       }
       if(this.firstRun){
         this.firstRun=false;
-        this.store.dispatch({type: LOADING, payload:false})
+        this.store.dispatch({type: LOADING, payload:{isLoading: false, loadingMessage: ''}})
         if(this.store.getState().startup.importWalletTemp){
           this.store.dispatch({type: IMPORT_WALLET_TEMPORARY, payload: {importWalletTemp: false, importWallet: true}})
         }
@@ -428,7 +428,7 @@ class DaemonConnector {
           this.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: true})
         }
         if(!this.store.getState().startup.initialSetup){
-          this.store.dispatch({type: LOADING, payload: true})
+          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: 'Loading block index..'}})
         }
       }
     });
@@ -813,7 +813,8 @@ class DaemonConnector {
 
   async processPendingTransactions(){
 	  let pendingTransactions = await getAllPendingTransactions()
-    for(const pending in pendingTransactions){
+    for (const [index, pending] of pendingTransactions.entries()) {
+      // handle the response
       let id = pending.transaction_id;
       let rawT = await this.getRawTransaction(id);
       await updatePendingTransaction(id, rawT.confirmations);
@@ -928,11 +929,14 @@ class DaemonConnector {
       const ansRecord = await this.wallet.getANSRecord(address.address);
       //TODO include code to see if it was recently created and notify user if its been 3 blocks since its creation
 
+
+      //TODO: redo this whole block of code
       let notReadyAnsAddress = ansAddressesInfo.get('addresses').find({ address: address.address }).value()
       let shouldAdd = true;
       if(notReadyAnsAddress){
         if(currentBlock > notReadyAnsAddress.creationBlock + 3){
-          this.queueOrSendNotification(()=>{}, `${this.translator.ansReady}.\n\n${this.translator.username}: ${ansRecord.Name}`)
+          //
+          // this.queueOrSendNotification(()=>{}, `${this.translator.ansReady}.\n\n${this.translator.username}: ${ansRecord.Name}`)
 
           // TODO: add address to db.
           // await deleteAddressByName(address.address);
@@ -983,10 +987,15 @@ class DaemonConnector {
     });
 
     //put addresses in the database
-    for (const address in toReturn){
-      await addAddress(address, address.ans, true);
-    }
-    this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
+    console.log(toReturn)
+
+    // if(normalAddresses.length > this.currentAddresses.length) {
+      for (const [index, address] of toReturn.entries()) {
+        // handle the response
+        await addAddress(address, address.ans, true);
+      }
+      this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
+    // }
     //We need to have the addresses loaded to be able to index transactions
     this.currentAddresses = normalAddresses;
     // console.log("All addresses without null balances", toReturn);

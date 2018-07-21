@@ -2,7 +2,7 @@ import $ from 'jquery';
 import React, { Component } from 'react';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import { traduction } from '../../lang/lang';
-import {addContact, findContact} from "../../Managers/SQLManager";
+import {addContact, findContact, getContacts} from "../../Managers/SQLManager";
 const homedir = require('os').homedir();
 import * as actions from '../../actions';
 import { connect } from 'react-redux';
@@ -97,21 +97,20 @@ class Contacts extends Component {
       else {
         if(!multipleAddresses){
           this.props.setAddingContact(true, {name, address, code, ans});
+          await addContact({name, address, code, ans}, result.ans);
+          const friendList = await getContacts();
+          console.log(friendList)
+          // const friendList = low.get('friends').value();
+          this.props.setContacts(friendList);
+          this.addressAddedSuccessfuly();
         }
         else{
-          this.props.setAddingContact(true, {multipleAddresses: result.addresses});
+          this.props.setMultipleAnsAddresses(result.addresses);
+          this.props.setAddingContact(true);
         }
-
-        // await addContact();
-        console.log(address)
-        await addContact({name, address, code, ans}, result.ans)
-        low.get('friends').push({ name, address, ans, code }).write();
-        const friendList = low.get('friends').value();
-        this.props.setContacts(friendList);
         //this is a temporary workaround because setContacts is not triggering a re-render of AddressBook.js
         this.props.setHoveredAddress(["a"]);
         this.resetFields();
-        this.addressAddedSuccessfuly();
       }
     }
   }
