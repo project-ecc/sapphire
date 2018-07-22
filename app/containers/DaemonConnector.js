@@ -917,6 +917,7 @@ class DaemonConnector {
     }
   }
   async getAddresses(allReceived, allAddresses){
+    console.log('in here')
     const normalAddresses = [].concat.apply([], allAddresses).map(group => {
       return {
         account: group.length > 2 ? group[2] : null,
@@ -991,6 +992,7 @@ class DaemonConnector {
       }
     });
 
+    console.log('about to put addresses in DB')
     //put addresses in the database
     console.log(toReturn)
 
