@@ -30,10 +30,9 @@ class Transaction extends Component {
   }
 
   async componentDidMount() {
-
-    this.props.setTransactionsData(this.props.data, "all");
-    this.props.setTransactionsPage(0);
-    this.updateTable();
+    this.props.setPopupLoading(true)
+    console.log(this.props.type)
+    await this.getAllTransactions(0)
 
     $( window ).on('resize', () => {
       this.updateTable();
@@ -68,34 +67,50 @@ class Transaction extends Component {
     this.setState({
       transactionData: result
     })
+    this.updateTable();
   }
   async handleNextClicked(){
     if(this.props.requesting || this.props.data.length < 100) return;
-    await this.getAllTransactions(this.props.page + 1);
+    await this.getAllTransactions(this.props.page + 1, this.props.type);
     $("#rows").animate({ scrollTop: 0 }, "fast");
   }
 
   async handlePreviousClicked() {
     if (this.props.requesting || this.props.page === 0) return;
-    await this.getAllTransactions(this.props.page - 1);
+    await this.getAllTransactions(this.props.page - 1, this.props.type);
     $("#rows").animate({ scrollTop: 0 }, "fast");
   }
 
-  async getAllTransactions(page) {
+  async getAllTransactions(page, type = 'all') {
     const where = {
       is_main: 1
     };
 
+    switch (type) {
+      case 'pending':
+      case 'orphaned':
+      case 'confirmed':
+        where.status = type;
+        break;
+      case 'send':
+      case 'receive':
+      case 'generate':
+        where.category = type;
+        break;
+    }
     console.log('page: ', page)
-
-
+    // console.log(where)
     const transactions = await getAllTransactions(100, 100 * page, where);
-    this.props.setTransactionsData(transactions, this.props.type);
+    this.props.setTransactionsData(transactions, type);
     this.props.setTransactionsPage(page);
     this.setState({
-      transactionData: this.props.data
+      transactionData: transactions
     });
     this.updateTable();
+    $(".extraInfoTransaction").hide();
+    $(".extraInfoTransaction").each(function() {
+      $(this).attr('sd', 'false');
+    });
   }
 
   renderStatus(opt) {
@@ -144,7 +159,7 @@ class Transaction extends Component {
   }
 
   shouldComponentUpdate(state){
-    if(this.props.page === state.page && this.props.page > 0 && this.props.type === state.type) return false;
+    // if(this.props.page === state.page && this.props.page > 0 && this.props.type === state.type) return false;
     return true;
   }
   componentWillReceiveProps(){
@@ -164,35 +179,18 @@ class Transaction extends Component {
 
   async onItemClick(event) {
     const type = event.currentTarget.dataset.id;
-    // console.log('type')
-    // console.log(this.props.type)
-    if(type === this.props.type) return;
-    const where = {
-      is_main: 1
-    };
-    if(type !== 'all'){
-      where.category = type;
-    }
-    // console.log(where)
-    const transactions = await getAllTransactions(100, 0, where);
-    this.props.setTransactionsData(transactions, type);
-    this.props.setTransactionsPage(0);
-    $(".extraInfoTransaction").hide();
-    $(".extraInfoTransaction").each(function() {
-      $(this).attr('sd', 'false');
-    });
+
+    await this.getAllTransactions(this.props.page, type);
   }
 
   getValue(val){
     switch(val){
-      case "1" : return this.props.lang.confirmed;
-      case "-1" : return this.props.lang.orphaned;
-      case "0" : return this.props.lang.pending;
+      case "confirmed" : return this.props.lang.confirmed;
+      case "orphaned" : return this.props.lang.orphaned;
+      case "pending" : return this.props.lang.pending;
       case "all": return this.props.lang.all;
       case "send" : return this.props.lang.sent;
-      case "generate":
-        //this.props.setEarningsChecked(new Date().getTime());
-        return this.props.lang.earned;
+      case "generate":return this.props.lang.earned;
       case "receive": return this.props.lang.received;
     }
   }
@@ -236,9 +234,9 @@ class Transaction extends Component {
                           <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="receive">{ this.props.lang.received }</li>
                           <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="send">{ this.props.lang.sent }</li>
                           <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="generate">{ this.props.lang.earned }</li>
-                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="1">{ this.props.lang.confirmed }</li>
-                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="0">{ this.props.lang.pending }</li>
-                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="-1">{ this.props.lang.orphaned }</li>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="confirmed">{ this.props.lang.confirmed }</li>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="pending">{ this.props.lang.pending }</li>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="orphaned">{ this.props.lang.orphaned }</li>
                         </ul>
                       </div>
                     }
@@ -259,13 +257,9 @@ class Transaction extends Component {
              // console.log(t, index)
              //  console.log(t)
 
-
               if (this.props.type === 'all'
               || this.props.type === t.category
-              || this.props.type === t.confirmations
-              || (this.props.type === 1 && t.confirmations > 0)
-              || (this.props.type === -1 && t.confirmations < 0)){
-                if(this.props.type === "generate" && t.amount === 0) return null;
+              || this.props.type === t.status){
                 counter++;
                 const iTime = new Date(t.time);
                 let time = Tools.calculateTimeSince(this.props.lang, today, iTime);

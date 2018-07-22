@@ -46,12 +46,12 @@ class ContactPopup extends React.Component {
   }
 
   async handleConfirm(){
-   const selected = this.state.selected;
+    const selected = this.state.selected;
 
-   const name = selected.Name;
-   const address = selected.Address;
-   const code = selected.Code;
-   const ans = selected.Ans;
+    let name = selected.Name;
+    const address = selected.Address;
+    const code = selected.Code;
+    const ans = true
 
     this.props.setAddingContact(true, {name, address, code, ans});
     await addContact({name, address, code, ans}, ans);
