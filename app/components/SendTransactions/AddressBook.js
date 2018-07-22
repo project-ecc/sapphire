@@ -9,7 +9,7 @@ import $ from 'jquery';
 
 const Tools = require('../../utils/tools');
 const { clipboard } = require('electron');
-import {getContacts} from "../../Managers/SQLManager";
+import { getContacts, deleteContact } from "../../Managers/SQLManager";
 
 class AddressBook extends Component {
   constructor(props) {
@@ -108,11 +108,10 @@ class AddressBook extends Component {
     this.props.setHoveredAddress(undefined);
   }
 
-  deleteAddress(friend){
-    low.get('friends').remove({ address: friend.address }).write();
-    const friendList = low.get('friends').value();
-    this.props.setContacts(friendList);
-    this.forceUpdate();
+  async deleteAddress(friend){
+    const contactDeleted = await deleteContact(friend)
+    console.log(contactDeleted)
+    await this.loadContacts();
   }
 
   editContact(friend){}

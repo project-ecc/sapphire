@@ -495,6 +495,16 @@ async function getContacts(){
   });
 }
 
+async function deleteContact(contact) {
+  return new Promise(async (resolve, reject) => {
+    await contact.destroy().then( deleted => {
+      resolve(deleted);
+    }).error(err => {
+      reject(err);
+    });
+  });
+}
+
 /**
  * export functions.
  */
@@ -527,6 +537,7 @@ export {
   updateTransactionsConfirmations,
   addContact,
   findContact,
-  getContacts
+  getContacts,
+  deleteContact
 };
 
