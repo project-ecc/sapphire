@@ -88,7 +88,6 @@ class Contacts extends Component {
     }
     else{
       const tt = await findContact(address)
-      console.log(tt)
       if (tt.length > 0) {
         this.addressAlreadyExists();
         this.resetFields();

@@ -74,8 +74,11 @@ class AddressBook extends Component {
     if(friend.name === "") {
       console.log('friend name is null')
       this.props.setUsernameSend(undefined);
+    } else if(friend.ansrecord != null) {
+      this.props.setUsernameSend(friend.name, friend.ansrecord.code)
     }
     else this.props.setUsernameSend(friend.name);
+    this.forceUpdate();
   }
 
   async loadContacts(){
@@ -132,7 +135,6 @@ class AddressBook extends Component {
             </div>
           <div id="rows" style={{width: "100%", padding: "0 0"}}>
           {this.props.friends.map((friend, index) => {
-            console.log(friend)
             return (
               <div className= {index % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} onClick={this.rowClicked.bind(this, friend)} onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default"}} key={`friend_${index}`}>
                 <div className={this.props.sendPanel ? "col-sm-4 tableColumn tableColumContactFix" : "col-sm-4 tableColumn tableColumContactFix selectableText"}>
@@ -143,7 +145,7 @@ class AddressBook extends Component {
                 </div>
                 <div className="col-sm-1 tableColumn">
                   <img className="deleteContactIcon" onClick={this.deleteAddress.bind(this, friend)} style={{visibility: this.props.hoveredAddress === friend ? "visible" : "hidden"}}src={bin}/>
-                  <img className="deleteContactIcon" onClick={this.editContact.bind(this, friend)} style={{marginLeft: '5px', visibility: this.props.hoveredAddress === friend ? "visible" : "hidden"}}src={bin}/>
+                  {/*<img className="deleteContactIcon" onClick={this.editContact.bind(this, friend)} style={{marginLeft: '5px', visibility: this.props.hoveredAddress === friend ? "visible" : "hidden"}}src={bin}/>*/}
                 </div>
               </div>
             );
