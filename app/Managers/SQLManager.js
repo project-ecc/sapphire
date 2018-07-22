@@ -475,16 +475,10 @@ async function getContacts(){
     await Contact.findAll({
       include: [
         {
-          model: Address,
-          where: {
-            id: db.Sequelize.col('contacts.addressId')
-          }
+          model: Address
         },
         {
-          model: AnsRecord,
-          where: {
-            id: db.Sequelize.col('contacts.ansrecordId')
-          }
+          model: AnsRecord
         }
       ]
     }).then(contacts => {

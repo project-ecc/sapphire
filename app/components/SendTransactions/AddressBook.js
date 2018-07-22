@@ -63,7 +63,6 @@ class AddressBook extends Component {
   }
 
   rowClicked(friend) {
-    console.log(friend)
     if(!this.props.sendPanel) return;
     clipboard.writeText(friend.address.address);
     $('#message').text(this.props.lang.addressCopiedBelow);
@@ -72,7 +71,6 @@ class AddressBook extends Component {
     TweenMax.set('#addressSend', {autoAlpha: 0});
     this.props.setAddressSend(friend.address.address);
     if(friend.name === "") {
-      console.log('friend name is null')
       this.props.setUsernameSend(undefined);
     } else if(friend.ansrecord != null) {
       this.props.setUsernameSend(friend.name, friend.ansrecord.code)
