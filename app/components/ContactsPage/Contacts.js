@@ -88,19 +88,24 @@ class Contacts extends Component {
     }
     else{
       const tt = await findContact(address)
-      console.log(tt)
       if (tt.length > 0) {
         this.addressAlreadyExists();
         this.resetFields();
       }
       else {
         if(!multipleAddresses){
-          await addContact({name, address, code, ans}, result.ans);
-          const friendList = await getContacts();
-          console.log(friendList)
-          // const friendList = low.get('friends').value();
-          this.props.setContacts(friendList);
-          this.addressAddedSuccessfuly();
+
+          if(result.ans){
+            await addContact({name, address, code, ans}, result.ans);
+            const friendList = await getContacts();
+            console.log(friendList)
+            // const friendList = low.get('friends').value();
+            this.props.setContacts(friendList);
+            this.addressAddedSuccessfuly();
+          }else {
+            this.props.setNewContactAddress(address)
+            this.props.setAddingContact(true);
+          }
         }
         else{
           this.props.setMultipleAnsAddresses(result.addresses);

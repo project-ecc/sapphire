@@ -475,22 +475,26 @@ async function getContacts(){
     await Contact.findAll({
       include: [
         {
-          model: Address,
-          where: {
-            id: db.Sequelize.col('contacts.addressId')
-          }
+          model: Address
         },
         {
-          model: AnsRecord,
-          where: {
-            id: db.Sequelize.col('contacts.ansrecordId')
-          }
+          model: AnsRecord
         }
       ]
     }).then(contacts => {
       resolve(contacts);
     }).error(err => {
       reject(err)
+    });
+  });
+}
+
+async function deleteContact(contact) {
+  return new Promise(async (resolve, reject) => {
+    await contact.destroy().then( deleted => {
+      resolve(deleted);
+    }).error(err => {
+      reject(err);
     });
   });
 }
@@ -527,6 +531,7 @@ export {
   updateTransactionsConfirmations,
   addContact,
   findContact,
-  getContacts
+  getContacts,
+  deleteContact
 };
 
