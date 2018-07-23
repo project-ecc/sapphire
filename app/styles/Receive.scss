@@ -141,9 +141,12 @@
 }
 
 .Receive__ans-code{
-	font-size: 12px;
+	/*font-size: 12px;
     font-weight: bold;
-    color: #2e2e3a;
+    color: #2e2e3a;*/
+    @include themify($themes) {
+		color: themed('tableRowHeaderColor');
+	}
 }
 
 .Receive__upgrade-text{

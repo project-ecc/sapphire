@@ -287,6 +287,7 @@ class Transaction extends Component {
                 }
 
                 return (
+                <div> 
                   <div className= {counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} style={{padding:"0",cursor: "pointer", fontSize: "15px", justifyContent:"space-around"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
                     <div className="col-sm-3" style={{}}>
                       <p style={{ margin: '0px' }}><span>{moment(t.time).format('MMMM Do')}</span></p>
@@ -301,25 +302,27 @@ class Transaction extends Component {
                       <p style={{ margin: '0px' }}>{t.amount} ECC</p>
                       <p style={{ margin: '0px', fontSize: "12px" }}>{this.renderStatus(t.confirmations)}</p>
                     </div>
-                    <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{ paddingLeft: "4%", width: "100%", paddingTop: "11px", paddingBottom: "11px", cursor:"default", zIndex:"2", display:"none"}}>
-                      <div className="col-sm-8">
-                        <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.dateString}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{(new Date(t.time).toDateString()).toString()}</span></p>
-                      </div>
-                      <div className="col-sm-4">
-                        <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.confirmations}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{t.confirmations}</span></p>
-                      </div>
-                      <div className="col-sm-8">
-                        <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.transactionId}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 transactionId selectableText">{t.transaction_id}</span></p>
-                      </div>
-                      <div className="col-sm-4">
-                        <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.transactionFee}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{t.fee}</span></p>
-                      </div>
+                   </div>
+                    <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{ paddingLeft: "2%", width: "100%", paddingTop: "6px", paddingBottom: "6px", cursor:"default", zIndex:"2", display:"none"}}>
+                          <div className="col-sm-4">
+                            <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.dateString}</span></p>
+                            <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{(new Date(t.time).toDateString()).toString()}</span></p>
+                          </div>
+                          <div className="col-sm-3">
+                            <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.confirmations}</span></p>
+                            <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{t.confirmations}</span></p>
+                          </div>
+                          <div className="col-sm-3">
+                            <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionFee}</span></p>
+                            <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{t.fee}</span></p>
+                          </div>
+                     
+                        <div className="col-sm-8">
+                            <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionId}</span></p>
+                            <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">{t.transaction_id}</span></p>
+                        </div>
                     </div>
-                  </div>
+                </div>
                 );
               }
               return null;

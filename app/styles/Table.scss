@@ -61,6 +61,18 @@
   box-shadow: 0 2px 4px -3px rgba(0, 0, 0, 0.74);
 }
 
+.tableRowCustom:hover{
+ @include themify($themes) { 
+    background-color: themed('tableHoverColor');
+  }
+}
+
+.tableRowCustom:active{
+ @include themify($themes) { 
+    background-color: themed('tableActiveColor');
+  }
+}
+
 .tableRowCustomTransactions{
   height: auto;
   align-items: center;
@@ -109,12 +121,16 @@
 }
 
 .extraInfoTransaction{
-
   @include themify($themes) { 
     /*background-color: themed('bodyBackgroundColor'); */
     background-color: themed('tableExtraBackgroundColor'); 
   }
-  
+}
+
+.extraInfoTransaction:hover{
+  @include themify($themes) { 
+    /*background-color: themed('tableBackgroundColor');*/
+  }
 }
 
 .tableRowSelected{
