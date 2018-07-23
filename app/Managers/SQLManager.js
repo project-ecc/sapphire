@@ -396,15 +396,18 @@ async function deleteAnsRecordByName(recordName) {
  */
 
 async function addContact(contactObject, withAns = false){
-  console.log(contactObject)
   return new Promise(async (resolve, reject) => {
+    let name = contactObject.name;
+    if(withAns){
+      name += '#' + contactObject.code
+    }
     await Contact
       .findOrCreate({
         where: {
-          name: contactObject.name
+          name: name
         },
         defaults: {
-          name: contactObject.name
+          name: name
         }
       })
       .spread(async (newContact, created) => {
@@ -443,6 +446,7 @@ async function addContact(contactObject, withAns = false){
 }
 
 async function findContact(name){
+  console.log(name)
   return new Promise(async(resolve, reject) => {
     await Contact.findAll({
       include: [

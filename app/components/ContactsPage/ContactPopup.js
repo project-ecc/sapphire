@@ -7,8 +7,7 @@ import PopupBar from '../Others/PopupBar';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
 
-import $ from 'jquery';
-import {addContact, getContacts} from "../../Managers/SQLManager";
+import {addContact, getContacts, findContact} from "../../Managers/SQLManager";
 
 const Tools = require('../../utils/tools');
 
@@ -19,6 +18,7 @@ class ContactPopup extends React.Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.addressAddedSuccessfuly = this.addressAddedSuccessfuly.bind(this);
+    this.cleanupAfterPopup = this.cleanupAfterPopup.bind(this);
     this.state = {
       selected: {},
       contactName: ''
@@ -34,7 +34,10 @@ class ContactPopup extends React.Component {
   }
 
   componentWillUnmount() {
-
+    this.setState({
+      contactName: '',
+      selected: {}
+    })
   }
 
   handleInput(event){
@@ -46,8 +49,7 @@ class ContactPopup extends React.Component {
   handleClick(val){
    this.setState({
      selected: val
-   })
-    console.log(val)
+   });
   }
 
   async handleConfirm(){
@@ -69,30 +71,50 @@ class ContactPopup extends React.Component {
       address = this.props.newContactAddress;
     }
 
+
+    const tt = await findContact(ans == true ? name + '#' + code : name)
+    console.log(tt)
+    if (tt.length > 0) {
+      this.addressAlreadyExists();
+      this.cleanupAfterPopup();
+    }
+    // add the contact
     this.props.setAddingContact(true, {name, address, code, ans});
     await addContact({name, address, code, ans}, ans);
 
+    //refresh the redux store with new contacts
     const friendList = await getContacts();
     console.log(friendList)
     this.props.setContacts(friendList);
+
+
+    this.addressAddedSuccessfuly();
+    this.cleanupAfterPopup();
+  }
+
+  cleanupAfterPopup(){
+    //clean up afterwould.
     this.props.setNewContactAddress('')
-    this.addressAddedSuccessfuly()
+    this.props.setMultipleAnsAddresses([]);
     this.props.setAddingContact(false);
   }
 
   handleCancel(){
-    this.props.setAddingContact(false);
+    this.cleanupAfterPopup()
   }
 
   addressAddedSuccessfuly(){
     TweenMax.fromTo('#addressAdded', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
     TweenMax.to('#addressAdded', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
   }
+  addressAlreadyExists(){
+    TweenMax.fromTo('#addressExists', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
+    TweenMax.to('#addressExists', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
+  }
 
   getNameOrAddressHtml(){
    const self = this
-    console.log(this.props.foundAnsAddresses)
-    if(this.props.foundAnsAddresses.length > 0){
+    if(this.props.foundAnsAddresses.length > 0 && this.props.newContactAddress == ''){
       return(
         <div>
           <p className="multipleAddresses">{this.props.foundAnsAddresses.length} {this.props.lang.foundMultipleUsernames}.</p>
@@ -138,7 +160,6 @@ class ContactPopup extends React.Component {
           <ConfirmButtonPopup
             inputId={"#sendPasswordId"}
             handleConfirm={this.handleConfirm}
-            text="Confirm"
             textLoading={this.props.lang.confirming}
             text={ this.props.lang.confirm }
           />

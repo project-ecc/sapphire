@@ -87,34 +87,35 @@ class Contacts extends Component {
       this.resetFields(false);
     }
     else{
-      const tt = await findContact(address)
-      if (tt.length > 0) {
-        this.addressAlreadyExists();
-        this.resetFields();
-      }
-      else {
-        if(!multipleAddresses){
-
-          if(result.ans){
-            await addContact({name, address, code, ans}, result.ans);
-            const friendList = await getContacts();
-            console.log(friendList)
-            // const friendList = low.get('friends').value();
-            this.props.setContacts(friendList);
-            this.addressAddedSuccessfuly();
-          }else {
-            this.props.setNewContactAddress(address)
-            this.props.setAddingContact(true);
-          }
+      if(!multipleAddresses){
+        const tt = await findContact(ans == true ? name + '#' + code : name)
+        console.log(tt)
+        if (tt.length > 0) {
+          this.addressAlreadyExists();
+          this.resetFields();
+          return;
         }
-        else{
-          this.props.setMultipleAnsAddresses(result.addresses);
+
+
+        if(result.ans){
+          await addContact({name, address, code, ans}, result.ans);
+          const friendList = await getContacts();
+          console.log(friendList)
+          // const friendList = low.get('friends').value();
+          this.props.setContacts(friendList);
+          this.addressAddedSuccessfuly();
+        }else {
+          this.props.setNewContactAddress(address)
           this.props.setAddingContact(true);
         }
-        //this is a temporary workaround because setContacts is not triggering a re-render of AddressBook.js
-        this.props.setHoveredAddress(["a"]);
-        this.resetFields();
       }
+      else{
+        this.props.setMultipleAnsAddresses(result.addresses);
+        this.props.setAddingContact(true);
+      }
+      //this is a temporary workaround because setContacts is not triggering a re-render of AddressBook.js
+      this.props.setHoveredAddress(["a"]);
+      this.resetFields();
     }
   }
 
