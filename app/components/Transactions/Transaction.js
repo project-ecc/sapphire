@@ -287,7 +287,7 @@ class Transaction extends Component {
                 }
 
                 return (
-                <div> 
+                <div key={index}>
                   <div className= {counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} style={{padding:"0",cursor: "pointer", fontSize: "15px", justifyContent:"space-around"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
                     <div className="col-sm-3" style={{}}>
                       <p style={{ margin: '0px' }}><span>{moment(t.time).format('MMMM Do')}</span></p>
@@ -316,7 +316,7 @@ class Transaction extends Component {
                             <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionFee}</span></p>
                             <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{t.fee}</span></p>
                           </div>
-                     
+
                         <div className="col-sm-8">
                             <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionId}</span></p>
                             <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">{t.transaction_id}</span></p>
