@@ -64,19 +64,23 @@ import {
   NEW_ADDRESS_NAME_POPUP,
   ADDRESS_OR_USERNAME_SEND,
   MULTIPLE_ANS_ADDRESSES,
-  ADDING_CONTACT
+  ADDING_CONTACT,
+  SHOW_ZERO_BALANCE
 } from '../actions/types';
 
 import Wallet from '../utils/wallet';
 import notificationsInfo from '../utils/notificationsInfo';
 
-const INITIAL_STATE = {wallet: new Wallet(), unlocking: false, password: "", userNameToSend: "", codeToSend:"", amountSend: "", addressSend: "", sendingEcc: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, newAddressName: "", newAddressAccount: "", friends: [], userAddresses: [], creatingAnsAddress: true, selectedAddress: undefined, creatingAddress: false, newContactName: "", newContactAddress:"", hoveredAddress: undefined, settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, exportingPrivateKeys: false, panelExportPrivateKey: 1, locationToExport: "", filterAllOwnAddresses: true, filterNormalOwnAddresses: false, filterAnsOwnAddresses: false, backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, totalFileStorageRewards: 0, lastWeekFileStorageRewards: 0,lastMonthFileStorageRewards: 0, pendingTransactions: [], importingPrivateKey: false, changingPassword: false, wasStaking: false, newPassword: "", daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], postsPerContainerEccNews: 0, eccPostsArrays: [], eccPostsPage: 1, coinMarketCapStats: {}, showingNews: false, eccNewsSwitchingPage: false, updateApplication:false, selectedPanel: "overview", settingsOptionSelected: "General", showingFunctionIcons: false, genericPanelAnimationOn: false, closingApplication: false, macButtonsHover: false, macButtonsFocus: false, maximized:false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false, settingsHoveredSocialIcon: undefined, actionPopupResult: false, actionPopupMessage: "", actionPopupStatus: false, downloadMessage: undefined, downloadPercentage: undefined, downloadRemainingTime: undefined, updateFailed:false, popupLoading: false, newAddressNamePopup: "", addressOrUsernameSend: "", ansAddressesFound: [], addingContact: false, contactToAdd: undefined};
+const INITIAL_STATE = {wallet: new Wallet(), unlocking: false, password: "", userNameToSend: "", codeToSend:"", amountSend: "", addressSend: "", sendingEcc: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, newAddressName: "", newAddressAccount: "", friends: [], userAddresses: [], creatingAnsAddress: true, selectedAddress: undefined, creatingAddress: false, newContactName: "", newContactAddress:"", hoveredAddress: undefined, settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, exportingPrivateKeys: false, panelExportPrivateKey: 1, locationToExport: "", filterAllOwnAddresses: true, filterNormalOwnAddresses: false, filterAnsOwnAddresses: false, backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, totalFileStorageRewards: 0, lastWeekFileStorageRewards: 0,lastMonthFileStorageRewards: 0, pendingTransactions: [], importingPrivateKey: false, changingPassword: false, wasStaking: false, newPassword: "", daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], postsPerContainerEccNews: 0, eccPostsArrays: [], eccPostsPage: 1, coinMarketCapStats: {}, showingNews: false, eccNewsSwitchingPage: false, updateApplication:false, selectedPanel: "overview", settingsOptionSelected: "General", showingFunctionIcons: false, genericPanelAnimationOn: false, closingApplication: false, macButtonsHover: false, macButtonsFocus: false, maximized:false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false, settingsHoveredSocialIcon: undefined, actionPopupResult: false, actionPopupMessage: "", actionPopupStatus: false, downloadMessage: undefined, downloadPercentage: undefined, downloadRemainingTime: undefined, updateFailed:false, popupLoading: false, newAddressNamePopup: "", addressOrUsernameSend: "", ansAddressesFound: [], addingContact: false, contactToAdd: undefined, showZeroBalance: true};
 
 
 export default(state = INITIAL_STATE, action) => {
-    if(action.type == UNLOCKING){
+  if(action.type == UNLOCKING){
 		return {...state, unlocking: action.payload}
 	}
+	else if(action.type == SHOW_ZERO_BALANCE){
+    return {...state, showZeroBalance: action.payload}
+  }
   else if(action.type == ADDING_CONTACT){
     return {...state, addingContact: action.payload.flag, contactToAdd: action.payload.newContact}
   }

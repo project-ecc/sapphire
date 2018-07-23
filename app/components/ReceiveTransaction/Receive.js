@@ -7,6 +7,7 @@ import Input from '../Others/Input';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import $ from 'jquery';
 import renderHTML from 'react-render-html';
+import SettingsToggle from './../SettingsPage/SettingsToggle'
 const lang = traduction();
 const { clipboard } = require('electron');
 const ansAddresImage = require('../../../resources/images/ans_address.png');
@@ -24,6 +25,7 @@ class Receive extends Component {
     this.handleChangeAddressCreationToNormal = this.handleChangeAddressCreationToNormal.bind(this);
     this.handleChangeNameAddress = this.handleChangeNameAddress.bind(this);
     this.handleUpgradeAddress = this.handleUpgradeAddress.bind(this);
+    this.toggleZeroBalanceAddresses = this.toggleZeroBalanceAddresses.bind(this);
   }
 
   componentDidMount() {
@@ -104,6 +106,11 @@ class Receive extends Component {
     this.props.setUpgradingAddress(true);
     //this.props.setCreateAddressAns(true);
     this.handleCreateNewAddress();
+  }
+
+  toggleZeroBalanceAddresses(){
+    // TODO: this
+    console.log('to do this!')
   }
 
   rowClicked(address){
@@ -248,8 +255,24 @@ class Receive extends Component {
 
          <div className="tableCustom">
           <div className="tableHeaderBig tableHeaderNormal">
-            <p className="tableHeaderTitle">{ this.props.lang.yourAddresses }</p>
-            <p className="headerDescription">{ this.props.lang.allYourNormalAndANS }</p>
+            <div className="row col-sm-12">
+              <div className="col-sm-6">
+                <p className="tableHeaderTitle">{ this.props.lang.yourAddresses }</p>
+                <p className="headerDescription">{ this.props.lang.allYourNormalAndANS }</p>
+              </div>
+              <div className="row col-sm-6" style={{textAlign: 'right'}}>
+                <p className="headerDescription" style={{paddingTop: '20px'}}>{this.props.lang.showZeroBalances}</p>
+                <div>
+                  <SettingsToggle
+                    keyVal={1}
+                    handleChange = {this.toggleZeroBalanceAddresses}
+                    checked = {this.props.showZeroBalance}
+                  />
+                </div>
+              </div>
+            </div>
+
+
             <div id="tableFiltersReceive">
               <p className= {this.props.filterAns ? "tableFilterReceive textSelected" : "tableFilterReceive textSelectable"} onClick={this.filterClicked.bind(this, "ans")}>{ this.props.lang.ansAddresses }</p>
               <p className= {this.props.filterNormal ? "tableFilterReceive textSelected fixMarginReceive" : "tableFilterReceive textSelectable fixMarginReceive"} onClick={this.filterClicked.bind(this, "normal")}>{ this.props.lang.normalAddresses }</p>
@@ -309,7 +332,8 @@ const mapStateToProps = state => {
     filterAll: state.application.filterAllOwnAddresses,
     filterNormal: state.application.filterNormalOwnAddresses,
     filterAns: state.application.filterAnsOwnAddresses,
-    upgradingAddress: state.application.upgradingAddress
+    upgradingAddress: state.application.upgradingAddress,
+    showZeroBalance: state.application.showZeroBalance
   };
 };
 

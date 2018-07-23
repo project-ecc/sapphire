@@ -205,6 +205,7 @@
     "wallet": "Wallet",
     "appearance": "Appearance",
     "eccNews": "ECC News",
+    "showZeroBalances" : "Show zero balance addresses",
 
     "updateRequiresRestart": "This update requires a restart",
     "updateDoesNotRequireRestart": "This update does not require a restart",

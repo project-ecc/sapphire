@@ -135,3 +135,4 @@ export const NEW_ADDRESS_NAME_POPUP = "new_address_name_popup";
 export const ADDRESS_OR_USERNAME_SEND = "address_or_username_send";
 export const MULTIPLE_ANS_ADDRESSES = "multiple_ans_addresses";
 export const ADDING_CONTACT = "adding_contact";
+export const SHOW_ZERO_BALANCE = "show_zero_balance";
