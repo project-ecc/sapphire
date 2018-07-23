@@ -109,8 +109,7 @@ class Receive extends Component {
   }
 
   toggleZeroBalanceAddresses(){
-    // TODO: this
-    console.log('to do this!')
+    this.props.setShowZeroBalance(!this.props.showZeroBalance)
   }
 
   rowClicked(address){
