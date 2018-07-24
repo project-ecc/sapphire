@@ -19,7 +19,8 @@ import ansAddressesInfo from '../utils/ansAddressesInfo';
 import {
   addTransaction, addAddress, deleteAddressByName, truncateTransactions,
   getAllTransactions, getAllRewardTransactions, getAllPendingTransactions,
-  getLatestTransaction, getAllAddresses, updatePendingTransaction, updateTransactionsConfirmations
+  getLatestTransaction, getAllAddresses, updatePendingTransaction, updateTransactionsConfirmations,
+  getAllMyAddresses
 } from '../Managers/SQLManager';
 
 import $ from 'jquery';
@@ -1001,7 +1002,9 @@ class DaemonConnector {
         // handle the response
         await addAddress(address, address.ans, true);
       }
-      this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
+
+      const addresses = await getAllMyAddresses();
+      this.store.dispatch({type: USER_ADDRESSES, payload: addresses});
     // }
     //We need to have the addresses loaded to be able to index transactions
     this.currentAddresses = normalAddresses;

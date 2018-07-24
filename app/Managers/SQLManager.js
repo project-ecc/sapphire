@@ -331,13 +331,37 @@ async function addAddress(address, withAns = false, belongsToMe = false){
 }
 
 async function getAllAddresses() {
-  return new Promise((resolve, reject) => {
-    Address.findAll({
+  return new Promise(async (resolve, reject) => {
+    await Address.findAll({
+      include: [
+        {
+          model: AnsRecord
+        }
+      ]
     }).then(addresses => {
       resolve(addresses);
     }).error(err => {
       reject(err)
     });
+  });
+}
+
+async function getAllMyAddresses(){
+  return new Promise(async (resolve, reject) => {
+      await Address.findAll({
+        include: [
+          {
+            model: AnsRecord
+          }
+        ],
+        where: {
+          is_mine: true
+        }
+      }).then(addresses => {
+        resolve(addresses)
+      }).error(err => {
+        reject(err)
+      })
   });
 }
 
@@ -530,6 +554,7 @@ export {
   AnsRecord,
   Transaction,
   getAllAddresses,
+  getAllMyAddresses,
   searchAllTransactions,
   updatePendingTransaction,
   updateTransactionsConfirmations,

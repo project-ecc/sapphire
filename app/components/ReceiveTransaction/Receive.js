@@ -83,7 +83,7 @@ class Receive extends Component {
   }
 
   getAddressDiplay(address) {
-    if (address.ans) {
+    if (address.ansrecords.length > 0) {
       return (
         <div>
           <img src={ansAddresImage} />
@@ -231,17 +231,6 @@ class Receive extends Component {
               autoFocus
               isLeft
             />
-            {/*<Input
-              divId="addressAccount"
-              divStyle={{position: "relative",  marginTop: "10px"}}
-              placeholder= { this.props.lang.accountOptional }
-              placeHolderClassName="inputPlaceholder inputPlaceholderReceive"
-              placeholderId="addressAccountPlaceHolder"
-              value={this.props.newAddressAccount}
-              handleChange={this.handleChangeAccountAddress.bind(this)}
-              type="text"
-              inputStyle={{textAlign: "left", width:"100%", display: "inline-block"}}
-            />*/}
             <ConfirmButtonPopup
               hasLoader={false}
               handleConfirm={this.handleCreateNewAddress.bind(this, "new")}
@@ -286,18 +275,22 @@ class Receive extends Component {
               </div>
             <div id="rows">
             {this.props.userAddresses.map((address, index) => {
-              if(this.props.filterAll || this.props.filterNormal && !address.ans || this.props.filterAns && address.ans){
+              console.log(address)
+              if(this.props.filterAll || this.props.filterNormal && !address.ansrecords.length > 0 || this.props.filterAns && address.ansrecords.length > 0){
                 counter++;
+                if(this.props.showZeroBalance === false && address.current_balance === 0){
+                  return;
+                }
                 return (
-                  <div className= {selectedAddress && ((address.address === selectedAddress.address && !selectedAddress.ans) || ( selectedAddress.ans && address.address+"#"+address.code === selectedAddress.address+"#"+selectedAddress.code))  ? rowClassName + " tableRowSelected" : counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} key={`address_${index}`}>
+                  <div className= {selectedAddress && ((address.address === selectedAddress.address && !selectedAddress.ansrecords.length > 0) || ( selectedAddress.ansrecords.length > 0 && address.address + "#" + address.ansrecords[0] === selectedAddress.address + "#" + selectedAddress.ansrecords[0]))  ? rowClassName + " tableRowSelected" : counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} key={`address_${index}`}>
                     <div className={nameColumn} onClick={this.rowClicked.bind(this, address)}>
-                      {this.props.filterAns ? address.code ? renderHTML(`${address.address}<span className="Receive__ans-code">#${address.code}</span>`) : address.address : this.getAddressDiplay(address)}
+                      {this.props.filterAns ? address.ansrecords.length > 0 ? renderHTML(`${address.ansrecords[0].name}<span className="Receive__ans-code">#${address.ansrecords[0].code}</span>`) : address.address : this.getAddressDiplay(address)}
                     </div>
                     <div className={addressColumn} onClick={this.rowClicked.bind(this, address)}>
-                      {this.props.filterAns ? address.normalAddress : address.code ? renderHTML(`${address.address}<span className="Receive__ans-code">#${address.code}</span>`) : address.address}
+                      {this.props.filterAns ? address.normalAddress : address.ansrecords.length > 0 ? renderHTML(`${address.ansrecords[0].name}<span className="Receive__ans-code">#${address.ansrecords[0].code}</span>`) : address.address}
                     </div>
                     <div className={amountColumn} onClick={this.rowClicked.bind(this, address)}>
-                      {address.amount}
+                      {address.current_balance}
                     </div>
                   </div>
                 );
