@@ -934,26 +934,8 @@ class DaemonConnector {
     const allAddressesWithANS = await Promise.all(normalAddresses.map(async (address) => {
       let retval;
       const ansRecord = await this.wallet.getANSRecord(address.address);
-      //TODO include code to see if it was recently created and notify user if its been 3 blocks since its creation
 
-
-      //TODO: redo this whole block of code
-      let notReadyAnsAddress = ansAddressesInfo.get('addresses').find({ address: address.address }).value()
-      let shouldAdd = true;
-      if(notReadyAnsAddress){
-        if(currentBlock > notReadyAnsAddress.creationBlock + 3){
-          //
-          // this.queueOrSendNotification(()=>{}, `${this.translator.ansReady}.\n\n${this.translator.username}: ${ansRecord.Name}`)
-
-          // TODO: add address to db.
-          // await deleteAddressByName(address.address);
-        }
-        else{
-          shouldAdd = false;
-        }
-      }
-
-      if (shouldAdd && ansRecord && ansRecord.Name) {
+      if (ansRecord && ansRecord.Name) {
         retval = {
           account: address.account,
           address: ansRecord.Name,

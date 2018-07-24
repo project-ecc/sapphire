@@ -29,6 +29,8 @@ class Receive extends Component {
   }
 
   componentDidMount() {
+    // TODO: change this in the next version for automating adding an address and Ans record
+    this.props.setCreateAddressAns(false);
     $( window ).on('resize', () => {
       this.updateTable(this.props.userAddresses);
     });
@@ -212,8 +214,8 @@ class Receive extends Component {
     return (
       <div className="panel Receive">
         <div className="Receive__header">
-          <p className={this.props.ansAddress ? "typeSelectorReceive textSelected" : "typeSelectorReceive textSelectable"}  onClick={this.handleChangeAddressCreationToAns}>ANS</p>
-          <span>/</span>
+          {/*<p className={this.props.ansAddress ? "typeSelectorReceive textSelected" : "typeSelectorReceive textSelectable"}  onClick={this.handleChangeAddressCreationToAns}>ANS</p>*/}
+          {/*<span>/</span>*/}
           <p className={this.props.ansAddress ? "typeSelectorReceive textSelectable" : "typeSelectorReceive textSelected"} onClick={this.handleChangeAddressCreationToNormal}>{ this.props.lang.normalAddress }</p>
         </div>
         <div className="Receive__form">
@@ -275,7 +277,7 @@ class Receive extends Component {
               </div>
             <div id="rows">
             {this.props.userAddresses.map((address, index) => {
-              console.log(address)
+              // console.log(address)
               if(this.props.filterAll || this.props.filterNormal && !address.ansrecords.length > 0 || this.props.filterAns && address.ansrecords.length > 0){
                 counter++;
                 if(this.props.showZeroBalance === false && address.current_balance === 0){
