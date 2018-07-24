@@ -114,11 +114,11 @@ class Transaction extends Component {
   }
 
   renderStatus(opt) {
-    if (opt < 30) {
+    if (opt < 10) {
       return (
         <span className="desc_p">{ this.props.lang.pending }</span>
       );
-    } else if (opt >= 30) {
+    } else if (opt >= 10) {
       return (
         <span className="desc_c ecc">{ this.props.lang.confirmed }</span>
       );
