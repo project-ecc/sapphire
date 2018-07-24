@@ -198,8 +198,8 @@ class DaemonConnector {
 
           // check the latest transactions against the current from
           const result = (data[1].filter(transaction =>{
-           return transaction.time * 1000 > this.currentFrom
-          }))
+           return transaction.time * 1000 >= this.currentFrom
+          }));
           if (result.length > 0 && !this.firstRun){
             await this.loadTransactionsForProcessing()
           }
@@ -929,8 +929,6 @@ class DaemonConnector {
       }
     });
 
-    const currentBlock = this.store.getState().chains.blockPayment;
-
     const allAddressesWithANS = await Promise.all(normalAddresses.map(async (address) => {
       let retval;
       const ansRecord = await this.wallet.getANSRecord(address.address);
@@ -943,15 +941,13 @@ class DaemonConnector {
           amount: address.amount,
           code: ansRecord.Code,
           expiryTime: ansRecord.ExpireTime,
-          ans: true,
+          ans: true
         }
       } else {
         retval = address;
       }
       return retval;
     }));
-
-    // console.log("All addresses with ans", allAddressesWithANS);
 
     const toAppend = allReceived
                       .filter(address => address.amount === 0)
@@ -974,10 +970,6 @@ class DaemonConnector {
         return b.address < a.address
       }
     });
-
-    console.log('about to put addresses in DB')
-    //put addresses in the database
-    console.log(toReturn)
 
     // if(normalAddresses.length > this.currentAddresses.length) {
       for (const [index, address] of toReturn.entries()) {

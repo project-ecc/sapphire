@@ -69,15 +69,16 @@ class ConfirmNewAddress extends React.Component {
       });
   }
 
-  saveNewlyCreatedAnsAddress(address){
+  saveNewlyCreatedAnsAddress(ansResponse){
     const currentBlock = this.props.blockPayment;
-    ansAddressesInfo.get('addresses').push({address: address, creationBlock: currentBlock}).write();
+
   }
 
   createANSAddress(address) {
     return this.props.wallet.createNewANSAddress(address, this.props.upgradingAddress ? this.props.usernamePopup : this.props.username)
       .then(response => {
-        this.saveNewlyCreatedAnsAddress(address);
+        console.log(response)
+        this.saveNewlyCreatedAnsAddress(response);
         this.createdAddress = true;
         TweenMax.to('#ConfirmNewAddress__content', 0.2, {autoAlpha: 0, scale: 0.5});
         TweenMax.fromTo('#ConfirmNewAddress__success-message', 0.2, {autoAlpha: 0, scale: 0.2}, {autoAlpha: 1, scale: 1});
@@ -126,6 +127,11 @@ class ConfirmNewAddress extends React.Component {
         }
       });
     }
+
+    // reset the dialog test afterwould
+    this.props.setPassword('');
+    this.props.setCreatingAddress(false);
+    this.props.setUpgradingAddress(false);
   }
 
   handleCancel(){
@@ -135,8 +141,8 @@ class ConfirmNewAddress extends React.Component {
   }
 
   unlockWallet(flag, time, callback){
-    var batch = [];
-    var obj = {
+    let batch = [];
+    let obj = {
       method: 'walletpassphrase', parameters: [this.props.passwordVal, time, flag]
     };
     batch.push(obj);

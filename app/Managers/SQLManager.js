@@ -312,6 +312,7 @@ async function addAddress(address, withAns = false, belongsToMe = false){
             defaults: {
               code: address.code,
               expire_time: address.expiryTime,
+              creation_block: address.currentBlock
             }
           }).spread(async (ansRecord, created) => {
             ansRecord.setAddress(newAddress).then(fulfill);
