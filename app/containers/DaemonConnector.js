@@ -971,10 +971,14 @@ class DaemonConnector {
       }
     });
 
+    console.log(toReturn)
     // if(normalAddresses.length > this.currentAddresses.length) {
       for (const [index, address] of toReturn.entries()) {
         // handle the response
-        await addAddress(address, address.ans, true);
+        const addressObj = await addAddress(address, address.ans, true);
+        if(addressObj[1] !== null && addressObj[1] === true){
+          this.queueOrSendNotification(()=>{}, `${this.translator.ansReady}.\n\n${this.translator.username}: ${addressObj.name}`);
+        }
       }
 
       const addresses = await getAllMyAddresses();

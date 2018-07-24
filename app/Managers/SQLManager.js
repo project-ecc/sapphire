@@ -281,7 +281,7 @@ async function getAllRewardTransactions(){
  */
 
 async function addAddress(address, withAns = false, belongsToMe = false){
-  return new Promise(async (fulfill, reject) => {
+  return new Promise(async (resolve, reject) => {
     await Address
       .findOrCreate({
         where: {
@@ -314,15 +314,16 @@ async function addAddress(address, withAns = false, belongsToMe = false){
               expire_time: address.expiryTime,
               creation_block: address.currentBlock
             }
-          }).spread(async (ansRecord, created) => {
-            ansRecord.setAddress(newAddress).then(fulfill);
-            return ansRecord;
+          }).spread(async (ansRecord, createdAns) => {
+            await ansRecord.setAddress(newAddress).then(result =>{
+              resolve([ansRecord, createdAns]);
+            });
           }).error(err => {
             console.log(err);
             reject(err);
           });
         }
-        fulfill(newAddress);
+        resolve(newAddress);
         return newAddress;
       }).error(err => {
         console.log(err);

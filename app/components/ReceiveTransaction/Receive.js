@@ -30,7 +30,7 @@ class Receive extends Component {
 
   componentDidMount() {
     // TODO: change this in the next version for automating adding an address and Ans record
-    this.props.setCreateAddressAns(false);
+    this.handleChangeAddressCreationToNormal();
     $( window ).on('resize', () => {
       this.updateTable(this.props.userAddresses);
     });
@@ -106,7 +106,7 @@ class Receive extends Component {
 
   handleUpgradeAddress() {
     this.props.setUpgradingAddress(true);
-    //this.props.setCreateAddressAns(true);
+    this.props.setCreateAddressAns(true);
     this.handleCreateNewAddress();
   }
 
