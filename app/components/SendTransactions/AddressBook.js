@@ -75,6 +75,19 @@ class AddressBook extends Component {
   }
 
   rowClicked(friend) {
+  
+   
+        const friendBottom = $(`#friend_bottom_${friend}`);
+         $(friendBottom).slideDown();
+          $(friendBottom).attr('sd', 'true');
+        if (friendBottom.attr('sd') === 'false' || friendBottom.attr('sd') === undefined) {
+          $(friendBottom).slideDown();
+          $(friendBottom).attr('sd', 'true');
+        } else {
+          friendBottom.slideUp();
+          friendBottom.attr('sd', 'false');
+        }
+    
     if(!this.props.sendPanel) return;
     clipboard.writeText(friend.address.address);
     $('#message').text(this.props.lang.addressCopiedBelow);
@@ -155,9 +168,15 @@ class AddressBook extends Component {
                 </div>
                 <div className="col-sm-1 tableColumn">
                   <img className="deleteContactIcon" onClick={this.deleteAddress.bind(this, friend)} style={{visibility: this.props.hoveredAddress === friend ? "visible" : "hidden"}}src={bin}/>
-                  {/*<img className="deleteContactIcon" onClick={this.editContact.bind(this, friend)} style={{marginLeft: '5px', visibility: this.props.hoveredAddress === friend ? "visible" : "hidden"}}src={bin}/>*/}
+                </div>
+                <div id={`friend_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row " style={{ paddingLeft: "2%", width: "100%", paddingTop: "6px", paddingBottom: "6px", cursor:"default", zIndex:"2", display:"none"}}>                      
+                      <div className="col-sm-8">
+                          <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">dummy</span></p>
+                          <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">dummy</span></p>
+                      </div>
                 </div>
               </div>
+
             );
           })}
           </div>

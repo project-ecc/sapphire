@@ -11,10 +11,13 @@ import {addContact, getContacts, findContact} from "../../Managers/SQLManager";
 
 const Tools = require('../../utils/tools');
 
+import $ from 'jquery';
+
 class ContactPopup extends React.Component {
  constructor(props) {
     super(props);
     this.handleConfirm = this.handleConfirm.bind(this);
+    this.handleNameClick = this.handleNameClick.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.addressAddedSuccessfuly = this.addressAddedSuccessfuly.bind(this);
@@ -46,10 +49,22 @@ class ContactPopup extends React.Component {
     });
   }
 
-  handleClick(val){
+  handleNameClick(index){
+   
+    console.log(index)
+    const selectedANS = $(`#ansAddressesList_item_${index}`);
+    (selectedANS).attr('style',  'color:blue');
+  }
+
+  handleClick(val,index){
+   
    this.setState({
      selected: val
    });
+    console.log(index)
+    const selectedANS = $(`#ansAddressesList_item_${index}`);
+    (selectedANS).attr('style',  'color:blue');
+    this.props.setSelectedAddress(val);
   }
 
   async handleConfirm(){
@@ -119,9 +134,14 @@ class ContactPopup extends React.Component {
         <div>
           <p className="multipleAddresses">{this.props.foundAnsAddresses.length} {this.props.lang.foundMultipleUsernames}.</p>
           <div className="ansAddressesList">
-            {this.props.foundAnsAddresses.map((val) => {
+           
+            {this.props.foundAnsAddresses.map((val, index) => {
+              const className = this.state.val === val ? 'ansAddressesList-item-selected' : 'ansAddressesList-item'; 
+              const selectedAddress = this.props.selectedAddress;
               return(
-                <p key={val.Code} onClick={self.handleClick.bind(self, val)} className="ansAddressesList-item">{val.Name}#{val.Code}</p>
+                  <div className = {(val === selectedAddress) ? "ansAddressesList-item-selected" : ""}>
+                  <p key={val.Code} onClick={self.handleClick.bind(self, val, index)} className="ansAddressesList-item">{val.Name}#{val.Code}</p>
+                </div>
               );
             })}
           </div>
@@ -152,6 +172,7 @@ class ContactPopup extends React.Component {
   }
 
   render() {
+    let rowClassName = "row normalWeight tableRowCustom";
      return (
       <div ref="second" style={{height: "300px"}}>
         <PopupBar title="Add Contact" handleClose={this.handleCancel}/>
@@ -174,7 +195,8 @@ const mapStateToProps = state => {
     lang: state.startup.lang,
     contactToAdd: state.application.contactToAdd,
     foundAnsAddresses: state.application.ansAddressesFound,
-    newContactAddress: state.application.newContactAddress
+    newContactAddress: state.application.newContactAddress,
+    selectedAddress: state.application.selectedAddress
   };
 };
 

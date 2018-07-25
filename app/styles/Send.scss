@@ -131,6 +131,23 @@
 	cursor: pointer;
 }
 
+.ansAddressesList-item-selected{
+	margin: 10px 0px;
+	font-size: 12px;
+	cursor: pointer;
+	color:yellow;
+}
+
+
+.ansAddressesList-item:hover{
+	color:pink;
+}
+
+.ansAddressesList-item:active{
+	color:blue;
+}
+
+
 .multipleAddresses {
 	width: 450px;
     font-size: 15px;
