@@ -281,7 +281,7 @@ async function getAllRewardTransactions(){
  */
 
 async function addAddress(address, withAns = false, belongsToMe = false){
-  return new Promise(async (fulfill, reject) => {
+  return new Promise(async (resolve, reject) => {
     await Address
       .findOrCreate({
         where: {
@@ -312,16 +312,18 @@ async function addAddress(address, withAns = false, belongsToMe = false){
             defaults: {
               code: address.code,
               expire_time: address.expiryTime,
+              creation_block: address.currentBlock
             }
-          }).spread(async (ansRecord, created) => {
-            ansRecord.setAddress(newAddress).then(fulfill);
-            return ansRecord;
+          }).spread(async (ansRecord, createdAns) => {
+            await ansRecord.setAddress(newAddress).then(result =>{
+              resolve([ansRecord, createdAns]);
+            });
           }).error(err => {
             console.log(err);
             reject(err);
           });
         }
-        fulfill(newAddress);
+        resolve(newAddress);
         return newAddress;
       }).error(err => {
         console.log(err);
@@ -331,13 +333,37 @@ async function addAddress(address, withAns = false, belongsToMe = false){
 }
 
 async function getAllAddresses() {
-  return new Promise((resolve, reject) => {
-    Address.findAll({
+  return new Promise(async (resolve, reject) => {
+    await Address.findAll({
+      include: [
+        {
+          model: AnsRecord
+        }
+      ]
     }).then(addresses => {
       resolve(addresses);
     }).error(err => {
       reject(err)
     });
+  });
+}
+
+async function getAllMyAddresses(){
+  return new Promise(async (resolve, reject) => {
+      await Address.findAll({
+        include: [
+          {
+            model: AnsRecord
+          }
+        ],
+        where: {
+          is_mine: true
+        }
+      }).then(addresses => {
+        resolve(addresses)
+      }).error(err => {
+        reject(err)
+      })
   });
 }
 
@@ -530,6 +556,7 @@ export {
   AnsRecord,
   Transaction,
   getAllAddresses,
+  getAllMyAddresses,
   searchAllTransactions,
   updatePendingTransaction,
   updateTransactionsConfirmations,

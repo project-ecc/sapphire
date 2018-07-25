@@ -96,11 +96,12 @@ class AddressBook extends Component {
     TweenMax.set('#addressSend', {autoAlpha: 0});
     this.props.setAddressSend(friend.address.address);
     if(friend.name === "") {
-      this.props.setUsernameSend(undefined);
+      this.props.setAddressOrUsernameSend(undefined);
     } else if(friend.ansrecord != null) {
-      this.props.setUsernameSend(friend.name, friend.ansrecord.code)
+      const inputName = friend.name + '#' + friend.ansrecord.code;
+      this.props.setAddressOrUsernameSend(inputName);
     }
-    else this.props.setUsernameSend(friend.name);
+    else this.props.setAddressOrUsernameSend(friend.name);
     this.forceUpdate();
   }
 

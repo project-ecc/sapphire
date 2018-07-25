@@ -25,7 +25,9 @@ class ConfirmNewAddress extends React.Component {
     this.createNormalAddress = this.createNormalAddress.bind(this);
     this.getConfirmationText = this.getConfirmationText.bind(this);
     this.saveNewlyCreatedAnsAddress = this.saveNewlyCreatedAnsAddress.bind(this);
-    this.createdAddress = false;
+    this.state = {
+      createdAddress: false
+    }
   }
 
   componentWillMount(){
@@ -50,35 +52,41 @@ class ConfirmNewAddress extends React.Component {
     });
   }
 
-  createNewAnsAddress() {
-    let newAddress;
-    this.props.wallet.createNewAddress()
-      .then(address => {
-        newAddress = address;
-        return this.props.wallet.sendMoney(newAddress, 51);
-      })
-      .then(() => {
-        return this.createANSAddress(newAddress);
-      })
-      .catch(err => {
-        console.log('error creating ANS address: ', err);
-        if(err.message.indexOf("Insufficient funds") !== -1){
-          Tools.showTemporaryMessage('#wrongPassword', "Not enough funds in the address. You need to have a little over 50 ECC to account for the transfer fees.", 7000, this.props.lang.wrongPassword);
-        }
-        this.props.setPopupLoading(false)
-      });
-  }
+  // createNewAnsAddress() {
+  //   let newAddress;
+  //   this.props.wallet.createNewAddress()
+  //     .then(address => {
+  //       newAddress = address;
+  //       return this.props.wallet.sendMoney(newAddress, 51);
+  //     })
+  //     .then(() => {
+  //       return this.createANSAddress(newAddress);
+  //     })
+  //     .catch(err => {
+  //       console.log('error creating ANS address: ', err);
+  //       if(err.message.indexOf("Insufficient funds") !== -1){
+  //         Tools.showTemporaryMessage('#wrongPassword', "Not enough funds in the address. You need to have a little over 50 ECC to account for the transfer fees.", 7000, this.props.lang.wrongPassword);
+  //       }
+  //       this.props.setPopupLoading(false)
+  //     });
+  // }
 
-  saveNewlyCreatedAnsAddress(address){
+  saveNewlyCreatedAnsAddress(ansResponse){
+   // save to DB here
+
+   console.log(ansResponse)
     const currentBlock = this.props.blockPayment;
-    ansAddressesInfo.get('addresses').push({address: address, creationBlock: currentBlock}).write();
+
   }
 
   createANSAddress(address) {
     return this.props.wallet.createNewANSAddress(address, this.props.upgradingAddress ? this.props.usernamePopup : this.props.username)
       .then(response => {
-        this.saveNewlyCreatedAnsAddress(address);
-        this.createdAddress = true;
+        console.log(response)
+        this.saveNewlyCreatedAnsAddress(response);
+        this.setState({
+          createdAddress: true
+        });
         TweenMax.to('#ConfirmNewAddress__content', 0.2, {autoAlpha: 0, scale: 0.5});
         TweenMax.fromTo('#ConfirmNewAddress__success-message', 0.2, {autoAlpha: 0, scale: 0.2}, {autoAlpha: 1, scale: 1});
         //TweenMax.set('#unlockPanel', {height: "331px"});
@@ -105,7 +113,12 @@ class ConfirmNewAddress extends React.Component {
 
 
   handleConfirm(){
-    if(this.createdAddress){
+
+    console.log('is address selected', this.props.selectedAddress);
+    console.log('is upgrading address', this.props.upgradingAddress);
+    console.log('created address', this.state.createdAddress);
+    if(this.state.createdAddress === true){
+      console.log('shouldnt be here')
       this.props.setPopupLoading(false)
       this.props.setCreatingAddress(false);
       this.props.setUpgradingAddress(false);
@@ -119,13 +132,21 @@ class ConfirmNewAddress extends React.Component {
       this.createNormalAddress();
     } else {
       this.unlockWallet(false, 5, () => {
-        if (this.props.selectedAddress && this.props.upgradingAddress) {
+        console.log('is address selected', this.props.selectedAddress);
+        console.log('is upgrading address', this.props.upgradingAddress);
+        // if (this.props.selectedAddress && this.props.upgradingAddress) {
           this.createANSAddress(this.props.selectedAddress.address);
-        } else  {
-          this.createNewAnsAddress();
-        }
+        // } else  {
+          console.log('in here when i shouldnt be');
+          // this.createNewAnsAddress();
+        // }
       });
     }
+
+    // reset the dialog test afterwould
+    this.props.setPassword('');
+    this.props.setCreatingAddress(false);
+    this.props.setUpgradingAddress(false);
   }
 
   handleCancel(){
@@ -135,16 +156,16 @@ class ConfirmNewAddress extends React.Component {
   }
 
   unlockWallet(flag, time, callback){
-    var batch = [];
-    var obj = {
+    let batch = [];
+    let obj = {
       method: 'walletpassphrase', parameters: [this.props.passwordVal, time, flag]
     };
     batch.push(obj);
 
     this.props.wallet.command(batch).then((data) => {
 
-      data = data[0];
       console.log(data)
+      data = data[0];
       if (data !== null && (data.code === -14 || data.code === -1)) {
         Tools.showTemporaryMessage('#wrongPassword');
         this.props.setPopupLoading(false)
@@ -245,7 +266,6 @@ class ConfirmNewAddress extends React.Component {
           textLoading={this.props.lang.confirming}
           text={this.props.lang.confirm}
           handleConfirm={this.handleConfirm}
-          text="Confirm"
           className="CreateAddressPopup__form-confirm-btn"
         />
       </div>

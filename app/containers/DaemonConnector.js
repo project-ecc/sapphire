@@ -19,7 +19,8 @@ import ansAddressesInfo from '../utils/ansAddressesInfo';
 import {
   addTransaction, addAddress, deleteAddressByName, truncateTransactions,
   getAllTransactions, getAllRewardTransactions, getAllPendingTransactions,
-  getLatestTransaction, getAllAddresses, updatePendingTransaction, updateTransactionsConfirmations
+  getLatestTransaction, getAllAddresses, updatePendingTransaction, updateTransactionsConfirmations,
+  getAllMyAddresses
 } from '../Managers/SQLManager';
 
 import $ from 'jquery';
@@ -197,8 +198,8 @@ class DaemonConnector {
 
           // check the latest transactions against the current from
           const result = (data[1].filter(transaction =>{
-           return transaction.time * 1000 > this.currentFrom
-          }))
+           return transaction.time * 1000 >= this.currentFrom
+          }));
           if (result.length > 0 && !this.firstRun){
             await this.loadTransactionsForProcessing()
           }
@@ -928,31 +929,11 @@ class DaemonConnector {
       }
     });
 
-    const currentBlock = this.store.getState().chains.blockPayment;
-
     const allAddressesWithANS = await Promise.all(normalAddresses.map(async (address) => {
       let retval;
       const ansRecord = await this.wallet.getANSRecord(address.address);
-      //TODO include code to see if it was recently created and notify user if its been 3 blocks since its creation
 
-
-      //TODO: redo this whole block of code
-      let notReadyAnsAddress = ansAddressesInfo.get('addresses').find({ address: address.address }).value()
-      let shouldAdd = true;
-      if(notReadyAnsAddress){
-        if(currentBlock > notReadyAnsAddress.creationBlock + 3){
-          //
-          // this.queueOrSendNotification(()=>{}, `${this.translator.ansReady}.\n\n${this.translator.username}: ${ansRecord.Name}`)
-
-          // TODO: add address to db.
-          // await deleteAddressByName(address.address);
-        }
-        else{
-          shouldAdd = false;
-        }
-      }
-
-      if (shouldAdd && ansRecord && ansRecord.Name) {
+      if (ansRecord && ansRecord.Name) {
         retval = {
           account: address.account,
           address: ansRecord.Name,
@@ -960,15 +941,13 @@ class DaemonConnector {
           amount: address.amount,
           code: ansRecord.Code,
           expiryTime: ansRecord.ExpireTime,
-          ans: true,
+          ans: true
         }
       } else {
         retval = address;
       }
       return retval;
     }));
-
-    // console.log("All addresses with ans", allAddressesWithANS);
 
     const toAppend = allReceived
                       .filter(address => address.amount === 0)
@@ -992,16 +971,18 @@ class DaemonConnector {
       }
     });
 
-    console.log('about to put addresses in DB')
-    //put addresses in the database
     console.log(toReturn)
-
     // if(normalAddresses.length > this.currentAddresses.length) {
       for (const [index, address] of toReturn.entries()) {
         // handle the response
-        await addAddress(address, address.ans, true);
+        const addressObj = await addAddress(address, address.ans, true);
+        if(addressObj[1] !== null && addressObj[1] === true){
+          this.queueOrSendNotification(()=>{}, `${this.translator.ansReady}.\n\n${this.translator.username}: ${addressObj.name}`);
+        }
       }
-      this.store.dispatch({type: USER_ADDRESSES, payload: toReturn});
+
+      const addresses = await getAllMyAddresses();
+      this.store.dispatch({type: USER_ADDRESSES, payload: addresses});
     // }
     //We need to have the addresses loaded to be able to index transactions
     this.currentAddresses = normalAddresses;
