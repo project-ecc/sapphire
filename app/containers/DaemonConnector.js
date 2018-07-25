@@ -788,6 +788,7 @@ class DaemonConnector {
         }
       }
       if(entry.category === "generate"){
+        console.log(lastCheckedEarnings)
         if(entry.time * 1000 > lastCheckedEarnings && shouldNotifyEarnings){
           this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: entry.amount, date: entry.time}});
           earningsCountNotif++;
@@ -863,6 +864,7 @@ class DaemonConnector {
       transactions.map((transaction) => {
         let time = transaction.time;
         let amount = transaction.amount;
+        console.log(lastCheckedEarnings)
         if(time * 1000 > lastCheckedEarnings && shouldNotifyEarnings){
           this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}});
           earningsCountNotif++;

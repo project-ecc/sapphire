@@ -365,7 +365,7 @@ export default(state = INITIAL_STATE, action) => {
 }
 
 function GetDateOneMonthAgo(){
-	var d = new Date();
+	let d = new Date();
 	d.setMonth(d.getMonth() - 1);
 	d.setHours(0, 0, 0);
 	d.setMilliseconds(0);
