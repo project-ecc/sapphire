@@ -133,14 +133,18 @@
 
 .ansAddressesList-item-selected{
 	margin: 10px 0px;
-	font-size: 12px;
-	cursor: pointer;
-	color:yellow;
+	font-size: 15px;
+	@include themify($themes) {
+       color: themed('sidebarSelectedItemColor');
+    }
 }
 
 
 .ansAddressesList-item:hover{
-	color:pink;
+	
+    @include themify($themes) {
+       color: themed('sidebarSelectedItemColor');
+    }
 }
 
 .ansAddressesList-item:active{

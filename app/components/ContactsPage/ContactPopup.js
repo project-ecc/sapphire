@@ -17,7 +17,7 @@ class ContactPopup extends React.Component {
  constructor(props) {
     super(props);
     this.handleConfirm = this.handleConfirm.bind(this);
-    this.handleNameClick = this.handleNameClick.bind(this);
+    this.handleClick = this.handleClick.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.addressAddedSuccessfuly = this.addressAddedSuccessfuly.bind(this);
@@ -29,6 +29,7 @@ class ContactPopup extends React.Component {
   }
 
   componentWillMount(){
+    this.props.setSelectedAddress(undefined);
     Tools.hideFunctionIcons();
   }
 
@@ -49,22 +50,13 @@ class ContactPopup extends React.Component {
     });
   }
 
-  handleNameClick(index){
-   
-    console.log(index)
-    const selectedANS = $(`#ansAddressesList_item_${index}`);
-    (selectedANS).attr('style',  'color:blue');
-  }
+ 
 
   handleClick(val,index){
-   
    this.setState({
      selected: val
    });
-    console.log(index)
-    const selectedANS = $(`#ansAddressesList_item_${index}`);
-    (selectedANS).attr('style',  'color:blue');
-    this.props.setSelectedAddress(val);
+   this.props.setSelectedAddress(val);
   }
 
   async handleConfirm(){
@@ -139,8 +131,8 @@ class ContactPopup extends React.Component {
               const className = this.state.val === val ? 'ansAddressesList-item-selected' : 'ansAddressesList-item'; 
               const selectedAddress = this.props.selectedAddress;
               return(
-                  <div className = {(val === selectedAddress) ? "ansAddressesList-item-selected" : ""}>
-                  <p key={val.Code} onClick={self.handleClick.bind(self, val, index)} className="ansAddressesList-item">{val.Name}#{val.Code}</p>
+                  <div className = {(val === selectedAddress) ? "ansAddressesList-item-selected" : "ansAddressesList-item"}>
+                  <p key={val.Code} onClick={self.handleClick.bind(self, val, index)} >{val.Name}#{val.Code}</p>
                 </div>
               );
             })}
