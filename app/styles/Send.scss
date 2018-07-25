@@ -131,6 +131,27 @@
 	cursor: pointer;
 }
 
+.ansAddressesList-item-selected{
+	margin: 10px 0px;
+	font-size: 15px;
+	@include themify($themes) {
+       color: themed('sidebarSelectedItemColor');
+    }
+}
+
+
+.ansAddressesList-item:hover{
+	
+    @include themify($themes) {
+       color: themed('sidebarSelectedItemColor');
+    }
+}
+
+.ansAddressesList-item:active{
+	color:blue;
+}
+
+
 .multipleAddresses {
 	width: 450px;
     font-size: 15px;
