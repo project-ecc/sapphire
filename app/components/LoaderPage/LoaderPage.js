@@ -194,7 +194,7 @@ class Loader extends React.Component {
 			</svg>
 			<div id="loaderText" style={{marginTop: "15px"}}>
 				<div id="blockIndexLoad" ref="blockIndexLoad">
-					<p id="loading" style={{fontSize: "45px", fontWeight: "bold"}}>{ this.props.lang.loading }</p>
+					<p id="loading" style={{fontSize: "45px", fontWeight: "bold"}}>{ this.props.lang.loading + '\n' + this.props.loadingMessage }</p>
 				</div>
 				<p style={{marginTop: "-50px", fontWeight:"300", visibility:"hidden"}} id="gettingReady">{ this.props.lang.mainMessage }</p>
     			<p className="loadingDownloadMessage">{this.props.downloadMessage}</p>
@@ -212,6 +212,7 @@ class Loader extends React.Component {
 const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
+    loadingMessage: state.startup.loadingMessage,
     loading: state.startup.loading,
     updatingApplication: state.startup.updatingApp,
     showingFunctionIcons: state.application.showingFunctionIcons,

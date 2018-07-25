@@ -11,8 +11,6 @@ import Input from '../Others/Input';
 class ImportPrivateKey extends React.Component {
  constructor() {
     super();
-    this.handleChangePrivateKey = this.handleChangePrivateKey.bind(this);
-    this.handleChangePassword = this.handleChangePassword.bind(this);
     this.importPrivateKey = this.importPrivateKey.bind(this);
     this.addressImported = this.addressImported.bind(this);
     this.goBackToFirstStep = this.goBackToFirstStep.bind(this);
@@ -160,28 +158,6 @@ class ImportPrivateKey extends React.Component {
 
   }
 
-  handleChangePrivateKey(event) {
-    let privKey = event.target.value;
-    if(privKey.length === 0){
-      TweenMax.set('#enterPrivKey', {autoAlpha: 1});
-    }
-    else
-      TweenMax.set('#enterPrivKey', {autoAlpha: 0});
-    console.log(privKey);
-    this.props.privateKey(privKey);
-  }
-
-  handleChangePassword(event) {
-    let pw = event.target.value;
-    if(pw.length === 0){
-      TweenMax.set('#enterPassword', {autoAlpha: 1});
-    }
-    else
-      TweenMax.set('#enterPassword', {autoAlpha: 0});
-    console.log(pw);
-    this.props.password(pw);
-  }
-
   goBackToFirstStep(){
     $('input').val('');
     this.props.privateKey("");
@@ -244,28 +220,26 @@ class ImportPrivateKey extends React.Component {
            { this.props.notInitialSetup ? this.props.lang.writeDownAPrivateKeyToImport : this.props.lang.writeDownAPrivateKeyToImportInitialSetup }
            </p>
            <Input
-            divStyle={{width: "400px"}}
               placeholder= { this.props.lang.enterPrivKey }
               placeholderId="enterPrivKey"
-              placeHolderClassName="inputPlaceholder changePasswordInput"
               value={this.props.privateKeyValue}
-              handleChange={this.handleChangePrivateKey.bind(this)}
+              handleChange={this.props.privateKey}
               type="text"
-              inputStyle={{marginBottom:"32px", width:"400px"}}
-              autoFocus={true}
+              style={{marginBottom:"32px", width:"400px"}}
+              onSubmit={this.importPrivateKey}
+              autoFocus
             />
            <Input
-              divStyle={{width: "400px"}}
               placeholder= { this.props.lang.enterYourPassword }
               placeholderId="enterPassword"
-              placeHolderClassName="inputPlaceholder changePasswordInput"
               value={this.props.passwordVal}
-              handleChange={this.handleChangePassword.bind(this)}
+              handleChange={this.props.password}
               type="password"
-              inputStyle={{marginBottom:"10px", width:"400px"}}
+              style={{width:"400px"}}
+              onSubmit={this.importPrivateKey}
             />
           <p id="wrongPassword" className="wrongPassword">{ this.props.lang.wrongPassword }</p>
-          <div onClick={this.importPrivateKey} className= {this.props.notInitialSetup ? "buttonUnlock buttonFixPrivKey" : ""} id= {this.props.notInitialSetup ? "" : "importButton"}>
+          <div onClick={this.importPrivateKey} className={this.props.notInitialSetup ? "buttonPrimary buttonFixPrivKey" : ""} id= {this.props.notInitialSetup ? "" : "importButton"}>
             { this.props.lang.import }
            </div>
         </div>
@@ -275,13 +249,13 @@ class ImportPrivateKey extends React.Component {
         </div>
         <div style={textStyleFix} id="importedAddress" className={this.props.notInitialSetup ? "importedAddressPopup" : ""}>
           { this.props.lang.importedAddress }
-          <div onClick={this.goBackToFirstStep} className= {this.props.notInitialSetup ? "buttonUnlock buttonFixPrivKey buttonIncreaseSize" : "importButtonAddress"} id= {this.props.notInitialSetup ? "" : "importButton"}>
+          <div onClick={this.goBackToFirstStep} className= {this.props.notInitialSetup ? "buttonPrimary buttonFixPrivKey buttonIncreaseSize" : "importButtonAddress"} id= {this.props.notInitialSetup ? "" : "importButton"}>
             { this.props.lang.importAnotherAddress }
            </div>
         </div>
         <div style={textStyleFix} id="importFailed" className={this.props.notInitialSetup ? "importFailedPopup" : ""}>
           { this.props.lang.invalidFailedAddress }
-          <div onClick={this.goBackToFirstStep} className= {this.props.notInitialSetup ? "buttonUnlock buttonFixPrivKey buttonIncreaseSize" : "importButtonAddress"} id= {this.props.notInitialSetup ? "" : "importButton"}>
+          <div onClick={this.goBackToFirstStep} style={{padding: "0px 20px"}} className= {this.props.notInitialSetup ? "buttonPrimary buttonFixPrivKey buttonIncreaseSize" : "importButtonAddress"} id= {this.props.notInitialSetup ? "" : "importButton"}>
             { this.props.lang.importAnotherAddress }
            </div>
         </div>

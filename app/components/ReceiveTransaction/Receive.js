@@ -6,13 +6,13 @@ import * as actions from '../../actions';
 import Input from '../Others/Input';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import $ from 'jquery';
+import renderHTML from 'react-render-html';
+import SettingsToggle from './../SettingsPage/SettingsToggle'
 const lang = traduction();
 const { clipboard } = require('electron');
 const ansAddresImage = require('../../../resources/images/ans_address.png');
 var classNames = require('classnames');
-
-// This is temporary until ANS is enabled
-const ansEnabled = false;
+const Tools = require('../../utils/tools');
 
 class Receive extends Component {
 
@@ -24,9 +24,13 @@ class Receive extends Component {
     this.handleChangeAddressCreationToAns = this.handleChangeAddressCreationToAns.bind(this);
     this.handleChangeAddressCreationToNormal = this.handleChangeAddressCreationToNormal.bind(this);
     this.handleChangeNameAddress = this.handleChangeNameAddress.bind(this);
+    this.handleUpgradeAddress = this.handleUpgradeAddress.bind(this);
+    this.toggleZeroBalanceAddresses = this.toggleZeroBalanceAddresses.bind(this);
   }
 
   componentDidMount() {
+    // TODO: change this in the next version for automating adding an address and Ans record
+    this.handleChangeAddressCreationToNormal();
     $( window ).on('resize', () => {
       this.updateTable(this.props.userAddresses);
     });
@@ -81,28 +85,20 @@ class Receive extends Component {
   }
 
   getAddressDiplay(address) {
-    if (address.ans) {
+    if (address.ansrecords.length > 0) {
       return (
         <div>
           <img src={ansAddresImage} />
         </div>
       )
     } else {
-      if (ansEnabled) {
-        return (
-          <p id="upgradeAns" onClick={this.handleUpgradeAddress.bind(this)}>{this.props.lang.upgradeToANS}</p>
-        )
-      } else {
-        return (
-          <p></p>
-        )
-      }
+      return null;
     }
   }
 
-  handleCreateNewAddress(skipCheck) {
-    if(this.props.ansAddress && this.props.newAddressName === "" && !skipCheck){
-      //animate line
+  handleCreateNewAddress(type) {
+    if(this.props.ansAddress && type === "new" && this.props.newAddressName === ""){
+      Tools.highlightInput('#ansUsernameInput', 1000)
     } else{
       this.props.setCreatingAddress(true);
     }
@@ -111,7 +107,11 @@ class Receive extends Component {
   handleUpgradeAddress() {
     this.props.setUpgradingAddress(true);
     this.props.setCreateAddressAns(true);
-    this.handleCreateNewAddress(true);
+    this.handleCreateNewAddress();
+  }
+
+  toggleZeroBalanceAddresses(){
+    this.props.setShowZeroBalance(!this.props.showZeroBalance)
   }
 
   rowClicked(address){
@@ -134,7 +134,7 @@ class Receive extends Component {
     if(!this.props.ansAddress) return;
     this.props.setCreateAddressAns(false);
     //TweenMax.to('#addressAccount', 0.2, {top: -38});
-    TweenMax.fromTo('#ansExplanation', 0.2, {top: 15}, {top: -15, autoAlpha: 0});
+    TweenMax.to('#ansExplanation', 0.2, {autoAlpha: 0});
     TweenMax.to('#addressName', 0.2, {autoAlpha: 0.4});
     TweenMax.to('.tableCustom', 0.2, {top: 0});
     TweenMax.to('#imageAns', 0.2, {top: 6});
@@ -170,7 +170,6 @@ class Receive extends Component {
   }
 
   filterClicked(type){
-    console.log(type);
     if(type === "all")
       this.props.setFilterOwnAddresses("all");
     else if(type === "normal")
@@ -210,48 +209,60 @@ class Receive extends Component {
       'col-sm-4 tableColumn selectableText': !this.props.filterAns,
     });
 
+    const selectedAddress = this.props.selectedAddress;
 
     return (
-      <div className="panel">
-        <div id="headerReceive">
-          <p className={this.props.ansAddress ? "typeSelectorReceive textSelected" : "typeSelectorReceive textSelectable"}  onClick={this.handleChangeAddressCreationToAns}>ANS</p>
-          <span>/</span>
+      <div className="panel Receive">
+        <div className="Receive__header">
+          {/*<p className={this.props.ansAddress ? "typeSelectorReceive textSelected" : "typeSelectorReceive textSelectable"}  onClick={this.handleChangeAddressCreationToAns}>ANS</p>*/}
+          {/*<span>/</span>*/}
           <p className={this.props.ansAddress ? "typeSelectorReceive textSelectable" : "typeSelectorReceive textSelected"} onClick={this.handleChangeAddressCreationToNormal}>{ this.props.lang.normalAddress }</p>
         </div>
-        <div id="inputAddress">
-          <div style={{display: "inline-block", width: "70%", position: "relative"}}>
+        <div className="Receive__form">
+          <div className="Receive__form-wrapper">
             <Input
               divId="addressName"
-              divStyle={{display: "inline"}}
               placeholder= { this.props.lang.name }
-              placeHolderClassName="inputPlaceholder inputPlaceholderReceive"
               placeholderId="addressNamePlaceHolder"
               value={this.props.newAddressName}
-              handleChange={this.handleChangeNameAddress.bind(this)}
+              handleChange={this.props.setNewAddressName}
               type="text"
-              inputStyle={{textAlign: "left", width:"100%", display: "inline-block"}}
-              autoFocus={true}
+              style={{width: "70%"}}
+              inputId="ansUsernameInput"
+              onSubmit={this.handleCreateNewAddress.bind(this, "new")}
+              autoFocus
+              isLeft
             />
-            {/*<Input
-              divId="addressAccount"
-              divStyle={{position: "relative",  marginTop: "10px"}}
-              placeholder= { this.props.lang.accountOptional }
-              placeHolderClassName="inputPlaceholder inputPlaceholderReceive"
-              placeholderId="addressAccountPlaceHolder"
-              value={this.props.newAddressAccount}
-              handleChange={this.handleChangeAccountAddress.bind(this)}
-              type="text"
-              inputStyle={{textAlign: "left", width:"100%", display: "inline-block"}}
-            />*/}
+            <ConfirmButtonPopup
+              hasLoader={false}
+              handleConfirm={this.handleCreateNewAddress.bind(this, "new")}
+              text={ this.props.ansAddress ? this.props.lang.createANSAddress : this.props.lang.createNormalAddress}
+              className="Receive__form-confirm-btn"
+            />
           </div>
-           <ConfirmButtonPopup handleConfirm={this.handleCreateNewAddress} style={{marginLeft: "20px", display: "inline-block", width: "auto", padding: "0px 20px"}} text={ this.props.ansAddress ? this.props.lang.createANSAddress : this.props.lang.createNormalAddress }/>
-            <p id="ansExplanation" style={{visibility: this.props.ansAddress ? "visible" : "hidden"}}>{ this.props.lang.ansCost1 } 50 <span className="ecc">ecc</span> { this.props.lang.ansCost2 }.</p>
+          <p className="Receive__ans-explanation" style={{visibility: this.props.ansAddress ? "visible" : "hidden"}}>{ this.props.lang.ansCost1 } 50 <span className="ecc">ecc</span> { this.props.lang.ansCost2 }.</p>
          </div>
 
          <div className="tableCustom">
           <div className="tableHeaderBig tableHeaderNormal">
-            <p className="tableHeaderTitle">{ this.props.lang.yourAddresses }</p>
-            <p className="headerDescription">{ this.props.lang.allYourNormalAndANS }</p>
+            <div className="row col-sm-12">
+              <div className="col-sm-6">
+                <p className="tableHeaderTitle">{ this.props.lang.yourAddresses }</p>
+                <p className="headerDescription">{ this.props.lang.allYourNormalAndANS }</p>
+              </div>
+              <div className="row col-sm-6" style={{textAlign: 'right'}}>
+                <p className="headerDescription" style={{paddingTop: '20px'}}>{this.props.lang.showZeroBalances}</p>
+                <div>
+                  <SettingsToggle
+                    keyVal={1}
+                    handleChange = {this.toggleZeroBalanceAddresses}
+                    checked = {this.props.showZeroBalance}
+                  />
+                </div>
+              </div>
+            </div>
+
+
             <div id="tableFiltersReceive">
               <p className= {this.props.filterAns ? "tableFilterReceive textSelected" : "tableFilterReceive textSelectable"} onClick={this.filterClicked.bind(this, "ans")}>{ this.props.lang.ansAddresses }</p>
               <p className= {this.props.filterNormal ? "tableFilterReceive textSelected fixMarginReceive" : "tableFilterReceive textSelectable fixMarginReceive"} onClick={this.filterClicked.bind(this, "normal")}>{ this.props.lang.normalAddresses }</p>
@@ -266,18 +277,22 @@ class Receive extends Component {
               </div>
             <div id="rows">
             {this.props.userAddresses.map((address, index) => {
-              if(this.props.filterAll || this.props.filterNormal && !address.ans || this.props.filterAns && address.ans){
+              // console.log(address)
+              if(this.props.filterAll || this.props.filterNormal && !address.ansrecords.length > 0 || this.props.filterAns && address.ansrecords.length > 0){
                 counter++;
+                if(this.props.showZeroBalance === false && address.current_balance === 0){
+                  return;
+                }
                 return (
-                  <div className= {this.props.selectedAddress && address.address === this.props.selectedAddress.address ? rowClassName + " tableRowSelected" : counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} key={`address_${index}`}>
+                  <div className= {selectedAddress && ((address.address === selectedAddress.address && !selectedAddress.ansrecords.length > 0) || ( selectedAddress.ansrecords.length > 0 && address.address + "#" + address.ansrecords[0] === selectedAddress.address + "#" + selectedAddress.ansrecords[0]))  ? rowClassName + " tableRowSelected" : counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} key={`address_${index}`}>
                     <div className={nameColumn} onClick={this.rowClicked.bind(this, address)}>
-                      {this.props.filterAns ? address.address : this.getAddressDiplay(address)}
+                      {this.props.filterAns ? address.ansrecords.length > 0 ? renderHTML(`${address.ansrecords[0].name}<span className="Receive__ans-code">#${address.ansrecords[0].code}</span>`) : address.address : this.getAddressDiplay(address)}
                     </div>
                     <div className={addressColumn} onClick={this.rowClicked.bind(this, address)}>
-                      {this.props.filterAns ? address.normalAddress : address.address}
+                      {this.props.filterAns ? address.normalAddress : address.ansrecords.length > 0 ? renderHTML(`${address.ansrecords[0].name}<span className="Receive__ans-code">#${address.ansrecords[0].code}</span>`) : address.address}
                     </div>
                     <div className={amountColumn} onClick={this.rowClicked.bind(this, address)}>
-                      {address.amount}
+                      {address.current_balance}
                     </div>
                   </div>
                 );
@@ -290,6 +305,7 @@ class Receive extends Component {
         <div id="imageAns">
           <img src={ansAddresImage} />
           <p className="ansLabel">{ this.props.lang.ansAddresses }</p>
+          <p className="Receive__upgrade-text" onClick={this.handleUpgradeAddress} style={{visibility: selectedAddress ? selectedAddress.ans ? "hidden" : "visible" : "hidden"}}>Upgrade to ANS address</p>
           <div>
             <p id="addressCreatedSuccessfully"> { this.props.lang.addressCreatedSuccessfully }<br></br><span className="ecc" onClick={this.goToBackupPage.bind(this)}>{ this.props.lang.clickToBackupWallet }</span></p>
           </div>
@@ -310,6 +326,8 @@ const mapStateToProps = state => {
     filterAll: state.application.filterAllOwnAddresses,
     filterNormal: state.application.filterNormalOwnAddresses,
     filterAns: state.application.filterAnsOwnAddresses,
+    upgradingAddress: state.application.upgradingAddress,
+    showZeroBalance: state.application.showZeroBalance
   };
 };
 

@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {getAllTransactions, searchAllTransactions} from "../../Managers/SQLManager";
 
 import { traduction } from '../../lang/lang';
 import * as actions from '../../actions';
+const moment = require('moment');
+
+moment.locale('en');
 
 import $ from 'jquery';
 
@@ -18,14 +22,22 @@ class Transaction extends Component {
     this.onItemClick = this.onItemClick.bind(this);
     this.handleNextClicked = this.handleNextClicked.bind(this);
     this.handlePreviousClicked = this.handlePreviousClicked.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.state = {
+      searchValue: '',
+      transactionData: props.data
+    };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    this.props.setPopupLoading(true)
+    console.log(this.props.type)
+    await this.getAllTransactions(0)
+
     $( window ).on('resize', () => {
       this.updateTable();
     });
     $(".extraInfoTransaction").hide();
-    this.updateTable();
     this.props.setEarningsChecked(new Date().getTime());
   }
 
@@ -33,33 +45,80 @@ class Transaction extends Component {
     $( window ).off('resize');
   }
 
-  handleNextClicked(){
+  componentDidUpdate(lastProps, nextProps){
+    // console.log(lastProps);
+    // console.log(nextProps);
+  }
+
+  handleChange(e) {
+    if(e.target.value === ''){
+      this.setState({
+        transactionData: this.props.data
+      })
+      return;
+    }
+
+    const result =  this.props.data.filter(transaction => {
+      for (const key in transaction) {
+        if (String(transaction[key]).toLowerCase().indexOf(String(e.target.value).toLowerCase()) >= 0) return transaction;
+      }
+    });
+
+    this.setState({
+      transactionData: result
+    })
+    this.updateTable();
+  }
+  async handleNextClicked(){
     if(this.props.requesting || this.props.data.length < 100) return;
-    this.getAllTransactions(this.props.page + 1);
+    await this.getAllTransactions(this.props.page + 1, this.props.type);
+    $("#rows").animate({ scrollTop: 0 }, "fast");
   }
 
-  handlePreviousClicked(){
-    if(this.props.requesting || this.props.page === 0) return;
-    this.getAllTransactions(this.props.page - 1);
+  async handlePreviousClicked() {
+    if (this.props.requesting || this.props.page === 0) return;
+    await this.getAllTransactions(this.props.page - 1, this.props.type);
+    $("#rows").animate({ scrollTop: 0 }, "fast");
   }
 
-  getAllTransactions(page) {
-    this.props.wallet.getTransactions(null, 100, 100 * page).then((data) => {
-        this.props.setTransactionsData(data, this.props.type);
-        this.props.setTransactionsPage(page);
-        this.updateTable();
-        //$(".extraInfoTransaction").hide();
-    }).catch((err) => {
-        console.log("error getting transactions: ", err)
+  async getAllTransactions(page, type = 'all') {
+    const where = {
+      is_main: 1
+    };
+
+    switch (type) {
+      case 'pending':
+      case 'orphaned':
+      case 'confirmed':
+        where.status = type;
+        break;
+      case 'send':
+      case 'receive':
+      case 'generate':
+        where.category = type;
+        break;
+    }
+    console.log('page: ', page)
+    // console.log(where)
+    const transactions = await getAllTransactions(100, 100 * page, where);
+    this.props.setTransactionsData(transactions, type);
+    this.props.setTransactionsPage(page);
+    this.setState({
+      transactionData: transactions
+    });
+    this.updateTable();
+    $(".extraInfoTransaction").hide();
+    $(".extraInfoTransaction").each(function() {
+      $(this).attr('sd', 'false');
     });
   }
 
   renderStatus(opt) {
-    if (opt === 0) {
+    if (opt < 10) {
       return (
         <span className="desc_p">{ this.props.lang.pending }</span>
       );
-    } else if (opt > 0) {
+    } else if (opt >= 10) {
       return (
         <span className="desc_c ecc">{ this.props.lang.confirmed }</span>
       );
@@ -99,16 +158,8 @@ class Transaction extends Component {
     event.stopPropagation();
   }
 
-  orderTransactions(data) {
-    const aux = [];
-    for (let i = data.length - 1; i >= 0; i -= 1) {
-      aux.push(data[i]);
-    }
-    return aux;
-  }
-
   shouldComponentUpdate(state){
-    if(this.props.page == state.page && this.props.page > 0 && this.props.type === state.type) return false;
+    // if(this.props.page === state.page && this.props.page > 0 && this.props.type === state.type) return false;
     return true;
   }
   componentWillReceiveProps(){
@@ -126,37 +177,27 @@ class Transaction extends Component {
     $('.dropdownFilterSelector').find('.dropdown-menuFilterSelector').slideUp(300);
   }
 
-  componentDidUpdate(){
+  async onItemClick(event) {
+    const type = event.currentTarget.dataset.id;
 
-  }
-
-  onItemClick(event) {
-    let type = event.currentTarget.dataset.id;
-    if(type === this.props.type) return;
-    let data = this.props.data;
-    this.props.setTransactionsData(data, type);
-    $(".extraInfoTransaction").hide();
-    $(".extraInfoTransaction").each(function() {
-      $(this).attr('sd', 'false');
-    })
+    await this.getAllTransactions(this.props.page, type);
   }
 
   getValue(val){
     switch(val){
-      case "1" : return this.props.lang.confirmed;
-      case "-1" : return this.props.lang.orphaned;
-      case "0" : return this.props.lang.pending;
+      case "confirmed" : return this.props.lang.confirmed;
+      case "orphaned" : return this.props.lang.orphaned;
+      case "pending" : return this.props.lang.pending;
       case "all": return this.props.lang.all;
       case "send" : return this.props.lang.sent;
-      case "generate":
-        //this.props.setEarningsChecked(new Date().getTime());
-        return this.props.lang.earned;
+      case "generate":return this.props.lang.earned;
       case "receive": return this.props.lang.received;
     }
   }
 
   render() {
-    const data = this.orderTransactions(this.props.data);
+    // const data = this.orderTransactions(this.props.data);
+    const data = this.state.transactionData
     const today = new Date();
     let counter = -1;
     const rowClassName = "row normalWeight tableRowCustom tableRowCustomTransactions";
@@ -164,99 +205,124 @@ class Transaction extends Component {
     return (
       <div style={{height: "100%", width: "100%", paddingLeft: "20px", paddingRight: "10px", overflowX: "hidden"}}>
         <div id="transactionAddresses" style={{height:"90%", position: "relative", top: "25px"}}>
-          <div className="tableHeaderNormal">
-            <p className="tableHeaderTitle tableHeaderTitleSmall">{ this.props.lang.transactions }</p>
+          <div className="tableHeaderNormal" style={{display:"flex", alignItems:"center"}}>
 
-            {/* commenting out Transactions filter dropdown until supported
-            <div className="dropdownFilterSelector" style={{position: "absolute", right: "40px", top: "9px", height:"30px", padding:"0 0", width :"210px", textAlign:"center"}} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
-              <div className="selectFilterSelector" style={{border: "none", position:"relative", top: "-1px", height: "30px"}}>
-                <p className="normalWeight">{this.getValue(this.props.type)}</p>
-                <i className="fa fa-chevron-down"></i>
+            <div className="row" style={{justifyContent:"space-between", width:"100%", margin:"0"}}>
+              <div className="col-sm-3">
+                <p className="tableHeaderTitle tableHeaderTitleSmall">{ this.props.lang.transactions }  </p>
               </div>
-              <input type="hidden" name="gender"></input>
-              <ul className="dropdown-menuFilterSelector normalWeight" style={{margin: "0 0"}}>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="all">{ this.props.lang.all }</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="receive">{ this.props.lang.received }</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="send">{ this.props.lang.sent }</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="generate">{ this.props.lang.earned }</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="1">{ this.props.lang.confirmed }</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="0">{ this.props.lang.pending }</li>
-                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="-1">{ this.props.lang.orphaned }</li>
-              </ul>
+              <div className="col-sm-8" style={{display:"flex",justifyContent:"flex-end",padding:"0"}}>
+
+                  <div className="col-sm-6" style={{display:"flex",alignItems:"center", maxWidth:"300px"}}>
+                    <div className="box" style={{width:"100%"}}>
+                      <div className="container-1" style={{width:"100%", maxWidth:"300px", display:"flex",alignItems:"center"}}>
+                        <span className="icon" style={{marginTop:"5px",top:"0"}}><i className="fa fa-search"></i></span>
+                        <input onChange={(e) => {this.handleChange(e)}} type="search" id="search" placeholder="Search..." />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-sm-3" style={{textAlign:"right", maxWidth:"150px",display:"flex",alignItems:"center"}}>
+                    {
+                      <div className="dropdownFilterSelector" style={{/*width: "100px", marginLeft: "100px", top: "6px",*/ height:"35px", padding:"0 0", textAlign:"center"}} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
+                        <div className="selectFilterSelector" style={{border: "none", position:"relative", top: "-1px", height: "30px"}}>
+                          <p className="normalWeight">{this.getValue(this.props.type)}</p>
+                          <i className="fa fa-chevron-down"></i>
+                        </div>
+                        <input type="hidden" name="gender"></input>
+                        <ul className="dropdown-menuFilterSelector normalWeight" style={{margin: "0 0"}}>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="all">{ this.props.lang.all }</li>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="receive">{ this.props.lang.received }</li>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="send">{ this.props.lang.sent }</li>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="generate">{ this.props.lang.earned }</li>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="confirmed">{ this.props.lang.confirmed }</li>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="pending">{ this.props.lang.pending }</li>
+                          <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="orphaned">{ this.props.lang.orphaned }</li>
+                        </ul>
+                      </div>
+                    }
+                  </div>
+
+              </div>
             </div>
-            */}
 
           </div>
-          <div style={{width: "100%", marginTop: "5px", padding: "0 0"}}>
-            <div className="row rowDynamic">
-              <div className="col-sm-6 headerAddresses tableRowHeader" style={{paddingLeft: "4%"}}>{ this.props.lang.type }</div>
-              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.amount }</div>
-              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.status }</div>
-              <div id="addressHeader" className="col-sm-2 headerAddresses tableRowHeader">{ this.props.lang.time }</div>
+          <div style={{width: "100%", /*marginTop: "15px"*/alignItems:"center", padding: "0 0"}}>
+            <div className="row rowDynamic" style={{alignItems:"center"}}>
+              <div className="col-sm-3 headerAddresses tableRowHeader text-left" style={{/*paddingLeft: "4%"*/}}>{ this.props.lang.date }</div>
+              <div id="addressHeader" className="col-sm-6 headerAddresses tableRowHeader text-left">{ this.props.lang.info }</div>
+              <div id="addressHeader" className="col-sm-3 headerAddresses tableRowHeader" style={{textAlign: "right"}}>{ this.props.lang.amount } & {this.props.lang.status}</div>
             </div>
           <div id="rows" style={{height: "500px", width: "100%", padding: "0 0", overflowY: "scroll"}}>
             {data.map((t, index) => {
+             // console.log(t, index)
+             //  console.log(t)
 
               if (this.props.type === 'all'
               || this.props.type === t.category
-              || this.props.type === t.confirmations
-              || (this.props.type === 1 && t.confirmations > 0)
-              || (this.props.type === -1 && t.confirmations < 0)){
-                if(this.props.type === "generate" && t.amount === 0) return null;
+              || this.props.type === t.status){
                 counter++;
-                const iTime = new Date(t.time * 1000);
+                const iTime = new Date(t.time);
                 let time = Tools.calculateTimeSince(this.props.lang, today, iTime);
 
+                let category_label;
                 let category = t.category;
                 if (category === 'generate') {
-                  category = lang.stakedMin;
+                  category = <span className="icon"  style={{float: "left", paddingRight:"14px", fontSize:"24px" /*,color:"#8e8e8e"*/}}><i className="fa fa-trophy"></i></span>
+                  category_label = lang.stakedMin;
                 }
                 if (category === 'staked') {
-                  category = lang.staked;
+                  category = <span className="icon" style={{float: "left", paddingRight:"14px", fontSize:"24px" /*,color:"#8e8e8e"*/}}><i className="fa fa-shopping-basket"></i> </span>
+                  category_label = lang.staked;
                 }
                 else if (category === 'send') {
-                  category = lang.sent;
+                  category = <span className="icon" style={{float: "left", paddingRight:"14px", fontSize:"24px" /*,color:"#8e8e8e"*/}}><i className="fa fa-upload"></i> </span>
+                  category_label = lang.sent;
                 }
                 else if (category === 'receive') {
-                  category = lang.received;
+                  category = <span className="icon" style={{float: "left", paddingRight:"14px", fontSize:"24px"/*, color:"#8e8e8e"*/}}><i className="fa fa-download"></i></span>
+                  category_label = lang.received;
                 }
                 else if (category === 'immature') {
                   category = lang.immature;
                 }
 
                 return (
-                  <div className= {counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} style={{cursor: "pointer", fontSize: "15px", minHeight: "40px"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
-                    <div className="col-sm-6 transactionAddress" style={{paddingLeft: "4%", paddingTop: "9px"}}>
-                      <p style={{ margin: '0px' }}><span>{category}</span><span className="desc2 transactionAddress"> ({t.address})</span></p>
+                <div key={index}>
+                  <div className= {counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} style={{padding:"0",cursor: "pointer", fontSize: "15px", justifyContent:"space-around"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
+                    <div className="col-sm-3" style={{}}>
+                      <p style={{ margin: '0px' }}><span>{moment(t.time).format('MMMM Do')}</span></p>
                     </div>
-                    <div className="col-sm-2" style={{paddingTop: "9px"}}>
-                      <p style={{ margin: '0px' }}><span>{t.amount} ecc</span></p>
-                    </div>
-                    <div className="col-sm-2" style={{paddingTop: "9px"}}>
-                      <p style={{ margin: '0px' }}>{this.renderStatus(t.confirmations)}</p>
-                    </div>
-                    <div className="col-sm-2" style={{paddingTop: "9px"}}>
-                      <p style={{ margin: '0px' }}><span>{time}</span></p>
-                    </div>
-                    <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{paddingLeft: "4%", width: "100%", paddingTop: "11px", paddingBottom: "11px", cursor:"default", zIndex:"2", display:"none"}}>
-                      <div className="col-sm-8">
-                        <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.dateString}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{(new Date(t.time * 1000)).toString()}</span></p>
-                      </div>
-                      <div className="col-sm-4">
-                        <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.confirmations}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">{t.confirmations}</span></p>
-                      </div>
-                      <div className="col-sm-8">
-                        <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.transactionId}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 transactionId selectableText">{t.txid}</span></p>
-                      </div>
-                      <div className="col-sm-4">
-                        <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2">{lang.transactionFee}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3">...</span></p>
+                    <div className="col-sm-6 text-center" style={{paddingTop:"4px",paddingBottom:"4px"}}>
+                       {category}
+                      <div className="transactionAddress text-left" >
+                       <p style={{ margin: '0px', display:"inline"}}><span className="desc2 transactionAddress"> {t["address.ansrecords.name"] != null ? t['address.ansrecords.name']+ t['address.ansrecords.code'] : t['address.address']}</span></p><p className="transactionInfoTitle" style={{fontSize: "12px"}}> {category_label} {time}</p>
                       </div>
                     </div>
-                  </div>
+                    <div className="col-sm-3 text-right" style={{ textAlign: "right"}}>
+                      <p style={{ margin: '0px' }}>{t.amount} ECC</p>
+                      <p style={{ margin: '0px', fontSize: "12px" }}>{this.renderStatus(t.confirmations)}</p>
+                    </div>
+                   </div>
+                    <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{ paddingLeft: "2%", width: "100%", paddingTop: "6px", paddingBottom: "6px", cursor:"default", zIndex:"2", display:"none"}}>
+                          <div className="col-sm-4">
+                            <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.dateString}</span></p>
+                            <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{(new Date(t.time).toDateString()).toString()}</span></p>
+                          </div>
+                          <div className="col-sm-3">
+                            <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.confirmations}</span></p>
+                            <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{t.confirmations}</span></p>
+                          </div>
+                          <div className="col-sm-3">
+                            <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionFee}</span></p>
+                            <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{t.fee}</span></p>
+                          </div>
+
+                        <div className="col-sm-8">
+                            <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionId}</span></p>
+                            <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">{t.transaction_id}</span></p>
+                        </div>
+                    </div>
+                </div>
                 );
               }
               return null;
@@ -274,6 +340,10 @@ class Transaction extends Component {
         </div>
       </div>
     );
+  }
+
+  renderOtherTransactions() {
+
   }
 }
 
