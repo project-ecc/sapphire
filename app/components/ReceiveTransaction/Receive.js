@@ -8,6 +8,7 @@ import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import $ from 'jquery';
 import renderHTML from 'react-render-html';
 import SettingsToggle from './../SettingsPage/SettingsToggle'
+import TableToggle from './../SettingsPage/TableToggle'
 const lang = traduction();
 const { clipboard } = require('electron');
 const ansAddresImage = require('../../../resources/images/ans_address.png');
@@ -245,15 +246,17 @@ class Receive extends Component {
 
          <div className="tableCustom">
           <div className="tableHeaderBig tableHeaderNormal">
-            <div className="row col-sm-12">
+            <div className="row col-sm-12" style={{justifyContent:"space-between"}}>
               <div className="col-sm-6">
                 <p className="tableHeaderTitle">{ this.props.lang.yourAddresses }</p>
                 <p className="headerDescription">{ this.props.lang.allYourNormalAndANS }</p>
               </div>
-              <div className="row col-sm-6" style={{textAlign: 'right'}}>
-                <p className="headerDescription" style={{paddingTop: '20px'}}>{this.props.lang.showZeroBalances}</p>
-                <div>
-                  <SettingsToggle
+              <div className="row col-sm-6" style={{justifyContent:"flex-end", padding:"10px 0px 0px 0px"}}>
+                <div className="row col-sm-4" style={{minWidth:"285px", textAlign:"right"}}>
+                <p className="headerDescription" style={{width:"100%",paddingRight:"10px"}}>{this.props.lang.showZeroBalances}</p>
+                </div>
+                <div className="row col-sm-4" style={{maxWidth: "85px", justifyContent:"flex-end"}}>
+                  <TableToggle
                     keyVal={1}
                     handleChange = {this.toggleZeroBalanceAddresses}
                     checked = {this.props.showZeroBalance}
