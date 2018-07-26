@@ -36,7 +36,7 @@ import {
   FILE_DOWNLOAD_STATUS,
   TOLD_USER_UPDATE_FAILED,
   RESET_STAKING_EARNINGS,
-  IS_FILTERING_TRANSACTIIONS
+  IS_FILTERING_TRANSACTIIONS, TRANSACTIONS_TYPE
 } from '../actions/types';
 
 const event = require('../utils/eventhandler');
@@ -785,16 +785,10 @@ class DaemonConnector {
   }
 
   goToEarningsPanel(){
-    const where = {
-      is_main: 1,
-      category: 'generate'
-    };
-    getAllTransactions(100, 0, where).then(transactions => {
-      this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: transactions, type: "generate"}});
-      this.store.dispatch({type: IS_FILTERING_TRANSACTIIONS, payload: true})
-      this.store.dispatch({type: SELECTED_PANEL, payload: "transactions"});
-      this.store.dispatch({type: SELECTED_SIDEBAR, payload: {parent: "walletSelected", child: "transactionsSelected"}});
-    });
+    // this.store.dispatch({type: IS_FILTERING_TRANSACTIIONS, payload: true})
+    this.store.dispatch({type: SELECTED_PANEL, payload: "transactions"});
+    this.store.dispatch({type: TRANSACTIONS_TYPE, payload: "generate"});
+    this.store.dispatch({type: SELECTED_SIDEBAR, payload: {parent: "walletSelected", child: "transactionsSelected"}});
   }
 
   async insertIntoDb(entries){
@@ -805,20 +799,21 @@ class DaemonConnector {
     let shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
 
     for (let i = 0; i < entries.length; i++) {
+      // console.log(lastCheckedEarnings)
+      this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: `Indexing transaction ${i}/${entries.length}`}})
       let entry = entries[i];
-      entry.time = entry.time * 1000;
 
+      entry.time = entry.time * 1000;
       if(Number(entry.confirmations) < 30){
         this.store.dispatch({type: PENDING_TRANSACTION, payload: entry.txId})
+
       }
-
       await addTransaction(entry, Number(entry.confirmations) < 30, false)
-      //update with 1 new staking reward since previous ones have already been loaded on startup
 
+      //update with 1 new staking reward since previous ones have already been loaded on startup
       if(entry.category === "generate"){
-        console.log(lastCheckedEarnings)
-        if(entry.time * 1000 > lastCheckedEarnings && shouldNotifyEarnings){
-          this.store.dispatch({type: STAKING_REWARD, payload: entries[i]})
+
+        if(entry.time > lastCheckedEarnings && shouldNotifyEarnings){
           this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: entry.amount, date: entry.time}});
           earningsCountNotif++;
           earningsTotalNotif += entry.amount;
@@ -895,7 +890,7 @@ class DaemonConnector {
         let time = transaction.time;
         let amount = transaction.amount;
         // console.log(lastCheckedEarnings)
-        if(time * 1000 > lastCheckedEarnings && shouldNotifyEarnings){
+        if(time > lastCheckedEarnings && shouldNotifyEarnings){
 
           this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}});
           earningsCountNotif++;

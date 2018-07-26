@@ -137,3 +137,4 @@ export const MULTIPLE_ANS_ADDRESSES = "multiple_ans_addresses";
 export const ADDING_CONTACT = "adding_contact";
 export const SHOW_ZERO_BALANCE = "show_zero_balance";
 export const IS_FILTERING_TRANSACTIONS = "is_filtering_transactions";
+export const TRANSACTIONS_TYPE = "transactions_type";

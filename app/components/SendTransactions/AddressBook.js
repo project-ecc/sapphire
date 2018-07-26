@@ -74,10 +74,11 @@ class AddressBook extends Component {
     this.setState({ [name]: value });
   }
 
-  rowClicked(friend) {
-  
-   
-        const friendBottom = $(`#friend_bottom_${friend}`);
+
+  rowClicked = (friend, index) => (e) => {
+    console.log(friend)
+        console.log(index)
+        const friendBottom = $(`#friend_bottom_${index}`);
          $(friendBottom).slideDown();
           $(friendBottom).attr('sd', 'true');
         if (friendBottom.attr('sd') === 'false' || friendBottom.attr('sd') === undefined) {
@@ -87,7 +88,7 @@ class AddressBook extends Component {
           friendBottom.slideUp();
           friendBottom.attr('sd', 'false');
         }
-    
+
     if(!this.props.sendPanel) return;
     clipboard.writeText(friend.address.address);
     $('#message').text(this.props.lang.addressCopiedBelow);
@@ -98,7 +99,7 @@ class AddressBook extends Component {
     if(friend.name === "") {
       this.props.setAddressOrUsernameSend(undefined);
     } else if(friend.ansrecord != null) {
-      const inputName = friend.name + '#' + friend.ansrecord.code;
+      const inputName = friend.name
       this.props.setAddressOrUsernameSend(inputName);
     }
     else this.props.setAddressOrUsernameSend(friend.name);
@@ -158,8 +159,10 @@ class AddressBook extends Component {
             </div>
           <div id="rows" style={{width: "100%", padding: "0 0"}}>
           {this.props.friends.map((friend, index) => {
+            console.log(friend)
+            console.log(index)
             return (
-              <div className= {index % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} onClick={this.rowClicked.bind(this, friend)} onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default"}} key={`friend_${index}`}>
+              <div className= {index % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} onClick={this.rowClicked(friend, index)}  onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default"}} key={`friend_${index}`}>
                 <div className={this.props.sendPanel ? "col-sm-4 tableColumn tableColumContactFix" : "col-sm-4 tableColumn tableColumContactFix selectableText"}>
                   {friend.ansrecord != null ? <img src={ansAddresImage} style={{padding:"0 5px 3px 0"}}></img> : null}
                   {friend.ansrecord != null ? renderHTML(`${friend.ansrecord.name}<span className="Receive__ans-code">#${friend.ansrecord.code} </span> `) : friend.name}
@@ -170,7 +173,7 @@ class AddressBook extends Component {
                 <div className="col-sm-1 tableColumn">
                   <img className="deleteContactIcon" onClick={this.deleteAddress.bind(this, friend)} style={{visibility: this.props.hoveredAddress === friend ? "visible" : "hidden"}}src={bin}/>
                 </div>
-                <div id={`friend_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row " style={{ paddingLeft: "2%", width: "100%", paddingTop: "6px", paddingBottom: "6px", cursor:"default", zIndex:"2", display:"none"}}>                      
+                <div id={`friend_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row " style={{ paddingLeft: "2%", width: "100%", paddingTop: "6px", paddingBottom: "6px", cursor:"default", zIndex:"2", display:"none"}}>
                       <div className="col-sm-8">
                           <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">dummy</span></p>
                           <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">dummy</span></p>

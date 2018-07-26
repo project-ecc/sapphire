@@ -33,9 +33,9 @@ class Transaction extends Component {
     this.props.setPopupLoading(true)
     console.log(this.props.type)
     console.log(this.props.isFilteringTransactions)
-    if(!this.props.isFilteringTransactions){
+    // if(!this.props.isFilteringTransactions){
       await this.getAllTransactions(0, this.props.type)
-    }
+    // }
 
     $( window ).on('resize', () => {
       this.updateTable();

@@ -119,7 +119,7 @@ import {
   MULTIPLE_ANS_ADDRESSES,
   ADDING_CONTACT,
   SHOW_ZERO_BALANCE,
-  IS_FILTERING_TRANSACTIIONS
+  IS_FILTERING_TRANSACTIIONS, TRANSACTIONS_TYPE
 } from "./types";
 
 export const getSetup = () => dispatch => {
@@ -936,6 +936,12 @@ export const setShowZeroBalance = (val) => {
 export const setIsFilteringTransactions = (val) => {
   return {
     type: IS_FILTERING_TRANSACTIIONS,
+    payload: val
+  }
+}
+export const setTransactionType = (val) => {
+  return {
+    type: TRANSACTIONS_TYPE,
     payload: val
   }
 }

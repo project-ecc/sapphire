@@ -50,7 +50,7 @@ class ContactPopup extends React.Component {
     });
   }
 
- 
+
 
   handleClick(val,index){
    this.setState({
@@ -126,12 +126,12 @@ class ContactPopup extends React.Component {
         <div>
           <p className="multipleAddresses">{this.props.foundAnsAddresses.length} {this.props.lang.foundMultipleUsernames}.</p>
           <div className="ansAddressesList">
-           
+
             {this.props.foundAnsAddresses.map((val, index) => {
-              const className = this.state.val === val ? 'ansAddressesList-item-selected' : 'ansAddressesList-item'; 
+              const className = this.state.val === val ? 'ansAddressesList-item-selected' : 'ansAddressesList-item';
               const selectedAddress = this.props.selectedAddress;
               return(
-                  <div className = {(val === selectedAddress) ? "ansAddressesList-item-selected" : "ansAddressesList-item"}>
+                  <div key={val.id} className = {(val === selectedAddress) ? "ansAddressesList-item-selected" : "ansAddressesList-item"}>
                   <p key={val.Code} onClick={self.handleClick.bind(self, val, index)} >{val.Name}#{val.Code}</p>
                 </div>
               );

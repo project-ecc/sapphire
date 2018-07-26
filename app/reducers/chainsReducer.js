@@ -1,14 +1,14 @@
 import {
-		PAYMENT_CHAIN_SYNC,
-		BLOCK_INDEX_PAYMENT_PERCENTAGE,
-		BLOCK_INDEX_PAYMENT,
-		STAKING,
-		WALLET_INFO,
-		CHAIN_INFO,
-		TRANSACTIONS_DATA,
-    	SET_DAEMON_VERSION,
-    	SET_TEMPORARY_BALANCE,
-    	WALLET_INFO_SEC
+  PAYMENT_CHAIN_SYNC,
+  BLOCK_INDEX_PAYMENT_PERCENTAGE,
+  BLOCK_INDEX_PAYMENT,
+  STAKING,
+  WALLET_INFO,
+  CHAIN_INFO,
+  TRANSACTIONS_DATA,
+  SET_DAEMON_VERSION,
+  SET_TEMPORARY_BALANCE,
+  WALLET_INFO_SEC, TRANSACTIONS_TYPE
 } from '../actions/types';
 
 
@@ -40,6 +40,9 @@ export default(state = INITIAL_STATE, action) => {
 		var data = action.payload.data;
 		return {...state, transactionsData: action.payload.data, transactionsType: action.payload.type}
 	}
+	else if(action.type == TRANSACTIONS_TYPE){
+     return {...state, transactionsType: action.payload}
+   }
 	else if(action.type == SET_DAEMON_VERSION){
 	  return {...state, daemonVersion: action.payload}
    	}
