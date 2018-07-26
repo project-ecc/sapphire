@@ -253,7 +253,7 @@ class Receive extends Component {
               </div>
               <div className="row col-sm-6" style={{justifyContent:"flex-end", padding:"10px 0px 0px 0px"}}>
                 <div className="row col-sm-4" style={{minWidth:"285px", textAlign:"right"}}>
-                <p className="headerDescription" style={{paddingTop: '20px', width:"100%",paddingRight:"10px"}}>{this.props.lang.showZeroBalances}</p>
+                <p className="headerDescription" style={{width:"100%",paddingRight:"10px"}}>{this.props.lang.showZeroBalances}</p>
                 </div>
                 <div className="row col-sm-4" style={{maxWidth: "85px", justifyContent:"flex-end"}}>
                   <TableToggle
