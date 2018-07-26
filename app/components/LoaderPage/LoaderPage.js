@@ -19,7 +19,6 @@ class Loader extends React.Component {
   }
 
   shouldComponentUpdate(nextProps){
-   console.log(nextProps)
   	if(!this.props.loading && nextProps.loading){
   		this.showLoadingBlockIndex();
   		return true;
@@ -94,7 +93,6 @@ class Loader extends React.Component {
   }
 
   render() {
-   console.log(this.props.loadingMessage)
     return (
       <div>
 			<svg version="1.1" id="logoLoader" x="0px" y="0px" viewBox="0 0 1200 1200" style={{enableBackground:"new 0 0 1200 1200"}}>

@@ -814,14 +814,11 @@ class DaemonConnector {
 
       await addTransaction(entry, Number(entry.confirmations) < 30, false)
       //update with 1 new staking reward since previous ones have already been loaded on startup
-      if(this.transactionsIndexed){
-        if(entry.category === "generate"){
-          this.store.dispatch({type: STAKING_REWARD, payload: entries[i]})
-        }
-      }
+
       if(entry.category === "generate"){
         console.log(lastCheckedEarnings)
         if(entry.time * 1000 > lastCheckedEarnings && shouldNotifyEarnings){
+          this.store.dispatch({type: STAKING_REWARD, payload: entries[i]})
           this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: entry.amount, date: entry.time}});
           earningsCountNotif++;
           earningsTotalNotif += entry.amount;
@@ -893,11 +890,13 @@ class DaemonConnector {
       //map all income from transactions
       this.store.dispatch({type: RESET_STAKING_EARNINGS});
       let transactions = await getAllRewardTransactions();
+      this.store.dispatch({type: STAKING_REWARD, payload: transactions})
       transactions.map((transaction) => {
         let time = transaction.time;
         let amount = transaction.amount;
         // console.log(lastCheckedEarnings)
         if(time * 1000 > lastCheckedEarnings && shouldNotifyEarnings){
+
           this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}});
           earningsCountNotif++;
           earningsTotalNotif += amount;
