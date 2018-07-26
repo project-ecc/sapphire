@@ -9,6 +9,9 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING,
       unique: true
     },
+    status: {
+      type: DataTypes.STRING
+    },
     current_balance: DataTypes.BIGINT,
     is_mine: DataTypes.BOOLEAN
   });

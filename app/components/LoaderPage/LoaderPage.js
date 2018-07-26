@@ -10,8 +10,8 @@ const Tools = require('../../utils/tools');
 const event = require('../../utils/eventhandler');
 class Loader extends React.Component {
 
- constructor() {
-    super();
+ constructor(props) {
+    super(props);
     this.showLoadingBlockIndex = this.showLoadingBlockIndex.bind(this);
     this.showPercentage = this.showPercentage.bind(this);
     this.handleDismissUpdateFailed = this.handleDismissUpdateFailed.bind(this);
@@ -19,9 +19,10 @@ class Loader extends React.Component {
   }
 
   shouldComponentUpdate(nextProps){
+   console.log(nextProps)
   	if(!this.props.loading && nextProps.loading){
   		this.showLoadingBlockIndex();
-  		return false;
+  		return true;
   	}
   	else if(!this.props.downloadMessage && nextProps.downloadMessage){
   		this.showDownloadingMessage();
@@ -93,6 +94,7 @@ class Loader extends React.Component {
   }
 
   render() {
+   console.log(this.props.loadingMessage)
     return (
       <div>
 			<svg version="1.1" id="logoLoader" x="0px" y="0px" viewBox="0 0 1200 1200" style={{enableBackground:"new 0 0 1200 1200"}}>
@@ -194,7 +196,8 @@ class Loader extends React.Component {
 			</svg>
 			<div id="loaderText" style={{marginTop: "15px"}}>
 				<div id="blockIndexLoad" ref="blockIndexLoad">
-					<p id="loading" style={{fontSize: "45px", fontWeight: "bold"}}>{ this.props.lang.loading + '\n' + this.props.loadingMessage }</p>
+					<p id="loading" style={{fontSize: "45px", fontWeight: "bold"}}>{ this.props.lang.loading }</p>
+					<p id="loading" style={{fontSize: "15px", fontWeight: "bold"}}>{this.props.loadingMessage }</p>
 				</div>
 				<p style={{marginTop: "-50px", fontWeight:"300", visibility:"hidden"}} id="gettingReady">{ this.props.lang.mainMessage }</p>
     			<p className="loadingDownloadMessage">{this.props.downloadMessage}</p>

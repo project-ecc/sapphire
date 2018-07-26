@@ -315,6 +315,11 @@ async function addAddress(address, withAns = false, belongsToMe = false){
               creation_block: address.currentBlock
             }
           }).spread(async (ansRecord, createdAns) => {
+            if(createdAns){
+              newAddress.status = 'ready';
+              await newAddress.save()
+            }
+
             await ansRecord.setAddress(newAddress).then(result =>{
               resolve([ansRecord, createdAns]);
             });

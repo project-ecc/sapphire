@@ -1,21 +1,52 @@
 import Wallet from '../utils/wallet';
 import { ipcRenderer } from 'electron';
 import {
-  PAYMENT_CHAIN_SYNC, PARTIAL_INITIAL_SETUP, SETUP_DONE, INITIAL_SETUP, BLOCK_INDEX_PAYMENT, WALLET_INFO,
-  CHAIN_INFO, TRANSACTIONS_DATA, USER_ADDRESSES, INDEXING_TRANSACTIONS, STAKING_REWARD, PENDING_TRANSACTION,
-  DAEMON_CREDENTIALS, LOADING, ECC_POST, COIN_MARKET_CAP, UPDATE_AVAILABLE, UPDATING_APP, POSTS_PER_CONTAINER,
-  NEWS_NOTIFICATION, STAKING_NOTIFICATION, UNENCRYPTED_WALLET, SELECTED_PANEL, SELECTED_SIDEBAR, SETTINGS,
-  SETTINGS_OPTION_SELECTED, TELL_USER_OF_UPDATE, SELECTED_THEME, SET_DAEMON_VERSION, STAKING_REWARD_UPDATE,
-  WALLET_INFO_SEC, IMPORT_WALLET_TEMPORARY, FILE_DOWNLOAD_STATUS, TOLD_USER_UPDATE_FAILED, RESET_STAKING_EARNINGS
+  PAYMENT_CHAIN_SYNC,
+  PARTIAL_INITIAL_SETUP,
+  SETUP_DONE,
+  INITIAL_SETUP,
+  BLOCK_INDEX_PAYMENT,
+  WALLET_INFO,
+  CHAIN_INFO,
+  TRANSACTIONS_DATA,
+  USER_ADDRESSES,
+  INDEXING_TRANSACTIONS,
+  STAKING_REWARD,
+  PENDING_TRANSACTION,
+  DAEMON_CREDENTIALS,
+  LOADING,
+  ECC_POST,
+  COIN_MARKET_CAP,
+  UPDATE_AVAILABLE,
+  UPDATING_APP,
+  POSTS_PER_CONTAINER,
+  NEWS_NOTIFICATION,
+  STAKING_NOTIFICATION,
+  UNENCRYPTED_WALLET,
+  SELECTED_PANEL,
+  SELECTED_SIDEBAR,
+  SETTINGS,
+  SETTINGS_OPTION_SELECTED,
+  TELL_USER_OF_UPDATE,
+  SELECTED_THEME,
+  SET_DAEMON_VERSION,
+  STAKING_REWARD_UPDATE,
+  WALLET_INFO_SEC,
+  IMPORT_WALLET_TEMPORARY,
+  FILE_DOWNLOAD_STATUS,
+  TOLD_USER_UPDATE_FAILED,
+  RESET_STAKING_EARNINGS,
+  IS_FILTERING_TRANSACTIIONS
 } from '../actions/types';
 
 const event = require('../utils/eventhandler');
 const tools = require('../utils/tools');
 const sqlite3 = require('sqlite3');
 let remote = require('electron').remote;
+let funnies = new Funnies()
 const app = remote.app;
 import ansAddressesInfo from '../utils/ansAddressesInfo';
-
+import Funnies from 'funnies';
 import {
   addTransaction, addAddress, deleteAddressByName, truncateTransactions,
   getAllTransactions, getAllRewardTransactions, getAllPendingTransactions,
@@ -429,7 +460,7 @@ class DaemonConnector {
           this.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: true})
         }
         if(!this.store.getState().startup.initialSetup){
-          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: 'Loading block index..'}})
+          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: funnies.message()}})
         }
       }
     });
@@ -760,6 +791,7 @@ class DaemonConnector {
     };
     getAllTransactions(100, 0, where).then(transactions => {
       this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: transactions, type: "generate"}});
+      this.store.dispatch({type: IS_FILTERING_TRANSACTIIONS, payload: true})
       this.store.dispatch({type: SELECTED_PANEL, payload: "transactions"});
       this.store.dispatch({type: SELECTED_SIDEBAR, payload: {parent: "walletSelected", child: "transactionsSelected"}});
     });
@@ -864,7 +896,7 @@ class DaemonConnector {
       transactions.map((transaction) => {
         let time = transaction.time;
         let amount = transaction.amount;
-        console.log(lastCheckedEarnings)
+        // console.log(lastCheckedEarnings)
         if(time * 1000 > lastCheckedEarnings && shouldNotifyEarnings){
           this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}});
           earningsCountNotif++;
@@ -979,7 +1011,7 @@ class DaemonConnector {
         // handle the response
         const addressObj = await addAddress(address, address.ans, true);
         if(addressObj[1] !== null && addressObj[1] === true){
-          this.queueOrSendNotification(()=>{}, `${this.translator.ansReady}.\n\n${this.translator.username}: ${addressObj.name}`);
+          this.queueOrSendNotification(()=>{}, `${this.translator.ansReady}.\n\n${this.translator.username}: ${addressObj[0].name}#${addressObj[0].code}`);
         }
       }
 

@@ -12,7 +12,8 @@ module.exports = function (sequelize, DataTypes) {
     category: DataTypes.STRING,
     fee: DataTypes.DECIMAL(2, 8),
     confirmations: DataTypes.INTEGER,
-    status: DataTypes.STRING
+    status: DataTypes.STRING,
+    note: DataTypes.STRING
   });
 
   // class association method

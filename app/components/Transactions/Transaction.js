@@ -32,7 +32,10 @@ class Transaction extends Component {
   async componentDidMount() {
     this.props.setPopupLoading(true)
     console.log(this.props.type)
-    await this.getAllTransactions(0)
+    console.log(this.props.isFilteringTransactions)
+    if(!this.props.isFilteringTransactions){
+      await this.getAllTransactions(0, this.props.type)
+    }
 
     $( window ).on('resize', () => {
       this.updateTable();
@@ -354,7 +357,8 @@ const mapStateToProps = state => {
     data: state.chains.transactionsData,
     type: state.chains.transactionsType,
     requesting: state.application.transactionsRequesting,
-    wallet: state.application.wallet
+    wallet: state.application.wallet,
+    isFilteringTransactions: state.application.filteringTransactions
   };
 };
 
