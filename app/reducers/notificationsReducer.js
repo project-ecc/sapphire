@@ -96,7 +96,6 @@ export default(state = INITIAL_STATE, action) => {
     }
     return { ...state, entries };
   }	else if (action.type == STAKING_NOTIFICATION) {
-	  console.log(state.entries);
     const entries = Object.assign({}, state.entries);
     const differentKinds = entries.differentKinds;
     if (entries.stakingEarnings.count == 0) {
@@ -107,7 +106,6 @@ export default(state = INITIAL_STATE, action) => {
     entries.stakingEarnings.count = entries.stakingEarnings.count += 1;
     entries.stakingEarnings.total = entries.stakingEarnings.total += action.payload.earnings;
     if (action.payload.date > entries.stakingEarnings.date) {
-      console.log(entries.stakingEarnings.date);
       entries.stakingEarnings.date = action.payload.date;
     }
     UpdateNotificationInfo(state.lastCheckedNews, action.payload.date);
