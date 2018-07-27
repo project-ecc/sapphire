@@ -791,7 +791,9 @@ class DaemonConnector {
 
     for (let i = 0; i < entries.length; i++) {
       // console.log(lastCheckedEarnings)
-      this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: `Indexing transaction ${i}/${entries.length}`}})
+      if(this.firstRun){
+        this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: `Indexing transaction ${i}/${entries.length}`}})
+      }
       let entry = entries[i];
 
       entry.time = entry.time * 1000;
