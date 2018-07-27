@@ -10,8 +10,8 @@ const Tools = require('../../utils/tools');
 const event = require('../../utils/eventhandler');
 class Loader extends React.Component {
 
- constructor() {
-    super();
+ constructor(props) {
+    super(props);
     this.showLoadingBlockIndex = this.showLoadingBlockIndex.bind(this);
     this.showPercentage = this.showPercentage.bind(this);
     this.handleDismissUpdateFailed = this.handleDismissUpdateFailed.bind(this);
@@ -21,7 +21,7 @@ class Loader extends React.Component {
   shouldComponentUpdate(nextProps){
   	if(!this.props.loading && nextProps.loading){
   		this.showLoadingBlockIndex();
-  		return false;
+  		return true;
   	}
   	else if(!this.props.downloadMessage && nextProps.downloadMessage){
   		this.showDownloadingMessage();
@@ -195,6 +195,7 @@ class Loader extends React.Component {
 			<div id="loaderText" style={{marginTop: "15px"}}>
 				<div id="blockIndexLoad" ref="blockIndexLoad">
 					<p id="loading" style={{fontSize: "45px", fontWeight: "bold"}}>{ this.props.lang.loading }</p>
+					<p id="loading" style={{fontSize: "15px", fontWeight: "bold"}}>{this.props.loadingMessage }</p>
 				</div>
 				<p style={{marginTop: "-50px", fontWeight:"300", visibility:"hidden"}} id="gettingReady">{ this.props.lang.mainMessage }</p>
     			<p className="loadingDownloadMessage">{this.props.downloadMessage}</p>
@@ -212,6 +213,7 @@ class Loader extends React.Component {
 const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
+    loadingMessage: state.startup.loadingMessage,
     loading: state.startup.loading,
     updatingApplication: state.startup.updatingApp,
     showingFunctionIcons: state.application.showingFunctionIcons,

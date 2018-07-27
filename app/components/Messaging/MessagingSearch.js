@@ -34,7 +34,7 @@ class MessagingSearch extends Component {
     return (
       <div id="searchBarMessaging">
         <img id="searchIcon" src={searchImage}/>
-        <input id="searchInput" value={this.props.lang.searchForMsgOrContacts}></input>
+        <input id="searchInput" defaultValue={this.props.lang.searchForMsgOrContacts}></input>
       </div>
     );
   }

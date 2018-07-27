@@ -60,19 +60,39 @@ import {
 	ACTION_POPUP_RESULT,
   FILE_DOWNLOAD_STATUS,
   TOLD_USER_UPDATE_FAILED,
-  POPUP_LOADING
+  POPUP_LOADING,
+  NEW_ADDRESS_NAME_POPUP,
+  ADDRESS_OR_USERNAME_SEND,
+  MULTIPLE_ANS_ADDRESSES,
+  ADDING_CONTACT,
+  SHOW_ZERO_BALANCE,
+  IS_FILTERING_TRANSACTIONS
 } from '../actions/types';
 
 import Wallet from '../utils/wallet';
 import notificationsInfo from '../utils/notificationsInfo';
 
-const INITIAL_STATE = {wallet: new Wallet(), unlocking: false, password: "", userNameToSend: "", amountSend: "", addressSend: "", sendingEcc: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, newAddressName: "", newAddressAccount: "", friends: [], userAddresses: [], creatingAnsAddress: true, selectedAddress: undefined, creatingAddress: false, newContactName: "", newContactAddress:"", hoveredAddress: undefined, settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, exportingPrivateKeys: false, panelExportPrivateKey: 1, locationToExport: "", filterAllOwnAddresses: true, filterNormalOwnAddresses: false, filterAnsOwnAddresses: false, backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, totalFileStorageRewards: 0, lastWeekFileStorageRewards: 0,lastMonthFileStorageRewards: 0, pendingTransactions: [], importingPrivateKey: false, changingPassword: false, wasStaking: false, newPassword: "", daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], postsPerContainerEccNews: 0, eccPostsArrays: [], eccPostsPage: 1, coinMarketCapStats: {}, showingNews: false, eccNewsSwitchingPage: false, updateApplication:false, selectedPanel: "overview", settingsOptionSelected: "General", showingFunctionIcons: false, genericPanelAnimationOn: false, closingApplication: false, macButtonsHover: false, macButtonsFocus: false, maximized:false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false, settingsHoveredSocialIcon: undefined, actionPopupResult: false, actionPopupMessage: "", actionPopupStatus: false, downloadMessage: undefined, downloadPercentage: undefined, downloadRemainingTime: undefined, updateFailed:false, popupLoading: false};
+let moment = require('moment');
+
+const INITIAL_STATE = {wallet: new Wallet(), unlocking: false, password: "", userNameToSend: "", codeToSend:"", amountSend: "", addressSend: "", sendingEcc: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, newAddressName: "", newAddressAccount: "", friends: [], userAddresses: [], creatingAnsAddress: true, selectedAddress: undefined, creatingAddress: false, newContactName: "", newContactAddress:"", hoveredAddress: undefined, settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, exportingPrivateKeys: false, panelExportPrivateKey: 1, locationToExport: "", filterAllOwnAddresses: true, filterNormalOwnAddresses: false, filterAnsOwnAddresses: false, backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, totalFileStorageRewards: 0, lastWeekFileStorageRewards: 0,lastMonthFileStorageRewards: 0, pendingTransactions: [], importingPrivateKey: false, changingPassword: false, wasStaking: false, newPassword: "", daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], postsPerContainerEccNews: 0, eccPostsArrays: [], eccPostsPage: 1, coinMarketCapStats: {}, showingNews: false, eccNewsSwitchingPage: false, updateApplication:false, selectedPanel: "overview", settingsOptionSelected: "General", showingFunctionIcons: false, genericPanelAnimationOn: false, closingApplication: false, macButtonsHover: false, macButtonsFocus: false, maximized:false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false, settingsHoveredSocialIcon: undefined, actionPopupResult: false, actionPopupMessage: "", actionPopupStatus: false, downloadMessage: undefined, downloadPercentage: undefined, downloadRemainingTime: undefined, updateFailed:false, popupLoading: false, newAddressNamePopup: "", addressOrUsernameSend: "", ansAddressesFound: [], addingContact: false, contactToAdd: undefined, showZeroBalance: true, upgradingAddress: false, filteringTransactions: false};
 
 
 export default(state = INITIAL_STATE, action) => {
-    if(action.type == UNLOCKING){
+  if(action.type == UNLOCKING){
 		return {...state, unlocking: action.payload}
 	}
+	else if(action.type == SHOW_ZERO_BALANCE){
+    return {...state, showZeroBalance: action.payload}
+  }
+  else if(action.type == ADDING_CONTACT){
+    return {...state, addingContact: action.payload.flag, contactToAdd: action.payload.newContact}
+  }
+  else if(action.type == MULTIPLE_ANS_ADDRESSES){
+    return {...state, ansAddressesFound: action.payload}
+  }
+  else if(action.type == ADDRESS_OR_USERNAME_SEND){
+    return {...state, addressOrUsernameSend: action.payload}
+  }
   else if(action.type == POPUP_LOADING){
     return {...state, popupLoading: action.payload}
   }
@@ -177,33 +197,43 @@ export default(state = INITIAL_STATE, action) => {
 	}
 	//update staking transactions (last week and last month)
 	else if(action.type == STAKING_REWARD_UPDATE){
-		var timeOneMonthAgo = GetDateOneMonthAgo();
-		var timeOneWeekAgo = GetDateOneWeekAgo();
-		var stakingRewards = state.stakingRewards;
-		var rewardsLastMonth = 0;
-		var rewardsLastWeek = 0;
+
+    const oneMonthAgo = moment().subtract(1, 'M').unix() * 1000;
+    const oneWeekago = moment().subtract(7, 'd').unix() * 1000;
+    const currentDay = moment().unix() * 1000;
+    let stakingRewards = state.stakingRewards;
+    let rewardsLastMonth = 0;
+    let rewardsLastWeek = 0;
 		stakingRewards.map((transaction) => {
-			if(transaction.time >= timeOneMonthAgo)
-				rewardsLastMonth += transaction.amount;
-			if(transaction.time >= timeOneWeekAgo)
-				rewardsLastWeek += transaction.amount;
+      const transactionTime = transaction.time * 1000;
+      if (transactionTime >= oneWeekago && transactionTime <= currentDay ){
+        rewardsLastWeek += transaction.amount;
+      }
+      if(transactionTime >= oneMonthAgo && transactionTime <= currentDay){
+        rewardsLastMonth += transaction.amount
+      }
 		});
 		return {...state, lastWeekStakingRewards: rewardsLastWeek, lastMonthStakingRewards: rewardsLastMonth};
 	}
 	else if(action.type == STAKING_REWARD){
 
-		var timeOneMonthAgo = GetDateOneMonthAgo();
-		var timeOneWeekAgo = GetDateOneWeekAgo();
+    let oneMonthAgo = moment().subtract(1, 'M').unix() * 1000;
+    let oneWeekago = moment().subtract(7, 'd').unix() * 1000;
+    let currentDay = moment().unix() * 1000;
+    let rewardsLastMonth = 0;
+    let rewardsLastWeek = 0;
+    let totalRewards = 0;
+
 		//we get this the first time we load the transactions or when we load them from memory
-		if(action.payload instanceof Array){
-			var rewardsLastMonth = 0;
-			var rewardsLastWeek = 0;
-			var totalRewards = 0;
+		if(action.payload instanceof Object){
 			action.payload.map((transaction) => {
-				if(transaction.time >= timeOneMonthAgo)
-					rewardsLastMonth += transaction.amount;
-				if(transaction.time >= timeOneWeekAgo)
-					rewardsLastWeek += transaction.amount;
+			  const transactionTime = transaction.time * 1000;
+			  if (transactionTime >= oneWeekago && transactionTime <= currentDay ){
+			    rewardsLastWeek += transaction.amount;
+        }
+        if(transactionTime >= oneMonthAgo && transactionTime <= currentDay){
+			    rewardsLastMonth += transaction.amount
+        }
 				totalRewards += transaction.amount;
 			});
 
@@ -211,17 +241,22 @@ export default(state = INITIAL_STATE, action) => {
 		}
 		//else its just one entry
 		else{
-			var transaction = action.payload;
-			var stakingRewards = state.stakingRewards;
+			let transaction = action.payload;
+			let stakingRewards = state.stakingRewards;
 			stakingRewards.unshift(action.payload);
-			var rewardsLastMonth = state.lastMonthStakingRewards;
-			var rewardsLastWeek = state.lastWeekStakingRewards;
-			var totalRewards = state.totalStakingRewards;
+			rewardsLastMonth = state.lastMonthStakingRewards;
+			rewardsLastWeek = state.lastWeekStakingRewards;
+			totalRewards = state.totalStakingRewards;
 
-			if(transaction.time >= timeOneMonthAgo)
-				rewardsLastMonth += transaction.amount;
-			if(transaction.time >= timeOneWeekAgo)
-				rewardsLastWeek += transaction.amount;
+      const transactionTime = transaction.time * 1000;
+
+      if (transactionTime >= oneWeekago && transactionTime <= currentDay ){
+        rewardsLastWeek += transaction.amount;
+      }
+
+      if(transactionTime >= oneMonthAgo && transactionTime <= currentDay){
+        rewardsLastMonth += transaction.amount
+      }
 			totalRewards += transaction.amount;
 
 			return {...state, stakingRewards: stakingRewards, totalStakingRewards: totalRewards, lastWeekStakingRewards: rewardsLastWeek, lastMonthStakingRewards: rewardsLastMonth};
@@ -229,7 +264,7 @@ export default(state = INITIAL_STATE, action) => {
 	}
 	else if(action.type == PENDING_TRANSACTION){
 		var pendingTransactions = state.pendingTransactions;
-		if(action.payload instanceof Array){
+		if(action.payload instanceof Object){
 			pendingTransactions = action.payload;
 		}
 		else{
@@ -289,7 +324,7 @@ export default(state = INITIAL_STATE, action) => {
 		return {...state, addressSend: action.payload}
 	}
 	else if(action.type == NAME_SEND){
-		return {...state, userNameToSend: action.payload}
+		return {...state, userNameToSend: action.payload.username, codeToSend: action.payload.code}
 	}
 	else if(action.type == AMOUNT_SEND){
 		return {...state, amountSend: action.payload}
@@ -305,6 +340,9 @@ export default(state = INITIAL_STATE, action) => {
 	else if(action.type == NEW_ADDRESS_NAME){
 		return {...state, newAddressName: action.payload}
 	}
+  else if(action.type == NEW_ADDRESS_NAME_POPUP){
+    return {...state, newAddressNamePopup: action.payload}
+  }
 	else if(action.type == ADDRESS_CREATE_ANS){
 		return {...state, creatingAnsAddress: action.payload}
 	}
@@ -341,23 +379,10 @@ export default(state = INITIAL_STATE, action) => {
   else if(action.type == TOLD_USER_UPDATE_FAILED){
 	  return {...state, updateFailed: action.payload.updateFailed, downloadMessage: action.payload.message}
 	}
+	else if(action.type == IS_FILTERING_TRANSACTIONS){
+    return {...state, filteringTransactions: action.payload}
+  }
 	return state;
-}
-
-function GetDateOneMonthAgo(){
-	var d = new Date();
-	d.setMonth(d.getMonth() - 1);
-	d.setHours(0, 0, 0);
-	d.setMilliseconds(0);
-	return d/1000|0;
-}
-
-function GetDateOneWeekAgo(){
-	var d = new Date();
-	d.setDate(d.getDate() - 7);
-	d.setHours(0, 0, 0);
-	d.setMilliseconds(0);
-	return d/1000|0;
 }
 
 function UpdateNotificationInfo(lastCheckedNews, lastCheckedEarnings){

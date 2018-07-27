@@ -19,6 +19,68 @@ module.exports = {
 
   },
 
+  searchForUsernameOrAddress(wallet, addressOrUsername){
+    return new Promise( async (resolve, reject) => {
+      try{
+        const response = await wallet.validate(addressOrUsername);
+        let username;
+        let code;
+        //try to find ans username, if it exists
+        if(response.isvalid){
+          let ansAddress = await wallet.getAnsRecord(addressOrUsername, "PTR");
+          if(ansAddress[0].Code !== ""){
+            code = ansAddress[0].Code;
+            username = ansAddress[0].Name;
+            resolve({ans: true, addresses:[ansAddress[0]]});
+          }
+          else{
+            resolve({ans: false, addresses:[response]});
+          }
+        }
+        //looks up for a specific ans username
+        else if(addressOrUsername.indexOf('#') !== -1){
+          let arr = addressOrUsername.split('#');
+          username = arr[0];
+          code = arr[1];
+          let ansAddress = await wallet.getAnsRecord(username, "A");
+          //multiple usernames
+          if(ansAddress){
+            ansAddress.map((val) => {
+              if(val.Code == code){
+                resolve({ans: true, addresses:[val]});
+                return;
+              }
+            })
+            reject();
+          }
+          else{
+            reject();
+          }
+        }
+        //case where it may return a list of addresses using the same username
+        else{
+          let ansAddress = await wallet.getAnsRecord(addressOrUsername, "A");
+          let toReturn = [];
+          if(ansAddress){
+            let foundCode = false;
+            ansAddress.map((val) => {
+              toReturn.push(val);
+            })
+            if(toReturn.length > 0){
+              resolve({ans: true, addresses: toReturn});
+            }
+            else{
+              reject();
+            }
+          }
+        }
+
+      }catch(err){
+        reject();
+      }
+    });
+  },
+
   //MISC
   sendOSNotification: function(body, callback){
     if (Notification.permission !== "granted"){
@@ -460,14 +522,14 @@ module.exports = {
     }, 600)
   },
 
-  showTemporaryMessage: function (element, text, time=2000) {
+  showTemporaryMessage: function (element, text, time=2000, originalText) {
     if(text){
       $(element).text(text)
     }
 
     TweenMax.to(element, 0.2, {autoAlpha: 1, scale: 1, onComplete: () => {
       setTimeout(() => {
-        TweenMax.to(element, 0.2, {autoAlpha: 0, scale: 0.5});
+        TweenMax.to(element, 0.2, {autoAlpha: 0, scale: 0.5, onComplete: () => {if(originalText) $(element).text(originalText)}});
       }, time)
     }});
   },
@@ -752,6 +814,47 @@ module.exports = {
     }
     //Both the versions are equal
     return 0;
+  },
+
+  similarity(s1, s2) {
+    let longer = s1;
+    let shorter = s2;
+    if (s1.length < s2.length) {
+      longer = s2;
+      shorter = s1;
+    }
+    let longerLength = longer.length;
+    if (longerLength === 0) {
+      return 1.0;
+    }
+    return (longerLength - this.editDistance(longer, shorter)) / parseFloat(longerLength);
+  },
+
+  editDistance(s1, s2) {
+    s1 = s1.toLowerCase();
+    s2 = s2.toLowerCase();
+
+    let costs = [];
+    for (let i = 0; i <= s1.length; i++) {
+      let lastValue = i;
+      for (let j = 0; j <= s2.length; j++) {
+        if (i === 0)
+          costs[j] = j;
+        else {
+          if (j > 0) {
+            let newValue = costs[j - 1];
+            if (s1.charAt(i - 1) !== s2.charAt(j - 1))
+              newValue = Math.min(Math.min(newValue, lastValue),
+                costs[j]) + 1;
+            costs[j - 1] = lastValue;
+            lastValue = newValue;
+          }
+        }
+      }
+      if (i > 0)
+        costs[s2.length] = lastValue;
+    }
+    return costs[s2.length];
   }
 };
 

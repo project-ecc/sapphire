@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import {TweenMax} from "gsap";
 import { connect } from 'react-redux';
-
+import renderHTML from 'react-render-html';
 import low from '../../utils/low';
 import * as actions from '../../actions';
 
 import $ from 'jquery';
-
+const ansAddresImage = require('../../../resources/images/ans_address.png');
 const Tools = require('../../utils/tools');
 const { clipboard } = require('electron');
+import { getContacts, deleteContact } from "../../Managers/SQLManager";
 
 class AddressBook extends Component {
   constructor(props) {
@@ -19,15 +20,28 @@ class AddressBook extends Component {
     this.getHeaderText = this.getHeaderText.bind(this);
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
+    this.loadContacts = this.loadContacts.bind(this);
   }
 
   componentDidMount() {
-    const friendList = low.get('friends').value();
-    this.props.setContacts(friendList);
+    this.loadContacts();
+
     $( window ).on('resize', () => {
       this.updateTable(this.props.friends);
     });
-    this.updateTable(friendList);
+
+  }
+
+  getAddressDiplay(address) {
+    if (address.ans) {
+      return (
+        <div>
+          <img src={ansAddresImage} />
+        </div>
+      )
+    } else {
+      return null;
+    }
   }
 
   updateTable(friendList){
@@ -60,17 +74,38 @@ class AddressBook extends Component {
     this.setState({ [name]: value });
   }
 
-  rowClicked(friend) {
+
+  rowClicked = (friend, index) => (e) => {
+    if(!this.props.sendPanel){
+      const friendBottom = $(`#friend_bottom_${index}`);
+      if (friendBottom.attr('sd') === 'false' || friendBottom.attr('sd') === undefined) {
+        $(friendBottom).slideDown();
+        $(friendBottom).attr('sd', 'true');
+      } else {
+        friendBottom.slideUp();
+        friendBottom.attr('sd', 'false');
+      }
+    }
+
     if(!this.props.sendPanel) return;
-    clipboard.writeText(friend.address);
+    clipboard.writeText(friend.address.address);
     $('#message').text(this.props.lang.addressCopiedBelow);
     TweenMax.fromTo('#message', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
     TweenMax.to('#message', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
     TweenMax.set('#addressSend', {autoAlpha: 0});
-    this.props.setAddressSend(friend.address);
-    if(friend.name === "")
-      this.props.setUsernameSend(undefined);
-    else this.props.setUsernameSend(friend.name);
+    this.props.setAddressSend(friend.address.address);
+    if(friend.name === "") {
+      this.props.setAddressOrUsernameSend(undefined);
+    }
+    else this.props.setAddressOrUsernameSend(friend.name);
+    this.forceUpdate();
+  }
+
+  async loadContacts(){
+    const friendList = await getContacts();
+    this.props.setContacts(friendList);
+
+    this.updateTable(friendList);
   }
 
   getHeaderText(){
@@ -93,12 +128,12 @@ class AddressBook extends Component {
     this.props.setHoveredAddress(undefined);
   }
 
-  deleteAddress(friend){
-    low.get('friends').remove({ address: friend.address }).write();
-    const friendList = low.get('friends').value();
-    this.props.setContacts(friendList);
-    this.forceUpdate();
+  async deleteAddress(friend){
+    const contactDeleted = await deleteContact(friend)
+    await this.loadContacts();
   }
+
+  editContact(friend){}
 
   render() {
     let bin = Tools.getIconForTheme("deleteContact", false);
@@ -116,18 +151,25 @@ class AddressBook extends Component {
               <div id="addressHeader" className="col-sm-7 headerAddresses tableRowHeader">{ this.props.lang.address }</div>
               <div className="col-sm-1 headerAddresses"></div>
             </div>
-          <div id="rows" style={{width: "100%", padding: "0 0"}}>
+          <div id="rows" style={{width: "100%", padding: "0 0", overflowY:"scroll"}}>
           {this.props.friends.map((friend, index) => {
             return (
-              <div className= {index % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} onClick={this.rowClicked.bind(this, friend)} onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default"}} key={`friend_${index}`}>
+              <div key={`friend_${index}`} className={index % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} onClick={this.rowClicked(friend, index)}  onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default"}} >
                 <div className={this.props.sendPanel ? "col-sm-4 tableColumn tableColumContactFix" : "col-sm-4 tableColumn tableColumContactFix selectableText"}>
-                  {friend.name}
+                  {friend.ansrecord != null ? <img src={ansAddresImage} style={{padding:"0 5px 3px 0"}}></img> : null}
+                  {friend.ansrecord != null ? renderHTML(`${friend.ansrecord.name}<span className="Receive__ans-code">#${friend.ansrecord.code} </span> `) : friend.name}
                 </div>
                 <div className={this.props.sendPanel ? "col-sm-7 tableColumn" : "col-sm-7 tableColumn selectableText"}>
-                  {friend.address}
+                  {friend.address.address}
                 </div>
                 <div className="col-sm-1 tableColumn">
                   <img className="deleteContactIcon" onClick={this.deleteAddress.bind(this, friend)} style={{visibility: this.props.hoveredAddress === friend ? "visible" : "hidden"}}src={bin}/>
+                </div>
+                <div id={`friend_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{ paddingLeft: "2%", width: "100%", paddingTop: "6px", paddingBottom: "6px", cursor:"default", zIndex:"2", display:"none"}}>
+                      <div className="col-sm-8">
+                          <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">dummy</span></p>
+                          <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">dummy</span></p>
+                      </div>
                 </div>
               </div>
             );

@@ -9,7 +9,7 @@ let arch = require('arch');
 const extract = require('extract-zip');
 const https = require('https');
 const checksum = require('checksum');
-const REQUIRED_DAEMON_VERSION = 2510;
+const REQUIRED_DAEMON_VERSION = 2511;
 
 import Wallet from '../utils/wallet';
 import { getPlatformWalletUri, grabWalletDir, grabEccoinDir, getDaemonDownloadUrl, getPlatformFileName } from '../utils/platform.service';
@@ -291,7 +291,7 @@ class DaemonManager {
 
         if (downloaded) {
           self.installedVersion = latestVersion;
-          self.saveVersion(self.installedVersion);
+          await self.saveVersion(self.installedVersion);
           self.downloading = false;
           resolve(true);
         } else {
@@ -306,7 +306,7 @@ class DaemonManager {
     });
   }
 
-  saveVersion(version) {
+  async saveVersion(version) {
     console.log(this.versionPath);
     console.log(`version${version}`);
     const writter = fs.createWriteStream(this.versionPath);
