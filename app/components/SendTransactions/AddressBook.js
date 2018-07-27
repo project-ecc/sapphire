@@ -79,8 +79,6 @@ class AddressBook extends Component {
     console.log(friend)
         console.log(index)
         const friendBottom = $(`#friend_bottom_${index}`);
-         $(friendBottom).slideDown();
-          $(friendBottom).attr('sd', 'true');
         if (friendBottom.attr('sd') === 'false' || friendBottom.attr('sd') === undefined) {
           $(friendBottom).slideDown();
           $(friendBottom).attr('sd', 'true');
@@ -146,7 +144,7 @@ class AddressBook extends Component {
     let rowClassName = "row normalWeight tableRowCustom";
 
     return (
-      <div className="tableCustom">
+      <div className="tableCustom"}>
         <div className={this.props.sendPanel ? "tableHeaderNormal tableHeaderBig" : "tableHeaderNormal"}>
           <p className={this.props.sendPanel ? "tableHeaderTitle" : "tableHeaderTitle tableHeaderTitleSmall"}>{ this.props.lang.contacts }</p>
           {this.getHeaderText()}
@@ -157,7 +155,7 @@ class AddressBook extends Component {
               <div id="addressHeader" className="col-sm-7 headerAddresses tableRowHeader">{ this.props.lang.address }</div>
               <div className="col-sm-1 headerAddresses"></div>
             </div>
-          <div id="rows" style={{width: "100%", padding: "0 0"}}>
+          <div id="rows" style={{width: "100%", padding: "0 0", overflowY:"scroll"}}>
           {this.props.friends.map((friend, index) => {
             console.log(friend)
             console.log(index)
@@ -173,7 +171,7 @@ class AddressBook extends Component {
                 <div className="col-sm-1 tableColumn">
                   <img className="deleteContactIcon" onClick={this.deleteAddress.bind(this, friend)} style={{visibility: this.props.hoveredAddress === friend ? "visible" : "hidden"}}src={bin}/>
                 </div>
-                <div id={`friend_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row " style={{ paddingLeft: "2%", width: "100%", paddingTop: "6px", paddingBottom: "6px", cursor:"default", zIndex:"2", display:"none"}}>
+                <div id={`friend_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{ paddingLeft: "2%", width: "100%", paddingTop: "6px", paddingBottom: "6px", cursor:"default", zIndex:"2", display:"none"}}>
                       <div className="col-sm-8">
                           <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">dummy</span></p>
                           <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">dummy</span></p>
