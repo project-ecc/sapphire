@@ -184,16 +184,11 @@ class DaemonConnector {
         }
       }
       const latestTransaction = await getLatestTransaction();
-      // console.log(latestTransaction)
       this.from = latestTransaction != null ? latestTransaction.time : null;
       this.currentFrom = this.from
       const allTransactions = await getAllTransactions();
       this.transactionsIndexed = allTransactions.length > 0;
     }
-    console.log('in here')
-    // console.log("processed Addresses: " + this.processedAddresses);
-    // console.log("from time: " + this.from);
-    console.log("transactions indexed: " + this.transactionsIndexed);
 
     if(this.store.getState().startup.updatingApp){
       this.runningMainCycle = false;
@@ -201,7 +196,6 @@ class DaemonConnector {
     }
     if(!this.hasLoadedTransactionsFromDb && this.transactionsIndexed){
       await this.loadTransactionFromDb();
-      console.log('transactions loaded')
       // grab transaction that is main
       const where = {
         is_main: 1
@@ -209,19 +203,16 @@ class DaemonConnector {
       const transactionData = await getAllTransactions(100, 0, where);
       this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: transactionData , type: "all"}});
       this.hasLoadedTransactionsFromDb = true
-      console.log('transactions transactions put in db')
     }
     try{
       await this.wallet.getAllInfo().then( async (data) => {
         if(data){
-          console.log(data)
           await this.getAddresses(data[2], data[3]);
-          let highestBlock = data[0].headers === 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
+          const highestBlock = data[0].headers === 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
           // remove .00 if 100%
           let syncedPercentage = (data[0].blocks * 100) / data[0].headers;
           syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
 
-          console.log('getting highest block to update pending');
           if(data[0].blocks >= highestBlock && this.transactionsIndexed && !this.firstRun){
             await this.processPendingTransactions();
           }
@@ -875,7 +866,6 @@ class DaemonConnector {
 
   async loadTransactionFromDb(){
     return new Promise(async (resolve, reject) => {
-      console.log('loading from db')
       let lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
       let earningsCountNotif = 0;
       let earningsTotalNotif = 0;
@@ -889,7 +879,6 @@ class DaemonConnector {
       transactions.map((transaction) => {
         let time = transaction.time;
         let amount = transaction.amount;
-        // console.log(lastCheckedEarnings)
         if(time > lastCheckedEarnings && shouldNotifyEarnings){
 
           this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}});
@@ -946,7 +935,6 @@ class DaemonConnector {
     }
   }
   async getAddresses(allReceived, allAddresses){
-    console.log('in here')
     const normalAddresses = [].concat.apply([], allAddresses).map(group => {
       return {
         account: group.length > 2 ? group[2] : null,
@@ -999,7 +987,6 @@ class DaemonConnector {
       }
     });
 
-    console.log(toReturn)
     // if(normalAddresses.length > this.currentAddresses.length) {
       for (const [index, address] of toReturn.entries()) {
         // handle the response
@@ -1014,10 +1001,7 @@ class DaemonConnector {
     // }
     //We need to have the addresses loaded to be able to index transactions
     this.currentAddresses = normalAddresses;
-    // console.log("All addresses without null balances", toReturn);
-    console.log('in address function')
     if(!this.transactionsIndexed && this.firstRun && this.currentAddresses.length > 0 && !this.isIndexingTransactions){
-      // console.log('indexing in address loop.')
       await this.loadTransactionsForProcessing();
       this.store.dispatch({type: INDEXING_TRANSACTIONS, payload: true})
     }
@@ -1028,7 +1012,6 @@ class DaemonConnector {
       this.wallet.getRawTransaction(transactionId).then((data) => {
         resolve(data);
       }).catch((err) => {
-        // console.log("error getting getRawTransaction");
         reject(err)
       });
     });

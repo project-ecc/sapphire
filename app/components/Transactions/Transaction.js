@@ -101,8 +101,6 @@ class Transaction extends Component {
         where.category = type;
         break;
     }
-    console.log('page: ', page)
-    // console.log(where)
     const transactions = await getAllTransactions(100, 100 * page, where);
     this.props.setTransactionsData(transactions, type);
     this.props.setTransactionsPage(page);

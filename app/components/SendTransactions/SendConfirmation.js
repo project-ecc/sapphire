@@ -205,7 +205,6 @@ class SendConfirmation extends React.Component {
           <ConfirmButtonPopup
             inputId={"#sendPasswordId"}
             handleConfirm={this.handleConfirm}
-            text="Confirm"
             textLoading={this.props.lang.confirming}
             text={ this.props.lang.confirm }
           />

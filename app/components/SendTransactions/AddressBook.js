@@ -76,16 +76,16 @@ class AddressBook extends Component {
 
 
   rowClicked = (friend, index) => (e) => {
-    console.log(friend)
-        console.log(index)
-        const friendBottom = $(`#friend_bottom_${index}`);
-        if (friendBottom.attr('sd') === 'false' || friendBottom.attr('sd') === undefined) {
-          $(friendBottom).slideDown();
-          $(friendBottom).attr('sd', 'true');
-        } else {
-          friendBottom.slideUp();
-          friendBottom.attr('sd', 'false');
-        }
+    if(!this.props.sendPanel){
+      const friendBottom = $(`#friend_bottom_${index}`);
+      if (friendBottom.attr('sd') === 'false' || friendBottom.attr('sd') === undefined) {
+        $(friendBottom).slideDown();
+        $(friendBottom).attr('sd', 'true');
+      } else {
+        friendBottom.slideUp();
+        friendBottom.attr('sd', 'false');
+      }
+    }
 
     if(!this.props.sendPanel) return;
     clipboard.writeText(friend.address.address);
@@ -96,9 +96,6 @@ class AddressBook extends Component {
     this.props.setAddressSend(friend.address.address);
     if(friend.name === "") {
       this.props.setAddressOrUsernameSend(undefined);
-    } else if(friend.ansrecord != null) {
-      const inputName = friend.name
-      this.props.setAddressOrUsernameSend(inputName);
     }
     else this.props.setAddressOrUsernameSend(friend.name);
     this.forceUpdate();
@@ -133,7 +130,6 @@ class AddressBook extends Component {
 
   async deleteAddress(friend){
     const contactDeleted = await deleteContact(friend)
-    console.log(contactDeleted)
     await this.loadContacts();
   }
 
@@ -144,7 +140,7 @@ class AddressBook extends Component {
     let rowClassName = "row normalWeight tableRowCustom";
 
     return (
-      <div className="tableCustom"}>
+      <div className="tableCustom">
         <div className={this.props.sendPanel ? "tableHeaderNormal tableHeaderBig" : "tableHeaderNormal"}>
           <p className={this.props.sendPanel ? "tableHeaderTitle" : "tableHeaderTitle tableHeaderTitleSmall"}>{ this.props.lang.contacts }</p>
           {this.getHeaderText()}
@@ -157,10 +153,8 @@ class AddressBook extends Component {
             </div>
           <div id="rows" style={{width: "100%", padding: "0 0", overflowY:"scroll"}}>
           {this.props.friends.map((friend, index) => {
-            console.log(friend)
-            console.log(index)
             return (
-              <div className= {index % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} onClick={this.rowClicked(friend, index)}  onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default"}} key={`friend_${index}`}>
+              <div key={`friend_${index}`} className={index % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} onClick={this.rowClicked(friend, index)}  onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default"}} >
                 <div className={this.props.sendPanel ? "col-sm-4 tableColumn tableColumContactFix" : "col-sm-4 tableColumn tableColumContactFix selectableText"}>
                   {friend.ansrecord != null ? <img src={ansAddresImage} style={{padding:"0 5px 3px 0"}}></img> : null}
                   {friend.ansrecord != null ? renderHTML(`${friend.ansrecord.name}<span className="Receive__ans-code">#${friend.ansrecord.code} </span> `) : friend.name}
@@ -178,7 +172,6 @@ class AddressBook extends Component {
                       </div>
                 </div>
               </div>
-
             );
           })}
           </div>

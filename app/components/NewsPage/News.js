@@ -114,7 +114,7 @@ class News extends Component {
           })
         }
         </div>
-        <div id="arrows" style={{width: $('.panel').width()-80, top: items >= this.props.postsPerContainer ? (155 * this.props.postsPerContainer + 180) + "px" : (155 * items + 180) + "px" }}>
+        <div id="arrows" style={{ top: items >= this.props.postsPerContainer ? (155 * this.props.postsPerContainer + 180) + "px" : (155 * items + 180) + "px" }}>
           <div onClick={this.switchPage.bind(this, "left")} className= {this.props.eccPostsPage - 1 == 0 ? "increaseClickArea increaseClickAreaLeft cursorPointerFalse" : "increaseClickArea increaseClickAreaLeft"}>
             <div id="arrowLeft" className={this.props.eccPostsPage - 1 === 0 ? "arrowNews arrowInactive arrowLeftNews" : "arrowNews arrowLeftNews"}></div>
           </div>

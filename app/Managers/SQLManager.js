@@ -20,9 +20,6 @@ async function addTransaction(transaction, pending = false) {
         }
       })
       .spread((address, created) => {
-        // console.log(address.get({
-        //   plain: true
-        // }));
         Transaction.create({
           transaction_id: transaction.txId,
           time: transaction.time,
@@ -149,9 +146,6 @@ async function getAllTransactionsWithAddress(limit = null, offset = 0) {
 }
 
 async function getAllTransactions(limit = null, offset = 0, where = null){
-  console.log('limit:', limit)
-  console.log('offset:', offset)
-  console.log('where:', where)
   return new Promise((resolve, reject) => {
     Transaction.findAll({
       include: [{ all: true, nested: true }],
@@ -294,9 +288,7 @@ async function addAddress(address, withAns = false, belongsToMe = false){
         }
       })
       .spread(async (newAddress, created) => {
-        //console.log('created: ', created)
         if(!created){
-          //console.log('address not created')
           newAddress.current_balance = address.amount
           newAddress.is_mine = belongsToMe
           await newAddress.save()
@@ -442,7 +434,6 @@ async function addContact(contactObject, withAns = false){
         }
       })
       .spread(async (newContact, created) => {
-        console.log(newContact);
         const address = await Address.findOrCreate({
           where: {
             address: contactObject.address
@@ -477,7 +468,6 @@ async function addContact(contactObject, withAns = false){
 }
 
 async function findContact(name){
-  console.log(name)
   return new Promise(async(resolve, reject) => {
     await Contact.findAll({
       include: [

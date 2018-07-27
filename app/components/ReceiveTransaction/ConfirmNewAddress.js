@@ -94,7 +94,6 @@ class ConfirmNewAddress extends React.Component {
         this.props.setPopupLoading(false)
       })
       .catch(err => {
-        this.props.setPopupLoading(false)
         console.log('error creating ANS address: ', err);
         if(err.message.indexOf("Insufficient funds") !== -1){
           Tools.showTemporaryMessage('#wrongPassword', "Not enough funds in the address. You need to have a little over 50 ECC to account for the transfer fees.", 7000, this.props.lang.wrongPassword);
@@ -108,6 +107,7 @@ class ConfirmNewAddress extends React.Component {
         else if(err.message.indexOf("maxiumum length of") !== -1){
           Tools.showTemporaryMessage('#wrongPassword', this.props.usernameTooBig, 5000, this.props.lang.wrongPassword);
         }
+        this.props.setPopupLoading(false)
       });
   }
 

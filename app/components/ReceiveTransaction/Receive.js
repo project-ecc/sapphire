@@ -280,7 +280,6 @@ class Receive extends Component {
               </div>
             <div id="rows">
             {this.props.userAddresses.map((address, index) => {
-              // console.log(address)
               if(this.props.filterAll || this.props.filterNormal && !address.ansrecords.length > 0 || this.props.filterAns && address.ansrecords.length > 0){
                 counter++;
                 if(this.props.showZeroBalance === false && address.current_balance === 0){
@@ -311,6 +310,7 @@ class Receive extends Component {
           <p className="Receive__upgrade-text" onClick={this.handleUpgradeAddress} style={{visibility: selectedAddress ? selectedAddress.ans ? "hidden" : "visible" : "hidden"}}>Upgrade to ANS address</p>
           <div>
             <p id="addressCreatedSuccessfully"> { this.props.lang.addressCreatedSuccessfully }<br></br><span className="ecc" onClick={this.goToBackupPage.bind(this)}>{ this.props.lang.clickToBackupWallet }</span></p>
+            <p id="wrongPassword" style={{textAlign: 'center'}} > </p>
           </div>
         </div>
       </div>

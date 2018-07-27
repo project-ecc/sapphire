@@ -42,6 +42,7 @@ class ContactPopup extends React.Component {
       contactName: '',
       selected: {}
     })
+    this.props.setSelectedAddress(undefined);
   }
 
   handleInput(event){
@@ -49,8 +50,6 @@ class ContactPopup extends React.Component {
       contactName: event
     });
   }
-
-
 
   handleClick(val,index){
    this.setState({
@@ -79,8 +78,7 @@ class ContactPopup extends React.Component {
     }
 
 
-    const tt = await findContact(ans == true ? name + '#' + code : name)
-    console.log(tt)
+    const tt = await findContact(ans === true ? name + '#' + code : name)
     if (tt.length > 0) {
       this.addressAlreadyExists();
       this.cleanupAfterPopup();
@@ -91,7 +89,6 @@ class ContactPopup extends React.Component {
 
     //refresh the redux store with new contacts
     const friendList = await getContacts();
-    console.log(friendList)
     this.props.setContacts(friendList);
 
 
@@ -131,9 +128,9 @@ class ContactPopup extends React.Component {
               const className = this.state.val === val ? 'ansAddressesList-item-selected' : 'ansAddressesList-item';
               const selectedAddress = this.props.selectedAddress;
               return(
-                  <div key={val.id} className = {(val === selectedAddress) ? "ansAddressesList-item-selected" : "ansAddressesList-item"}>
-                  <p key={val.Code} onClick={self.handleClick.bind(self, val, index)} >{val.Name}#{val.Code}</p>
-                </div>
+                  <div key={index} className = {(val === selectedAddress) ? "ansAddressesList-item-selected" : "ansAddressesList-item"}>
+                    <p onClick={self.handleClick.bind(self, val, index)} >{val.Name}#{val.Code}</p>
+                  </div>
               );
             })}
           </div>
