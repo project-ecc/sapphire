@@ -54,7 +54,7 @@ class AddressBook extends Component {
       $('.headerAddresses').css("left", "-3px");
     }
     else{
-      $(rows).css("overflow-y", "hidden");
+      $(rows).css("overflow-y", "scroll");
       $('.headerAddresses').css("left", "0px");
     }
   }
@@ -140,7 +140,7 @@ class AddressBook extends Component {
     let rowClassName = "row normalWeight tableRowCustom";
 
     return (
-      <div className="tableCustom">
+      <div className="tableCustom" style={{height:"55%"}}>
         <div className={this.props.sendPanel ? "tableHeaderNormal tableHeaderBig" : "tableHeaderNormal"}>
           <p className={this.props.sendPanel ? "tableHeaderTitle" : "tableHeaderTitle tableHeaderTitleSmall"}>{ this.props.lang.contacts }</p>
           {this.getHeaderText()}
@@ -151,7 +151,7 @@ class AddressBook extends Component {
               <div id="addressHeader" className="col-sm-7 headerAddresses tableRowHeader">{ this.props.lang.address }</div>
               <div className="col-sm-1 headerAddresses"></div>
             </div>
-          <div id="rows" style={{width: "100%", padding: "0 0", overflowY:"scroll"}}>
+          <div id="rows" style={{height: "350px", width: "100%", padding: "0 0 0 8px", overflowY: "scroll"}}>
           {this.props.friends.map((friend, index) => {
             return (
               <div key={`friend_${index}`} className={index % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} onClick={this.rowClicked(friend, index)}  onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default"}} >
