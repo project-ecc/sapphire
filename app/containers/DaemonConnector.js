@@ -220,8 +220,9 @@ class DaemonConnector {
 
           // check the latest transactions against the current from
           const result = (data[1].filter(transaction =>{
-           return transaction.time * 1000 >= this.currentFrom
+           return transaction.time * 1000 > this.currentFrom
           }));
+          console.log(result)
           if (result.length > 0 && !this.firstRun){
             await this.loadTransactionsForProcessing()
           }
@@ -648,14 +649,11 @@ class DaemonConnector {
 
     transactions = this.orderTransactions(transactions);
 
-    if(transactions.length > 0 && this.transactionsPage == 0){
-      this.from = transactions[0].time * 1000;
-    }
-
     // load transactions into transactionsMap for processing
     for (let i = 0; i < transactions.length; i++) {
       time = transactions[i].time;
       if(time * 1000 > this.currentFrom || !this.transactionsIndexed){
+        console.log(transactions[i])
         shouldRequestAnotherPage = true;
         txId = transactions[i].txid;
         amount = transactions[i].amount;
