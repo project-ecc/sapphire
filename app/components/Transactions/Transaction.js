@@ -256,7 +256,7 @@ class Transaction extends Component {
           <div id="rows" style={{height: "500px", width: "100%", padding: "0 0", overflowY: "scroll"}}>
             {data.map((t, index) => {
              // console.log(t, index)
-             console.log(t)
+             // console.log(t)
 
               if (this.props.type === 'all'
               || this.props.type === t.category

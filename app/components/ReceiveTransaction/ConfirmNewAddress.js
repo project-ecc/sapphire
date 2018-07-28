@@ -25,7 +25,7 @@ class ConfirmNewAddress extends React.Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.createNormalAddress = this.createNormalAddress.bind(this);
     this.getConfirmationText = this.getConfirmationText.bind(this);
-    this.saveNewlyCreatedAnsAddress = this.saveNewlyCreatedAnsAddress.bind(this);
+    this.setAddressPendingUpgrade = this.setAddressPendingUpgrade.bind(this);
     this.state = {
       createdAddress: false
     }
@@ -75,7 +75,7 @@ class ConfirmNewAddress extends React.Component {
   async setAddressPendingUpgrade(add){
    // save to DB here
    let address = await getAddress(add)
-   address.status = 'pendingAns';
+   address.status = 'upgrading';
    await address.save();
   }
 
