@@ -80,8 +80,6 @@ class ConfirmNewAddress extends React.Component {
   }
 
   async createANSAddress(address) {
-    console.log(address)
-    console.log(this.props.usernamePopup)
     return await this.props.wallet.createNewANSAddress(address, this.props.usernamePopup)
       .then(async response => {
         console.log(response)

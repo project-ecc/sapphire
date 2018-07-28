@@ -163,7 +163,7 @@ class ExportPrivateKeys extends React.Component {
       return;
     }
     this.unlockWallet(false, 5, async () => {
-      this.getDataToExport();
+      await this.getDataToExport();
     })
   }
 
@@ -202,6 +202,7 @@ class ExportPrivateKeys extends React.Component {
       }
     }
     this.setState({ toDisplay: keys });
+    console.log(this.state.toDisplay)
     this.props.setPopupLoading(false)
     if(wasStaking){
       this.unlockWallet(true, 31556926, () => {});
@@ -219,8 +220,8 @@ class ExportPrivateKeys extends React.Component {
   }
 
   unlockWallet(flag, time, callback){
-    var batch = [];
-    var obj = {
+    let batch = [];
+    let obj = {
       method: 'walletpassphrase', parameters: [this.props.passwordVal, time, flag]
     };
     batch.push(obj);
@@ -355,9 +356,9 @@ class ExportPrivateKeys extends React.Component {
       <div id="displayKeys" style={{position: "relative", left:"100%", width: "535px"}}>
         <p style={{fontSize: "16px", width: "400px", textAlign: "center", margin: "0 auto", paddingTop: "25px", marginBottom:"20px", textAlign: "left"}}>
           {`${this.props.lang.listing} ${keys.length}  ${keys.length === 1 ? this.props.lang.addressInFormat : this.props.lang.addressesInFormat}:`}
-          <p style={{paddingTop: "15px"}} className="pdfExample">{`<${this.props.lang.publicAddress}>`}</p>
-          <p className="pdfExample">{`<${this.props.lang.privateKey}>`}</p>
         </p>
+        <p style={{paddingTop: "15px"}} className="pdfExample">{`<${this.props.lang.publicAddress}>`}</p>
+        <p className="pdfExample">{`<${this.props.lang.privateKey}>`}</p>
         <div className="keysHolder">
           {keys}
         </div>
