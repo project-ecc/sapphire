@@ -10,6 +10,7 @@ import ansAddressesInfo from '../../utils/ansAddressesInfo';
 import renderHTML from 'react-render-html';
 
 import $ from 'jquery';
+import {getAddress} from "../../Managers/SQLManager";
 
 const event = require('../../utils/eventhandler');
 const Tools = require('../../utils/tools');
@@ -71,24 +72,25 @@ class ConfirmNewAddress extends React.Component {
   //     });
   // }
 
-  saveNewlyCreatedAnsAddress(ansResponse){
+  async setAddressPendingUpgrade(add){
    // save to DB here
-
-   console.log(ansResponse)
-    const currentBlock = this.props.blockPayment;
-
+   let address = await getAddress(add)
+   address.status = 'pendingAns';
+   await address.save();
   }
 
-  createANSAddress(address) {
-    return this.props.wallet.createNewANSAddress(address, this.props.upgradingAddress ? this.props.usernamePopup : this.props.username)
-      .then(response => {
+  async createANSAddress(address) {
+    console.log(address)
+    console.log(this.props.usernamePopup)
+    return await this.props.wallet.createNewANSAddress(address, this.props.usernamePopup)
+      .then(async response => {
         console.log(response)
-        this.saveNewlyCreatedAnsAddress(response);
-        this.setState({
-          createdAddress: true
-        });
+        await this.setAddressPendingUpgrade(address);
         TweenMax.to('#ConfirmNewAddress__content', 0.2, {autoAlpha: 0, scale: 0.5});
-        TweenMax.fromTo('#ConfirmNewAddress__success-message', 0.2, {autoAlpha: 0, scale: 0.2}, {autoAlpha: 1, scale: 1});
+        TweenMax.fromTo('#ConfirmNewAddress__success-message', 0.2, {autoAlpha: 0, scale: 0.2}, {
+          autoAlpha: 1,
+          scale: 1
+        });
         //TweenMax.set('#unlockPanel', {height: "331px"});
         TweenMax.to('#unlockPanel', 1, {height: "220px", delay: 0.2});
         this.props.setPopupLoading(false)
@@ -112,13 +114,12 @@ class ConfirmNewAddress extends React.Component {
   }
 
 
-  handleConfirm(){
+  async handleConfirm(){
 
     console.log('is address selected', this.props.selectedAddress);
     console.log('is upgrading address', this.props.upgradingAddress);
     console.log('created address', this.state.createdAddress);
     if(this.state.createdAddress === true){
-      console.log('shouldnt be here')
       this.props.setPopupLoading(false)
       this.props.setCreatingAddress(false);
       this.props.setUpgradingAddress(false);
@@ -131,13 +132,10 @@ class ConfirmNewAddress extends React.Component {
     if (!this.props.ansAddress && !this.props.upgradingAddress) {
       this.createNormalAddress();
     } else {
-      this.unlockWallet(false, 5, () => {
-        console.log('is address selected', this.props.selectedAddress);
-        console.log('is upgrading address', this.props.upgradingAddress);
+      await this.unlockWallet(false, 30, async () => {
         // if (this.props.selectedAddress && this.props.upgradingAddress) {
-          this.createANSAddress(this.props.selectedAddress.address);
+          await this.createANSAddress(this.props.selectedAddress.address);
         // } else  {
-          console.log('in here when i shouldnt be');
           // this.createNewAnsAddress();
         // }
       });
@@ -184,7 +182,7 @@ class ConfirmNewAddress extends React.Component {
   getConfirmationText(){
     const successMessageToRender = (
       <div id="ConfirmNewAddress__success-message" style={{position: "absolute", top:"0px", width:"100%", fontSize:"15px", visibility: "hidden"}}>
-        <p>Sucess! We will notify you when your ANS address is ready.</p>
+        <p>Success! We will notify you when your ANS address is ready.</p>
         <p style={{marginTop: "20px"}}>It can take anywhere from 5 minutes to 10 minutes.</p>
       </div>
     )

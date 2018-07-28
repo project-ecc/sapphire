@@ -67,7 +67,7 @@ export default(state = INITIAL_STATE, action) => {
       if (entries.differentKinds < 0) entries.differentKinds = 0;
     }
 
-    UpdateNotificationInfo(action.payload, state.lastCheckedEarnings, entries: entries);
+    UpdateNotificationInfo(action.payload, state.lastCheckedEarnings);
     	return { ...state, lastCheckedNews: action.payload, entries };
   }	else if (action.type == NEWS_NOTIFICATION) {
     const entries = Object.assign({}, state.entries);
