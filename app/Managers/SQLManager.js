@@ -329,6 +329,20 @@ async function addAddress(address, withAns = false, belongsToMe = false){
   });
 }
 
+async function getAddress(a){
+  return new Promise(async (resolve, reject)=>{
+    await Address.find({
+      where: {
+        address: a
+      }
+    }).then(address => {
+      resolve(address);
+    }).error(err => {
+      reject(err);
+    })
+  });
+}
+
 async function getAllAddresses() {
   return new Promise(async (resolve, reject) => {
     await Address.findAll({
@@ -531,6 +545,7 @@ export {
   addTransaction,
   getAllTransactions,
   addAddress,
+  getAddress,
   deleteAddressByName,
   addAnsRecord,
   deleteAnsRecordById,

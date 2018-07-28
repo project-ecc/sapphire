@@ -198,14 +198,14 @@ export default(state = INITIAL_STATE, action) => {
 	//update staking transactions (last week and last month)
 	else if(action.type == STAKING_REWARD_UPDATE){
 
-    const oneMonthAgo = moment().subtract(1, 'M').unix() * 1000;
-    const oneWeekago = moment().subtract(7, 'd').unix() * 1000;
-    const currentDay = moment().unix() * 1000;
+    const oneMonthAgo = moment().subtract(1, 'M').unix();
+    const oneWeekago = moment().subtract(7, 'd').unix();
+    const currentDay = moment().unix();
     let stakingRewards = state.stakingRewards;
     let rewardsLastMonth = 0;
     let rewardsLastWeek = 0;
 		stakingRewards.map((transaction) => {
-      const transactionTime = transaction.time * 1000;
+      const transactionTime = transaction.time;
       if (transactionTime >= oneWeekago && transactionTime <= currentDay ){
         rewardsLastWeek += transaction.amount;
       }
@@ -217,9 +217,9 @@ export default(state = INITIAL_STATE, action) => {
 	}
 	else if(action.type == STAKING_REWARD){
 
-    let oneMonthAgo = moment().subtract(1, 'M').unix() * 1000;
-    let oneWeekago = moment().subtract(7, 'd').unix() * 1000;
-    let currentDay = moment().unix() * 1000;
+    let oneMonthAgo = moment().subtract(1, 'M').unix();
+    let oneWeekago = moment().subtract(7, 'd').unix();
+    let currentDay = moment().unix();
     let rewardsLastMonth = 0;
     let rewardsLastWeek = 0;
     let totalRewards = 0;
@@ -227,7 +227,7 @@ export default(state = INITIAL_STATE, action) => {
 		//we get this the first time we load the transactions or when we load them from memory
 		if(action.payload instanceof Object){
 			action.payload.map((transaction) => {
-			  const transactionTime = transaction.time * 1000;
+			  const transactionTime = transaction.time;
 			  if (transactionTime >= oneWeekago && transactionTime <= currentDay ){
 			    rewardsLastWeek += transaction.amount;
         }
