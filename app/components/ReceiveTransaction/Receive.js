@@ -306,7 +306,7 @@ class Receive extends Component {
                       {address.current_balance}
                     </div>
                     {this.props.filterAll ? <div className={statusColumn} onClick={this.rowClicked.bind(this, address)}>
-                      {address.status}
+                      <span className="Receive__ans-code">{address.status}</span>
                     </div> : null}
                   </div>
                 );
