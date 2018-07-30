@@ -225,7 +225,7 @@ class Transaction extends Component {
                 <p className="tableHeaderTitle tableHeaderTitleSmall">{ this.props.lang.transactions }  </p>
               </div>
               <div className="col-sm-8" style={{display:"flex",justifyContent:"flex-end",padding:"0"}}>
-                <button style={{cursor: 'pointer'}} onClick={(e) => this.getAllTransactions(this.props.page, this.props.type)}><span className="icon" style={{marginTop:"5px",top:"0"}}><i className={`fa fa-refresh ${spinClass}`}></i></span></button>
+                <button style={{cursor: 'pointer', borderStyle: 'none', background: 'none'}} onClick={(e) => this.getAllTransactions(this.props.page, this.props.type)}><span className="icon" style={{marginTop:"5px",top:"0"}}><i style={{color: '#b9b9b9'}} className={`fa fa-refresh ${spinClass}`}></i></span></button>
                   <div className="col-sm-6" style={{display:"flex",alignItems:"center", maxWidth:"300px"}}>
                     <div className="box" style={{width:"100%"}}>
                       <div className="container-1" style={{width:"100%", maxWidth:"300px", display:"flex",alignItems:"center"}}>
