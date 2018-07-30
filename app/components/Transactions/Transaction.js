@@ -114,8 +114,12 @@ class Transaction extends Component {
     });
   }
 
-  renderStatus(opt) {
-    if (opt < 10) {
+  renderStatus(opt, cat) {
+    if (opt < 30 && cat === 'generate') {
+      return (
+        <span className="desc_p">{ this.props.lang.immature }</span>
+      );
+    } else if(opt < 10){
       return (
         <span className="desc_p">{ this.props.lang.pending }</span>
       );
@@ -301,7 +305,7 @@ class Transaction extends Component {
                     </div>
                     <div className="col-sm-3 text-right" style={{ textAlign: "right"}}>
                       <p style={{ margin: '0px' }}>{t.amount} ECC</p>
-                      <p style={{ margin: '0px', fontSize: "12px" }}>{this.renderStatus(t.confirmations)}</p>
+                      <p style={{ margin: '0px', fontSize: "12px" }}>{this.renderStatus(t.confirmations, t.category)}</p>
                     </div>
                    </div>
                     <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{ paddingLeft: "2%", width: "100%", paddingTop: "6px", paddingBottom: "6px", cursor:"default", zIndex:"2", display:"none", margin:"0",}}>

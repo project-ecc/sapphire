@@ -221,6 +221,7 @@
     "reward": "Reward",
     "confirmed": "Confirmed",
     "pending": "Pending",
+    "immature": "Immature",
     "orphaned": "Orphaned",
     "type": "TYPE",
     "status": "STATUS",
