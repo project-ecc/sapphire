@@ -204,6 +204,7 @@
     "appSettings": "APP SETTINGS",
     "general": "General",
     "wallet": "Wallet",
+    "advanced": "Advanced",
     "appearance": "Appearance",
     "eccNews": "ECC News",
     "showZeroBalances" : "Show zero balance addresses",

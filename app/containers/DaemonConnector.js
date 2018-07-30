@@ -800,7 +800,15 @@ class DaemonConnector {
         this.store.dispatch({type: PENDING_TRANSACTION, payload: entry.txId})
 
       }
-      await addTransaction(entry, Number(entry.confirmations) < 30, false)
+
+      let isPending = false;
+
+      if(entry.category === 'generate' || entry.category === 'staked'){
+        isPending = Number(entry.confirmations) < 30;
+      } else {
+        isPending = Number(entry.confirmations) < 10;
+      }
+      await addTransaction(entry, isPending)
 
       //update with 1 new staking reward since previous ones have already been loaded on startup
       if(entry.category === "generate"){

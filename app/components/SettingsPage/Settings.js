@@ -12,6 +12,7 @@ import SettingsSidebarItem from './SettingsSidebarItem';
 import LanguageSelector from '../Others/LanguageSelector';
 import ThemeSelector from '../Others/ThemeSelector';
 import {version} from './../../../package.json';
+import Console from './Console';
 
 const settings = require('electron').remote.require('electron-settings');
 const remote = require('electron').remote;
@@ -336,6 +337,15 @@ class Settings extends Component {
     )
   }
 
+  getAdvancedSettings(){
+    return(
+      <div className="container">
+        <p>Coming Soon!</p>
+        {/*<Console/>*/}
+      </div>
+    )
+  }
+
   goToUrl(url){
     open(url);
   }
@@ -379,6 +389,7 @@ class Settings extends Component {
       case "Language": return this.getLanguageSettings();
       case "Appearance": return this.getAppearanceSettings();
       case "Notifications": return this.getNotificationSettings();
+      case "Advanced": return this.getAdvancedSettings();
     }
   }
 
@@ -440,6 +451,7 @@ class Settings extends Component {
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Notifications")} selected={this.props.settingsOptionSelected === "Notifications"} text={ this.props.lang.notifications } />
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Appearance")} selected={this.props.settingsOptionSelected === "Appearance"} text={ this.props.lang.appearance } />
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Language")} selected={this.props.settingsOptionSelected === "Language"} text={ this.props.lang.language } />
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Advanced")} selected={this.props.settingsOptionSelected === "Advanced"} text={ this.props.lang.advanced } />
               <div id="socialIcons">
                 <img onMouseEnter={this.handleIconHover.bind(this, "twitter")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://twitter.com/project_ecc")} src={twitter} />
                 <img onMouseEnter={this.handleIconHover.bind(this, "facebook")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://www.facebook.com/projectECC/")} src={facebook} />
