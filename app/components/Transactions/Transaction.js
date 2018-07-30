@@ -25,7 +25,8 @@ class Transaction extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.state = {
       searchValue: '',
-      transactionData: props.data
+      transactionData: props.data,
+      isRefreshing: false
     };
   }
 
@@ -85,6 +86,9 @@ class Transaction extends Component {
   }
 
   async getAllTransactions(page, type = 'all') {
+    this.setState({
+      isRefreshing: true
+    });
     const where = {
       is_main: 1
     };
@@ -111,6 +115,9 @@ class Transaction extends Component {
     $(".extraInfoTransaction").hide();
     $(".extraInfoTransaction").each(function() {
       $(this).attr('sd', 'false');
+    });
+    this.setState({
+      isRefreshing: false
     });
   }
 
@@ -206,6 +213,7 @@ class Transaction extends Component {
     const today = new Date();
     let counter = -1;
     const rowClassName = "row normalWeight tableRowCustom tableRowCustomTransactions";
+    const spinClass = this.state.isRefreshing ? 'fa-spin' : ''
 
     return (
       <div style={{height: "100%", width: "100%", paddingLeft: "40px", paddingRight: "40px", overflowX: "hidden"}}>
@@ -217,7 +225,7 @@ class Transaction extends Component {
                 <p className="tableHeaderTitle tableHeaderTitleSmall">{ this.props.lang.transactions }  </p>
               </div>
               <div className="col-sm-8" style={{display:"flex",justifyContent:"flex-end",padding:"0"}}>
-
+                <button style={{cursor: 'pointer'}} onClick={(e) => this.getAllTransactions(this.props.page, this.props.type)}><span className="icon" style={{marginTop:"5px",top:"0"}}><i className={`fa fa-refresh ${spinClass}`}></i></span></button>
                   <div className="col-sm-6" style={{display:"flex",alignItems:"center", maxWidth:"300px"}}>
                     <div className="box" style={{width:"100%"}}>
                       <div className="container-1" style={{width:"100%", maxWidth:"300px", display:"flex",alignItems:"center"}}>
