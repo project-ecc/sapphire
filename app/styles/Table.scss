@@ -121,6 +121,7 @@
 }
 
 .extraInfoTransaction{
+  margin:0;
   @include themify($themes) { 
     /*background-color: themed('bodyBackgroundColor'); */
     background-color: themed('tableExtraBackgroundColor'); 
