@@ -155,7 +155,7 @@ class DaemonConnector {
   checkQueuedNotifications(){
     if(!this.store.getState().startup.loading && !this.store.getState().startup.loader && this.store.getState().startup.setupDone && this.queuedNotifications.length >= 0){
 
-      if(this.queuedNotifications.length == 0){
+      if(this.queuedNotifications.length === 0){
         clearInterval(this.checkQueuedNotificationsInterval);
         return;
       }else{
@@ -704,15 +704,16 @@ class DaemonConnector {
       restartLoop:
         while (true) {
           for(let i = 0; i <= values.length - 1; i++) {
-            if (values[i].category === "generate" && generatedFound === false) {
+            if ((values[i].category === 'generate' || values[i].category === 'immature') && generatedFound === false) {
               generatedFound = true
               continue restartLoop;
             }
             if(generatedFound) {
-              if(values[i].category !== "generate") {
+              if(values[i].category !== 'generate' && values[i].category !== 'immature') {
                 values[i].category = "staked";
               } else {
                 values[i].is_main = true;
+                values[i].category = 'generate';
               }
               rewards.push({...values[i], txId: key})
             }
@@ -799,7 +800,15 @@ class DaemonConnector {
         this.store.dispatch({type: PENDING_TRANSACTION, payload: entry.txId})
 
       }
-      await addTransaction(entry, Number(entry.confirmations) < 30, false)
+
+      let isPending = false;
+
+      if(entry.category === 'generate' || entry.category === 'staked'){
+        isPending = Number(entry.confirmations) < 30;
+      } else {
+        isPending = Number(entry.confirmations) < 10;
+      }
+      await addTransaction(entry, isPending)
 
       //update with 1 new staking reward since previous ones have already been loaded on startup
       if(entry.category === "generate"){

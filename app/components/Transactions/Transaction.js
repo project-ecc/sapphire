@@ -25,7 +25,8 @@ class Transaction extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.state = {
       searchValue: '',
-      transactionData: props.data
+      transactionData: props.data,
+      isRefreshing: false
     };
   }
 
@@ -85,6 +86,9 @@ class Transaction extends Component {
   }
 
   async getAllTransactions(page, type = 'all') {
+    this.setState({
+      isRefreshing: true
+    });
     const where = {
       is_main: 1
     };
@@ -112,10 +116,17 @@ class Transaction extends Component {
     $(".extraInfoTransaction").each(function() {
       $(this).attr('sd', 'false');
     });
+    this.setState({
+      isRefreshing: false
+    });
   }
 
-  renderStatus(opt) {
-    if (opt < 10) {
+  renderStatus(opt, cat) {
+    if (opt < 30 && cat === 'generate') {
+      return (
+        <span className="desc_p">{ this.props.lang.immature }</span>
+      );
+    } else if(opt < 10){
       return (
         <span className="desc_p">{ this.props.lang.pending }</span>
       );
@@ -202,6 +213,7 @@ class Transaction extends Component {
     const today = new Date();
     let counter = -1;
     const rowClassName = "row normalWeight tableRowCustom tableRowCustomTransactions";
+    const spinClass = this.state.isRefreshing ? 'fa-spin' : ''
 
     return (
       <div style={{height: "100%", width: "100%", paddingLeft: "40px", paddingRight: "40px", overflowX: "hidden"}}>
@@ -213,7 +225,7 @@ class Transaction extends Component {
                 <p className="tableHeaderTitle tableHeaderTitleSmall">{ this.props.lang.transactions }  </p>
               </div>
               <div className="col-sm-8" style={{display:"flex",justifyContent:"flex-end",padding:"0"}}>
-
+                <button style={{cursor: 'pointer', borderStyle: 'none', background: 'none'}} onClick={(e) => this.getAllTransactions(this.props.page, this.props.type)}><span className="icon" style={{marginTop:"5px",top:"0"}}><i style={{color: '#b9b9b9'}} className={`fa fa-refresh ${spinClass}`}></i></span></button>
                   <div className="col-sm-6" style={{display:"flex",alignItems:"center", maxWidth:"300px"}}>
                     <div className="box" style={{width:"100%"}}>
                       <div className="container-1" style={{width:"100%", maxWidth:"300px", display:"flex",alignItems:"center"}}>
@@ -301,7 +313,7 @@ class Transaction extends Component {
                     </div>
                     <div className="col-sm-3 text-right" style={{ textAlign: "right"}}>
                       <p style={{ margin: '0px' }}>{t.amount} ECC</p>
-                      <p style={{ margin: '0px', fontSize: "12px" }}>{this.renderStatus(t.confirmations)}</p>
+                      <p style={{ margin: '0px', fontSize: "12px" }}>{this.renderStatus(t.confirmations, t.category)}</p>
                     </div>
                    </div>
                     <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{ paddingLeft: "2%", width: "100%", paddingTop: "6px", paddingBottom: "6px", cursor:"default", zIndex:"2", display:"none", margin:"0",}}>

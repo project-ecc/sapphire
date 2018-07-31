@@ -10,17 +10,17 @@
 }
 
 #mainSettingsColorFix{
-	@include themify($themes) { 
-		background-color: themed('settingsSidebarBackgroundColor'); 
+	@include themify($themes) {
+		background-color: themed('settingsSidebarBackgroundColor');
 	}
 	width: 100%;
 	height: 100vh;
 }
 
 #sidebarSettings{
-	@include themify($themes) { 
-		background-color: themed('settingsSidebarBackgroundColor'); 
-		box-shadow: themed('settingsSidebarBoxShadow');  
+	@include themify($themes) {
+		background-color: themed('settingsSidebarBackgroundColor');
+		box-shadow: themed('settingsSidebarBoxShadow');
 	}
 	width: 220px;
 	float: left;
@@ -29,8 +29,8 @@
 }
 
 .subSettings{
-	@include themify($themes) { 
-		background-color: themed('settingsRightPanelBackgroundColor');  
+	@include themify($themes) {
+		background-color: themed('settingsRightPanelBackgroundColor');
 	}
 	width: 100%;
 	max-width: 580px;
@@ -42,8 +42,8 @@
 }
 
 #settingsContainer{
-	@include themify($themes) { 
-		background-color: themed('settingsRightPanelBackgroundColor');  
+	@include themify($themes) {
+		background-color: themed('settingsRightPanelBackgroundColor');
 	}
 	width: 100%;
 	max-width: 800px;
@@ -54,8 +54,8 @@
 }
 
 #brighter{
-	@include themify($themes) { 
-		background-color: themed('settingsSidebarBackgroundColor');  
+	@include themify($themes) {
+		background-color: themed('settingsSidebarBackgroundColor');
 	}
 	height: 100vh;
 	width: 50%;
@@ -64,8 +64,8 @@
 }
 
 #darker{
-	@include themify($themes) { 
-		background-color: themed('settingsRightPanelBackgroundColor');  
+	@include themify($themes) {
+		background-color: themed('settingsRightPanelBackgroundColor');
 	}
 	height: 100vh;
 	width: 50%;
@@ -74,9 +74,9 @@
 }
 
 
-#sidebarTitle{	
-	@include themify($themes) { 
-		color: themed('settingsTitleColor');  
+#sidebarTitle{
+	@include themify($themes) {
+		color: themed('settingsTitleColor');
 	}
 	font-size: 14px;
 	font-weight: 800;
@@ -84,8 +84,8 @@
 }
 
 .settingsSidebarItem{
-	@include themify($themes) { 
-		color: themed('settingsSubTitleColor');  
+	@include themify($themes) {
+		color: themed('settingsSubTitleColor');
 	}
     margin-top: 10px;
     cursor: pointer;
@@ -101,32 +101,32 @@
 }
 
 .settingsSidebarItem:hover{
-	@include themify($themes) { 
+	@include themify($themes) {
 		background-color: themed('settinsSubTitleActiveBackgroundColor');
-		color: themed('settingsSubTitleActiveColor');    
+		color: themed('settingsSubTitleActiveColor');
 	}
     border-radius: 7px;
 }
 
 .selectedSideBarItem{
-	@include themify($themes) { 
+	@include themify($themes) {
 		background-color: themed('settinsSubTitleSelectedBackgroundColor') !important;
-		color: themed('settingsSubTitleActiveColor');    
+		color: themed('settingsSubTitleActiveColor');
 	}
     border-radius: 7px;
 }
 
 .settingsToggle{
-	@include themify($themes) { 
-		border-bottom: themed('settingsItemBorderBottom');  
+	@include themify($themes) {
+		border-bottom: themed('settingsItemBorderBottom');
 	}
 	padding-bottom: 20px;
 	padding-top: 20px;
 }
 
 .settingsToggle p{
-	@include themify($themes) { 
-		color: themed('bodyParagraphColor');  
+	@include themify($themes) {
+		color: themed('bodyParagraphColor');
 	}
 }
 
@@ -135,8 +135,8 @@
 }
 
 #applicationVersion{
-	@include themify($themes) { 
-		color: themed('settingsTitleColor');  
+	@include themify($themes) {
+		color: themed('settingsTitleColor');
 	}
 	font-size: 14px;
 	font-weight: 700;
@@ -144,8 +144,8 @@
 }
 
 #updateAvailable{
-	@include themify($themes) { 
-		color: themed('eccTicker');  
+	@include themify($themes) {
+		color: themed('eccTicker');
 	}
 	font-size: 15px;
 	font-weight: 700;
@@ -153,8 +153,8 @@
 }
 
 #updateUnavailable{
-	@include themify($themes) { 
-		color: themed('settingsTitleColor');  
+	@include themify($themes) {
+		color: themed('settingsTitleColor');
 	}
 	font-size: 16px;
 	font-weight: 600;
@@ -162,15 +162,15 @@
 
 
 #walletBackup{
-	@include themify($themes) { 
-		color: themed('bodyParagraphColor');  
+	@include themify($themes) {
+		color: themed('bodyParagraphColor');
 	}
 	font-size: 21px;
 }
 
 #walletBackupExplanation{
-	@include themify($themes) { 
-		color: themed('bodySecondaryParagraphColor');  
+	@include themify($themes) {
+		color: themed('bodySecondaryParagraphColor');
 	}
 	font-size: 18px;
 	line-height:25px;
@@ -185,14 +185,14 @@
 }
 
 .walletBackupOptions{
-	@include themify($themes) { 
-		color: themed('bodySecondaryParagraphColor') !important;  
+	@include themify($themes) {
+		color: themed('bodySecondaryParagraphColor') !important;
 	}
 }
 
 #languageRectangle{
-	@include themify($themes) { 
-		background-color: themed('settingsHelTranslateBackgroundColor');  
+	@include themify($themes) {
+		background-color: themed('settingsHelTranslateBackgroundColor');
 	}
 	padding-left: 15px;
     padding-right: 15px;
@@ -200,8 +200,8 @@
 }
 
 #languageHelp{
-	@include themify($themes) { 
-		color: themed('settingsHelpTranslateTitleColor');  
+	@include themify($themes) {
+		color: themed('settingsHelpTranslateTitleColor');
 	}
 	font-size: 15px;
 	font-weight: 700;
@@ -210,8 +210,8 @@
 }
 
 #languageHelpDesc{
-	@include themify($themes) { 
-		color: themed('bodyParagraphColor');  
+	@include themify($themes) {
+		color: themed('bodyParagraphColor');
 	}
 	font-size: 15px;
 	padding-bottom: 15px;
@@ -239,8 +239,8 @@
 }
 
 .settingsToggleSubText{
-	@include themify($themes) { 
-		color: themed('settingsToggleDescriptionColor') !important;  
+	@include themify($themes) {
+		color: themed('settingsToggleDescriptionColor') !important;
 	}
 	font-size: 14px;
     padding-top: 13px;
@@ -253,8 +253,8 @@
 }
 
 .backupLocation{
-	@include themify($themes) { 
-		color: themed('bodySecondaryParagraphColor') ;  
+	@include themify($themes) {
+		color: themed('bodySecondaryParagraphColor') ;
 	}
 	margin-top: 5px;
     font-weight: 700;
@@ -283,5 +283,59 @@
 @media only screen and (max-width: 900px) {
     .subSettings {
         max-width: 520px;
-    }	
+    }
+}
+
+.console_body{
+  position: relative;
+  padding: 25px;
+  min-height: 50vh;
+}
+
+.console_wrapper{
+  height: 48vh;
+  border: 2px solid #efefef;
+  padding-top: 15px;
+  overflow-y: scroll;
+}
+
+.hours_list{
+
+}
+
+.commands_list{
+
+}
+
+.text_green{
+  color: #a1be5a;
+}
+
+.console_buttons{
+  bottom: 15px;
+  left: 10px;
+  right: 0px;
+}
+
+.command_input {
+  width: 100%;
+  padding: 12px;
+  font-size: 0.9em;
+  border: 2px solid #efefef;
+  border-color:  #efefef;
+}
+
+.command_input:focus {
+  border: 2px solid #efefef;
+  border-color:  #efefef;
+}
+
+.enter_btn{
+  background-color: #a1be5a;
+  border: 2px solid #8DA557;
+  color: #fff;
+  cursor: pointer;
+  padding: 10px;
+  font-weight: 300;
+  text-align: center;
 }
