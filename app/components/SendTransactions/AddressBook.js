@@ -11,6 +11,10 @@ const Tools = require('../../utils/tools');
 const { clipboard } = require('electron');
 import { getContacts, deleteContact } from "../../Managers/SQLManager";
 
+const moment = require('moment');
+
+moment.locale('en');
+
 class AddressBook extends Component {
   constructor(props) {
     super(props);
@@ -45,7 +49,7 @@ class AddressBook extends Component {
   }
 
   updateTable(friendList){
-    
+
     $('#rows').css("height", $('#tableAddresses').height()-128);
     let numberOfChildren = friendList.length;
     let totalSize = numberOfChildren * 40; //40px height of each row
@@ -58,7 +62,7 @@ class AddressBook extends Component {
      // $(rows).css("overflow-y", "scroll");
       $('.headerAddresses').css("left", "0px");
     }
-   
+
   }
 
   componentDidUpdate(){
@@ -165,14 +169,14 @@ class AddressBook extends Component {
                   <div className={this.props.sendPanel ? "col-sm-7 tableColumn" : "col-sm-7 tableColumn selectableText"}>
                     {friend.address.address}
                   </div>
-                  
+
                 </div>
-                <div id={`friend_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" 
+                <div id={`friend_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction"
                       style={{paddingLeft: "10%", width: "100%", paddingTop: "6px", paddingBottom: "6px", cursor:"default", zIndex:"2", display:"none", justifyContent:"flex-start"}}>
-                      
+
                       <div style={{padding:"0 25px"}}>
                           <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px', paddingLeft:"0"}}><span className="desc2 small-header">Friend since</span></p>
-                          <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">Mar. 22, 2018</span></p>
+                          <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">{moment(friend.createdAt).format("dddd, MMMM Do YYYY")}</span></p>
                       </div>
                       <div style={{padding:"0 25px"}}>
                           <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">Sent</span></p>
