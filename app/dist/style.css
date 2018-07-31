@@ -17976,7 +17976,10 @@ aside {
   padding-left: 5%; }
 
 .tableColumnFixReceive {
-  padding-left: 5%; }
+  padding-left: 5%;
+  padding-right: 0 ; 
+  text-align: right;
+}
 
 #imageAns {
   position: relative;

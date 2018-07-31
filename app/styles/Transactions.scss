@@ -7,6 +7,25 @@
   font-weight: 600;
 }
 
+.icon-action{
+  @include themify($themes) {
+    color: themed('bodySecondaryParagraphColor');
+  }
+  cursor:pointer;
+}
+
+.icon-action:hover{
+   @include themify($themes) {
+     color: themed('bodyParagraphColor');
+  }
+}
+
+.icon-action:active{
+      @include themify($themes) {
+       color: themed('buttonBorderedFontColor');
+    }
+}
+
 #transactionAddresses{
   @include themify($themes) {
     background-color: themed('homePanelsBackgroundColor');

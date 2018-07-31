@@ -142,7 +142,7 @@ class AddressBook extends Component {
     let rowClassName = "row normalWeight tableRowCustom";
 
     return (
-      <div className="tableCustom" id="tableAddresses" style={{height:"60%"}}>
+      <div className="tableCustom" id="tableAddresses" style={{height: this.props.sendPanel ? "55%" : "60%"}}>
         <div className={this.props.sendPanel ? "tableHeaderNormal tableHeaderBig" : "tableHeaderNormal"}>
           <p className={this.props.sendPanel ? "tableHeaderTitle" : "tableHeaderTitle tableHeaderTitleSmall"}>{ this.props.lang.contacts }</p>
           {this.getHeaderText()}
@@ -170,7 +170,7 @@ class AddressBook extends Component {
                 <div id={`friend_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" 
                       style={{paddingLeft: "10%", width: "100%", paddingTop: "6px", paddingBottom: "6px", cursor:"default", zIndex:"2", display:"none", justifyContent:"flex-start"}}>
                       
-                      <div className="col-sm-3" style={{padding:"0 15px"}}>
+                      <div style={{padding:"0 25px"}}>
                           <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px', paddingLeft:"0"}}><span className="desc2 small-header">Friend since</span></p>
                           <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">Mar. 22, 2018</span></p>
                       </div>
@@ -183,9 +183,7 @@ class AddressBook extends Component {
                           <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">500.355 ECC</span></p>
                       </div>
                       <div className="col-sm-1 tableColumn" style={{marginLeft:"auto",display:"flex",alignItems:"center", padding:"0 20px", justifyContent:"flex-end"}}>
-                        
-                        <img className="deleteContactIcon" style={{height:"30px"}} onClick={this.deleteAddress.bind(this, friend)} src={bin}/>
-                        
+                         <span className="icon-action" style={{float: "right", fontSize:"18px" /*,color:"#8e8e8e"*/}} onClick={this.deleteAddress.bind(this, friend)} ><i className="fa fa-remove"></i> </span>
                       </div>
                 </div>
               </div>
