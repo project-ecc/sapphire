@@ -153,24 +153,39 @@ class AddressBook extends Component {
               <div id="addressHeader" className="col-sm-7 headerAddresses tableRowHeader">{ this.props.lang.address }</div>
               <div className="col-sm-1 headerAddresses"></div>
             </div>
-          <div id="rows" style={{ width: "100%", padding: "0 0 0 8px", overflowY: "scroll"}}>
+          <div id="rows" style={{ width: "100%", padding: "0", overflowY: "scroll"}}>
           {this.props.friends.map((friend, index) => {
             return (
-              <div key={`friend_${index}`} className={index % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} onClick={this.rowClicked(friend, index)}  onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default"}} >
-                <div className={this.props.sendPanel ? "col-sm-4 tableColumn tableColumContactFix" : "col-sm-4 tableColumn tableColumContactFix selectableText"}>
-                  {friend.ansrecord != null ? <img src={ansAddresImage} style={{padding:"0 5px 3px 0"}}></img> : null}
-                  {friend.ansrecord != null ? renderHTML(`${friend.ansrecord.name}<span className="Receive__ans-code">#${friend.ansrecord.code} </span> `) : friend.name}
+              <div key={`friend_${index}`}>
+              <div className={index % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} onClick={this.rowClicked(friend, index)}  onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{cursor: this.props.sendPanel ? "pointer" : "default"}} >
+                  <div className={this.props.sendPanel ? "col-sm-4 tableColumn tableColumContactFix" : "col-sm-4 tableColumn tableColumContactFix selectableText"}>
+                    {friend.ansrecord != null ? <img src={ansAddresImage} style={{padding:"0 5px 3px 0"}}></img> : null}
+                    {friend.ansrecord != null ? renderHTML(`${friend.ansrecord.name}<span className="Receive__ans-code">#${friend.ansrecord.code} </span> `) : friend.name}
+                  </div>
+                  <div className={this.props.sendPanel ? "col-sm-7 tableColumn" : "col-sm-7 tableColumn selectableText"}>
+                    {friend.address.address}
+                  </div>
+                  
                 </div>
-                <div className={this.props.sendPanel ? "col-sm-7 tableColumn" : "col-sm-7 tableColumn selectableText"}>
-                  {friend.address.address}
-                </div>
-                <div className="col-sm-1 tableColumn">
-                  <img className="deleteContactIcon" onClick={this.deleteAddress.bind(this, friend)} style={{visibility: this.props.hoveredAddress === friend ? "visible" : "hidden"}}src={bin}/>
-                </div>
-                <div id={`friend_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{ paddingLeft: "2%", width: "100%", paddingTop: "6px", paddingBottom: "6px", cursor:"default", zIndex:"2", display:"none"}}>
-                      <div className="col-sm-8">
-                          <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">dummy</span></p>
-                          <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">dummy</span></p>
+                <div id={`friend_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" 
+                      style={{paddingLeft: "10%", width: "100%", paddingTop: "6px", paddingBottom: "6px", cursor:"default", zIndex:"2", display:"none", justifyContent:"flex-start"}}>
+                      
+                      <div className="col-sm-3" style={{padding:"0 15px"}}>
+                          <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px', paddingLeft:"0"}}><span className="desc2 small-header">Friend since</span></p>
+                          <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">Mar. 22, 2018</span></p>
+                      </div>
+                      <div style={{padding:"0 25px"}}>
+                          <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">Sent</span></p>
+                          <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">115.00923 ECC</span></p>
+                      </div>
+                      <div style={{padding:"0 25px"}}>
+                          <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">Received</span></p>
+                          <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">500.355 ECC</span></p>
+                      </div>
+                      <div className="col-sm-1 tableColumn" style={{marginLeft:"auto",display:"flex",alignItems:"center", padding:"0 20px", justifyContent:"flex-end"}}>
+                        
+                        <img className="deleteContactIcon" style={{height:"30px"}} onClick={this.deleteAddress.bind(this, friend)} src={bin}/>
+                        
                       </div>
                 </div>
               </div>

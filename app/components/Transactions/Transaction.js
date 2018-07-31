@@ -253,7 +253,7 @@ class Transaction extends Component {
               <div id="addressHeader" className="col-sm-6 headerAddresses tableRowHeader text-left">{ this.props.lang.info }</div>
               <div id="addressHeader" className="col-sm-3 headerAddresses tableRowHeader" style={{textAlign: "right"}}>{ this.props.lang.amount } & {this.props.lang.status}</div>
             </div>
-          <div id="rows" style={{height: "500px", width: "100%", padding: "0 0 0 8px", overflowY: "scroll"}}>
+          <div id="rows" style={{height: "500px", width: "100%", padding: "0", overflowY: "scroll"}}>
             {data.map((t, index) => {
              // console.log(t, index)
              // console.log(t)
@@ -289,7 +289,7 @@ class Transaction extends Component {
 
                 return (
                 <div key={index}>
-                  <div className= {counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} style={{padding:"0",cursor: "pointer", fontSize: "15px", justifyContent:"space-around"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
+                  <div className= {counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} style={{padding:"0",cursor: "pointer", fontSize: "15px", justifyContent:"space-around", minHeight:"40px"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
                     <div className="col-sm-3" style={{}}>
                       <p style={{ margin: '0px' }}><span>{moment(t.time).format('MMMM Do')}</span></p>
                     </div>
@@ -305,20 +305,20 @@ class Transaction extends Component {
                     </div>
                    </div>
                     <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{ paddingLeft: "2%", width: "100%", paddingTop: "6px", paddingBottom: "6px", cursor:"default", zIndex:"2", display:"none", margin:"0",}}>
-                          <div className="col-sm-4">
+                          <div style={{padding:"0 15px"}}>
                             <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.dateString}</span></p>
                             <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{(new Date(t.time).toDateString()).toString()}</span></p>
                           </div>
-                          <div className="col-sm-3">
+                          <div style={{padding:"0 15px"}}>
                             <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.confirmations}</span></p>
                             <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{t.confirmations}</span></p>
                           </div>
-                          <div className="col-sm-3">
+                          <div style={{padding:"0 15px"}}>
                             <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionFee}</span></p>
                             <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{t.fee}</span></p>
                           </div>
 
-                        <div className="col-sm-8">
+                        <div style={{padding:"0 15px"}}>
                             <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionId}</span></p>
                             <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">{t.transaction_id}</span></p>
                         </div>
