@@ -81,6 +81,25 @@ export function grabEccoinDir() {
   }
 }
 
+export function getSapphireDirectory() {
+  let folderName = ''
+  if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+    folderName = 'Electron'
+  } else {
+    folderName = 'Sapphire'
+  }
+  if (process.platform === 'linux') {
+    // linux directory
+    return `${homedir}/${folderName}/`;
+  } else if (process.platform === 'darwin') {
+    // OSX
+    return `${homedir}/Library/Application Support/${folderName}/`;
+  } else if (process.platform.indexOf('win') > -1) {
+    // Windows
+    return `${homedir}\\Appdata\\roaming\\${folderName}\\`;
+  }
+}
+
 export function getPlatformWalletUri() {
   if (process.platform === 'linux') {
     // linux directory

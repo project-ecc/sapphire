@@ -20,7 +20,9 @@ const dialog = remote.require('electron').dialog;
 const app = remote.app;
 const homedir = require('os').homedir();
 const Tools = require('../../utils/tools');
+import Wallet from '../../utils/wallet';
 const guiVersion = version;
+import {getSapphireDirectory} from "../../utils/platform.service";
 
 var jsonFormat = require('json-format');
 var open = require("open");
@@ -223,6 +225,21 @@ class Settings extends Component {
     });
   }
 
+  async deleteAndReIndex(){
+    let wallet = new Wallet();
+
+    const data = await wallet.walletstop();
+    if (data && data === 'ECC server stopping') {
+      console.log('stopping daemon');
+
+    }
+    const dbLocation = getSapphireDirectory() + 'database.sqlite';
+    if(fs.unlinkSync(dbLocation)){
+      app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])})
+      app.exit(0)
+    }
+  }
+
   getGeneralSettings(){
     return(
       <div className="container">
@@ -264,9 +281,9 @@ class Settings extends Component {
               <p className="walletBackupOptions" style={{fontSize: "14px", fontWeight: "700"}}>{this.props.lang.sapphireInfoDesc}.</p>
             </div>
             <div className="col-sm-2 text-right removePadding">
-            <p onClick={this.handleHelpFile.bind(this)} style={{cursor: "pointer"}}>Generate</p>
+              <p onClick={this.handleHelpFile.bind(this)} style={{cursor: "pointer"}}>Generate</p>
             </div>
-          </div>
+        </div>
       </div>
     )
   }
@@ -340,6 +357,14 @@ class Settings extends Component {
   getAdvancedSettings(){
     return(
       <div className="container">
+        <div className="row settingsToggle" >
+          <div className="col-sm-10 text-left removePadding">
+            <p className="walletBackupOptions" style={{fontSize: "14px", fontWeight: "700"}}>{this.props.lang.sapphireInfoDesc}.</p>
+          </div>
+          <div className="col-sm-2 text-right removePadding">
+            <p onClick={this.deleteAndReIndex.bind(this)} style={{cursor: "pointer"}}>Delete & Relaunch</p>
+          </div>
+        </div>
         <p>Coming Soon!</p>
         {/*<Console/>*/}
       </div>
