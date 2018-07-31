@@ -162,7 +162,7 @@ class ExportPrivateKeys extends React.Component {
       this.showWrongPassword();
       return;
     }
-    this.unlockWallet(false, 5, async () => {
+    this.unlockWallet(false, 30, async () => {
       await this.getDataToExport();
     })
   }
@@ -174,9 +174,9 @@ class ExportPrivateKeys extends React.Component {
     let addressesArray = [];
     addresses.map((address) => {
       batch.push({
-        method: 'dumpprivkey', parameters: [address.normalAddress]
+        method: 'dumpprivkey', parameters: [address.address]
       });
-      addressesArray.push(address.normalAddress);
+      addressesArray.push(address.address);
     });
 
     let privKeys = await this.getPrivateKeys(batch);
@@ -268,6 +268,7 @@ class ExportPrivateKeys extends React.Component {
       this.props.wallet.command(batch).then((data) => {
         resolve(data);
       }).catch((err) => {
+        console.log(err)
         reject(null);
       });
     });
@@ -336,6 +337,7 @@ class ExportPrivateKeys extends React.Component {
       return
     }
     let counter = 0;
+    console.log(this.state.toDisplay)
     const keys = Object.keys(this.state.toDisplay).map((key) => {
       let pubKey = this.state.toDisplay[key].publicKey;
       let privKey = this.state.toDisplay[key].privateKey;
