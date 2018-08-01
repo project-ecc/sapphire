@@ -46,7 +46,7 @@ class Loader extends React.Component {
         console.log("started daemon")
       }
     }).catch(err => {
-
+      event.emit('loading-error', {message: err.message});
     });
 
     if(this.props.guiUpdate){
