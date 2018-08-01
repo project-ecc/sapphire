@@ -186,9 +186,11 @@ class DaemonManager {
           return;
         }
         this.downloading = false;
-        event.emit('updatedDaemon');
-        if (!this.shouldRestart) { this.startDaemon(); }
-        this.toldUserAboutUpdate = false;
+        if(downloaded !== false){
+          event.emit('updatedDaemon');
+          if (!this.shouldRestart) { this.startDaemon(); }
+          this.toldUserAboutUpdate = false;
+        }
       }, 7000);
     }
   }

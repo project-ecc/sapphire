@@ -18,6 +18,7 @@ export function downloadFile(srcUrl, destFolder, destFileName, cs = null, unzip 
     const downloadRequestOpts = {
       url: srcUrl,
       encoding: null,
+      timeout: 15000
     };
 
     const fileName = destFolder + destFileName;
