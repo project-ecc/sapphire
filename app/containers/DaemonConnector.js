@@ -36,7 +36,7 @@ import {
   FILE_DOWNLOAD_STATUS,
   TOLD_USER_UPDATE_FAILED,
   RESET_STAKING_EARNINGS,
-  IS_FILTERING_TRANSACTIIONS, TRANSACTIONS_TYPE
+  IS_FILTERING_TRANSACTIIONS, TRANSACTIONS_TYPE, ACTION_POPUP_RESULT
 } from '../actions/types';
 
 const event = require('../utils/eventhandler');
@@ -74,6 +74,7 @@ class DaemonConnector {
     this.handleInitialSetup = this.handleInitialSetup.bind(this);
     this.handleSetupDone = this.handleSetupDone.bind(this);
     this.updateConfirmations = this.updateConfirmations.bind(this);
+    this.forceUpdateDaemon = this.forceUpdateDaemon.bind(this);
     this.ListenToSetupEvents();
     this.step = 1;
     this.loadingBlockIndexPayment = false;
@@ -370,6 +371,23 @@ class DaemonConnector {
       }
     });
 
+
+    ipcRenderer.on('loading-error', (e, arg) => {
+      console.log('loading failure: '+ arg.message);
+      const discordIcon = Tools.getIconForTheme('discord', false);
+      this.store.dispatch({type: ACTION_POPUP_RESULT, payload: {flag: true, successful: false,
+        message: `<div>
+                    <h3>Oops!</h3>
+                    <img height="75px" width="75px" src=${discordIcon}>
+                    <p className="backupSuccessful">It looks like Sapphire is unable to load ECC's blockchain</p>
+                    <p className="backupSuccessful">Please join our discord below and report your issue in #support</p>
+                    <a href="https://discord.gg/wAV3n2q" target="_blank">https://discord.gg/wAV3n2q</a>
+                    <div style="height:10px;"></div>
+                  </div>`}})
+
+      this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: ''}})
+    });
+
     event.on('runMainCycle', () => {
       console.log('run main cycle')
       if(!this.runningMainCycle){
@@ -385,6 +403,11 @@ class DaemonConnector {
     this.checkStartupStatusInterval = setInterval(async()=>{
       await this.stateCheckerInitialStartup();
     }, 2000)
+  }
+
+  forceUpdateDaemon(){
+    this.store.dispatch({type: ACTION_POPUP_RESULT, payload: {flag: false, successful: false, message: ''}});
+    event.emit('updateDaemon', false);
   }
 
   notifyUserOfApplicationUpdate(){

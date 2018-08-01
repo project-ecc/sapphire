@@ -23,6 +23,7 @@ const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote } = require
 const dialog = require('electron').dialog;
 const settings = require('electron-settings');
 const event = require('./utils/eventhandler');
+const opn = require('opn');
 
 let arch = require('arch');
 var fs = require('fs');
@@ -175,6 +176,11 @@ app.on('ready', async () => {
 			app.quit();
 		}
 	});
+
+  mainWindow.webContents.on('new-window', function(event, url){
+    event.preventDefault();
+    opn(url);
+  });
 
   mainWindow.on('close', (e) => {
     e.preventDefault();
@@ -406,6 +412,9 @@ function setupEventHandlers() {
 
   event.on('download-error', (payload) => {
     sendMessage('download-error', payload);
+  });
+  event.on('loading-error', (payload) => {
+    sendMessage('loading-error', payload);
   });
 
   ipcMain.on('importWallet', (e, args) => {

@@ -142,7 +142,11 @@ class DaemonManager {
 	      if (result) {
 	      	cb(result);
 	      }
-	    });
+	    }).catch(err => {
+        console.log("Error starting daemon")
+	      console.log(err)
+        event.emit('loading-error', {message: err.message});
+      });
   }
 
   async stopDaemon() {

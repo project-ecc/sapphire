@@ -45,6 +45,8 @@ class Loader extends React.Component {
       if (result) {
         console.log("started daemon")
       }
+    }).catch(err => {
+
     });
 
     if(this.props.guiUpdate){
@@ -55,7 +57,7 @@ class Loader extends React.Component {
 
   showMessage(message){
   	$('#gettingReady').text(message);
-	TweenMax.to(['#blockIndexLoad'], 0.2, {autoAlpha: 0, scale: 0.5});
+	  TweenMax.to(['#blockIndexLoad'], 0.2, {autoAlpha: 0, scale: 0.5});
     TweenMax.fromTo('#message', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
   }
 
@@ -198,6 +200,7 @@ class Loader extends React.Component {
 					<p id="loading" style={{fontSize: "15px", fontWeight: "bold"}}>{this.props.loadingMessage }</p>
 				</div>
 				<p style={{marginTop: "-50px", fontWeight:"300", visibility:"hidden"}} id="gettingReady">{ this.props.lang.mainMessage }</p>
+        <p></p>
     			<p className="loadingDownloadMessage">{this.props.downloadMessage}</p>
     			<p className="loadingDownloadPercentage">{this.props.percentage != null ?  this.props.percentage + '%' : null}</p>
         <div style={{display: "none", margin: "auto", textAlign:"center"}} className="showDismissButton">

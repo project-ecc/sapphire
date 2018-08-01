@@ -35,7 +35,7 @@ async function addTransaction(transaction, pending = false) {
         ).then(transaction => {
           address.addTransaction(transaction).then(resolve);
           return transaction;
-        }).error(err => {
+        }).catch(err => {
           reject(err)
         });
       });
@@ -158,7 +158,7 @@ async function getAllTransactions(limit = null, offset = 0, where = null){
       ]
     }).then(transactions => {
       resolve(transactions);
-    }).error(err => {
+    }).catch(err => {
       reject(err);
     });
   });
@@ -195,7 +195,7 @@ async function searchAllTransactions(searchTerm) {
       ]
     }).then(transactions => {
       resolve(transactions);
-    }).error(err => {
+    }).catch(err => {
       reject(err);
     });
   });
@@ -211,7 +211,7 @@ async function getLatestTransaction(){
       order: [['time', 'DESC']]
     }).then(transactions => {
       resolve(transactions[0]);
-    }).error(err => {
+    }).catch(err => {
       reject(err);
     });
   });
@@ -250,7 +250,7 @@ async function getAllPendingTransactions(){
       },
     }).then(transactions => {
       resolve(transactions);
-    }).error(err => {
+    }).catch(err => {
       reject(err)
     });
   });
@@ -264,7 +264,7 @@ async function getAllRewardTransactions(){
       },
     }).then(transactions => {
       resolve(transactions);
-    }).error(err => {
+    }).catch(err => {
       reject(err)
     });
   });
@@ -315,14 +315,14 @@ async function addAddress(address, withAns = false, belongsToMe = false){
             await ansRecord.setAddress(newAddress).then(result =>{
               resolve([ansRecord, createdAns]);
             });
-          }).error(err => {
+          }).catch(err => {
             console.log(err);
             reject(err);
           });
         }
         resolve(newAddress);
         return newAddress;
-      }).error(err => {
+      }).catch(err => {
         console.log(err);
         reject(err);
     });
@@ -337,7 +337,7 @@ async function getAddress(a){
       }
     }).then(address => {
       resolve(address);
-    }).error(err => {
+    }).catch(err => {
       reject(err);
     })
   });
@@ -353,7 +353,7 @@ async function getAllAddresses() {
       ]
     }).then(addresses => {
       resolve(addresses);
-    }).error(err => {
+    }).catch(err => {
       reject(err)
     });
   });
@@ -372,7 +372,7 @@ async function getAllMyAddresses(){
         }
       }).then(addresses => {
         resolve(addresses)
-      }).error(err => {
+      }).catch(err => {
         reject(err)
       })
   });
@@ -474,7 +474,7 @@ async function addContact(contactObject, withAns = false){
 
         await newContact.save()
         resolve(newContact)
-      }).error(err => {
+      }).catch(err => {
       console.log(err);
       reject(err);
     });
@@ -503,7 +503,7 @@ async function findContact(name){
       }
     }).then(transactions => {
       resolve(transactions);
-    }).error(err => {
+    }).catch(err => {
       reject(err)
     });
   });
@@ -522,7 +522,7 @@ async function getContacts(){
       ]
     }).then(contacts => {
       resolve(contacts);
-    }).error(err => {
+    }).catch(err => {
       reject(err)
     });
   });
@@ -532,7 +532,7 @@ async function deleteContact(contact) {
   return new Promise(async (resolve, reject) => {
     await contact.destroy().then( deleted => {
       resolve(deleted);
-    }).error(err => {
+    }).catch(err => {
       reject(err);
     });
   });

@@ -234,10 +234,15 @@ class Settings extends Component {
 
     }
     const dbLocation = getSapphireDirectory() + 'database.sqlite';
-    if(fs.unlinkSync(dbLocation)){
-      app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])})
-      app.exit(0)
+    try {
+      fs.accessSync(dbLocation, fs.constants.R_OK | fs.constants.W_OK);
+      fs.unlinkSync(dbLocation);
+      console.log('can read/write');
+    } catch (err) {
+      console.error('no access!');
     }
+    app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])})
+    app.exit(0)
   }
 
   getGeneralSettings(){
@@ -358,14 +363,31 @@ class Settings extends Component {
     return(
       <div className="container">
         <div className="row settingsToggle" >
-          <div className="col-sm-10 text-left removePadding">
+          <div className="col-sm-9 text-left removePadding">
             <p className="walletBackupOptions" style={{fontSize: "14px", fontWeight: "700"}}>{this.props.lang.sapphireInfoDesc}.</p>
           </div>
-          <div className="col-sm-2 text-right removePadding">
+          <div className="col-sm-3 text-right removePadding">
             <p onClick={this.deleteAndReIndex.bind(this)} style={{cursor: "pointer"}}>Delete & Relaunch</p>
           </div>
         </div>
-        <p>Coming Soon!</p>
+        <div className="row settingsToggle">
+          <div className="col-sm-6 text-left removePadding">
+            <p>Banlist</p>
+            <p id="applicationVersion">Click clear banlist to remove all the banned nodes.</p>
+          </div>
+          <div className="col-sm-6 text-right removePadding">
+            <p onClick={this.deleteAndReIndex.bind(this)} style={{cursor: "pointer"}}>Clear Banlist</p>
+          </div>
+        </div>
+        <div className="row settingsToggle">
+          <div className="col-sm-6 text-left removePadding">
+            <p>{ this.props.lang.applicationVersion }</p>
+            <p id="applicationVersion">v{guiVersion}g & v{this.props.daemonVersion}d</p>
+          </div>
+          <div className="col-sm-6 text-right removePadding">
+            <p onClick={this.handleUpdateApplication.bind(this)} id={this.props.updateAvailable ? "updateAvailable" : "updateUnavailable"}>{this.props.updateAvailable ? this.props.lang.installUpdate : this.props.lang.noUpdateAvailable }</p>
+          </div>
+        </div>
         {/*<Console/>*/}
       </div>
     )

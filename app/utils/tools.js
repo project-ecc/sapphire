@@ -326,6 +326,9 @@ module.exports = {
       else if(iconName == "connectionsPaymentChain"){
         return require('../../resources/images/connections-orange-pastel.png')
       }
+      else if(iconName == "discord") {
+        return require('../../resources/images/discord.png')
+      }
     }
     else if(selectedTheme && selectedTheme === "theme-defaultEcc"){
       if(iconName == "wallet" && !hover){
@@ -468,6 +471,9 @@ module.exports = {
       }
       else if(iconName == "connectionsPaymentChain"){
         return require('../../resources/images/connections-orange.png')
+      }
+      else if(iconName == "discord") {
+        return require('../../resources/images/discord.png')
       }
     }
   },

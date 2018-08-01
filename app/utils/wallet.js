@@ -286,23 +286,23 @@ export default class Wallet {
   }
 
   walletstart() {
-    return new Promise((resolve, reject) => {
+    return new Promise(async(resolve, reject) => {
       let path = getPlatformWalletUri();
       if (process.platform === 'linux') {
-        runExec(`chmod +x "${path}" && "${path}"`, 1000).then(() => {
-          return resolve(true);
-        })
-        .catch(() => {
-          reject(false);
-        });
-      } else if (process.platform === 'darwin') {
-        console.log(path);
-        runExec(`chmod +x "${path}" && "${path}"`, 1000).then(() => {
+        await runExec(`chmod +x "${path}" && "${path}"`, 1000).then(() => {
           return resolve(true);
         })
         .catch((err) => {
-          console.log(err);
-          reject(false);
+          reject(err);
+        });
+      } else if (process.platform === 'darwin') {
+        console.log(path);
+        await runExec(`chmod +x "${path}" && "${path}"`, 1000).then(() => {
+          return resolve(true);
+        })
+        .catch((err) => {
+          //console.log(err);
+          reject(err);
         });
       } else if (process.platform.indexOf('win') > -1) {
         path = `& "${path}"`;
@@ -318,7 +318,7 @@ export default class Wallet {
           })
           .catch(err => {
             console.log(err);
-            reject(false);
+            reject(err);
             ps.dispose();
           });
       }
@@ -326,7 +326,7 @@ export default class Wallet {
   }
 }
 
-function runExec(cmd, timeout, cb) {
+async function runExec(cmd, timeout, cb) {
   return new Promise((resolve, reject) => {
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
