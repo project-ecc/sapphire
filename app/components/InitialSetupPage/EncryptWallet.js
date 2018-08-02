@@ -78,8 +78,8 @@ class EncryptWallet extends React.Component {
     this.props.isEncrypting(true);
   }
 
-  handlePasswordChange(event){
-      let pw = event.target.value;
+  handlePasswordChange(input){
+   let pw = input;
     if(pw.length === 0){
       TweenMax.set('#enterPassword', {autoAlpha: 1});
     }
@@ -89,8 +89,8 @@ class EncryptWallet extends React.Component {
     this.props.password(pw);
   }
 
-  handleConfirmationPassword(event){
-    let pw = event.target.value;
+  handleConfirmationPassword(input){
+    let pw = input;
     if(pw.length === 0){
       TweenMax.set('#enterPasswordRepeat', {autoAlpha: 1});
     }
@@ -173,19 +173,19 @@ class EncryptWallet extends React.Component {
               placeholderId="enterPassword"
               placeHolderClassName="inputPlaceholder changePasswordInput"
               value={this.props.passwordValue}
-              handleChange={this.handlePasswordChange.bind(this)}
+              handleChange={(e) => { this.handlePasswordChange(e) }}
               type="password"
               inputStyle={{width: "200px"}}
             />
           </div>
-          <div className="inputDivPassword">
+          <div style={{marginTop: '30px'}} className="inputDivPassword">
             <Input
-              divStyle={{marginTop: "20px", paddingBottom: "8px", width: "200px"}}
+              divStyle={{marginTop: "40px", paddingBottom: "8px", width: "200px"}}
               placeholder= { this.props.lang.repeatPassword }
               placeholderId="enterPasswordRepeat"
               placeHolderClassName="inputPlaceholder changePasswordInput"
               value={this.props.passwordConfirmationValue}
-              handleChange={this.handleConfirmationPassword.bind(this)}
+              handleChange={(e) => { this.handleConfirmationPassword(e) }}
               type="password"
               inputStyle={{width: "200px"}}
             />

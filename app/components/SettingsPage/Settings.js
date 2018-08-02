@@ -132,6 +132,24 @@ class Settings extends Component {
     this.props.setExportingPrivateKeys(!this.props.exportingPrivateKeys)
   }
 
+  handleImportWalletFile(){
+    dialog.showOpenDialog({
+      properties: ['openFile'],
+      filters: [
+        { name: 'All Files', extensions: ['dat'] }
+      ]
+    }, (fileLocation) => {
+      if (fileLocation === undefined) {
+        return;
+      }
+      this.importWallet(fileLocation);
+    });
+  }
+
+  importWallet(fileLocation){
+    console.log(fileLocation)
+  }
+
   backupWallet(location){
     this.props.wallet.command([{
       method: 'backupwallet', parameters: [location]
@@ -323,9 +341,19 @@ class Settings extends Component {
             <p onClick={this.handleImportPrivateKey} style={{cursor: "pointer"}}>{ this.props.lang.import }</p>
             </div>
           </div>
+
+          <div className="row settingsToggle">
+            <div className="col-sm-6 text-left removePadding">
+              <p>{ this.props.lang.wallet }</p>
+              <p id="applicationVersion">{this.props.lang.walletImportInfo}</p>
+            </div>
+            <div className="col-sm-6 text-right removePadding">
+              <p onClick={this.handleImportWalletFile} style={{cursor: "pointer"}}>{ this.props.lang.import }</p>
+            </div>
+          </div>
         </div>
       </div>
-    )
+    );
   }
 
   handleMediumClick(){
@@ -364,7 +392,7 @@ class Settings extends Component {
       <div className="container">
         <div className="row settingsToggle" >
           <div className="col-sm-9 text-left removePadding">
-            <p className="walletBackupOptions" style={{fontSize: "14px", fontWeight: "700"}}>{this.props.lang.sapphireInfoDesc}.</p>
+            <p className="walletBackupOptions" style={{fontSize: "14px", fontWeight: "700"}}>Delete Index Transactions database (WARNING) this will delete your contacts</p>
           </div>
           <div className="col-sm-3 text-right removePadding">
             <p onClick={this.deleteAndReIndex.bind(this)} style={{cursor: "pointer"}}>Delete & Relaunch</p>
@@ -379,16 +407,6 @@ class Settings extends Component {
             <p onClick={this.deleteAndReIndex.bind(this)} style={{cursor: "pointer"}}>Clear Banlist</p>
           </div>
         </div>
-        <div className="row settingsToggle">
-          <div className="col-sm-6 text-left removePadding">
-            <p>{ this.props.lang.applicationVersion }</p>
-            <p id="applicationVersion">v{guiVersion}g & v{this.props.daemonVersion}d</p>
-          </div>
-          <div className="col-sm-6 text-right removePadding">
-            <p onClick={this.handleUpdateApplication.bind(this)} id={this.props.updateAvailable ? "updateAvailable" : "updateUnavailable"}>{this.props.updateAvailable ? this.props.lang.installUpdate : this.props.lang.noUpdateAvailable }</p>
-          </div>
-        </div>
-        {/*<Console/>*/}
       </div>
     )
   }

@@ -204,6 +204,7 @@
     "appSettings": "APP SETTINGS",
     "general": "General",
     "wallet": "Wallet",
+    "walletImportInfo": "Use this function to import a wallet.dat file, note: using this function will delete your current contacts",
     "advanced": "Advanced",
     "appearance": "Appearance",
     "eccNews": "ECC News",

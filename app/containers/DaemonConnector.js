@@ -185,10 +185,9 @@ class DaemonConnector {
         }
       }
       const latestTransaction = await getLatestTransaction();
-      this.from = latestTransaction != null ? latestTransaction.time : null;
+      this.from = latestTransaction != null ? latestTransaction.time : 0;
       this.currentFrom = this.from
-      const allTransactions = await getAllTransactions();
-      this.transactionsIndexed = allTransactions.length > 0;
+      this.transactionsIndexed = true;
     }
 
     if(this.store.getState().startup.updatingApp){
@@ -255,7 +254,6 @@ class DaemonConnector {
     if(!this.firstRun && !this.isIndexingTransactions && !this.transactionsIndexed){
       await this.loadTransactionsForProcessing();
     }
-
     if(this.transactionsIndexed){
       if(this.partialSetup && !this.unencryptedWallet){
         this.store.dispatch({type: PARTIAL_INITIAL_SETUP, payload: false });
