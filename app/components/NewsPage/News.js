@@ -11,6 +11,10 @@ class News extends Component {
   constructor(props) {
     super(props);
     this.updateContainer = this.updateContainer.bind(this);
+    this.toggleTicker = this.toggleTicker.bind(this);
+    this.state = {
+      toggleBTC: false
+    }
   }
 
   componentDidMount() {
@@ -50,6 +54,12 @@ class News extends Component {
   updateArrows(page){
     let items = $('#postsContainer' + page).children().length;
     TweenMax.to('#arrows', 0.3, {css:{top: items >= this.props.postsPerContainer ? (155 * this.props.postsPerContainer + 180) : (155 * items + 180)}})
+  }
+
+  toggleTicker(){
+    this.setState({
+      toggleBTC: !this.state.toggleBTC
+    })
   }
 
   switchPage(direction){
@@ -122,7 +132,7 @@ class News extends Component {
             <div id="arrowRight" className={this.props.eccPostsPage * this.props.postsPerContainer < Object.keys(this.props.eccPosts).length ? "arrowNews arrowRightNews" : "arrowNews arrowInactive arrowRightNews"}></div>
           </div>
         </div>
-        <div id="stats">
+        <div id="stats" onClick={this.toggleTicker}>
           <div className="statsItem" id="rank">
             <p>{ this.props.lang.rank }</p>
             <p>{this.props.cmcStats.rank}</p>
@@ -130,17 +140,17 @@ class News extends Component {
           </div>
           <div className="statsItem" id="marketCap">
             <p>{ this.props.lang.marketCap }</p>
-            <p>{this.props.cmcStats.marketCap}</p>
+            <p>{this.state.toggleBTC === true ? this.props.cmcStats.marketCap_USD : this.props.cmcStats.marketCap_BTC}</p>
             <div className="mask"></div>
           </div>
           <div className="statsItem" id="price">
             <p>{ this.props.lang.price }</p>
-            <p>{this.props.cmcStats.price}</p>
+            <p>{this.state.toggleBTC === true ? this.props.cmcStats.price_USD : this.props.cmcStats.price_BTC }</p>
             <div className="mask"></div>
           </div>
           <div className="statsItem" id="volume">
             <p>{ this.props.lang.volume }</p>
-            <p>{this.props.cmcStats.volume}</p>
+            <p>{ this.state.toggleBTC === true ? this.props.cmcStats.volume_USD : this.props.cmcStats.volume_BTC }</p>
           </div>
         </div>
       </div>

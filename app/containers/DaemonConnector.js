@@ -594,14 +594,21 @@ class DaemonConnector {
 
   getCoinMarketCapStats(){
     let options = {
-      url: 'https://api.coinmarketcap.com/v1/ticker/eccoin/',
+      url: 'https://api.coinmarketcap.com/v2/ticker/212/?convert=BTC',
     };
     let self = this;
     function callback(error, response, body) {
       if (!error && response.statusCode == 200) {
         let json = JSON.parse(body);
-        json = json[0];
-        self.store.dispatch({type: COIN_MARKET_CAP, payload: {price: "$" + Tools.formatNumber(Number(json.price_usd)) + " USD", rank: "#" + json.rank, marketCap: "$" + Tools.formatNumber(Number(json.market_cap_usd))+ " USD", volume: "$" + Tools.formatNumber(Number(json["24h_volume_usd"])) + " USD"}})
+        console.log(json)
+        self.store.dispatch({type: COIN_MARKET_CAP, payload: {
+          price_USD: "$" + Tools.formatNumber(Number(json['data']['quotes']['USD'].price)) + " USD",
+          rank: "#" + json['data'].rank,
+          marketCap_USD: "$" + Tools.formatNumber(Number(json['data']['quotes']['USD'].market_cap))+ " USD",
+          volume_USD: "$" + Tools.formatNumber(Number(json['data']['quotes']['USD'].volume_24h)) + " USD",
+          price_BTC: Tools.formatNumber(Number(json['data']['quotes']['BTC'].price)) + " BTC",
+          marketCap_BTC: Tools.formatNumber(Number(json['data']['quotes']['BTC'].market_cap))+ " BTC",
+          volume_BTC: Tools.formatNumber(Number(json['data']['quotes']['BTC'].volume_24h)) + " BTC"}})
       }
       else
       {
@@ -941,14 +948,13 @@ class DaemonConnector {
 
   async updateConfirmations(){
     getAllTransactions()
-      .then(async (transactionData) =>{
-        await Promise.all(transactionData.map(async (transaction) => {
+      .then(async (transactionData) => {
+        const walletTransactions = await this.wallet.getTransactions("*", transactionData.length,0);
+        await Promise.all(walletTransactions.map(async(transactions) => {
           try {
-            const rawTransaction = await this.getRawTransaction(transaction.transaction_id);
-            const transactionUpdated = await updateTransactionsConfirmations(transaction.transaction_id, rawTransaction.confirmations);
-            return transactionUpdated;
+            return await updateTransactionsConfirmations(transactions.txid, transactions.confirmations);
           }catch (err){
-            // console.log(err)
+             console.log(err)
           }
         }));
     }).catch(errors => {
