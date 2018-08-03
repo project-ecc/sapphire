@@ -487,6 +487,7 @@ class DaemonConnector {
             this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: funnies.message()}})
           }
         } else if(err.message === 'Rescanning...'){
+          // TODO: fix this
           this.store.dispatch({type: LOADER_MESSAGE_FROM_LOG, payload:true})
           const message = this.store.getState().application.debugLog.peek()
           this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: message}})

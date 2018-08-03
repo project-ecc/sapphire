@@ -228,6 +228,8 @@ class Settings extends Component {
         let response = data[i];
         toPrint[queryType] = response;
       }
+        toPrint['debug.log'] = this.props.debugLog.store
+
      fs.writeFile(app.getPath('desktop')+"/Sapphire-info.json", jsonFormat(toPrint), (err) => {
         if(!err){
           this.props.setActionPopupResult({flag: true, successful: true, message: `<p className="exportedSapphireInfo">${this.props.lang.exportedSapphireInfo}.</p>`})
@@ -553,7 +555,8 @@ const mapStateToProps = state => {
     stakingNotifications: state.notifications.stakingNotificationsEnabled,
     hoveredIcon: state.application.settingsHoveredSocialIcon,
     theme: state.application.theme,
-    daemonVersion: state.chains.daemonVersion
+    daemonVersion: state.chains.daemonVersion,
+    debugLog: state.application.debugLog
   };
 };
 
