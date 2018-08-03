@@ -247,6 +247,7 @@
     "sequelize": "^4.37.10",
     "source-map-support": "^0.4.15",
     "sqlite3": "^3.1.13",
+    "tail": "^1.3.0",
     "twemoji-awesome": "^1.0.6"
   },
   "devEngines": {

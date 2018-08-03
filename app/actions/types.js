@@ -138,3 +138,5 @@ export const ADDING_CONTACT = "adding_contact";
 export const SHOW_ZERO_BALANCE = "show_zero_balance";
 export const IS_FILTERING_TRANSACTIONS = "is_filtering_transactions";
 export const TRANSACTIONS_TYPE = "transactions_type";
+export const ADD_TO_DEBUG_LOG = "add_to_debug_log";
+export const LOADER_MESSAGE_FROM_LOG = "loader_message_from_log";

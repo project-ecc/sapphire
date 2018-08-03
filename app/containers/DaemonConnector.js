@@ -36,7 +36,7 @@ import {
   FILE_DOWNLOAD_STATUS,
   TOLD_USER_UPDATE_FAILED,
   RESET_STAKING_EARNINGS,
-  IS_FILTERING_TRANSACTIIONS, TRANSACTIONS_TYPE, ACTION_POPUP_RESULT
+  IS_FILTERING_TRANSACTIIONS, TRANSACTIONS_TYPE, ACTION_POPUP_RESULT, ADD_TO_DEBUG_LOG, LOADER_MESSAGE_FROM_LOG
 } from '../actions/types';
 
 const event = require('../utils/eventhandler');
@@ -55,11 +55,13 @@ import {
 } from '../Managers/SQLManager';
 
 import $ from 'jquery';
+import {getDebugUri} from "../utils/platform.service";
 const FeedMe = require('feedme');
 const https = require('https');
 const Tools = require('../utils/tools');
 const request = require('request');
 const db = require('../../app/utils/database/db')
+const Tail = require('tail').Tail;
 
 //this class acts as a bridge between wallet.js (daemon) and the redux store
 class DaemonConnector {
@@ -151,6 +153,12 @@ class DaemonConnector {
     setTimeout( async() => {
       this.heighestBlockFromServer = await this.getLastBlockFromServer();
     }, 0);
+
+    let tail = new Tail(getDebugUri());
+
+    tail.on("line", (data) => {
+      this.store.dispatch({type: ADD_TO_DEBUG_LOG, payload: data})
+    });
   }
 
   checkQueuedNotifications(){
@@ -467,13 +475,21 @@ class DaemonConnector {
       clearInterval(this.checkStartupStatusInterval);
     })
     .catch((err) => {
-      if (err.message === 'Loading block index...' || err.message === 'Activating best chain...' || err.message === "Loading wallet...") {
+      console.log(err.message)
+      if (err.message === 'Loading block index...' || err.message === 'Activating best chain...' || err.message === "Loading wallet..." || err.message === 'Rescanning...') {
         if(!this.loadingBlockIndexPayment){
           this.loadingBlockIndexPayment = true;
           this.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: true})
         }
-        if(!this.store.getState().startup.initialSetup){
-          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: funnies.message()}})
+
+        if(err.message === 'Loading block index...'){
+          if(!this.store.getState().startup.initialSetup){
+            this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: funnies.message()}})
+          }
+        } else if(err.message === 'Rescanning...'){
+          this.store.dispatch({type: LOADER_MESSAGE_FROM_LOG, payload:true})
+          const message = this.store.getState().application.debugLog.peek()
+          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: message}})
         }
       }
     });
@@ -681,7 +697,7 @@ class DaemonConnector {
     for (let i = 0; i < transactions.length; i++) {
       time = transactions[i].time;
       if(time * 1000 > this.currentFrom || !this.transactionsIndexed){
-        console.log(transactions[i])
+        // console.log(transactions[i])
         shouldRequestAnotherPage = true;
         txId = transactions[i].txid;
         amount = transactions[i].amount;

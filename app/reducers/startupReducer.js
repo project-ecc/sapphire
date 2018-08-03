@@ -71,7 +71,11 @@ export default(state = INITIAL_STATE, action) => {
 		return {...state, importWallet: true , loader: false, loading: false};
 	}
 	else if(action.type == LOADING){
-		return {...state, loading: action.payload.isLoading, loader: action.payload.isLoading, loadingMessage: action.payload.loadingMessage}
+	  if(action.payload.loadingMessage == null){
+      return {...state, loading: action.payload.isLoading, loader: action.payload.isLoading}
+    } else{
+      return {...state, loading: action.payload.isLoading, loader: action.payload.isLoading, loadingMessage: action.payload.loadingMessage}
+    }
 	}
 	else if(action.type == SETUP_DONE_INTERNAL){
 		return {...state, setupDoneInternal: action.payload}

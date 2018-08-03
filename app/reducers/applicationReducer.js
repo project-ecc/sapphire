@@ -1,63 +1,63 @@
 import {
-	UNLOCKING,
-	PASSWORD_UNLOCK,
-	ADDRESS_SEND,
-	AMOUNT_SEND,
-	NAME_SEND,
-	SENDING_ECC,
-	TRANSACTIONS_PAGE,
-	TRANSACTIONS_REQUESTING,
-	NEW_ADDRESS_NAME,
-	USER_ADDRESSES,
-	ADDRESS_CREATE_ANS,
-	SELECTED_ADDRESS,
-	CREATING_ADDRESS,
-	UPGRADING_ADDRESS,
-	NEW_ADDRESS_ACCOUNT,
-	NEW_CONTACT_NAME,
-	NEW_CONTACT_ADDRESS,
-	HOVERED_ADDRESS,
-	CONTACTS,
-	SETTINGS,
-	TRAY,
-	START_AT_LOGIN,
-	MINIMIZE_TO_TRAY,
-	MINIMIZE_ON_CLOSE,
-	EXPORT_PRIVATE_KEYS,
-	PANEL_EXPORT_PRIVATE_KEYS,
-	LOCATION_TO_EXPORT,
-	FILTER_OWN_ADDRESSES,
-	BACKUP_OPERATION_IN_PROGRESS,
-	INDEXING_TRANSACTIONS,
-	STAKING_REWARD,
-	STAKING_REWARD_UPDATE,
-	PENDING_TRANSACTION,
-	IMPORTING_PRIVATE_KEY,
-	CHANGING_PASSWORD,
-	NEW_PASSWORD,
-	WAS_STAKING,
-	DAEMON_CREDENTIALS,
-	CHECKING_DAEMON_STATUS_PRIVKEY,
-	ECC_POST,
-	POSTS_PER_CONTAINER,
-	ECC_POSTS_PAGE,
-	COIN_MARKET_CAP,
-	SHOWING_NEWS,
-	NEWS_SWITCHING_PAGE,
-	UPDATE_APPLICATION,
-	SELECTED_PANEL,
-	SETTINGS_OPTION_SELECTED,
-	SHOWING_FUNCTION_ICONS,
-	GENERIC_PANEL_ANIMATION_ON,
-	CLOSING_APPLICATION,
-	MAC_BUTTONS_HOVER,
-	MAC_BUTTONS_FOCUS,
-	APP_MAXIMIZED,
-	SELECTED_THEME,
-	SELECTED_THEME_BACKUP,
-	CHANGED_THEME,
-	HOVERED_SETTINGS_SOCIAL_ICON,
-	ACTION_POPUP_RESULT,
+  UNLOCKING,
+  PASSWORD_UNLOCK,
+  ADDRESS_SEND,
+  AMOUNT_SEND,
+  NAME_SEND,
+  SENDING_ECC,
+  TRANSACTIONS_PAGE,
+  TRANSACTIONS_REQUESTING,
+  NEW_ADDRESS_NAME,
+  USER_ADDRESSES,
+  ADDRESS_CREATE_ANS,
+  SELECTED_ADDRESS,
+  CREATING_ADDRESS,
+  UPGRADING_ADDRESS,
+  NEW_ADDRESS_ACCOUNT,
+  NEW_CONTACT_NAME,
+  NEW_CONTACT_ADDRESS,
+  HOVERED_ADDRESS,
+  CONTACTS,
+  SETTINGS,
+  TRAY,
+  START_AT_LOGIN,
+  MINIMIZE_TO_TRAY,
+  MINIMIZE_ON_CLOSE,
+  EXPORT_PRIVATE_KEYS,
+  PANEL_EXPORT_PRIVATE_KEYS,
+  LOCATION_TO_EXPORT,
+  FILTER_OWN_ADDRESSES,
+  BACKUP_OPERATION_IN_PROGRESS,
+  INDEXING_TRANSACTIONS,
+  STAKING_REWARD,
+  STAKING_REWARD_UPDATE,
+  PENDING_TRANSACTION,
+  IMPORTING_PRIVATE_KEY,
+  CHANGING_PASSWORD,
+  NEW_PASSWORD,
+  WAS_STAKING,
+  DAEMON_CREDENTIALS,
+  CHECKING_DAEMON_STATUS_PRIVKEY,
+  ECC_POST,
+  POSTS_PER_CONTAINER,
+  ECC_POSTS_PAGE,
+  COIN_MARKET_CAP,
+  SHOWING_NEWS,
+  NEWS_SWITCHING_PAGE,
+  UPDATE_APPLICATION,
+  SELECTED_PANEL,
+  SETTINGS_OPTION_SELECTED,
+  SHOWING_FUNCTION_ICONS,
+  GENERIC_PANEL_ANIMATION_ON,
+  CLOSING_APPLICATION,
+  MAC_BUTTONS_HOVER,
+  MAC_BUTTONS_FOCUS,
+  APP_MAXIMIZED,
+  SELECTED_THEME,
+  SELECTED_THEME_BACKUP,
+  CHANGED_THEME,
+  HOVERED_SETTINGS_SOCIAL_ICON,
+  ACTION_POPUP_RESULT,
   FILE_DOWNLOAD_STATUS,
   TOLD_USER_UPDATE_FAILED,
   POPUP_LOADING,
@@ -66,15 +66,16 @@ import {
   MULTIPLE_ANS_ADDRESSES,
   ADDING_CONTACT,
   SHOW_ZERO_BALANCE,
-  IS_FILTERING_TRANSACTIONS
+  IS_FILTERING_TRANSACTIONS, ADD_TO_DEBUG_LOG, LOADER_MESSAGE_FROM_LOG
 } from '../actions/types';
 
 import Wallet from '../utils/wallet';
 import notificationsInfo from '../utils/notificationsInfo';
+const Queue = require('../utils/queue');
 
 let moment = require('moment');
 
-const INITIAL_STATE = {wallet: new Wallet(), unlocking: false, password: "", userNameToSend: "", codeToSend:"", amountSend: "", addressSend: "", sendingEcc: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, newAddressName: "", newAddressAccount: "", friends: [], userAddresses: [], creatingAnsAddress: true, selectedAddress: undefined, creatingAddress: false, newContactName: "", newContactAddress:"", hoveredAddress: undefined, settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, exportingPrivateKeys: false, panelExportPrivateKey: 1, locationToExport: "", filterAllOwnAddresses: true, filterNormalOwnAddresses: false, filterAnsOwnAddresses: false, backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, totalFileStorageRewards: 0, lastWeekFileStorageRewards: 0,lastMonthFileStorageRewards: 0, pendingTransactions: [], importingPrivateKey: false, changingPassword: false, wasStaking: false, newPassword: "", daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], postsPerContainerEccNews: 0, eccPostsArrays: [], eccPostsPage: 1, coinMarketCapStats: {}, showingNews: false, eccNewsSwitchingPage: false, updateApplication:false, selectedPanel: "overview", settingsOptionSelected: "General", showingFunctionIcons: false, genericPanelAnimationOn: false, closingApplication: false, macButtonsHover: false, macButtonsFocus: false, maximized:false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false, settingsHoveredSocialIcon: undefined, actionPopupResult: false, actionPopupMessage: "", actionPopupStatus: false, downloadMessage: undefined, downloadPercentage: undefined, downloadRemainingTime: undefined, updateFailed:false, popupLoading: false, newAddressNamePopup: "", addressOrUsernameSend: "", ansAddressesFound: [], addingContact: false, contactToAdd: undefined, showZeroBalance: true, upgradingAddress: false, filteringTransactions: false};
+const INITIAL_STATE = {wallet: new Wallet(), unlocking: false, password: "", userNameToSend: "", codeToSend:"", amountSend: "", addressSend: "", sendingEcc: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, newAddressName: "", newAddressAccount: "", friends: [], userAddresses: [], creatingAnsAddress: true, selectedAddress: undefined, creatingAddress: false, newContactName: "", newContactAddress:"", hoveredAddress: undefined, settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, exportingPrivateKeys: false, panelExportPrivateKey: 1, locationToExport: "", filterAllOwnAddresses: true, filterNormalOwnAddresses: false, filterAnsOwnAddresses: false, backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, totalFileStorageRewards: 0, lastWeekFileStorageRewards: 0,lastMonthFileStorageRewards: 0, pendingTransactions: [], importingPrivateKey: false, changingPassword: false, wasStaking: false, newPassword: "", daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], postsPerContainerEccNews: 0, eccPostsArrays: [], eccPostsPage: 1, coinMarketCapStats: {}, showingNews: false, eccNewsSwitchingPage: false, updateApplication:false, selectedPanel: "overview", settingsOptionSelected: "General", showingFunctionIcons: false, genericPanelAnimationOn: false, closingApplication: false, macButtonsHover: false, macButtonsFocus: false, maximized:false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false, settingsHoveredSocialIcon: undefined, actionPopupResult: false, actionPopupMessage: "", actionPopupStatus: false, downloadMessage: undefined, downloadPercentage: undefined, downloadRemainingTime: undefined, updateFailed:false, popupLoading: false, newAddressNamePopup: "", addressOrUsernameSend: "", ansAddressesFound: [], addingContact: false, contactToAdd: undefined, showZeroBalance: true, upgradingAddress: false, filteringTransactions: false, debugLog: new Queue()};
 
 
 export default(state = INITIAL_STATE, action) => {
@@ -381,6 +382,24 @@ export default(state = INITIAL_STATE, action) => {
 	}
 	else if(action.type == IS_FILTERING_TRANSACTIONS){
     return {...state, filteringTransactions: action.payload}
+  }
+  else if(action.type == ADD_TO_DEBUG_LOG){
+
+	  let currentLog = state.debugLog;
+	  let currentLine = action.payload;
+
+	  if(currentLog.size() > 100){
+	    currentLog.dequeue();
+	    currentLog.enqueue(currentLine);
+    } else{
+      currentLog.enqueue(currentLine);
+    }
+	  return {...state}
+  }
+  else if(action.type == LOADER_MESSAGE_FROM_LOG){
+    if(action.payload === true){
+      state.loadingMessage = state.debugLog.peek()
+    }
   }
 	return state;
 }

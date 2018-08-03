@@ -119,7 +119,7 @@ import {
   MULTIPLE_ANS_ADDRESSES,
   ADDING_CONTACT,
   SHOW_ZERO_BALANCE,
-  IS_FILTERING_TRANSACTIIONS, TRANSACTIONS_TYPE
+  IS_FILTERING_TRANSACTIIONS, TRANSACTIONS_TYPE, ADD_TO_DEBUG_LOG
 } from "./types";
 
 export const getSetup = () => dispatch => {
@@ -942,6 +942,13 @@ export const setIsFilteringTransactions = (val) => {
 export const setTransactionType = (val) => {
   return {
     type: TRANSACTIONS_TYPE,
+    payload: val
+  }
+}
+
+export const setAppendToDebugLog = (val) => {
+  return {
+    type: ADD_TO_DEBUG_LOG,
     payload: val
   }
 }
