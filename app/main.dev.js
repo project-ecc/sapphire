@@ -423,8 +423,6 @@ function setupEventHandlers() {
   });
 
   ipcMain.on('selected-currency', (e, args) => {
-    console.log(e)
-    console.log(args)
     sendMessage('selected-currency', args);
   });
 

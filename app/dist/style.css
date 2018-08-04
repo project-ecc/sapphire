@@ -16157,14 +16157,16 @@ i.fa.fa-chevron-down {
     color: #252d4f; }
   .theme-darkEcc #eccNews {
     color: #313541; }
+
 #marketStats {
   font-weight: 800;
   margin-bottom: 20px; }
-.theme-defaultEcc #eccNews {
+.theme-defaultEcc #marketStats {
   color: #252d4f; }
-.theme-darkEcc #eccNews {
+.theme-darkEcc #marketStats {
   color: #313541; }
-}
+
+
 .newsItemTitle {
   font-size: 19px;
   font-weight: 500;

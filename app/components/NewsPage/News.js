@@ -91,7 +91,6 @@ class News extends Component {
   async onItemClick(ev) {
     const currency = ev.currentTarget.dataset.id;
     console.log(currency)
-    this.props.setSelectedCurrency(currency)
     ipcRenderer.send('selected-currency', currency);
   }
 
@@ -180,7 +179,7 @@ class News extends Component {
         </div>
         <div id="stats">
           <div style={{textAlign: 'center', margin: 'auto'}} className="row">
-            <h3 id="marketStats" style={{margin: 'auto'}}>Market Stats</h3>
+            <p id="marketStats" style={{margin: 'auto'}}>Market Stats</p>
           </div>
           <div className="row">
             <div className="statsItem" id="rank">

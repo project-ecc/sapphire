@@ -36,7 +36,12 @@ import {
   FILE_DOWNLOAD_STATUS,
   TOLD_USER_UPDATE_FAILED,
   RESET_STAKING_EARNINGS,
-  IS_FILTERING_TRANSACTIIONS, TRANSACTIONS_TYPE, ACTION_POPUP_RESULT, ADD_TO_DEBUG_LOG, LOADER_MESSAGE_FROM_LOG
+  IS_FILTERING_TRANSACTIIONS,
+  TRANSACTIONS_TYPE,
+  ACTION_POPUP_RESULT,
+  ADD_TO_DEBUG_LOG,
+  LOADER_MESSAGE_FROM_LOG,
+  SELECTED_CURRENCY
 } from '../actions/types';
 
 const event = require('../utils/eventhandler');
@@ -389,7 +394,7 @@ class DaemonConnector {
       this.store.dispatch({type: ADD_TO_DEBUG_LOG, payload: arg})
     });
 
-    ipcRenderer.on('selected-currency', (arg) => {
+    ipcRenderer.on('selected-currency', (event, arg) => {
       console.log('in here ',arg)
      this.getCoinMarketCapStats(arg)
     });
@@ -617,8 +622,6 @@ class DaemonConnector {
     } else{
       currency = currency.toUpperCase();
       url = 'https://api.coinmarketcap.com/v2/ticker/212/?convert='+ currency
-      console.log(currency)
-      console.log(url)
     }
 
 	  let options = {
@@ -634,6 +637,7 @@ class DaemonConnector {
           rank: json['data'].rank,
           marketCap:  Tools.formatNumber(Number(json['data']['quotes'][currency].market_cap)),
           volume: Tools.formatNumber(Number(json['data']['quotes'][currency].volume_24h))}})
+        self.store.dispatch({type: SELECTED_CURRENCY, payload: currency.toLowerCase()})
       }
       else
       {

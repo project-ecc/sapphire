@@ -156,7 +156,7 @@ class SendConfirmation extends React.Component {
             })}
           </div>
           <div id="labels" style={{display: "none"}}>
-            <p className="labelAmountSend" style={{paddingTop: "0px"}}>{ this.props.lang.amount }: {Tools.formatNumber(Number(this.props.amount))} <span className="ecc">ECC</span></p>
+            <p className="labelAmountSend" style={{paddingTop: "0px"}}>{ this.props.lang.amount } : {Tools.formatNumber(Number(this.props.amount))} <span className="ecc">ECC</span> <span className="labelAddressSend"> ({Tools.formatNumber(Number(this.props.amount * this.props.selectedCurrencyValue)) + ' ' + this.props.selectedCurrency.toUpperCase()})</span> </p>
             <p className="labelSend">{ this.props.lang.name }: {this.props.username}<span className="Receive__ans-code">{this.props.codeToSend}</span> </p>
             <p className="labelAddressSend">({this.props.address})</p>
           </div>
@@ -166,7 +166,7 @@ class SendConfirmation extends React.Component {
     else if(this.props.username && this.props.username !== ""){
       return(
         <div>
-          <p className="labelAmountSend">{ this.props.lang.amount }: {Tools.formatNumber(Number(this.props.amount))} <span className="ecc">ECC</span></p>
+          <p className="labelAmountSend">{ this.props.lang.amount }: {Tools.formatNumber(Number(this.props.amount))} <span className="ecc">ECC</span> <span className="labelAddressSend"> ({Tools.formatNumber(Number(this.props.amount * this.props.selectedCurrencyValue)) + ' ' + this.props.selectedCurrency.toUpperCase()})</span></p>
           <p className="labelSend">{ this.props.lang.name }: {this.props.username}<span className="Receive__ans-code">{this.props.codeToSend}</span> </p>
           <p className="labelAddressSend">({this.props.address})</p>
         </div>
@@ -174,7 +174,7 @@ class SendConfirmation extends React.Component {
     }else{
       return(
         <div>
-          <p className="labelAmountSend">{ this.props.lang.amount }: {Tools.formatNumber(Number(this.props.amount))} <span className="ecc">ECC</span></p>
+          <p className="labelAmountSend">{ this.props.lang.amount }: {Tools.formatNumber(Number(this.props.amount))} <span className="ecc">ECC</span> <span className="labelAddressSend"> ({Tools.formatNumber(Number(this.props.amount * this.props.selectedCurrencyValue)) + ' ' + this.props.selectedCurrency.toUpperCase()})</span></p>
           <p className="labelSend">{ this.props.lang.address }: <span style={{fontSize:"14px"}}>{this.props.address}</span> </p>
         </div>
       )
@@ -226,7 +226,9 @@ const mapStateToProps = state => {
     wallet: state.application.wallet,
     balance: state.chains.balance,
     codeToSend: state.application.codeToSend,
-    multipleAddresses: state.application.ansAddressesFound
+    multipleAddresses: state.application.ansAddressesFound,
+    selectedCurrency: state.application.selectedCurrency,
+    selectedCurrencyValue: state.application.coinMarketCapStats.price
   };
 };
 
