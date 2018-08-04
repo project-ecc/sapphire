@@ -11,8 +11,6 @@ import {addContact, getContacts, findContact} from "../../Managers/SQLManager";
 
 const Tools = require('../../utils/tools');
 
-import $ from 'jquery';
-
 class ContactPopup extends React.Component {
  constructor(props) {
     super(props);

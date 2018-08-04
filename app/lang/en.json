@@ -304,5 +304,12 @@
     "fileStorageComingSoon": "Coming soon",
     "fileStorageReadAbout": "Read about it in our",
     "fileStorageWebsite": "website",
-    "fileStoragePreview": "*A preview of this service will be made available soon*"
+    "fileStoragePreview": "*A preview of this service will be made available soon*",
+    "usd": "USD",
+    "eur": "EUR",
+    "aud": "AUD",
+    "btc": "BTC",
+    "eth": "ETH",
+    "ltc": "LTC",
+    "bch": "BCH"
 }

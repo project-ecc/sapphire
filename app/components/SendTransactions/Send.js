@@ -17,6 +17,7 @@ class Send extends Component {
     super(props);
     this.handleClear = this.handleClear.bind(this);
     this.confirmSend = this.confirmSend.bind(this);
+    this._handleKeyPress = this._handleKeyPress.bind(this);
   }
 
   handleClear() {
@@ -25,6 +26,14 @@ class Send extends Component {
     this.props.setUsernameSend("");
     this.props.setAddressOrUsernameSend("");
   }
+
+  async _handleKeyPress(e) {
+    if (e.key === 'Enter') {
+    console.log('do validate');
+    await this.confirmSend()
+    }
+  }
+
 
   async confirmSend() {
     if(this.props.amount === "" || isNaN(this.props.amount) === 1){
@@ -95,6 +104,7 @@ class Send extends Component {
                 autoFocus
                 isLeft
                 onSubmit={this.confirmSend}
+                onKeyPress={this._handleKeyPress}
               />
               <Input
                 placeholder= { this.props.lang.amount }
@@ -105,6 +115,7 @@ class Send extends Component {
                 inputId="inputAmountSend"
                 isLeft
                 onSubmit={this.confirmSend}
+                onKeyPress={this._handleKeyPress}
               />
             </div>
             <div className="Send__form-buttons">

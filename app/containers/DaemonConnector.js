@@ -41,11 +41,8 @@ import {
 
 const event = require('../utils/eventhandler');
 const tools = require('../utils/tools');
-const sqlite3 = require('sqlite3');
 let remote = require('electron').remote;
 let funnies = new Funnies()
-const app = remote.app;
-import ansAddressesInfo from '../utils/ansAddressesInfo';
 import Funnies from 'funnies';
 import {
   addTransaction, addAddress, deleteAddressByName, truncateTransactions,
@@ -55,7 +52,6 @@ import {
 } from '../Managers/SQLManager';
 
 import $ from 'jquery';
-import {getDebugUri} from "../utils/platform.service";
 const FeedMe = require('feedme');
 const https = require('https');
 const Tools = require('../utils/tools');
@@ -393,6 +389,11 @@ class DaemonConnector {
       this.store.dispatch({type: ADD_TO_DEBUG_LOG, payload: arg})
     });
 
+    ipcRenderer.on('selected-currency', (arg) => {
+      console.log('in here ',arg)
+     this.getCoinMarketCapStats(arg)
+    });
+
     event.on('runMainCycle', () => {
       console.log('run main cycle')
       if(!this.runningMainCycle){
@@ -608,9 +609,20 @@ class DaemonConnector {
     });
   }
 
-  getCoinMarketCapStats(){
-    let options = {
-      url: 'https://api.coinmarketcap.com/v2/ticker/212/?convert=BTC',
+  getCoinMarketCapStats(currency = ''){
+    let url = ''
+	  if(currency === ''){
+      currency = 'USD'
+	    url = 'https://api.coinmarketcap.com/v2/ticker/212'
+    } else{
+      currency = currency.toUpperCase();
+      url = 'https://api.coinmarketcap.com/v2/ticker/212/?convert='+ currency
+      console.log(currency)
+      console.log(url)
+    }
+
+	  let options = {
+      url: url,
     };
     let self = this;
     function callback(error, response, body) {
@@ -618,13 +630,10 @@ class DaemonConnector {
         let json = JSON.parse(body);
         console.log(json)
         self.store.dispatch({type: COIN_MARKET_CAP, payload: {
-          price_USD: "$" + Tools.formatNumber(Number(json['data']['quotes']['USD'].price)) + " USD",
-          rank: "#" + json['data'].rank,
-          marketCap_USD: "$" + Tools.formatNumber(Number(json['data']['quotes']['USD'].market_cap))+ " USD",
-          volume_USD: "$" + Tools.formatNumber(Number(json['data']['quotes']['USD'].volume_24h)) + " USD",
-          price_BTC: Tools.formatNumber(Number(json['data']['quotes']['BTC'].price)) + " BTC",
-          marketCap_BTC: Tools.formatNumber(Number(json['data']['quotes']['BTC'].market_cap))+ " BTC",
-          volume_BTC: Tools.formatNumber(Number(json['data']['quotes']['BTC'].volume_24h)) + " BTC"}})
+          price: Tools.formatNumber(Number(json['data']['quotes'][currency].price)),
+          rank: json['data'].rank,
+          marketCap:  Tools.formatNumber(Number(json['data']['quotes'][currency].market_cap)),
+          volume: Tools.formatNumber(Number(json['data']['quotes'][currency].volume_24h))}})
       }
       else
       {

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import EllipsisLoader from './EllipsisLoader';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import $ from 'jquery';
 const Tools = require('../../utils/tools');
 var classNames = require('classnames');
 

@@ -11,15 +11,12 @@
  * @flow
  */
 
-import path from 'path';
 import MenuBuilder from './menu';
 import DaemonManager from './Managers/DaemonManager';
 import GUIManager from './Managers/GUIManager';
 import {getDebugUri, grabEccoinDir, grabWalletDir} from "./utils/platform.service";
-import os from 'os';
 import { traduction } from './lang/lang';
 import {version} from './../package.json';
-import {ADD_TO_DEBUG_LOG} from "./actions/types";
 const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote } = require('electron');
 const dialog = require('electron').dialog;
 const settings = require('electron-settings');
@@ -185,9 +182,9 @@ app.on('ready', async () => {
     opn(url);
   });
 
-  mainWindow.on('close', (e) => {
+  mainWindow.on('close', async (e) => {
     e.preventDefault();
-    closeApplication();
+    await closeApplication();
   })
 
   const menuBuilder = new MenuBuilder(mainWindow);
@@ -234,7 +231,7 @@ async function closeApplication(){
 
 app.on('before-quit', async function (e) {
   e.preventDefault();
-  closeApplication();
+  await closeApplication();
  });
 
 function setupTrayIcon() {
@@ -420,8 +417,15 @@ function setupEventHandlers() {
   event.on('download-error', (payload) => {
     sendMessage('download-error', payload);
   });
+
   event.on('loading-error', (payload) => {
     sendMessage('loading-error', payload);
+  });
+
+  ipcMain.on('selected-currency', (e, args) => {
+    console.log(e)
+    console.log(args)
+    sendMessage('selected-currency', args);
   });
 
   ipcMain.on('importWallet', (e, args) => {

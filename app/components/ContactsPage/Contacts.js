@@ -1,13 +1,8 @@
-import $ from 'jquery';
 import React, { Component } from 'react';
-import TransitionGroup from 'react-transition-group/TransitionGroup';
-import { traduction } from '../../lang/lang';
 import {addContact, findContact, getContacts} from "../../Managers/SQLManager";
-const homedir = require('os').homedir();
 import * as actions from '../../actions';
 import { connect } from 'react-redux';
 import AddressBook from '../SendTransactions/AddressBook';
-import low from '../../utils/low';
 import Input from '../Others/Input';
 const Tools = require('../../utils/tools');
 
@@ -18,6 +13,7 @@ class Contacts extends Component {
     this.addContact = this.addContact.bind(this);
     this.addNormalAddress = this.addNormalAddress.bind(this);
     this.resetFields = this.resetFields.bind(this);
+    this._handleKeyPress = this._handleKeyPress.bind(this);
     this.addingContact = false;
   }
 
@@ -26,12 +22,19 @@ class Contacts extends Component {
       TweenMax.set('#addressNamePlaceHolder', {autoAlpha: 0});
   }
 
-  addContact(){
+  async addContact(){
     if(this.props.newContactName === ""){
       Tools.highlightInput("#inputName, #inputAddressVal", 1000)
     }
     else{
-      this.addNormalAddress();
+      await this.addNormalAddress();
+    }
+  }
+
+  async _handleKeyPress(e) {
+    if (e.key === 'Enter') {
+      console.log('do validate');
+      await this.addContact()
     }
   }
 
@@ -144,6 +147,8 @@ class Contacts extends Component {
             style={{width: "75%", paddingRight: "30px"}}
             autoFocus
             isLeft
+            onKeyPress={this._handleKeyPress}
+            onSubmit={this.addContact}
           />
           <div onClick={this.addContact} className="buttonPrimary addContactButton">
           { this.props.lang.addContact }
