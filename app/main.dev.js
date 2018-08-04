@@ -256,10 +256,6 @@ function setupTrayIcon() {
 
 function setupEventHandlers() {
 
-  tail.on("line", (data) => {
-    sendMessage('message-from-log', data);
-  });
-
 	ipcMain.on('messagingView', (e, args) => {
 		if(args){
 			mainWindow.setMinimumSize(400,600);
@@ -512,3 +508,7 @@ function copyFile(source, target, cb) {
     }
   }
 }
+
+tail.on("line", (data) => {
+  sendMessage('message-from-log', data);
+});
