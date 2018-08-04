@@ -15,15 +15,17 @@ import path from 'path';
 import MenuBuilder from './menu';
 import DaemonManager from './Managers/DaemonManager';
 import GUIManager from './Managers/GUIManager';
-import {grabEccoinDir, grabWalletDir} from "./utils/platform.service";
+import {getDebugUri, grabEccoinDir, grabWalletDir} from "./utils/platform.service";
 import os from 'os';
 import { traduction } from './lang/lang';
 import {version} from './../package.json';
+import {ADD_TO_DEBUG_LOG} from "./actions/types";
 const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote } = require('electron');
 const dialog = require('electron').dialog;
 const settings = require('electron-settings');
 const event = require('./utils/eventhandler');
 const opn = require('opn');
+const Tail = require('tail').Tail;
 
 let arch = require('arch');
 var fs = require('fs');
@@ -41,6 +43,7 @@ let mainWindow = null;
 let guiUpdate = false;
 let daemonUpdate = false;
 let fullScreen = false;
+const tail = new Tail(getDebugUri());
 
 function sendStatusToWindow(text) {
   mainWindow.webContents.send('message', text);
@@ -255,6 +258,10 @@ function setupTrayIcon() {
 }
 
 function setupEventHandlers() {
+
+  tail.on("line", (data) => {
+    sendMessage('message-from-log', data);
+  });
 
 	ipcMain.on('messagingView', (e, args) => {
 		if(args){

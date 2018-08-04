@@ -61,7 +61,7 @@ const https = require('https');
 const Tools = require('../utils/tools');
 const request = require('request');
 const db = require('../../app/utils/database/db')
-const Tail = require('tail').Tail;
+
 
 //this class acts as a bridge between wallet.js (daemon) and the redux store
 class DaemonConnector {
@@ -154,11 +154,6 @@ class DaemonConnector {
       this.heighestBlockFromServer = await this.getLastBlockFromServer();
     }, 0);
 
-    let tail = new Tail(getDebugUri());
-
-    tail.on("line", (data) => {
-      this.store.dispatch({type: ADD_TO_DEBUG_LOG, payload: data})
-    });
   }
 
   checkQueuedNotifications(){
@@ -392,6 +387,10 @@ class DaemonConnector {
                   </div>`}})
 
       this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: ''}})
+    });
+
+    ipcRenderer.on('message-from-log', (event, arg) =>{
+      this.store.dispatch({type: ADD_TO_DEBUG_LOG, payload: arg})
     });
 
     event.on('runMainCycle', () => {
