@@ -211,6 +211,7 @@ class DaemonConnector {
     try{
       await this.wallet.getAllInfo().then( async (data) => {
         if(data){
+          console.log(data)
           await this.getAddresses(data[2], data[3]);
           const highestBlock = data[0].headers === 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
           // remove .00 if 100%
@@ -902,6 +903,7 @@ class DaemonConnector {
   async processPendingTransactions(){
 	  let pendingTransactions = await getAllPendingTransactions()
     for (const [index, pending] of pendingTransactions.entries()) {
+	    console.log(pending)
       // handle the response
       let id = pending.transaction_id;
       let rawT = await this.getRawTransaction(id);
@@ -987,7 +989,7 @@ class DaemonConnector {
           }
         }));
     }).catch(errors => {
-      // console.log(errors)
+      console.log(errors)
     });
 
   }

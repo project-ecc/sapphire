@@ -28,7 +28,7 @@ export default(state = INITIAL_STATE, action) => {
 		return {...state, isStaking: action.payload, password: ""}
 	}
 	else if(action.type == CHAIN_INFO){
-		return {...state, stakingConfig: action.payload.staking, isStaking: (action.payload.staking == true && action.payload.unlocked_until > 0), connections: action.payload.connections, blockPayment: action.payload.blocks, headersPayment: action.payload.headers, connectionsPayment: action.payload.connections}
+		return {...state, stakingConfig: action.payload.staking, isStaking: (action.payload.staking === true && action.payload.unlocked_until > 0), connections: action.payload.connections, blockPayment: action.payload.blocks, headersPayment: action.payload.headers, connectionsPayment: action.payload.connections}
 	}
 	else if(action.type == WALLET_INFO){
 		return {...state, balance: action.payload.balance, newMint: action.payload.newmint, staking: action.payload.stake}
