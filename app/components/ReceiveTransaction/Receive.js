@@ -15,6 +15,7 @@ const ansAddresImage = require('../../../resources/images/ans_address.png');
 var classNames = require('classnames');
 const Tools = require('../../utils/tools');
 
+
 class Receive extends Component {
 
   constructor(props) {
@@ -325,6 +326,7 @@ class Receive extends Component {
             <p id="wrongPassword" style={{textAlign: 'center'}} > </p>
           </div>
         </div>
+        <ReactTooltip />
       </div>
     );
   }

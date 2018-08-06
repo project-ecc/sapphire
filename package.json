@@ -237,6 +237,7 @@
     "react-router-dom": "^4.1.1",
     "react-router-redux": "^5.0.0-alpha.6",
     "react-toggle": "^4.0.2",
+    "react-tooltip": "^3.6.1",
     "react-transition-group": "^1.2.1",
     "redux": "^3.7.1",
     "redux-thunk": "^2.2.0",

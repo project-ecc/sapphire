@@ -393,6 +393,13 @@ class DaemonConnector {
 
     ipcRenderer.on('message-from-log', (event, arg) =>{
       this.store.dispatch({type: ADD_TO_DEBUG_LOG, payload: arg})
+      const castedArg = String(arg)
+      console.log(castedArg)
+      if(castedArg != null && castedArg.indexOf('init message')!== -1 && this.firstRun){
+        const logMessage = castedArg.split("init message:")[1];
+
+        this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: logMessage}})
+      }
     });
 
     ipcRenderer.on('selected-currency', (event, arg) => {
@@ -490,7 +497,7 @@ class DaemonConnector {
 
         if(err.message === 'Loading block index...'){
           if(!this.store.getState().startup.initialSetup){
-            this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: funnies.message()}})
+            this.store.dispatch({type: LOADING, payload:{isLoading: true }})
           }
         } else if(err.message === 'Rescanning...'){
           // TODO: fix this
@@ -983,7 +990,8 @@ class DaemonConnector {
         const walletTransactions = await this.wallet.getTransactions("*", transactionData.length,0);
         await Promise.all(walletTransactions.map(async(transactions) => {
           try {
-            return await updateTransactionsConfirmations(transactions.txid, transactions.confirmations);
+            const result = await updateTransactionsConfirmations(transactions.txid, transactions.confirmations);
+            return result
           }catch (err){
              console.log(err)
           }

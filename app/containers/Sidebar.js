@@ -4,6 +4,7 @@ import $ from 'jquery';
 const homedir = require('os').homedir();
 const Tools = require('../utils/tools');
 import * as actions from '../actions';
+import ReactTooltip from 'react-tooltip'
 
 class Sidebar extends Component {
   constructor(props) {
@@ -203,7 +204,7 @@ class Sidebar extends Component {
           <img id="sidebarLogo" src={usericon} />
         </div>
         <ul className="sidebar-menu">
-          <li className="have-children"><a href="#" onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="wallet" className={"mainOption" + walletStyle}><div className="arrowMenu"></div><img style={{position: "relative", top:"-2px"}} src={wallet}/><span></span>{ this.props.lang.wallet }</a> 
+          <li className="have-children"><a href="#" onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="wallet" className={"mainOption" + walletStyle}><div className="arrowMenu"></div><img style={{position: "relative", top:"-2px"}} src={wallet}/><span></span>{ this.props.lang.wallet }</a>
             <ul>
               <li><img className="sidebarImage" src={overview}/> <a className={overviewStyle} onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="overview">{ this.props.lang.overview }</a></li>
               <li><img className="sidebarImage" src={send}/> <a onClick={this.handleClicked} className={sendStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="send">{ this.props.lang.send }</a></li>
@@ -224,7 +225,7 @@ class Sidebar extends Component {
           <li><a onClick={this.handleClicked} className={contactsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="contacts"><img style={{marginRight: "20px", position: "relative", top:"-2px"}} src={contacts}/>{ this.props.lang.contacts }</a></li>
         </ul>
         <div className="connections sidebar-section-container">
-        <a onClick={this.handleClicked} data-id="network" style={{textDecoration: "none", cursor:"pointer"}}>
+        <a data-tip="View network stats" onClick={this.handleClicked} data-id="network" style={{textDecoration: "none", cursor:"pointer"}}>
           <p style={{fontSize: "13px"}}>{`${this.props.lang.syncing} ${progressBar}%`}</p>
           <div className="progress">
             <div className="bar" style={{ width: `${progressBar}%`}}></div>
@@ -232,6 +233,7 @@ class Sidebar extends Component {
           <p style={{fontSize: "13px"}}>{`${this.props.lang.activeConnections}: ${this.props.connections}`}</p>
           </a>
         </div>
+        <ReactTooltip/>
       </div>
     );
   }
