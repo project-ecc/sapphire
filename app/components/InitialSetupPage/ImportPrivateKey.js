@@ -204,7 +204,7 @@ class ImportPrivateKey extends React.Component {
     var subTitle = {};
 
     let infomessage = null;
-    if(this.state.currentLogLine.indexOf('Still rescanning.') !== -1){
+    if(this.state.currentLogLine != null && this.state.currentLogLine.indexOf('Still rescanning.') !== -1){
       infomessage = this.state.currentLogLine;
     }
 
