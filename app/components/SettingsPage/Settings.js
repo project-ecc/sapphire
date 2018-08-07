@@ -344,15 +344,15 @@ class Settings extends Component {
             </div>
           </div>
 
-          <div className="row settingsToggle">
-            <div className="col-sm-6 text-left removePadding">
-              <p>{ this.props.lang.wallet }</p>
-              <p id="applicationVersion">{this.props.lang.walletImportInfo}</p>
-            </div>
-            <div className="col-sm-6 text-right removePadding">
-              <p onClick={this.handleImportWalletFile} style={{cursor: "pointer"}}>{ this.props.lang.import }</p>
-            </div>
-          </div>
+          {/*<div className="row settingsToggle">*/}
+            {/*<div className="col-sm-6 text-left removePadding">*/}
+              {/*<p>{ this.props.lang.wallet }</p>*/}
+              {/*<p id="applicationVersion">{this.props.lang.walletImportInfo}</p>*/}
+            {/*</div>*/}
+            {/*<div className="col-sm-6 text-right removePadding">*/}
+              {/*<p onClick={this.handleImportWalletFile} style={{cursor: "pointer"}}>{ this.props.lang.import }</p>*/}
+            {/*</div>*/}
+          {/*</div>*/}
         </div>
       </div>
     );

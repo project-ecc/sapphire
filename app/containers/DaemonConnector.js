@@ -489,11 +489,15 @@ class DaemonConnector {
     })
     .catch((err) => {
       console.log(err.message)
-      if (err.message === 'Loading block index...' || err.message === 'Activating best chain...' || err.message === "Loading wallet..." || err.message === 'Rescanning...') {
+      if (err.message === 'Loading block index...' || err.message === 'Activating best chain...' ||
+        err.message === "Loading wallet..." || err.message === 'Rescanning...' ||
+        err.message === 'Internal Server Error' || err.message === "ESOCKETTIMEDOUT" ) {
         if(!this.loadingBlockIndexPayment){
           this.loadingBlockIndexPayment = true;
           this.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: true})
         }
+
+        let currentLogEntry = this.store.getState().application.debugLog.peekEnd() != null ? this.store.getState().application.debugLog.peekEnd() : ''
 
         if(err.message === 'Loading block index...'){
           if(!this.store.getState().startup.initialSetup){
@@ -502,8 +506,11 @@ class DaemonConnector {
         } else if(err.message === 'Rescanning...'){
           // TODO: fix this
           this.store.dispatch({type: LOADER_MESSAGE_FROM_LOG, payload:true})
-          const message = this.store.getState().application.debugLog.peek()
-          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: message}})
+          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: currentLogEntry}})
+        }
+        console.log(currentLogEntry)
+        if((err.message === 'Internal Server Error' || err.message === "ESOCKETTIMEDOUT") && (currentLogEntry.indexOf('Still rescanning') != -1)){
+          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: currentLogEntry}})
         }
       }
     });

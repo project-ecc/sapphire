@@ -16,6 +16,9 @@ class ImportPrivateKey extends React.Component {
     this.goBackToFirstStep = this.goBackToFirstStep.bind(this);
     this.failedToImportAddress = this.failedToImportAddress.bind(this);
     this.getCloseButton = this.getCloseButton.bind(this);
+    this.state = {
+      currentLogLine: ''
+    }
   }
 
   componentWillUnmount(){
@@ -122,11 +125,16 @@ class ImportPrivateKey extends React.Component {
   checkDaemonStatus(){
     var self = this;
     this.props.wallet.getInfo().then((data) => {
+      // TODO tell the daemon connector to reindex transactions
       self.showFunctionIcons();
       self.props.setCheckingDaemonStatusPrivKey(false);
       self.addressImported();
     })
     .catch((err) => {
+      this.setState({
+        currentLogLine: this.props.rescanningLogInfo.peekEnd()
+      })
+      console.log(this.state.currentLogLine)
       setTimeout(()=>{
         self.checkDaemonStatus();
       }, 1000)
@@ -195,6 +203,11 @@ class ImportPrivateKey extends React.Component {
     var title = null;
     var subTitle = {};
 
+    let infomessage = null;
+    if(this.state.currentLogLine.indexOf('Still rescanning.') !== -1){
+      infomessage = this.state.currentLogLine;
+    }
+
     if(this.props.notInitialSetup){
       textStyle = {
        fontWeight: "",
@@ -245,6 +258,7 @@ class ImportPrivateKey extends React.Component {
         </div>
         <div style={textStyleFix} id="importingPrivKey" className={this.props.notInitialSetup ? "importingAddressPopup" : ""}>
           { this.props.lang.importingAddressPopup } <span className="toAnimate">.</span><span className="toAnimate">.</span><span className="toAnimate">.</span>
+          <p>{ infomessage }</p>
           <p>{ this.props.lang.pleaseWait }</p>
         </div>
         <div style={textStyleFix} id="importedAddress" className={this.props.notInitialSetup ? "importedAddressPopup" : ""}>
@@ -287,6 +301,7 @@ class ImportPrivateKey extends React.Component {
     checkingDaemonStatusPrivateKey: state.application.checkingDaemonStatusPrivateKey,
     showingFunctionIcons: state.application.showingFunctionIcons,
     setupDoneInternal: state.startup.setupDoneInternal,
+    rescanningLogInfo: state.application.debugLog
   };
 };
 

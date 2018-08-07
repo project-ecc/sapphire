@@ -50,4 +50,9 @@ Queue.prototype.peek = function () {
   if (this.size() === 0) return null;
   return this.store[this.front];
 };
+
+Queue.prototype.peekEnd = function () {
+  if (this.size() === 0) return null;
+  return this.store[this.end];
+}
 module.exports = Queue

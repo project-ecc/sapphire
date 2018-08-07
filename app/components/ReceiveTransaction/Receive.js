@@ -326,7 +326,6 @@ class Receive extends Component {
             <p id="wrongPassword" style={{textAlign: 'center'}} > </p>
           </div>
         </div>
-        <ReactTooltip />
       </div>
     );
   }

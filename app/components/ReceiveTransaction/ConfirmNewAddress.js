@@ -6,7 +6,6 @@ import * as actions from '../../actions';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
-import ansAddressesInfo from '../../utils/ansAddressesInfo';
 import renderHTML from 'react-render-html';
 
 import $ from 'jquery';

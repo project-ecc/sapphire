@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {TweenMax} from "gsap";
 import { connect } from 'react-redux';
 import renderHTML from 'react-render-html';
-import low from '../../utils/low';
 import * as actions from '../../actions';
 
 import $ from 'jquery';
