@@ -141,3 +141,4 @@ export const TRANSACTIONS_TYPE = "transactions_type";
 export const ADD_TO_DEBUG_LOG = "add_to_debug_log";
 export const LOADER_MESSAGE_FROM_LOG = "loader_message_from_log";
 export const SELECTED_CURRENCY = 'selected_currency';
+export const DONATION_GOALS = 'donation_goals';

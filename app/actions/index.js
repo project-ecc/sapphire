@@ -119,7 +119,7 @@ import {
   MULTIPLE_ANS_ADDRESSES,
   ADDING_CONTACT,
   SHOW_ZERO_BALANCE,
-  IS_FILTERING_TRANSACTIIONS, TRANSACTIONS_TYPE, ADD_TO_DEBUG_LOG, SELECTED_CURRENCY
+  IS_FILTERING_TRANSACTIIONS, TRANSACTIONS_TYPE, ADD_TO_DEBUG_LOG, SELECTED_CURRENCY, DONATION_GOALS
 } from "./types";
 
 export const getSetup = () => dispatch => {
@@ -955,6 +955,13 @@ export const setAppendToDebugLog = (val) => {
 export const setSelectedCurrency = (val) => {
   return {
     type: SELECTED_CURRENCY,
+    payload: val
+  }
+}
+
+export const setDonationGoals = (val) => {
+  return {
+    type: DONATION_GOALS,
     payload: val
   }
 }
