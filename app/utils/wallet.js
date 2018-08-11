@@ -45,6 +45,16 @@ export default class Wallet {
     });
   }
 
+  clearBanned(){
+    return new Promise((resolve, reject) => {
+      client.clearBanned().then((response) => {
+        return resolve(response)
+      }).catch((err)=> {
+        return reject(err)
+      })
+    })
+  }
+
   getAllInfo(){
     return new Promise((resolve, reject) => {
       let batch = [];

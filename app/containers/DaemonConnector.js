@@ -107,6 +107,7 @@ class DaemonConnector {
     this.transactionsPage = 0;
     this.transactionsToRequest = 1000;
     this.transactionsIndexed = false;
+    this.loadingMessage = ''
 
     this.transactionsMap = {};
     this.runningMainCycle = false;
@@ -181,6 +182,7 @@ class DaemonConnector {
   }
 
   async mainCycle(){
+	  console.log('back in main cycle')
     if(!this.isIndexingTransactions){
       const addresses = await getAllAddresses();
       if(addresses.length > 0){
@@ -257,6 +259,7 @@ class DaemonConnector {
       return;
     }
     if(!this.firstRun && !this.isIndexingTransactions && !this.transactionsIndexed){
+      console.log('in here')
       await this.loadTransactionsForProcessing();
     }
     if(this.transactionsIndexed){
@@ -397,8 +400,7 @@ class DaemonConnector {
       console.log(castedArg)
       if(castedArg != null && castedArg.indexOf('init message')!== -1 && this.firstRun){
         const logMessage = castedArg.split("init message:")[1];
-
-        this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: logMessage}})
+        this.loadingMessage = logMessage
       }
     });
 
@@ -497,20 +499,17 @@ class DaemonConnector {
           this.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: true})
         }
 
-        let currentLogEntry = this.store.getState().application.debugLog.peekEnd() != null ? this.store.getState().application.debugLog.peekEnd() : ''
-
         if(err.message === 'Loading block index...'){
           if(!this.store.getState().startup.initialSetup){
-            this.store.dispatch({type: LOADING, payload:{isLoading: true }})
+            this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: 'Loading block index...' }})
           }
         } else if(err.message === 'Rescanning...'){
           // TODO: fix this
           this.store.dispatch({type: LOADER_MESSAGE_FROM_LOG, payload:true})
-          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: currentLogEntry}})
+          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: 'Rescanning...'}})
         }
-        console.log(currentLogEntry)
         if((err.message === 'Internal Server Error' || err.message === "ESOCKETTIMEDOUT") && (currentLogEntry.indexOf('Still rescanning') != -1)){
-          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: currentLogEntry}})
+          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: 'Rescanning...'}})
         }
       }
     });

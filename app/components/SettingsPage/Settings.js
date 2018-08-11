@@ -246,23 +246,31 @@ class Settings extends Component {
   }
 
   async deleteAndReIndex(){
-    let wallet = new Wallet();
 
-    const data = await wallet.walletstop();
+    const data = await this.props.wallet.walletstop();
     if (data && data === 'ECC server stopping') {
       console.log('stopping daemon');
 
+      const dbLocation = getSapphireDirectory() + 'database.sqlite';
+      console.log(dbLocation)
+      try {
+        fs.unlinkSync(dbLocation);
+        console.log('can read/write');
+        app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])})
+        app.exit(0)
+      } catch (err) {
+        console.error('no access!');
+      }
     }
-    const dbLocation = getSapphireDirectory() + 'database.sqlite';
-    try {
-      fs.accessSync(dbLocation, fs.constants.R_OK | fs.constants.W_OK);
-      fs.unlinkSync(dbLocation);
-      console.log('can read/write');
-    } catch (err) {
-      console.error('no access!');
+
+  }
+
+  async clearBanlist(){
+    const data = await this.props.wallet.clearBanned();
+    if (data === null) {
+     console.log('banlist cleared')
+      this.props.setActionPopupResult({flag: true, successful: true, message: `<p style="margin-bottom: 20px" className="backupFailed">Banlist Cleared!</p>`})
     }
-    app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])})
-    app.exit(0)
   }
 
   getGeneralSettings(){
@@ -406,7 +414,7 @@ class Settings extends Component {
             <p id="applicationVersion">Click clear banlist to remove all the banned nodes.</p>
           </div>
           <div className="col-sm-6 text-right removePadding">
-            <p onClick={this.deleteAndReIndex.bind(this)} style={{cursor: "pointer"}}>Clear Banlist</p>
+            <p onClick={this.clearBanlist.bind(this)} style={{cursor: "pointer"}}>Clear Banlist</p>
           </div>
         </div>
       </div>
@@ -556,7 +564,7 @@ const mapStateToProps = state => {
     hoveredIcon: state.application.settingsHoveredSocialIcon,
     theme: state.application.theme,
     daemonVersion: state.chains.daemonVersion,
-    debugLog: state.application.debugLog
+    debugLog: state.application.debugLog,
   };
 };
 
