@@ -182,7 +182,7 @@ class DaemonConnector {
   }
 
   async mainCycle(){
-	  console.log('back in main cycle')
+	  // console.log('back in main cycle')
     if(!this.isIndexingTransactions){
       const addresses = await getAllAddresses();
       if(addresses.length > 0){
@@ -213,7 +213,7 @@ class DaemonConnector {
     try{
       await this.wallet.getAllInfo().then( async (data) => {
         if(data){
-          console.log(data)
+          // console.log(data)
           await this.getAddresses(data[2], data[3]);
           const highestBlock = data[0].headers === 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
           // remove .00 if 100%
@@ -259,7 +259,7 @@ class DaemonConnector {
       return;
     }
     if(!this.firstRun && !this.isIndexingTransactions && !this.transactionsIndexed){
-      console.log('in here')
+      // console.log('in here')
       await this.loadTransactionsForProcessing();
     }
     if(this.transactionsIndexed){
@@ -398,9 +398,8 @@ class DaemonConnector {
       this.store.dispatch({type: ADD_TO_DEBUG_LOG, payload: arg})
       const castedArg = String(arg)
       console.log(castedArg)
-      if(castedArg != null && castedArg.indexOf('init message')!== -1 && this.firstRun){
-        const logMessage = castedArg.split("init message:")[1];
-        this.loadingMessage = logMessage
+      if(castedArg != null && (castedArg.indexOf('init message') !== -1 || castedArg.indexOf('Still rescanning') !== -1) && this.firstRun){
+        this.loadingMessage = castedArg
       }
     });
 
@@ -645,7 +644,7 @@ class DaemonConnector {
     function callback(error, response, body) {
       if (!error && response.statusCode == 200) {
         let json = JSON.parse(body);
-        console.log(json)
+        // console.log(json)
         self.store.dispatch({type: COIN_MARKET_CAP, payload: {
           price: Tools.formatNumber(Number(json['data']['quotes'][currency].price)),
           rank: json['data'].rank,
@@ -802,7 +801,7 @@ class DaemonConnector {
             let original = entries[j];
             let current = values[i];
             if(current.txId === original.txId) {
-              console.log('txId match')
+              // console.log('txId match')
 
               // if original == send
               if(original.category === "receive" && current.category === "send" || original.category === "send" && current.category === "receive"){
@@ -916,7 +915,7 @@ class DaemonConnector {
   async processPendingTransactions(){
 	  let pendingTransactions = await getAllPendingTransactions()
     for (const [index, pending] of pendingTransactions.entries()) {
-	    console.log(pending)
+	    // console.log(pending)
       // handle the response
       let id = pending.transaction_id;
       let rawT = await this.getRawTransaction(id);

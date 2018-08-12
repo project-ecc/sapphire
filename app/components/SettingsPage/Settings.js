@@ -402,6 +402,7 @@ class Settings extends Component {
       <div className="container">
         <div className="row settingsToggle" >
           <div className="col-sm-9 text-left removePadding">
+            <p>Delete And Reindex</p>
             <p className="walletBackupOptions" style={{fontSize: "14px", fontWeight: "700"}}>Delete Index Transactions database (WARNING) this will delete your contacts</p>
           </div>
           <div className="col-sm-3 text-right removePadding">
