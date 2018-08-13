@@ -198,6 +198,8 @@ class DaemonConnector {
         this.transactionsIndexed = true;
       } else if ((latestTransaction === undefined || latestTransaction === null) && transactions.length > 0) {
         this.transactionsIndexed = false
+      } else {
+        this.transactionsIndexed = true;
       }
     }
 
@@ -727,7 +729,7 @@ class DaemonConnector {
     // load transactions into transactionsMap for processing
     for (let i = 0; i < transactions.length; i++) {
       time = transactions[i].time;
-      if(time * 1000 > this.currentFrom || !this.transactionsIndexed){
+      if(time > this.currentFrom || !this.transactionsIndexed){
         // console.log(transactions[i])
         shouldRequestAnotherPage = true;
         txId = transactions[i].txid;
