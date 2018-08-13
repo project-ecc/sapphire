@@ -274,7 +274,7 @@ class Transaction extends Component {
               || this.props.type === t.category
               || this.props.type === t.status){
                 counter++;
-                const iTime = new Date(t.time);
+                const iTime = new Date(t.time * 1000);
                 let time = Tools.calculateTimeSince(this.props.lang, today, iTime);
 
                 let category_label;
