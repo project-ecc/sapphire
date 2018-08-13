@@ -277,7 +277,7 @@ const mapStateToProps = state => {
     staking: state.chains.isStaking,
     balance: Tools.formatNumber(balance),
     //temporary fix...
-    total: Tools.formatNumber(balance + staking + newMint + unconfirmedBalance + immatureBalance),
+    total: Tools.formatNumber(parseInt(balance) + parseInt(staking) + parseInt(newMint) + parseInt(unconfirmedBalance) + parseInt(immatureBalance)),
     unconfirmed: Tools.formatNumber(unconfirmedBalance),
     stakingVal: Tools.formatNumber(staking),
 
