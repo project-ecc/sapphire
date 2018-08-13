@@ -193,7 +193,12 @@ class DaemonConnector {
       const latestTransaction = await getLatestTransaction();
       this.from = latestTransaction != null ? latestTransaction.time : 0;
       this.currentFrom = this.from
-      this.transactionsIndexed = true;
+      const transactions = await this.wallet.getTransactions('*', 10, 0);
+      if((latestTransaction === undefined || latestTransaction === null) && transactions.length === 0){
+        this.transactionsIndexed = true;
+      } else if ((latestTransaction === undefined || latestTransaction === null) && transactions.length > 0) {
+        this.transactionsIndexed = false
+      }
     }
 
     if(this.store.getState().startup.updatingApp){
@@ -213,7 +218,7 @@ class DaemonConnector {
     try{
       await this.wallet.getAllInfo().then( async (data) => {
         if(data){
-          // console.log(data)
+          console.log(data)
           await this.getAddresses(data[2], data[3]);
           const highestBlock = data[0].headers === 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
           // remove .00 if 100%
@@ -227,7 +232,7 @@ class DaemonConnector {
 
           // check the latest transactions against the current from
           const result = (data[1].filter(transaction =>{
-           return transaction.time * 1000 > this.currentFrom
+           return transaction.time > this.currentFrom
           }));
           console.log(result)
           if (result.length > 0 && !this.firstRun){
@@ -864,8 +869,6 @@ class DaemonConnector {
         this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: `Indexing transaction ${i}/${entries.length}`}})
       }
       let entry = entries[i];
-
-      entry.time = entry.time * 1000;
       if(Number(entry.confirmations) < 30){
         this.store.dispatch({type: PENDING_TRANSACTION, payload: entry.txId})
 
