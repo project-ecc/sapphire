@@ -144,7 +144,6 @@ class News extends Component {
           </div>
         </div>
 
-
         <div id="panelHolder">
         {this.props.eccPostsArrays.map((array, indexArray) => {
           return(
