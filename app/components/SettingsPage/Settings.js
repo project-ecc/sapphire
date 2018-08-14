@@ -23,6 +23,7 @@ const Tools = require('../../utils/tools');
 import Wallet from '../../utils/wallet';
 const guiVersion = version;
 import {getSapphireDirectory} from "../../utils/platform.service";
+import Donations from "./Donations";
 
 var jsonFormat = require('json-format');
 var open = require("open");
@@ -45,8 +46,6 @@ class Settings extends Component {
     this.handleChangePasswordClicked = this.handleChangePasswordClicked.bind(this);
     this.handleSidebarClicked = this.handleSidebarClicked.bind(this);
     this.handleHelpFile = this.handleHelpFile.bind(this);
-    this.animateCircle = this.animateCircle.bind(this);
-    this.updateGoals = this.updateGoals.bind(this);
   }
 
   handleUpdateApplication(){
@@ -460,90 +459,8 @@ class Settings extends Component {
     )
   }
 
-  getDonateSettings(){
-    return (
-      <div>
-        <p id="walletBackup">{ this.props.lang.theme }</p>
-        <div className="row col-xl-12 col-lg-12">
-        {this.props.donationGoals.map((goal, index) => {
-          return(
-            <div key={index} className="community-goal col-xl-4 col-lg-6">
-              <div className="goal-to-go">
-                {goal.completedAt ? "done" : "remaining " + goal.daysRemaining}
-              </div>
-              <h3>{goal.name}</h3>
-              <div className="goal-details-container">
-                <div className="goal-progress">
-                  <canvas className="goal-progress-circle" height="150" width="150" data-progress={goal.currentBTCTotal / goal.goalBTCTotal}> </canvas>
-                  <div className="goal-desc">
-                  <div className="goal-current-btc-total"><span className="fa fa-btc"></span>{ goal.currentBTCTotal }</div>
-                  <div className="goal-of">of</div>
-                  <div className="goal-goal-btc-total"><span className="fa fa-btc"></span>{ goal.goalBTCTotal }</div>
-                </div>
-              </div>
-                {goal.currentBTCTotal >= goal.goalBTCTotal ? <span className="btn btn-secondary btn-lg btn-icon caps disabled"><img src="/img/ecc_logo_white.svg"/>Thanks</span> :
-                  <span className="btn btn-primary btn-lg btn-icon caps" data-toggle="modal" data-target={`#goal-${goal.id}-detail`}>
-                  <span className="fa fa-gift"></span>Donate</span>}
-                  </div>
-            </div>
-          );
-        })
-        }
-        </div>
-      </div>
-    );
-  }
-
-  updateGoals(){
-    $('.goal-progress-circle').each((index, canvas) => {
-
-      this.animateCircle(canvas.getContext('2d'), 0, $(canvas).data('progress'));
-
-    });
-  }
-
-
-  animateCircle(context, currentPct, endPct) {
-
-    let elDims = 150;
-
-    let centerPoint = elDims / 2;
-
-    let radius = centerPoint - 5;
-
-    let fullCircle = Math.PI * 2;
-
-    let quarterCircle = fullCircle / 4;
-
-    context.clearRect(0, 0, elDims, elDims);
-
-    context.lineWidth = 5;
-
-
-    context.strokeStyle = '#E7E7E7';
-
-    context.beginPath();
-
-    context.arc(centerPoint, centerPoint, radius, 0, fullCircle, false);
-
-    context.stroke();
-
-
-    context.strokeStyle = '#DB8F27';
-
-    context.beginPath();
-
-    context.arc(centerPoint, centerPoint, radius, -quarterCircle, (fullCircle * currentPct) - quarterCircle, false);
-
-    context.stroke();
-
-
-    if ((currentPct += .01) < endPct) {
-
-      requestAnimationFrame( () =>{
-        this.animateCircle(context, currentPct, endPct);
-      });
-    }
+  getDonateSettings() {
+    return (<div><Donations/></div>)
   }
 
   getSettings(){
@@ -616,6 +533,7 @@ class Settings extends Component {
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Notifications")} selected={this.props.settingsOptionSelected === "Notifications"} text={ this.props.lang.notifications } />
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Appearance")} selected={this.props.settingsOptionSelected === "Appearance"} text={ this.props.lang.appearance } />
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Language")} selected={this.props.settingsOptionSelected === "Language"} text={ this.props.lang.language } />
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Donate")} selected={this.props.settingsOptionSelected === "Donate"} text={ this.props.lang.donate } />
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Advanced")} selected={this.props.settingsOptionSelected === "Advanced"} text={ this.props.lang.advanced } />
               <div id="socialIcons">
                 <img onMouseEnter={this.handleIconHover.bind(this, "twitter")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://twitter.com/project_ecc")} src={twitter} />
@@ -654,9 +572,7 @@ const mapStateToProps = state => {
     hoveredIcon: state.application.settingsHoveredSocialIcon,
     theme: state.application.theme,
     daemonVersion: state.chains.daemonVersion,
-    debugLog: state.application.debugLog,
-    donationGoals: state.application.donationGoals,
-    donationGoalsLastUpdated: state.application.donationGoalsLastUpdated
+    debugLog: state.application.debugLog
   };
 };
 
