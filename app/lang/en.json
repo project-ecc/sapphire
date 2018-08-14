@@ -306,6 +306,7 @@
     "fileStorageWebsite": "website",
     "fileStoragePreview": "*A preview of this service will be made available soon*",
     "usd": "USD",
+    "gbp": "GBP",
     "eur": "EUR",
     "aud": "AUD",
     "btc": "BTC",

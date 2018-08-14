@@ -103,6 +103,7 @@ class News extends Component {
       case "eth" : return this.props.lang.eth;
       case "ltc":return this.props.lang.ltc;
       case "bch": return this.props.lang.bch;
+      case "gbp": return this.props.lang.gbp;
     }
   }
 
@@ -113,6 +114,7 @@ class News extends Component {
 
   render() {
     let items = 0;
+    let selectedCurrency = this.props.selectedCurrency.toUpperCase()
     return (
       <div className="panel">
         <div className="row">
@@ -129,6 +131,7 @@ class News extends Component {
                 <input type="hidden" name="gender"></input>
                 <ul className="dropdown-menuFilterSelector normalWeight " style={{margin: "0 0"}}>
                   <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="usd">{ this.props.lang.usd }</li>
+                  <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="gbp">{ this.props.lang.gbp }</li>
                   <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="eur">{ this.props.lang.eur }</li>
                   <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="aud">{ this.props.lang.aud }</li>
                   <li style={{padding: "5px"}} onClick={this.onItemClick} data-id="btc">{ this.props.lang.btc }</li>
@@ -140,7 +143,6 @@ class News extends Component {
             }
           </div>
         </div>
-
 
         <div id="panelHolder">
         {this.props.eccPostsArrays.map((array, indexArray) => {
@@ -189,17 +191,17 @@ class News extends Component {
             </div>
             <div className="statsItem" id="marketCap">
               <p>{ this.props.lang.marketCap }</p>
-              <p>{this.props.cmcStats.marketCap + ' ' + this.props.selectedCurrency}</p>
+              <p>{this.props.cmcStats.marketCap + ' ' + selectedCurrency}</p>
               <div className="mask"></div>
             </div>
             <div className="statsItem" id="price">
               <p>{ this.props.lang.price }</p>
-              <p>{this.props.cmcStats.price + ' ' + this.props.selectedCurrency }</p>
+              <p>{this.props.cmcStats.price + ' ' + selectedCurrency }</p>
               <div className="mask"></div>
             </div>
             <div className="statsItem" id="volume">
               <p>{ this.props.lang.volume }</p>
-              <p>{ this.props.cmcStats.volume + ' ' + this.props.selectedCurrency }</p>
+              <p>{ this.props.cmcStats.volume + ' ' + selectedCurrency }</p>
             </div>
           </div>
         </div>

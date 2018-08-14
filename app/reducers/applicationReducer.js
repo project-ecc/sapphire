@@ -249,7 +249,7 @@ export default(state = INITIAL_STATE, action) => {
 			rewardsLastWeek = state.lastWeekStakingRewards;
 			totalRewards = state.totalStakingRewards;
 
-      const transactionTime = transaction.time * 1000;
+      const transactionTime = transaction.time;
 
       if (transactionTime >= oneWeekago && transactionTime <= currentDay ){
         rewardsLastWeek += transaction.amount;

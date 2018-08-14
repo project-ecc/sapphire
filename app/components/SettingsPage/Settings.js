@@ -248,23 +248,31 @@ class Settings extends Component {
   }
 
   async deleteAndReIndex(){
-    let wallet = new Wallet();
 
-    const data = await wallet.walletstop();
+    const data = await this.props.wallet.walletstop();
     if (data && data === 'ECC server stopping') {
       console.log('stopping daemon');
 
+      const dbLocation = getSapphireDirectory() + 'database.sqlite';
+      console.log(dbLocation)
+      try {
+        fs.unlinkSync(dbLocation);
+        console.log('can read/write');
+        app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])})
+        app.exit(0)
+      } catch (err) {
+        console.error('no access!');
+      }
     }
-    const dbLocation = getSapphireDirectory() + 'database.sqlite';
-    try {
-      fs.accessSync(dbLocation, fs.constants.R_OK | fs.constants.W_OK);
-      fs.unlinkSync(dbLocation);
-      console.log('can read/write');
-    } catch (err) {
-      console.error('no access!');
+
+  }
+
+  async clearBanlist(){
+    const data = await this.props.wallet.clearBanned();
+    if (data === null) {
+     console.log('banlist cleared')
+      this.props.setActionPopupResult({flag: true, successful: true, message: `<p style="margin-bottom: 20px" className="backupFailed">Banlist Cleared!</p>`})
     }
-    app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])})
-    app.exit(0)
   }
 
   getGeneralSettings(){
@@ -396,6 +404,7 @@ class Settings extends Component {
       <div className="container">
         <div className="row settingsToggle" >
           <div className="col-sm-9 text-left removePadding">
+            <p>Delete And Reindex</p>
             <p className="walletBackupOptions" style={{fontSize: "14px", fontWeight: "700"}}>Delete Index Transactions database (WARNING) this will delete your contacts</p>
           </div>
           <div className="col-sm-3 text-right removePadding">
@@ -408,7 +417,7 @@ class Settings extends Component {
             <p id="applicationVersion">Click clear banlist to remove all the banned nodes.</p>
           </div>
           <div className="col-sm-6 text-right removePadding">
-            <p onClick={this.deleteAndReIndex.bind(this)} style={{cursor: "pointer"}}>Clear Banlist</p>
+            <p onClick={this.clearBanlist.bind(this)} style={{cursor: "pointer"}}>Clear Banlist</p>
           </div>
         </div>
       </div>
@@ -607,7 +616,6 @@ class Settings extends Component {
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Notifications")} selected={this.props.settingsOptionSelected === "Notifications"} text={ this.props.lang.notifications } />
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Appearance")} selected={this.props.settingsOptionSelected === "Appearance"} text={ this.props.lang.appearance } />
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Language")} selected={this.props.settingsOptionSelected === "Language"} text={ this.props.lang.language } />
-              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Donate")} selected={this.props.settingsOptionSelected === "Donate"} text={ this.props.lang.donate } />
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Advanced")} selected={this.props.settingsOptionSelected === "Advanced"} text={ this.props.lang.advanced } />
               <div id="socialIcons">
                 <img onMouseEnter={this.handleIconHover.bind(this, "twitter")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://twitter.com/project_ecc")} src={twitter} />

@@ -196,7 +196,14 @@ class DaemonConnector {
       const latestTransaction = await getLatestTransaction();
       this.from = latestTransaction != null ? latestTransaction.time : 0;
       this.currentFrom = this.from
-      this.transactionsIndexed = true;
+      const transactions = await this.wallet.getTransactions('*', 10, 0);
+      if((latestTransaction === undefined || latestTransaction === null) && transactions.length === 0){
+        this.transactionsIndexed = true;
+      } else if ((latestTransaction === undefined || latestTransaction === null) && transactions.length > 0) {
+        this.transactionsIndexed = false
+      } else {
+        this.transactionsIndexed = true;
+      }
     }
 
     if(this.store.getState().startup.updatingApp){
@@ -230,7 +237,7 @@ class DaemonConnector {
 
           // check the latest transactions against the current from
           const result = (data[1].filter(transaction =>{
-           return transaction.time * 1000 > this.currentFrom
+           return transaction.time > this.currentFrom
           }));
           console.log(result)
           if (result.length > 0 && !this.firstRun){
@@ -400,10 +407,8 @@ class DaemonConnector {
       this.store.dispatch({type: ADD_TO_DEBUG_LOG, payload: arg})
       const castedArg = String(arg)
       console.log(castedArg)
-      if(castedArg != null && castedArg.indexOf('init message')!== -1 && this.firstRun){
-        const logMessage = castedArg.split("init message:")[1];
-
-        this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: logMessage}})
+      if(castedArg != null && (castedArg.indexOf('init message') !== -1 || castedArg.indexOf('Still rescanning') !== -1) && this.firstRun){
+        this.loadingMessage = castedArg
       }
     });
 
@@ -502,20 +507,17 @@ class DaemonConnector {
           this.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: true})
         }
 
-        let currentLogEntry = this.store.getState().application.debugLog.peekEnd() != null ? this.store.getState().application.debugLog.peekEnd() : ''
-
         if(err.message === 'Loading block index...'){
           if(!this.store.getState().startup.initialSetup){
-            this.store.dispatch({type: LOADING, payload:{isLoading: true }})
+            this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: 'Loading block index...' }})
           }
         } else if(err.message === 'Rescanning...'){
           // TODO: fix this
           this.store.dispatch({type: LOADER_MESSAGE_FROM_LOG, payload:true})
-          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: currentLogEntry}})
+          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: 'Rescanning...'}})
         }
-        console.log(currentLogEntry)
         if((err.message === 'Internal Server Error' || err.message === "ESOCKETTIMEDOUT") && (currentLogEntry.indexOf('Still rescanning') != -1)){
-          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: currentLogEntry}})
+          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: 'Rescanning...'}})
         }
       }
     });
@@ -758,7 +760,7 @@ class DaemonConnector {
     // load transactions into transactionsMap for processing
     for (let i = 0; i < transactions.length; i++) {
       time = transactions[i].time;
-      if(time * 1000 > this.currentFrom || !this.transactionsIndexed){
+      if(time > this.currentFrom || !this.transactionsIndexed){
         // console.log(transactions[i])
         shouldRequestAnotherPage = true;
         txId = transactions[i].txid;
@@ -837,7 +839,7 @@ class DaemonConnector {
             let original = entries[j];
             let current = values[i];
             if(current.txId === original.txId) {
-              console.log('txId match')
+              // console.log('txId match')
 
               // if original == send
               if(original.category === "receive" && current.category === "send" || original.category === "send" && current.category === "receive"){
@@ -900,8 +902,6 @@ class DaemonConnector {
         this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: `Indexing transaction ${i}/${entries.length}`}})
       }
       let entry = entries[i];
-
-      entry.time = entry.time * 1000;
       if(Number(entry.confirmations) < 30){
         this.store.dispatch({type: PENDING_TRANSACTION, payload: entry.txId})
 
@@ -951,7 +951,7 @@ class DaemonConnector {
   async processPendingTransactions(){
 	  let pendingTransactions = await getAllPendingTransactions()
     for (const [index, pending] of pendingTransactions.entries()) {
-	    console.log(pending)
+	    // console.log(pending)
       // handle the response
       let id = pending.transaction_id;
       let rawT = await this.getRawTransaction(id);
