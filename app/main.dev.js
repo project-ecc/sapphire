@@ -40,6 +40,11 @@ let mainWindow = null;
 let guiUpdate = false;
 let daemonUpdate = false;
 let fullScreen = false;
+
+// check if daemon debug file exists
+if(!fs.existsSync(getDebugUri())){
+  fs.closeSync(fs.openSync(getDebugUri(), 'w'));
+}
 const tail = new Tail(getDebugUri());
 
 function sendStatusToWindow(text) {
@@ -112,11 +117,6 @@ app.on('ready', async () => {
 
   if(fs.existsSync(fullPath)){
     fs.unlink(fullPath)
-  }
-
-  // check if daemon debug file exists
-  if(!fs.existsSync(getDebugUri())){
-    fs.closeSync(fs.openSync(getDebugUri(), 'w'));
   }
 
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
