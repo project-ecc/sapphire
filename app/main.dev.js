@@ -114,6 +114,11 @@ app.on('ready', async () => {
     fs.unlink(fullPath)
   }
 
+  // check if daemon debug file exists
+  if(!fs.existsSync(getDebugUri())){
+    fs.closeSync(fs.openSync(getDebugUri(), 'w'));
+  }
+
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
     await installExtensions();
   }
