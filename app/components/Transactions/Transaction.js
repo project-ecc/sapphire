@@ -303,7 +303,7 @@ class Transaction extends Component {
                 <div key={index}>
                   <div className= {counter % 2 !== 0 ? rowClassName : rowClassName + " tableRowEven"} style={{padding:"0",cursor: "pointer", fontSize: "15px", justifyContent:"space-around", minHeight:"40px"}} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
                     <div className="col-sm-3" style={{}}>
-                      <p style={{ margin: '0px' }}><span>{moment(t.time).format('MMMM Do')}</span></p>
+                      <p style={{ margin: '0px' }}><span>{moment(t.time * 1000).format('MMMM Do')}</span></p>
                     </div>
                     <div className="col-sm-6 text-center" style={{paddingTop:"4px",paddingBottom:"4px"}}>
                        {category}
@@ -319,7 +319,7 @@ class Transaction extends Component {
                     <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{ paddingLeft: "2%", width: "100%", paddingTop: "6px", paddingBottom: "6px", cursor:"default", zIndex:"2", display:"none", margin:"0",}}>
                           <div style={{padding:"0 15px"}}>
                             <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.dateString}</span></p>
-                            <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{(new Date(t.time).toDateString()).toString()}</span></p>
+                            <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{(new Date(t.time * 1000).toDateString()).toString()}</span></p>
                           </div>
                           <div style={{padding:"0 15px"}}>
                             <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.confirmations}</span></p>
