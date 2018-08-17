@@ -40,6 +40,21 @@ let mainWindow = null;
 let guiUpdate = false;
 let daemonUpdate = false;
 let fullScreen = false;
+
+// check if daemon debug file exists
+
+
+try {
+    fs.mkdirSync(grabEccoinDir());
+} catch(e){
+  console.log(e)
+}
+
+try {
+  fs.writeFileSync(getDebugUri(), '\n');
+} catch(e){
+  console.log(e)
+}
 const tail = new Tail(getDebugUri());
 
 function sendStatusToWindow(text) {
@@ -333,6 +348,11 @@ function setupEventHandlers() {
     else mainWindow.unmaximize();
 
     maximized = !maximized;
+  });
+
+  //done with initial setup tell DaemonManager to start
+  ipcMain.on('refresh-complete', (e, args) => {
+    sendMessage('refresh-complete')
   });
 
   //done with initial setup tell DaemonManager to start

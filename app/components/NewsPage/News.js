@@ -6,12 +6,24 @@ import * as actions from '../../actions';
 import NewsItem from './NewsItem';
 import { ipcRenderer } from 'electron';
 import $ from 'jquery';
+import ReactTooltip from 'react-tooltip'
 
 class News extends Component {
   constructor(props) {
     super(props);
     this.updateContainer = this.updateContainer.bind(this);
     this.onItemClick = this.onItemClick.bind(this);
+    this.refreshCoinData = this.refreshCoinData.bind(this);
+    this.state = {
+      isRefreshing: false
+    }
+
+    ipcRenderer.on('refresh-complete', (event, arg) => {
+      console.log('in here')
+      this.setState({
+        isLoading:false
+      })
+    });
   }
 
   componentDidMount() {
@@ -89,9 +101,19 @@ class News extends Component {
   }
 
   async onItemClick(ev) {
+    this.setState({
+      isLoading:true
+    })
     const currency = ev.currentTarget.dataset.id;
     console.log(currency)
     ipcRenderer.send('selected-currency', currency);
+  }
+
+  async refreshCoinData(){
+    this.setState({
+      isLoading:true
+    })
+    ipcRenderer.send('selected-currency', this.props.selectedCurrency);
   }
 
   getValue(val){
@@ -115,6 +137,7 @@ class News extends Component {
   render() {
     let items = 0;
     let selectedCurrency = this.props.selectedCurrency.toUpperCase()
+    const spinClass = this.state.isLoading ? 'fa-spin' : ''
     return (
       <div className="panel">
         <div className="row">
@@ -182,6 +205,7 @@ class News extends Component {
         <div id="stats">
           <div style={{textAlign: 'center', margin: 'auto'}} className="row">
             <p id="marketStats" style={{margin: 'auto'}}>Market Stats</p>
+            <button data-tip="View network stats" style={{cursor: 'pointer', borderStyle: 'none', background: 'none'}} onClick={this.refreshCoinData}><span className="icon" style={{marginTop:"5px",top:"0"}}><i style={{color: '#b9b9b9'}} className={`fa fa-refresh ${spinClass}`}></i></span></button>
           </div>
           <div className="row">
             <div className="statsItem" id="rank">
@@ -205,6 +229,7 @@ class News extends Component {
             </div>
           </div>
         </div>
+        <ReactTooltip/>
       </div>
     );
   }
