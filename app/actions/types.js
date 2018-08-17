@@ -142,3 +142,5 @@ export const ADD_TO_DEBUG_LOG = "add_to_debug_log";
 export const LOADER_MESSAGE_FROM_LOG = "loader_message_from_log";
 export const SELECTED_CURRENCY = 'selected_currency';
 export const DONATION_GOALS = 'donation_goals';
+export const SELECTED_GOAL = 'selected_goal';
+export const DONATION_POPUP = 'donation_popup';

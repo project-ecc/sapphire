@@ -9,9 +9,6 @@ class Donations extends Component {
   constructor(props) {
     super(props);
     this.animateCircle = this.animateCircle.bind(this);
-    this.state = {
-      selectedGoal: null
-    }
   }
 
   componentDidMount(){
@@ -25,9 +22,8 @@ class Donations extends Component {
 
   handleClick(val){
     console.log(val)
-    this.setState({
-      selectedGoal: val
-    })
+    this.props.setSelectedGoal(val)
+    this.props.setDonationPopup(true)
   }
 
   animateCircle(context, currentPct, endPct) {
@@ -106,7 +102,6 @@ class Donations extends Component {
           })
           }
         </div>
-        <DonateModal selectedGoal={this.state.selectedGoal}/>
         <ReactTooltip/>
       </div>
     );

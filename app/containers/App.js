@@ -26,6 +26,7 @@ import ActionResultPopup from '../components/SettingsPage/ActionResultPopup';
 import ContactPopup from '../components/ContactsPage/ContactPopup';
 
 import $ from 'jquery';
+import DonateModal from "../components/SettingsPage/DonateModal";
 
 const settings = require('electron').remote.require('electron-settings');
 const Tools = require('../utils/tools');
@@ -144,6 +145,9 @@ class App extends Component<Props> {
     }
     else if(this.props.addingContact){
       component = <ContactPopup />
+    }
+    else if(this.props.donationPopup){
+      component = <DonateModal />
     }
     else if(this.props.closingApplication){
       component = <ClosingApplication />;
@@ -340,7 +344,8 @@ const mapStateToProps = state => {
     actionPopupResult: state.application.actionPopupResult,
     actionPopupMessage: state.application.actionPopupMessage,
     actionPopupStatus: state.application.actionPopupStatus,
-    addingContact: state.application.addingContact
+    addingContact: state.application.addingContact,
+    donationPopup: state.application.donationPopup
   };
 };
 
