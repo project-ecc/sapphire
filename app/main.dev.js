@@ -42,9 +42,18 @@ let daemonUpdate = false;
 let fullScreen = false;
 
 // check if daemon debug file exists
-if(!fs.existsSync(grabEccoinDir())){
-  fs.mkdirSync(grabEccoinDir());
+
+
+try {
+    fs.mkdirSync(grabEccoinDir());
+} catch(e){
+  console.log(e)
+}
+
+try {
   fs.writeFileSync(getDebugUri(), '\n');
+} catch(e){
+  console.log(e)
 }
 const tail = new Tail(getDebugUri());
 
