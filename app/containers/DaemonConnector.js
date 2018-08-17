@@ -410,9 +410,10 @@ class DaemonConnector {
       }
     });
 
-    ipcRenderer.on('selected-currency', (event, arg) => {
+    ipcRenderer.on('selected-currency', async (event, arg) => {
       console.log('in here ',arg)
-     this.getCoinMarketCapStats(arg)
+      await this.getCoinMarketCapStats(arg)
+      ipcRenderer.send('refresh-complete');
     });
 
     event.on('runMainCycle', () => {
@@ -635,38 +636,41 @@ class DaemonConnector {
   }
 
   getCoinMarketCapStats(currency = ''){
-    let url = ''
-	  if(currency === ''){
-      currency = 'USD'
-	    url = 'https://api.coinmarketcap.com/v2/ticker/212'
-    } else{
-      currency = currency.toUpperCase();
-      url = 'https://api.coinmarketcap.com/v2/ticker/212/?convert='+ currency
-    }
+    return new Promise((resolve, reject) => {
+      let url = ''
+      if(currency === ''){
+        currency = 'USD'
+        url = 'https://api.coinmarketcap.com/v2/ticker/212'
+      } else{
+        currency = currency.toUpperCase();
+        url = 'https://api.coinmarketcap.com/v2/ticker/212/?convert='+ currency
+      }
 
-	  let options = {
-      url: url,
-    };
-    let self = this;
-    function callback(error, response, body) {
-      if (!error && response.statusCode == 200) {
-        let json = JSON.parse(body);
-        // console.log(json)
-        self.store.dispatch({type: COIN_MARKET_CAP, payload: {
-          price: Tools.formatNumber(Number(json['data']['quotes'][currency].price)),
-          rank: json['data'].rank,
-          marketCap:  Tools.formatNumber(Number(json['data']['quotes'][currency].market_cap)),
-          volume: Tools.formatNumber(Number(json['data']['quotes'][currency].volume_24h))}})
-        self.store.dispatch({type: SELECTED_CURRENCY, payload: currency.toLowerCase()})
+      let options = {
+        url: url,
+      };
+      let self = this;
+      function callback(error, response, body) {
+        if (!error && response.statusCode == 200) {
+          let json = JSON.parse(body);
+          // console.log(json)
+          self.store.dispatch({type: COIN_MARKET_CAP, payload: {
+              price: Tools.formatNumber(Number(json['data']['quotes'][currency].price)),
+              rank: json['data'].rank,
+              marketCap:  Tools.formatNumber(Number(json['data']['quotes'][currency].market_cap)),
+              volume: Tools.formatNumber(Number(json['data']['quotes'][currency].volume_24h))}})
+          self.store.dispatch({type: SELECTED_CURRENCY, payload: currency.toLowerCase()})
+          resolve(true)
+        }
+        else
+        {
+          resolve(undefined)
+          console.log(error)
+        }
       }
-      else
-      {
-        console.log(error)
-      }
-    }
-    request(options, callback);
+      request(options, callback);
+    });
   }
-
 
   //DATABASE RELATED CODE (EARNINGS FROM STAKING)
 
@@ -853,8 +857,8 @@ class DaemonConnector {
 
   goToEarningsPanel(){
     // this.store.dispatch({type: IS_FILTERING_TRANSACTIIONS, payload: true})
-    this.store.dispatch({type: SELECTED_PANEL, payload: "transactions"});
     this.store.dispatch({type: TRANSACTIONS_TYPE, payload: "generate"});
+    this.store.dispatch({type: SELECTED_PANEL, payload: "transactions"});
     this.store.dispatch({type: SELECTED_SIDEBAR, payload: {parent: "walletSelected", child: "transactionsSelected"}});
   }
 

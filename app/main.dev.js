@@ -351,6 +351,11 @@ function setupEventHandlers() {
   });
 
   //done with initial setup tell DaemonManager to start
+  ipcMain.on('refresh-complete', (e, args) => {
+    sendMessage('refresh-complete')
+  });
+
+  //done with initial setup tell DaemonManager to start
   ipcMain.on('initialSetup', (e, args) => {
     settings.set('settings.initialSetup', true);
     daemonManager.startDaemonChecker();
