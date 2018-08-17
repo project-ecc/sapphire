@@ -7,6 +7,7 @@ import NewsItem from './NewsItem';
 import { ipcRenderer } from 'electron';
 import $ from 'jquery';
 import ReactTooltip from 'react-tooltip'
+const Tools = require('../../utils/tools');
 
 class News extends Component {
   constructor(props) {
@@ -137,6 +138,8 @@ class News extends Component {
   render() {
     let items = 0;
     let selectedCurrency = this.props.selectedCurrency.toUpperCase()
+    const iTime = new Date(this.props.lastUpdated * 1000);
+    let lastUpdated = Tools.calculateTimeSince(this.props.lang, new Date(), iTime);
     const spinClass = this.state.isLoading ? 'fa-spin' : ''
     return (
       <div className="panel">
@@ -205,7 +208,7 @@ class News extends Component {
         <div id="stats">
           <div style={{textAlign: 'center', margin: 'auto'}} className="row">
             <p id="marketStats" style={{margin: 'auto'}}>Market Stats</p>
-            <button data-tip="View network stats" style={{cursor: 'pointer', borderStyle: 'none', background: 'none'}} onClick={this.refreshCoinData}><span className="icon" style={{marginTop:"5px",top:"0"}}><i style={{color: '#b9b9b9'}} className={`fa fa-refresh ${spinClass}`}></i></span></button>
+            <button data-tip={`Last Updated ${lastUpdated}`} style={{cursor: 'pointer', borderStyle: 'none', background: 'none'}} onClick={this.refreshCoinData}><span className="icon" style={{marginTop:"5px",top:"0"}}><i style={{color: '#b9b9b9'}} className={`fa fa-refresh ${spinClass}`}></i></span></button>
           </div>
           <div className="row">
             <div className="statsItem" id="rank">
@@ -244,7 +247,8 @@ const mapStateToProps = state => {
     eccPosts: state.application.eccPosts,
     cmcStats: state.application.coinMarketCapStats,
     switchingPage: state.application.eccNewsSwitchingPage,
-    selectedCurrency: state.application.selectedCurrency
+    selectedCurrency: state.application.selectedCurrency,
+    lastUpdated: state.application.coinMarketLastUpdated
   };
 };
 
