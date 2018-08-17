@@ -23,6 +23,7 @@ const Tools = require('../../utils/tools');
 import Wallet from '../../utils/wallet';
 const guiVersion = version;
 import {getSapphireDirectory} from "../../utils/platform.service";
+import Donations from "./Donations";
 
 var jsonFormat = require('json-format');
 var open = require("open");
@@ -458,6 +459,10 @@ class Settings extends Component {
     )
   }
 
+  getDonateSettings() {
+    return (<div><Donations/></div>)
+  }
+
   getSettings(){
     switch(this.props.settingsOptionSelected){
       case "General": return this.getGeneralSettings();
@@ -465,6 +470,7 @@ class Settings extends Component {
       case "Language": return this.getLanguageSettings();
       case "Appearance": return this.getAppearanceSettings();
       case "Notifications": return this.getNotificationSettings();
+      case "Donate": return this.getDonateSettings();
       case "Advanced": return this.getAdvancedSettings();
     }
   }
@@ -527,6 +533,7 @@ class Settings extends Component {
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Notifications")} selected={this.props.settingsOptionSelected === "Notifications"} text={ this.props.lang.notifications } />
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Appearance")} selected={this.props.settingsOptionSelected === "Appearance"} text={ this.props.lang.appearance } />
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Language")} selected={this.props.settingsOptionSelected === "Language"} text={ this.props.lang.language } />
+              <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Donate")} selected={this.props.settingsOptionSelected === "Donate"} text={ this.props.lang.donate } />
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Advanced")} selected={this.props.settingsOptionSelected === "Advanced"} text={ this.props.lang.advanced } />
               <div id="socialIcons">
                 <img onMouseEnter={this.handleIconHover.bind(this, "twitter")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://twitter.com/project_ecc")} src={twitter} />
@@ -565,7 +572,7 @@ const mapStateToProps = state => {
     hoveredIcon: state.application.settingsHoveredSocialIcon,
     theme: state.application.theme,
     daemonVersion: state.chains.daemonVersion,
-    debugLog: state.application.debugLog,
+    debugLog: state.application.debugLog
   };
 };
 

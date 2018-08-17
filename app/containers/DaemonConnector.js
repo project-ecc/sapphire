@@ -41,7 +41,7 @@ import {
   ACTION_POPUP_RESULT,
   ADD_TO_DEBUG_LOG,
   LOADER_MESSAGE_FROM_LOG,
-  SELECTED_CURRENCY
+  SELECTED_CURRENCY, DONATION_GOALS
 } from '../actions/types';
 
 const event = require('../utils/eventhandler');
@@ -62,7 +62,7 @@ const https = require('https');
 const Tools = require('../utils/tools');
 const request = require('request');
 const db = require('../../app/utils/database/db')
-
+let moment = require('moment');
 
 //this class acts as a bridge between wallet.js (daemon) and the redux store
 class DaemonConnector {
@@ -107,7 +107,6 @@ class DaemonConnector {
     this.transactionsPage = 0;
     this.transactionsToRequest = 1000;
     this.transactionsIndexed = false;
-    this.loadingMessage = ''
 
     this.transactionsMap = {};
     this.runningMainCycle = false;
@@ -122,9 +121,14 @@ class DaemonConnector {
       this.getECCPosts();
     }, 60000);
     this.getCoinMarketCapStats = this.getCoinMarketCapStats.bind(this);
+    this.getEccDonationGoals = this.getEccDonationGoals.bind(this);
     this.getCoinMarketCapStats();
+    this.getEccDonationGoals();
     setInterval(() => {
       this.getCoinMarketCapStats();
+    }, 120000);
+    setInterval(() => {
+      this.getEccDonationGoals();
     }, 120000);
     this.stakingRewardsCountNotif = 0;
     this.stakingRewardsTotalEarnedNotif = 0;
@@ -182,7 +186,6 @@ class DaemonConnector {
   }
 
   async mainCycle(){
-	  // console.log('back in main cycle')
     if(!this.isIndexingTransactions){
       const addresses = await getAllAddresses();
       if(addresses.length > 0){
@@ -266,7 +269,6 @@ class DaemonConnector {
       return;
     }
     if(!this.firstRun && !this.isIndexingTransactions && !this.transactionsIndexed){
-      // console.log('in here')
       await this.loadTransactionsForProcessing();
     }
     if(this.transactionsIndexed){
@@ -556,6 +558,29 @@ class DaemonConnector {
     });
   }
 
+  getEccDonationGoals (){
+    return new Promise((resolve, reject) => {
+      let options = {
+        url: 'https://ecc.network/api/v1/donation_goals',
+      };
+      let self = this;
+      function callback(error, response, body) {
+        if (!error && response.statusCode == 200) {
+          let json = JSON.parse(body);
+          console.log(json)
+
+          self.store.dispatch({type: DONATION_GOALS,
+            payload: {
+              goals: json.goals,
+              lastUpdated: moment().unix()
+            }
+          });
+        }
+      }
+      request(options, callback);
+    });
+  }
+
   fixNewsText(text){
     let result = text.replace(new RegExp('</p><p>', 'g'), ' ');
     result = result.replace(new RegExp('</blockquote><p>', 'g'), '. ');
@@ -654,12 +679,17 @@ class DaemonConnector {
         if (!error && response.statusCode == 200) {
           let json = JSON.parse(body);
           // console.log(json)
-          self.store.dispatch({type: COIN_MARKET_CAP, payload: {
+          self.store.dispatch({type: COIN_MARKET_CAP,
+          payload: {
+            stats:{
               price: Tools.formatNumber(Number(json['data']['quotes'][currency].price)),
               rank: json['data'].rank,
               marketCap:  Tools.formatNumber(Number(json['data']['quotes'][currency].market_cap)),
-              volume: Tools.formatNumber(Number(json['data']['quotes'][currency].volume_24h))}})
-          self.store.dispatch({type: SELECTED_CURRENCY, payload: currency.toLowerCase()})
+              volume: Tools.formatNumber(Number(json['data']['quotes'][currency].volume_24h))
+            },
+            lastUpdated: moment().unix()
+          }
+        });
           resolve(true)
         }
         else

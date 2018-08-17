@@ -66,7 +66,12 @@ import {
   MULTIPLE_ANS_ADDRESSES,
   ADDING_CONTACT,
   SHOW_ZERO_BALANCE,
-  IS_FILTERING_TRANSACTIONS, ADD_TO_DEBUG_LOG, LOADER_MESSAGE_FROM_LOG, SELECTED_CURRENCY
+  IS_FILTERING_TRANSACTIONS,
+  ADD_TO_DEBUG_LOG,
+  LOADER_MESSAGE_FROM_LOG,
+  SELECTED_CURRENCY,
+  DONATION_GOALS,
+  DONATION_POPUP, SELECTED_GOAL
 } from '../actions/types';
 
 import Wallet from '../utils/wallet';
@@ -75,7 +80,7 @@ const Queue = require('../utils/queue');
 
 let moment = require('moment');
 
-const INITIAL_STATE = {wallet: new Wallet(), unlocking: false, password: "", userNameToSend: "", codeToSend:"", amountSend: "", addressSend: "", sendingEcc: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, newAddressName: "", newAddressAccount: "", friends: [], userAddresses: [], creatingAnsAddress: true, selectedAddress: undefined, creatingAddress: false, newContactName: "", newContactAddress:"", hoveredAddress: undefined, settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, exportingPrivateKeys: false, panelExportPrivateKey: 1, locationToExport: "", filterAllOwnAddresses: true, filterNormalOwnAddresses: false, filterAnsOwnAddresses: false, backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, totalFileStorageRewards: 0, lastWeekFileStorageRewards: 0,lastMonthFileStorageRewards: 0, pendingTransactions: [], importingPrivateKey: false, changingPassword: false, wasStaking: false, newPassword: "", daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], postsPerContainerEccNews: 0, eccPostsArrays: [], eccPostsPage: 1, coinMarketCapStats: {}, showingNews: false, eccNewsSwitchingPage: false, updateApplication:false, selectedPanel: "overview", settingsOptionSelected: "General", showingFunctionIcons: false, genericPanelAnimationOn: false, closingApplication: false, macButtonsHover: false, macButtonsFocus: false, maximized:false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false, settingsHoveredSocialIcon: undefined, actionPopupResult: false, actionPopupMessage: "", actionPopupStatus: false, downloadMessage: undefined, downloadPercentage: undefined, downloadRemainingTime: undefined, updateFailed:false, popupLoading: false, newAddressNamePopup: "", addressOrUsernameSend: "", ansAddressesFound: [], addingContact: false, contactToAdd: undefined, showZeroBalance: true, upgradingAddress: false, filteringTransactions: false, debugLog: new Queue(), selectedCurrency: "usd"};
+const INITIAL_STATE = {wallet: new Wallet(), unlocking: false, password: "", userNameToSend: "", codeToSend:"", amountSend: "", addressSend: "", sendingEcc: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, newAddressName: "", newAddressAccount: "", friends: [], userAddresses: [], creatingAnsAddress: true, selectedAddress: undefined, creatingAddress: false, newContactName: "", newContactAddress:"", hoveredAddress: undefined, settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, exportingPrivateKeys: false, panelExportPrivateKey: 1, locationToExport: "", filterAllOwnAddresses: true, filterNormalOwnAddresses: false, filterAnsOwnAddresses: false, backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, totalFileStorageRewards: 0, lastWeekFileStorageRewards: 0,lastMonthFileStorageRewards: 0, pendingTransactions: [], importingPrivateKey: false, changingPassword: false, wasStaking: false, newPassword: "", daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], postsPerContainerEccNews: 0, eccPostsArrays: [], eccPostsPage: 1, coinMarketCapStats: {}, coinMarketLastUpdated: 0, showingNews: false, eccNewsSwitchingPage: false, updateApplication:false, selectedPanel: "overview", settingsOptionSelected: "General", showingFunctionIcons: false, genericPanelAnimationOn: false, closingApplication: false, macButtonsHover: false, macButtonsFocus: false, maximized:false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false, settingsHoveredSocialIcon: undefined, actionPopupResult: false, actionPopupMessage: "", actionPopupStatus: false, downloadMessage: undefined, downloadPercentage: undefined, downloadRemainingTime: undefined, updateFailed:false, popupLoading: false, newAddressNamePopup: "", addressOrUsernameSend: "", ansAddressesFound: [], addingContact: false, contactToAdd: undefined, showZeroBalance: true, upgradingAddress: false, filteringTransactions: false, debugLog: new Queue(), selectedCurrency: "usd", donationGoals: {}, donationGoalsLastUpdated: 0, selectedGoal: {}};
 
 
 export default(state = INITIAL_STATE, action) => {
@@ -149,7 +154,7 @@ export default(state = INITIAL_STATE, action) => {
 		return {...state, showingNews: action.payload, settings: settings}
 	}
 	else if(action.type == COIN_MARKET_CAP){
-		return {...state, coinMarketCapStats: action.payload}
+		return {...state, coinMarketCapStats: action.payload.stats, coinMarketLastUpdated: action.payload.lastUpdated}
 	}
 	else if(action.type == ECC_POSTS_PAGE){
 		return {...state, eccPostsPage: action.payload}
@@ -403,6 +408,15 @@ export default(state = INITIAL_STATE, action) => {
   }
   else if(action.type == SELECTED_CURRENCY){
     return {...state, selectedCurrency: action.payload}
+  }
+  else if (action.type == DONATION_GOALS){
+    return {...state, donationGoals: action.payload.goals, donationGoalsLastUpdated: action.payload.lastUpdated}
+  }
+  else if (action.type == SELECTED_GOAL) {
+    return {...state, selectedGoal: action.payload}
+  }
+  else if (action.type == DONATION_POPUP){
+    return {...state, donationPopup: action.payload}
   }
 	return state;
 }
