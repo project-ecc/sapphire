@@ -299,30 +299,12 @@ export default class Wallet {
     return new Promise(async(resolve, reject) => {
       let path = getPlatformWalletUri();
       if (process.platform === 'linux') {
-
-        path = `& start-process "${path}" -verb runAs`;
-        console.log(path)
-        const ps = new shell({ //eslint-disable-line
-          executionPolicy: 'Bypass',
-          noProfile: true
+        await runExec(`chmod +x "${path}" && "${path}"`, 1000).then(() => {
+          return resolve(true);
+        })
+        .catch((err) => {
+          reject(err);
         });
-
-        ps.addCommand(path);
-        ps.invoke()
-          .then(() => {
-            return resolve(true);
-          })
-          .catch(err => {
-            console.log(err);
-            reject(err);
-            ps.dispose();
-          });
-        // await runExec(`chmod +x "${path}" && "${path}"`, 1000).then(() => {
-        //   return resolve(true);
-        // })
-        // .catch((err) => {
-        //   reject(err);
-        // });
       } else if (process.platform === 'darwin') {
         console.log(path);
         await runExec(`chmod +x "${path}" && "${path}"`, 1000).then(() => {
@@ -333,8 +315,9 @@ export default class Wallet {
           reject(err);
         });
       } else if (process.platform.indexOf('win') > -1) {
-        path = `& start-process "${path}" -verb runAs`;
-        console.log(path)
+        // TODO: uncomment this when package is fixed
+        // path = `& start-process "${path}" -verb runAs`;
+        path = `& "${path}" `;
         const ps = new shell({ //eslint-disable-line
           executionPolicy: 'Bypass',
           noProfile: true
