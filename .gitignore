@@ -60,6 +60,9 @@ typings/
 # Webstorm index files
 .idea
 
+# VS files
+.vs
+
 # Production build files
 bundle.js
 bundle.js.map
