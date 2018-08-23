@@ -41,7 +41,8 @@ import {
   ACTION_POPUP_RESULT,
   ADD_TO_DEBUG_LOG,
   LOADER_MESSAGE_FROM_LOG,
-  SELECTED_CURRENCY, DONATION_GOALS
+  SELECTED_CURRENCY, DONATION_GOALS,
+  DAEMON_ERROR_POPUP, DAEMON_ERROR
 } from '../actions/types';
 
 const event = require('../utils/eventhandler');
@@ -389,26 +390,21 @@ class DaemonConnector {
 
     ipcRenderer.on('loading-error', (e, arg) => {
       console.log('loading failure: '+ arg.message);
-      const discordIcon = Tools.getIconForTheme('discord', false);
-      this.store.dispatch({type: ACTION_POPUP_RESULT, payload: {flag: true, successful: false,
-        message: `<div>
-                    <h3>Oops!</h3>
-                    <img height="75px" width="75px" src=${discordIcon}>
-                    <p className="backupSuccessful">It looks like Sapphire is unable to load ECC's blockchain</p>
-                    <p className="backupSuccessful">Please join our discord below and report your issue in #support</p>
-                    <a href="https://discord.gg/wAV3n2q" target="_blank">https://discord.gg/wAV3n2q</a>
-                    <div style="height:10px;"></div>
-                  </div>`}})
-
-      this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: ''}})
+      this.store.dispatch({type: DAEMON_ERROR, payload: arg.message})
+      this.store.dispatch({type: DAEMON_ERROR_POPUP, payload:true})
+      this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: arg.message}})
     });
 
-    ipcRenderer.on('message-from-log', (event, arg) =>{
+    ipcRenderer.on('message-from-log', (e, arg) =>{
       this.store.dispatch({type: ADD_TO_DEBUG_LOG, payload: arg})
       const castedArg = String(arg)
       console.log(castedArg)
-      if(castedArg != null && (castedArg.indexOf('init message') !== -1 || castedArg.indexOf('Still rescanning') !== -1) && this.firstRun){
+      if(castedArg != null && (castedArg.indexOf('init message') !== -1 || castedArg.indexOf('Still rescanning') !== -1 || castedArg.indexOf('Corrupted block database detected') !== -1)){
         this.loadingMessage = castedArg
+        if(castedArg.indexOf('Corrupted block database detected') !== -1){
+          console.log('Corrupted block database detected.')
+          ipcRenderer.send('loading-error', {message: 'Corrupted block database detected.'});
+        }
       }
     });
 

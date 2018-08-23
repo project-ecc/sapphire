@@ -47,13 +47,13 @@ let fullScreen = false;
 try {
     fs.mkdirSync(grabEccoinDir());
 } catch(e){
-  console.log(e)
+  //console.log(e)
 }
 
 try {
   fs.writeFileSync(getDebugUri(), '\n');
 } catch(e){
-  console.log(e)
+  //console.log(e)
 }
 const tail = new Tail(getDebugUri());
 
@@ -436,6 +436,10 @@ function setupEventHandlers() {
 
   event.on('loading-error', (payload) => {
     sendMessage('loading-error', payload);
+  });
+
+  ipcMain.on('loading-error', (e, args) => {
+    sendMessage('loading-error', args);
   });
 
   ipcMain.on('selected-currency', (e, args) => {

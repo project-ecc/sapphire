@@ -125,7 +125,9 @@ import {
   SELECTED_CURRENCY,
   DONATION_GOALS,
   SELECTED_GOAL,
-  DONATION_POPUP
+  DONATION_POPUP,
+  DAEMON_ERROR_POPUP,
+  DAEMON_ERROR
 } from "./types";
 
 export const getSetup = () => dispatch => {
@@ -978,6 +980,20 @@ export const setSelectedGoal = (val) => {
   }
 }
 export const setDonationPopup = (val) => {
+  return {
+    type: DONATION_POPUP,
+    payload: val
+  }
+}
+
+export const setDaemonErrorPopup = (val) => {
+  return {
+    type: DAEMON_ERROR_POPUP,
+    payload: val
+  }
+}
+
+export const setDaemonError = (val) => {
   return {
     type: DONATION_POPUP,
     payload: val
