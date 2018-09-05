@@ -322,7 +322,6 @@ export default class Wallet {
           executionPolicy: 'Bypass',
           noProfile: true
         });
-
         ps.addCommand(path);
         ps.invoke()
           .then(() => {
