@@ -316,8 +316,8 @@ export default class Wallet {
         });
       } else if (process.platform.indexOf('win') > -1) {
         // TODO: uncomment this when package is fixed
-        // path = `& start-process "${path}" -verb runAs`;
-        path = `& "${path}" `;
+        path = `& start-process "${path}" -verb runAs`;
+        // path = `& "${path}" `;
         const ps = new shell({ //eslint-disable-line
           executionPolicy: 'Bypass',
           noProfile: true
