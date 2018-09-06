@@ -4,6 +4,7 @@ const Transaction = db.Transaction;
 const AnsRecord = db.AnsRecord;
 const Contact = db.Contact;
 const Op = db.Sequelize.Op;
+const sequelize = db.sequelize;
 
 /**
  * Functions all below here for manipulating the data.
@@ -538,10 +539,32 @@ async function deleteContact(contact) {
   });
 }
 
+async function clearDB(){
+  return new Promise(async (resolve, reject) => {
+    await AnsRecord.destroy({
+      where: {},
+      truncate: true
+    })
+
+    await Transaction.destroy({
+      where: {},
+      truncate: true
+    })
+
+    await Address.destroy({
+      where: {},
+      truncate: true
+    })
+
+    resolve(true)
+  });
+}
+
 /**
  * export functions.
  */
 export {
+  clearDB,
   addTransaction,
   getAllTransactions,
   addAddress,

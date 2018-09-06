@@ -54,7 +54,7 @@ import {
   addTransaction, addAddress, deleteAddressByName, truncateTransactions,
   getAllTransactions, getAllRewardTransactions, getAllPendingTransactions,
   getLatestTransaction, getAllAddresses, updatePendingTransaction, updateTransactionsConfirmations,
-  getAllMyAddresses
+  getAllMyAddresses, clearDB
 } from '../Managers/SQLManager';
 
 import $ from 'jquery';
@@ -1108,12 +1108,10 @@ class DaemonConnector {
 
     for (const [i, add] of myAddresses.entries()){
       const found = toReturn.filter((daemonAddress) => {
-        console.log(daemonAddress.normalAddress)
-        console.log(add)
         return daemonAddress.normalAddress === add.address
       });
-      console.log(found)
-      if (!found){
+      if (!found || found.length === 0){
+        await clearDB();
         console.log('in here')
         this.transactionsIndexed = false;
         break;
