@@ -1102,6 +1102,23 @@ class DaemonConnector {
       }
     });
 
+
+    // if my current database addresses are not all in the addresses returned from the daemon,
+    const myAddresses = await getAllMyAddresses();
+
+    for (const [i, add] of myAddresses.entries()){
+      const found = toReturn.filter((daemonAddress) => {
+        console.log(daemonAddress.normalAddress)
+        console.log(add)
+        return daemonAddress.normalAddress === add.address
+      });
+      console.log(found)
+      if (!found){
+        console.log('in here')
+        this.transactionsIndexed = false;
+        break;
+      }
+    }
     // if(normalAddresses.length > this.currentAddresses.length) {
       for (const [index, address] of toReturn.entries()) {
         // handle the response
