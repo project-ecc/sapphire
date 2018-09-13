@@ -5,6 +5,8 @@ import { traduction } from '../../lang/lang';
 import { getConfUri, getDebugUri } from '../../utils/platform.service';
 
 import $ from 'jquery';
+import * as actions from "../../actions";
+import {connect} from "react-redux";
 const shell = require('electron').remote.shell;
 
 const lang = traduction();
@@ -62,10 +64,10 @@ class Console extends Component {
       const time = (((new Date()).toTimeString()).split(' '))[0];
       return (
         <div>
-          <div className="hours_list col-md-1">
+          <div className="hours_list">
             <p>{time}</p>
           </div>
-          <div className="commands_list col-md-11">
+          <div className="commands_list">
             <p>{lang.console1}</p>
             <p>{lang.console2} <span className="text_green">{lang.console3}</span> {lang.console4}</p>
             <p>{lang.console5} <span className="text_green">{lang.console6}</span> {lang.console7}</p>
@@ -75,10 +77,6 @@ class Console extends Component {
     } else {
       return null;
     }
-  }
-
-  switchLayout() {
-    this.setState({consoleOpen: !this.state.consoleOpen});
   }
 
   onenter() {
@@ -168,7 +166,7 @@ class Console extends Component {
           parameters.push(p);
         }
 
-        wallet.command([{ method, parameters }]).then((response) => {
+        this.props.wallet.command([{ method, parameters }]).then((response) => {
           currentList.push({
             time,
             desc: input,
@@ -184,6 +182,7 @@ class Console extends Component {
           this.setState({ commandList: currentList });
         });
       } catch (err) {
+        console.log(err)
         currentList.push({
           time,
           desc: 'Invalid command'
@@ -195,41 +194,10 @@ class Console extends Component {
   }
 
   renderBody() {
-    if (!this.state.consoleOpen) {
-      return (
-        <div>
-          <div className="col-md-12">
-            <p className="subtitle">Debug Console</p>
-            <div className="row">
-              <div className="col-md-4">
-                <p className="btn_files_open" onClick={this.switchLayout.bind(this)}>{lang.console}</p>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-12">
-            <p className="subtitle">{lang.settingsDebugLogFile}</p>
-            <div className="row">
-              <div className="col-md-4">
-                <p className="btn_files_open" onClick={this.openDebugFile}>{lang.settingsDebugOpen}</p>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-12">
-            <p className="subtitle">{lang.settingsDebugConfigurationFile}</p>
-            <div className="row">
-              <div className="col-md-4">
-                <p className="btn_files_open" onClick={this.openConfigFile}>{lang.settingsDebugOpen}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
     return (
       <div>
-        <p className="btn_console" onClick={this.switchLayout.bind(this)}>{lang.backupBack}</p>
         <div className="row console_body">
-          <div id="console" className="col-md-12 console_wrapper">
+          <div id="console" className="col-md-12 console_wrapper" style={{color: 'white'}}>
             {this.renderHelpMsg()}
             {this.state.commandList.map((cmd, index) => {
               let res = cmd.res;
@@ -241,10 +209,10 @@ class Console extends Component {
                 }
                 return (
                   <div key={`command_key_${index}`}>
-                    <div className="hours_list col-md-1">
+                    <div className="hours_list">
                       <p>{cmd.time}</p>
                     </div>
-                    <div id="commands-list" className="commands_list col-md-11">
+                    <div id="commands-list" className="commands_list">
                       <p><span style={{ fontWeight: '400' }}>{cmd.desc}</span>: <span style={{fontWeight: '300', fontSize: '0.9em' }}>{res}</span></p>
                     </div>
                   </div>
@@ -255,10 +223,10 @@ class Console extends Component {
 
                 return (
                   <div key={`command_key_${index}`}>
-                    <div className="hours_list col-md-1">
+                    <div className="hours_list ">
                       <p>{cmd.time}</p>
                     </div>
-                    <div className="commands_list col-md-11">
+                    <div className="commands_list">
                       <p><span style={{ fontWeight: '400' }}>{cmd.desc}</span>:</p>
                       {res.map((el, index) => {
                         return (
@@ -278,12 +246,17 @@ class Console extends Component {
         </div>
         <div className="row">
           <div className="col-md-12 console_buttons">
-            <div className="col-md-10" style={{ padding: '0px' }}>
-              <input className="command_input" type="text" name="command_input" value={this.state.command_input} onChange={this.handleInputChange.bind(this)} onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp}/>
+            <div className="box" style={{width: "100%"}}>
+              <div className="container-1" style={{width: "100%", display: "flex",  alignItems: "center"}}>
+                <span className="icon" style={{marginTop: "5px", top: "0px"}}>
+                  <i className="fa fa-terminal"></i>
+                </span>
+                <input type="text" id="search" placeholder="Enter Command... (press enter to run command)" className="command_input" name="command_input" value={this.state.command_input} onChange={this.handleInputChange.bind(this)} onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp} />
+              </div>
             </div>
-            <div className="col-md-2" style={{ paddingLeft: '5px', paddingRight: '18px' }}>
-              <p className="enter_btn" onClick={this.onenter.bind(this)}>Enter</p>
-            </div>
+            {/*<div className="col-md-2" style={{ paddingLeft: '5px', paddingRight: '18px' }}>*/}
+              {/*<p className="buttonPrimary caps" onClick={this.onenter.bind(this)}>Enter</p>*/}
+            {/*</div>*/}
           </div>
         </div>
       </div>
@@ -292,19 +265,21 @@ class Console extends Component {
 
   render() {
     return (
-      <div className="row tab_wrapp">
-        <div className="col-md-12 tab_body">
-          <div className="panel panel-default">
-            <div className="panel-body">
-              <div className="row">
-                {this.renderBody()}
-              </div>
-            </div>
-          </div>
-        </div>
+      <div>
+        {this.renderBody()}
       </div>
     );
   }
 }
 
-export default Console;
+
+
+const mapStateToProps = state => {
+  return{
+    lang: state.startup.lang,
+    wallet: state.application.wallet
+  };
+};
+
+
+export default connect(mapStateToProps, actions)(Console);

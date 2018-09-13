@@ -288,13 +288,16 @@
 
 .console_body{
   position: relative;
-  padding: 25px;
+  padding: 15px;
   min-height: 50vh;
 }
 
 .console_wrapper{
+  word-wrap:break-word;
   height: 48vh;
-  border: 2px solid #efefef;
+  border: 1px solid #22252d;
+  font-family: Courier, sans-serif;
+  font-weight: 500;
   padding-top: 15px;
   overflow-y: scroll;
 }

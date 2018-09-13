@@ -419,6 +419,12 @@ class Settings extends Component {
             <p onClick={this.clearBanlist.bind(this)} style={{cursor: "pointer"}}>Clear Banlist</p>
           </div>
         </div>
+        <div className="row settingsToggle text-left">
+          <div className="col-xs-12" style={{width: "100%"}}>
+            <p>Console</p>
+            <Console/>
+          </div>
+        </div>
       </div>
     )
   }

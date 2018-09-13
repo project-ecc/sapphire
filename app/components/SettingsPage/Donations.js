@@ -77,20 +77,20 @@ class Donations extends Component {
         <div className="row col-md-12" style={{overflowY: 'scroll'}}>
           {this.props.donationGoals.map((goal, index) => {
             return(
-              <div key={index} style={{border: '1px solid #E7E7E7',borderRadius: '4px', boxShadow: '0 0 10px #E7E7E7',margin: '10px',padding: '10px'}} className="community-goal col-md-5">
+              <div key={index} style={{borderRadius: '4px', boxShadow: '0px 0px 20px -5px white',margin: '10px',padding: '10px'}} className="community-goal col-md-5">
                 <div className="goal-to-go">
                   {goal.completedAt != null ? "Completed" : null}
                   {goal.daysRemaining != null ? 'Days Remaining '+ goal.daysRemaining : null }
                 </div>
-                <p data-tip={goal.description}>{goal.name}</p>
+                <p className="text-center">{goal.name}</p>
                 <hr/>
                 <div className="goal-details-container" style={{textAlign: 'center'}}>
                   <div className="goal-progress">
                     <canvas ref={`donation-${goal.name}`} className="goal-progress-circle" height="200" width="200" data-progress={goal.currentBTCTotal / goal.goalBTCTotal}> </canvas>
                     <div className="goal-desc" style={{ marginTop: '-130px', marginBottom: '100px'}}>
-                      <div className="goal-current-btc-total"><span className="fa fa-btc"></span>{ goal.currentBTCTotal }</div>
+                      <div className="goal-current-btc-total"><span className="fa fa-btc" style={{marginRight: "5px"}}></span>{ goal.currentBTCTotal }</div>
                       <div className="goal-of">of</div>
-                      <div className="goal-goal-btc-total"><span className="fa fa-btc"></span>{ goal.goalBTCTotal }</div>
+                      <div className="goal-goal-btc-total"><span className="fa fa-btc" style={{marginRight: "5px"}}></span>{ goal.goalBTCTotal }</div>
                     </div>
                   </div>
                   {goal.currentBTCTotal >= goal.goalBTCTotal ? <span className="buttonPrimary caps disabled"><img src="/img/ecc_logo_white.svg"/>Thanks</span> :

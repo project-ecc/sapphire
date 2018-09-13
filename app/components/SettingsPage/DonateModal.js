@@ -59,9 +59,9 @@ class DonateModal extends React.Component {
     return goalArray.map((t, index) => {
       if(t.ticker == 'eth') return
       return (
-        <div key={index}>
-          <p className="popupTitle">{t.ticker}</p>
-          <p className="selectableText">{t.address}</p>
+        <div key={index} style={{border: "1px solid rgb(64, 52, 33)", padding: "7px 10px", marginBottom: "10px", textAlign: "center", borderRadius: "5px"}}>
+          <p className="popupTitle" style={{fontWeight: 700, color: "white", paddingTop: "0px", textTransform: "uppercase"}}>{t.ticker}</p>
+          <p className="selectableText" style={{fontSize: "0.75em"}}>{t.address}</p>
           <p className="">{Tools.formatNumber(t.balance)}</p>
           {t.ticker == 'ecc' ? <div className="buttonPrimary caps" onClick={this.handleECCDonation.bind(this, t)}>
             <span className="fa fa-gift"></span> Donate Now!</div> : null}
@@ -72,10 +72,10 @@ class DonateModal extends React.Component {
   render() {
 
     return (
-      <div style={{height: "100%", display: 'block', overflow: 'auto', width: '535px', margin: 'auto 0', padding: '10px',  minHeight: '400px'}}>
+      <div style={{height: "100%", display: 'block', overflow: 'auto', width: '535px', margin: 'auto 0', padding: '10px',  minHeight: '400px', textAlign: "left"}}>
         <CloseButtonPopup handleClose={this.handleCancel}/>
-        <p className="popupTitle">{this.props.goal.name}</p>
-        <p className="">{this.props.goal.description}</p>
+        <p className="popupTitle" style={{fontSize: "1.5em", color: "white"}}>{this.props.goal.name}</p>
+        <p className="" style={{marginBottom: "20px"}}>{this.props.goal.description}</p>
         {this.renderGoals()}
       </div>
     );
