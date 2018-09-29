@@ -1079,7 +1079,7 @@ class DaemonConnector {
       }
       return retval;
     }));
-
+    console.log(allReceived)
     const toAppend = allReceived
                       .filter(address => address.amount === 0)
                       .map(address => {

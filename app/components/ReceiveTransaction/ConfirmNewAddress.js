@@ -7,6 +7,7 @@ import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
 import renderHTML from 'react-render-html';
+import Toast from './../../globals/Toast/Toast';
 
 import $ from 'jquery';
 import {getAddress} from "../../Managers/SQLManager";
@@ -46,6 +47,10 @@ class ConfirmNewAddress extends React.Component {
       	event.emit('newAddress');
         this.props.setPopupLoading(false)
       	this.props.setCreatingAddress(false);
+        Toast({
+          title: this.props.lang.addressCreatedSuccessfullyTitle,
+          message: this.props.lang.addressCreatedSuccessfully
+        });
     }).catch((err) => {
        console.log("error creating address: ", err)
        this.props.setPopupLoading(false)

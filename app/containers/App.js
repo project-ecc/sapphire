@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { ipcRenderer } from 'electron';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -22,11 +22,11 @@ import UnlockWallet from '../components/UnlockWallet';
 import GenericPanel from './GenericPanel';
 import TransitionComponent from '../components/Others/TransitionComponent';
 import ActionResultPopup from '../components/SettingsPage/ActionResultPopup';
-import DaemonErrorModal from '../components/Others/DaemonErrorModal'
+import DaemonErrorModal from '../components/Others/DaemonErrorModal';
 import ContactPopup from '../components/ContactsPage/ContactPopup';
 
 import $ from 'jquery';
-import DonateModal from "../components/SettingsPage/DonateModal";
+import DonateModal from '../components/SettingsPage/DonateModal';
 
 const settings = require('electron').remote.require('electron-settings');
 const Tools = require('../utils/tools');
@@ -47,41 +47,36 @@ class App extends Component<Props> {
     this.loadSettingsToRedux();
 
     ipcRenderer.on('closing_daemon', () => {
-      if(this.props.loader){
-        TweenMax.to('#loading-wrapper', 0.3, {autoAlpha: 0.5});
+      if (this.props.loader) {
+        TweenMax.to('#loading-wrapper', 0.3, { autoAlpha: 0.5 });
       }
       Tools.hideFunctionIcons();
       this.props.setClosingApplication();
     });
 
     ipcRenderer.on('focused', (e) => {
-      $(".appButton").mouseover(function(){
+      $('.appButton').mouseover(function () {
         $(this).addClass('appButtonHover');
       });
-      $(".appButton").mouseleave(function(){
+      $('.appButton').mouseleave(function () {
         $(this).removeClass('appButtonHover');
-      })
+      });
     });
   }
 
-  loadSettingsToRedux(){
+  loadSettingsToRedux() {
     let tray = false;
     let startAtLogin = false;
     let minimizeToTray = false;
     let minimizeOnClose = false;
-    let theme = "theme-darkEcc";
+    let theme = 'theme-darkEcc';
     const ds = settings.get('settings.display');
 
-    if(ds && ds.minimise_to_tray !== undefined && ds.minimise_to_tray)
-      minimizeToTray = true;
-    if(ds && ds.hide_tray_icon !== undefined && ds.hide_tray_icon)
-      tray = true;
-    if(ds && ds.minimise_on_close !== undefined && ds.minimise_on_close)
-      minimizeOnClose = true;
-    if(ds && ds.start_at_login !== undefined && ds.start_at_login)
-      startAtLogin = true;
-    if(ds && ds.theme !== undefined)
-      theme = ds.theme;
+    if (ds && ds.minimise_to_tray !== undefined && ds.minimise_to_tray) { minimizeToTray = true; }
+    if (ds && ds.hide_tray_icon !== undefined && ds.hide_tray_icon) { tray = true; }
+    if (ds && ds.minimise_on_close !== undefined && ds.minimise_on_close) { minimizeOnClose = true; }
+    if (ds && ds.start_at_login !== undefined && ds.start_at_login) { startAtLogin = true; }
+    if (ds && ds.theme !== undefined) { theme = ds.theme; }
 
     this.props.setMinimizeOnClose(minimizeOnClose);
     this.props.setMinimizeToTray(minimizeToTray);
@@ -95,72 +90,57 @@ class App extends Component<Props> {
 
     const ns = settings.get('settings.notifications');
 
-    if(ns && ns.operative_system !== undefined && ns.operative_system)
-      operativeSystemNotifications = true;
-    if(ns && ns.news !== undefined && ns.news)
-      newsNotifications = true;
-    if(ns && ns.staking !== undefined && ns.staking)
-      stakingNotifications = true;
+    if (ns && ns.operative_system !== undefined && ns.operative_system) { operativeSystemNotifications = true; }
+    if (ns && ns.news !== undefined && ns.news) { newsNotifications = true; }
+    if (ns && ns.staking !== undefined && ns.staking) { stakingNotifications = true; }
 
     this.props.setOperativeSystemNotifications(operativeSystemNotifications);
     this.props.setNewsNotifications(newsNotifications);
     this.props.setStakingNotifications(stakingNotifications);
 
-    //added this as a temporary fix when importing a wallet when initial setup has been done
+    // added this as a temporary fix when importing a wallet when initial setup has been done
     const initialSetup = settings.get('settings.initialSetup');
-    if(initialSetup){
+    if (initialSetup) {
       this.props.setSetupDone(true);
     }
   }
 
-  getPopup(){
+  getPopup() {
     let component = null;
-    let id = "unlockPanel";
-    let animateIn = Tools.animatePopupIn;
-    let animateOut = Tools.animatePopupOut;
-    let classVal = "";
-    if(this.props.exportingPrivateKeys){
+    const id = 'unlockPanel';
+    const animateIn = Tools.animatePopupIn;
+    const animateOut = Tools.animatePopupOut;
+    let classVal = '';
+    if (this.props.exportingPrivateKeys) {
       component = <ExportPrivateKeys />;
-    }
-    else if(this.props.importingPrivateKey){
-      component = <ImportPrivateKey notInitialSetup={true}/>;
-    }
-    else if(this.props.changingPassword){
-      component = <ChangePassword />
-    }
-    else if(this.props.changingPassword){
-      component = <ImportPrivateKey />
-    }
-    else if(this.props.updateApplication){
-      component = <UpdateApplication />
-    }
-    else if(this.props.sending){
-      component = <SendConfirmation />
-    }
-    else if(this.props.creatingAddress){
-      component = <ConfirmNewAddress />
-    }
-    else if(this.props.unlocking){
-      component = <UnlockWallet />
-    }
-    else if(this.props.addingContact){
-      component = <ContactPopup />
-    }
-    else if(this.props.donationPopup){
-      component = <DonateModal />
-    }
-    else if(this.props.daemonErrorPopup){
-      component = <DaemonErrorModal />
-    }
-    else if(this.props.closingApplication){
+    } else if (this.props.importingPrivateKey) {
+      component = <ImportPrivateKey notInitialSetup />;
+    } else if (this.props.changingPassword) {
+      component = <ChangePassword />;
+    } else if (this.props.changingPassword) {
+      component = <ImportPrivateKey />;
+    } else if (this.props.updateApplication) {
+      component = <UpdateApplication />;
+    } else if (this.props.sending) {
+      component = <SendConfirmation />;
+    } else if (this.props.creatingAddress) {
+      component = <ConfirmNewAddress />;
+    } else if (this.props.unlocking) {
+      component = <UnlockWallet />;
+    } else if (this.props.addingContact) {
+      component = <ContactPopup />;
+    } else if (this.props.donationPopup) {
+      component = <DonateModal />;
+    } else if (this.props.daemonErrorPopup) {
+      component = <DaemonErrorModal />;
+    } else if (this.props.closingApplication) {
       component = <ClosingApplication />;
-      classVal = "closingApplication";
-    }
-    else if(this.props.actionPopupResult){
-      component = <ActionResultPopup message={this.props.actionPopupMessage} successful={this.props.actionPopupStatus} />
+      classVal = 'closingApplication';
+    } else if (this.props.actionPopupResult) {
+      component = <ActionResultPopup message={this.props.actionPopupMessage} successful={this.props.actionPopupStatus} />;
     }
 
-    return(
+    return (
       <div>
         <TransitionGroup component="article">
           { component !== null ?
@@ -170,17 +150,18 @@ class App extends Component<Props> {
               class={classVal}
               animationType="popup"
               animateIn={animateIn}
-              animateOut={animateOut}/>
+              animateOut={animateOut}
+            />
             : null
           }
         </TransitionGroup>
       </div>
-    )
+    );
   }
 
-  getLoader(){
-    if(!this.props.importingWalletWithSetupDone){
-      return(
+  getLoader() {
+    if (!this.props.importingWalletWithSetupDone) {
+      return (
         <div>
           <TransitionGroup component="aside">
             { this.props.loader || this.props.updatingApplication ?
@@ -191,70 +172,71 @@ class App extends Component<Props> {
                 animateIn={Tools.animateLoaderIn}
                 animateOut={Tools.animateLoaderOut}
                 animateLogo={this.animateLogo.bind(this)}
-                updatingApplication={this.props.updatingApplication}/>
+                updatingApplication={this.props.updatingApplication}
+              />
                 : null
             }
           </TransitionGroup>
         </div>
-      )
+      );
     }
   }
 
-  animateLogo(callback){
+  animateLogo(callback) {
     CSSPlugin.useSVGTransformAttr = false;
-    TweenMax.to(['#logoLoader'], 0.5, {autoAlpha: 1});
-    if(!this.props.loading)
-      TweenMax.to(['#gettingReady'], 0.5, {autoAlpha: 1});
+    TweenMax.to(['#logoLoader'], 0.5, { autoAlpha: 1 });
+    if (!this.props.loading) { TweenMax.to(['#gettingReady'], 0.5, { autoAlpha: 1 }); }
 
-    let t = new TimelineMax({repeat:-1, yoyo:true});
-    t.set(['#first', '#second', '#third', '#forth'], {x:20, y:20});
-    t.fromTo('#first', 2, {autoAlpha: 0, scale: 0.90}, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%', ease: Power4.easeNone, delay: 0.3}, 0);
-    t.fromTo('#second', 2, {autoAlpha: 0, scale: 0.90}, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%', ease: Power4.easeNone, delay: 0.3}, 0);
-    t.fromTo('#third', 2, {autoAlpha: 0, scale: 0.90}, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%',ease: Power4.easeNone, delay: 0.3}, 0);
-    t.fromTo('#forth', 2, {autoAlpha: 0, scale: 0.90}, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%', ease: Power4.easeNone, delay: 0.3}, 0);
-    t.fromTo('#logo1', 2, {autoAlpha: 1}, {autoAlpha: 0, delay: 0.3}, 0);
+    const t = new TimelineMax({ repeat: -1, yoyo: true });
+    t.set(['#first', '#second', '#third', '#forth'], { x: 20, y: 20 });
+    t.fromTo('#first', 2, { autoAlpha: 0, scale: 0.90 }, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%', ease: Power4.easeNone, delay: 0.3 }, 0);
+    t.fromTo('#second', 2, { autoAlpha: 0, scale: 0.90 }, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%', ease: Power4.easeNone, delay: 0.3 }, 0);
+    t.fromTo('#third', 2, { autoAlpha: 0, scale: 0.90 }, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%', ease: Power4.easeNone, delay: 0.3 }, 0);
+    t.fromTo('#forth', 2, { autoAlpha: 0, scale: 0.90 }, { scale: 1, autoAlpha: 1, transformOrigin: '50% 50%', ease: Power4.easeNone, delay: 0.3 }, 0);
+    t.fromTo('#logo1', 2, { autoAlpha: 1 }, { autoAlpha: 0, delay: 0.3 }, 0);
     t.timeScale(2);
     callback();
   }
 
-  resetWillChange(callback){
+  resetWillChange(callback) {
     const el = this.refs.animate;
-    TweenMax.set(el, {willChange: 'auto'});
+    TweenMax.set(el, { willChange: 'auto' });
     this.props.setGenericAnimationToFalse();
     callback();
   }
 
-  setGenericAnimationToFalse(){
+  setGenericAnimationToFalse() {
     this.props.setGenericAnimationOn(false);
   }
 
-  setGenericAnimationToTrue(){
+  setGenericAnimationToTrue() {
     this.props.setGenericAnimationOn(true);
   }
 
-  getMainApp(){
-    if(!this.props.unencryptedWallet && !this.props.shouldImportWallet && this.props.setupDone && !this.props.loader && !this.props.updatingApplication && !this.props.settings && !this.props.importingWalletWithSetupDone){
-      return(
-          <TransitionGroup component="section">
-            <TransitionComponent
-              children={<GenericPanel />}
-              id=""
-              class="genericPanel"
-              animationType="genericPanel"
-              animateIn={Tools.animateGeneralPanelIn}
-              animateOut={Tools.animateGeneralPanelOut}
-              resetWillChange={this.resetWillChange}
-              setGenericAnimationToFalse={this.setGenericAnimationToFalse}
-              setGenericAnimationToTrue={this.setGenericAnimationToTrue}/>
-          </TransitionGroup>
-      )
+  getMainApp() {
+    if (!this.props.unencryptedWallet && !this.props.shouldImportWallet && this.props.setupDone && !this.props.loader && !this.props.updatingApplication && !this.props.settings && !this.props.importingWalletWithSetupDone) {
+      return (
+        <TransitionGroup component="section">
+          <TransitionComponent
+            children={<GenericPanel />}
+            id=""
+            class="genericPanel"
+            animationType="genericPanel"
+            animateIn={Tools.animateGeneralPanelIn}
+            animateOut={Tools.animateGeneralPanelOut}
+            resetWillChange={this.resetWillChange}
+            setGenericAnimationToFalse={this.setGenericAnimationToFalse}
+            setGenericAnimationToTrue={this.setGenericAnimationToTrue}
+          />
+        </TransitionGroup>
+      );
     }
-    else return null;
+    return null;
   }
 
-  getSettings(){
-    if(this.props.settings && !this.props.updatingApplication){
-      return(
+  getSettings() {
+    if (this.props.settings && !this.props.updatingApplication) {
+      return (
         <TransitionGroup component="section">
           <TransitionComponent
             children={<Settings />}
@@ -264,52 +246,52 @@ class App extends Component<Props> {
             animateOut={Tools.animateGeneralPanelOut}
             resetWillChange={this.resetWillChange}
             setGenericAnimationToFalse={this.setGenericAnimationToFalse}
-            setGenericAnimationToTrue={this.setGenericAnimationToTrue}/>
+            setGenericAnimationToTrue={this.setGenericAnimationToTrue}
+          />
         </TransitionGroup>
-      )
-    }
-    else
-      return null;
-  }
-
-  getInitialSetup(){
-    if(!this.props.setupDone && !this.props.loader && !this.props.updatingApplication || this.props.unencryptedWallet || this.props.shouldImportWallet || this.props.importingWalletWithSetupDone){
-      return(
-        <TransitionGroup>
-          <TransitionComponent
-            children={<InitialSetup/>}
-            id="initialSetup"
-            animationType="initialSetup"
-            animateIn={Tools.animateInitialSetupIn}
-            animateOut={Tools.animateInitialSetupOut}/>
-        </TransitionGroup>
-      )
+      );
     }
     return null;
   }
 
-  getNotificationsPopup(){
-    if(this.props.notificationPopup){
-      return(
-        <NotificationPopup/>
+  getInitialSetup() {
+    if (!this.props.setupDone && !this.props.loader && !this.props.updatingApplication || this.props.unencryptedWallet || this.props.shouldImportWallet || this.props.importingWalletWithSetupDone) {
+      return (
+        <TransitionGroup>
+          <TransitionComponent
+            children={<InitialSetup />}
+            id="initialSetup"
+            animationType="initialSetup"
+            animateIn={Tools.animateInitialSetupIn}
+            animateOut={Tools.animateInitialSetupOut}
+          />
+        </TransitionGroup>
       );
     }
-    else return null;
+    return null;
+  }
+
+  getNotificationsPopup() {
+    if (this.props.notificationPopup) {
+      return (
+        <NotificationPopup />
+      );
+    }
+    return null;
   }
   render() {
     return (
       <div className={this.props.theme}>
         <div id="main">
-          <TopBar/>
-          <div className="mancha">
-          </div>
+          <TopBar />
+          <div className="mancha" />
           <div>
-          {this.getMainApp()}
-          {this.getInitialSetup()}
-          {this.getSettings()}
-          {this.getLoader()}
-          {this.getNotificationsPopup()}
-          {this.getPopup()}
+            {this.getMainApp()}
+            {this.getInitialSetup()}
+            {this.getSettings()}
+            {this.getLoader()}
+            {this.getNotificationsPopup()}
+            {this.getPopup()}
           </div>
         </div>
       </div>
@@ -318,19 +300,19 @@ class App extends Component<Props> {
 }
 
 const mapStateToProps = state => {
-  return{
+  return {
     initialSetup: state.startup.initialSetup,
     partialInitialSetup: state.startup.partialInitialSetup,
     setupDone: state.startup.setupDone,
     loader: state.startup.loader || (state.chains.loadingBlockIndexPayment && !state.startup.initialSetup),
-    //had to add this for production, otherwise clicking on sidebar would not cause the tab to change (no idea why)
+    // had to add this for production, otherwise clicking on sidebar would not cause the tab to change (no idea why)
     pathname: state.router.location.pathname,
     settings: state.application.settings,
     exportingPrivateKeys: state.application.exportingPrivateKeys,
     importingPrivateKey: state.application.importingPrivateKey,
     changingPassword: state.application.changingPassword,
     checkingDaemonStatusPrivateKey: state.application.checkingDaemonStatusPrivateKey,
-    news: state.application.selectedPanel === "news",
+    news: state.application.selectedPanel === 'news',
     updateApplication: state.application.updateApplication,
     updatingApplication: state.startup.updatingApp,
     unlocking: state.application.unlocking,
