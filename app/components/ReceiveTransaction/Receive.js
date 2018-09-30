@@ -51,10 +51,6 @@ class Receive extends Component {
   }
 
   componentWillReceiveProps(props){
-    if(this.props.userAddresses.length !== props.userAddresses.length){
-      TweenMax.fromTo('#addressCreatedSuccessfully', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
-      TweenMax.to('#addressCreatedSuccessfully', 0.2, {autoAlpha: 0, scale: 0.5, delay: 5});
-    }
     this.updateTable(this.props.userAddresses);
   }
 
@@ -164,11 +160,6 @@ class Receive extends Component {
     }
 
     this.props.setNewAddressName(name);
-  }
-
-  goToBackupPage(){
-    this.props.setSettingsOptionSelected("Wallet");
-    this.props.setSettings(true);
   }
 
   filterClicked(type){
@@ -322,7 +313,6 @@ class Receive extends Component {
           <p className="ansLabel">{ this.props.lang.ansAddresses }</p>
           <p className="Receive__upgrade-text" onClick={this.handleUpgradeAddress} style={{visibility: selectedAddress ? selectedAddress.ansrecords.length > 0 ? "hidden" : "visible" : "hidden"}}>Upgrade to ANS address</p>
           <div>
-            <p id="addressCreatedSuccessfully"> { this.props.lang.addressCreatedSuccessfully }<br></br><span className="ecc" onClick={this.goToBackupPage.bind(this)}>{ this.props.lang.clickToBackupWallet }</span></p>
             <p id="wrongPassword" style={{textAlign: 'center'}} > </p>
           </div>
         </div>

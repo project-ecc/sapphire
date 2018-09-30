@@ -18135,18 +18135,6 @@ aside {
   .theme-darkEcc .ansLabel {
     color: #464b5a; }
 
-#addressCreatedSuccessfully {
-  font-size: 15px;
-  display: inline-block;
-  position: absolute;
-  top: 2px;
-  width: 100%;
-  text-align: center;
-  visibility: hidden; }
-  .theme-defaultEcc #addressCreatedSuccessfully {
-    color: #d09128; }
-  .theme-darkEcc #addressCreatedSuccessfully {
-    color: #c39c59; }
 
 #addressCreatedSuccessfully span {
   cursor: pointer;

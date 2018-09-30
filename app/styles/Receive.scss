@@ -85,7 +85,7 @@
 
 .tableColumnFixReceive{
 	padding-left: 5%;
-	padding-right:0; 
+	padding-right:0;
   	text-align: right;
 }
 
@@ -104,24 +104,6 @@
 	position: relative;
 	top: 2px;
 	font-weight: 700;
-}
-
-#addressCreatedSuccessfully{
-	@include themify($themes) {
-		color: themed('popupMessageText');
-	}
-	font-size: 15px;
-	display: inline-block;
-	position: absolute;
-	top: 2px;
-	width:100%;
-	text-align: center;
-	visibility: hidden;
-}
-
-#addressCreatedSuccessfully span{
-	cursor: pointer;
-	text-decoration: underline;
 }
 
 #upgradeAns{

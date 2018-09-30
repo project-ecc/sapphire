@@ -10,6 +10,12 @@
 	padding: 7px 14px;
 	margin-top: 10px;
 	max-width: 300px;
-	font-size: 1.1em;
+	font-size: 1em;
+	pointer-events: all;
+
+	& > .buttons {
+	  display: flex;
+	  justify-content: flex-end;
+	}
   }
 }

@@ -42,14 +42,26 @@ class ConfirmNewAddress extends React.Component {
     this.props.setPassword('');
   }
 
+  goToBackupPage(){
+    this.props.setSettingsOptionSelected("Wallet");
+    this.props.setSettings(true);
+  }
+
   createNormalAddress(){
+   const vm = this
     this.props.wallet.createNewAddress(this.props.account).then((newAddress) => {
       	event.emit('newAddress');
         this.props.setPopupLoading(false)
       	this.props.setCreatingAddress(false);
         Toast({
           title: this.props.lang.addressCreatedSuccessfullyTitle,
-          message: this.props.lang.addressCreatedSuccessfully
+          message: this.props.lang.addressCreatedSuccessfully,
+          buttons: [
+            {
+              title: this.props.lang.clickToBackupWallet,
+              method () { vm.goToBackupPage() }
+            }
+          ]
         });
     }).catch((err) => {
        console.log("error creating address: ", err)
