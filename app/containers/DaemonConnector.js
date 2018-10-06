@@ -28,7 +28,6 @@ import {
   SETTINGS,
   SETTINGS_OPTION_SELECTED,
   TELL_USER_OF_UPDATE,
-  SELECTED_THEME,
   SET_DAEMON_VERSION,
   STAKING_REWARD_UPDATE,
   WALLET_INFO_SEC,
@@ -36,40 +35,37 @@ import {
   FILE_DOWNLOAD_STATUS,
   TOLD_USER_UPDATE_FAILED,
   RESET_STAKING_EARNINGS,
-  IS_FILTERING_TRANSACTIIONS,
   TRANSACTIONS_TYPE,
   ACTION_POPUP_RESULT,
   ADD_TO_DEBUG_LOG,
-  LOADER_MESSAGE_FROM_LOG,
-  SELECTED_CURRENCY, DONATION_GOALS,
+  LOADER_MESSAGE_FROM_LOG,DONATION_GOALS,
   DAEMON_ERROR_POPUP, DAEMON_ERROR
 } from '../actions/types';
-
-const event = require('../utils/eventhandler');
-const tools = require('../utils/tools');
-let remote = require('electron').remote;
-let funnies = new Funnies()
-import Funnies from 'funnies';
 import {
-  addTransaction, addAddress, deleteAddressByName, truncateTransactions,
+  addTransaction, addAddress, truncateTransactions,
   getAllTransactions, getAllRewardTransactions, getAllPendingTransactions,
   getLatestTransaction, getAllAddresses, updatePendingTransaction, updateTransactionsConfirmations,
   getAllMyAddresses, clearDB
 } from '../Managers/SQLManager';
 
 import $ from 'jquery';
+
+const event = require('../utils/eventhandler');
+const tools = require('../utils/tools');
+const remote = require('electron').remote;
+
 const FeedMe = require('feedme');
 const https = require('https');
 const Tools = require('../utils/tools');
 const request = require('request');
-const db = require('../../app/utils/database/db')
-let moment = require('moment');
+const db = require('../../app/utils/database/db');
+const moment = require('moment');
 
-//this class acts as a bridge between wallet.js (daemon) and the redux store
+// this class acts as a bridge between wallet.js (daemon) and the redux store
 class DaemonConnector {
 
-	constructor(store){
-		this.store = store;
+  constructor(store) {
+    this.store = store;
     this.wallet = store.getState().application.wallet;
     this.setupDone = false;
     this.partialSetup = false;
@@ -103,7 +99,7 @@ class DaemonConnector {
     this.subscribeToEvents();
     this.currentAddresses = [];
     this.processedAddresses = [];
-    this.from = null
+    this.from = null;
     this.currentFrom = this.from;
     this.transactionsPage = 0;
     this.transactionsToRequest = 1000;
@@ -113,7 +109,7 @@ class DaemonConnector {
     this.runningMainCycle = false;
     this.firstRun = true;
     this.hasLoadedTransactionsFromDb = false;
-    this.checkStartupStatusInterval = setInterval(()=>{
+    this.checkStartupStatusInterval = setInterval(() => {
       this.stateCheckerInitialStartup();
     }, 2000);
     this.getECCPosts = this.getECCPosts.bind(this);
@@ -138,163 +134,148 @@ class DaemonConnector {
     this.checkQueuedNotifications = this.checkQueuedNotifications.bind(this);
     this.queueOrSendNotification = this.queueOrSendNotification.bind(this);
     this.unencryptedWallet = false;
-    this.heighestBlockFromServer = 0;
-    this.heighestBlockFromServerInterval;
+    this.currentHighestBlock = 0;
     this.translator = this.store.getState().startup.lang;
-    this.latestBlockTime = 0
-	}
-
-  subscribeToEvents(){
-    let self = this;
-    event.on('newAddress', self.getAddresses);
-    //recalculate earnings every 30 minutes
-    setInterval(() => {
-      this.store.dispatch({type: STAKING_REWARD_UPDATE})
-    }, 30 * 60 * 1000)
-    this.checkQueuedNotificationsInterval = setInterval(() => this.checkQueuedNotifications(), 5000);
-    //get headers from server every 2 minutes
-    this.heighestBlockFromServerInterval = setInterval( async() => {
-      this.heighestBlockFromServer = await this.getLastBlockFromServer();
-    }, 120000)
-    //get headers as soon as the app loads
-    setTimeout( async() => {
-      this.heighestBlockFromServer = await this.getLastBlockFromServer();
-    }, 0);
-
+    this.latestBlockTime = 0;
   }
 
-  checkQueuedNotifications(){
-    if(!this.store.getState().startup.loading && !this.store.getState().startup.loader && this.store.getState().startup.setupDone && this.queuedNotifications.length >= 0){
+  subscribeToEvents() {
+    const self = this;
+    event.on('newAddress', self.getAddresses);
+    // recalculate earnings every 30 minutes
+    setInterval(() => {
+      this.store.dispatch({ type: STAKING_REWARD_UPDATE });
+    }, 30 * 60 * 1000);
+    this.checkQueuedNotificationsInterval = setInterval(() => this.checkQueuedNotifications(), 5000);
+  }
 
-      if(this.queuedNotifications.length === 0){
+  checkQueuedNotifications() {
+    if (!this.store.getState().startup.loading && !this.store.getState().startup.loader && this.store.getState().startup.setupDone && this.queuedNotifications.length >= 0) {
+      if (this.queuedNotifications.length === 0) {
         clearInterval(this.checkQueuedNotificationsInterval);
-        return;
-      }else{
-        let notification = this.queuedNotifications[0];
+      } else {
+        const notification = this.queuedNotifications[0];
         this.queuedNotifications.splice(0, 1);
         Tools.sendOSNotification(notification.body, notification.callback);
       }
     }
   }
 
-  //this method is used to detect the initial setup has been completed and is never called again after, I should probably use the event class here.
+  // this method is used to detect the initial setup has been completed and is never called again after, I should probably use the event class here.
   handleStoreChange() {
     const setupDone = this.store.getState().startup.setupDone;
-    if(setupDone){
+    if (setupDone) {
       this.unsubscribe();
       this.unsubscribeFromSetupEvents();
     }
   }
 
-  async mainCycle(){
-    if(!this.isIndexingTransactions){
+  async mainCycle() {
+    if (!this.isIndexingTransactions) {
       const addresses = await getAllAddresses();
-      if(addresses.length > 0){
-        for (let i = 0; i < addresses.length - 1; i++){
+      if (addresses.length > 0) {
+        for (let i = 0; i < addresses.length - 1; i++) {
           this.processedAddresses.push(addresses[i].address);
         }
       }
       const latestTransaction = await getLatestTransaction();
       this.from = latestTransaction != null ? latestTransaction.time : 0;
-      this.currentFrom = this.from
+      this.currentFrom = this.from;
       const transactions = await this.wallet.getTransactions('*', 10, 0);
-      if((latestTransaction === undefined || latestTransaction === null) && transactions.length === 0){
+      if ((latestTransaction === undefined || latestTransaction === null) && transactions.length === 0) {
         this.transactionsIndexed = true;
       } else if ((latestTransaction === undefined || latestTransaction === null) && transactions.length > 0) {
-        this.transactionsIndexed = false
+        this.transactionsIndexed = false;
       } else {
         this.transactionsIndexed = true;
       }
     }
 
-    if(this.store.getState().startup.updatingApp){
+    if (this.store.getState().startup.updatingApp) {
       this.runningMainCycle = false;
       return;
     }
-    if(!this.hasLoadedTransactionsFromDb && this.transactionsIndexed){
+    if (!this.hasLoadedTransactionsFromDb && this.transactionsIndexed) {
       await this.loadTransactionFromDb();
       // grab transaction that is main
       const where = {
         is_main: 1
       };
       const transactionData = await getAllTransactions(100, 0, where);
-      this.store.dispatch({type: TRANSACTIONS_DATA, payload: {data: transactionData , type: "all"}});
-      this.hasLoadedTransactionsFromDb = true
+      this.store.dispatch({ type: TRANSACTIONS_DATA, payload: { data: transactionData, type: 'all' } });
+      this.hasLoadedTransactionsFromDb = true;
     }
-    try{
-      await this.wallet.getAllInfo().then( async (data) => {
-        if(data){
-          console.log(data)
+    try {
+      await this.wallet.getAllInfo().then(async (data) => {
+        if (data) {
+          console.log(data);
           await this.getAddresses(data[2], data[3]);
-          const highestBlock = data[0].headers === 0 || data[0].headers < this.heighestBlockFromServer ? this.heighestBlockFromServer : data[0].headers;
           // remove .00 if 100%
           let syncedPercentage = (data[0].blocks * 100) / data[0].headers;
           syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
 
-          if(data[0].blocks >= highestBlock && this.transactionsIndexed && !this.firstRun){
+          if (data[0].blocks >= this.currentHighestBlock && this.transactionsIndexed && !this.firstRun) {
             await this.processPendingTransactions();
           }
-          data[0].headers = highestBlock;
+          this.currentHighestBlock = data[0].blocks;
 
           // check the latest transactions against the current from
-          const result = (data[1].filter(transaction =>{
-           return transaction.time > this.currentFrom
+          const result = (data[1].filter(transaction => {
+            return transaction.time > this.currentFrom;
           }));
-          console.log(result)
-          if (result.length > 0 && !this.firstRun){
-            await this.loadTransactionsForProcessing()
+          console.log(result);
+          if (result.length > 0 && !this.firstRun) {
+            await this.loadTransactionsForProcessing();
           }
 
           // update all transactions confirmations.
           const blockChainInfo = await this.wallet.getBlockChainInfo();
-          const latestBlockTime = blockChainInfo.mediantime
+          const latestBlockTime = blockChainInfo.mediantime;
 
-          if(this.latestBlockTime < latestBlockTime && !this.firstRun){
+          if (this.latestBlockTime < latestBlockTime && !this.firstRun) {
             this.latestBlockTime = latestBlockTime;
-            await this.updateConfirmations()
+            await this.updateConfirmations();
             this.hasLoadedTransactionsFromDb = false;
           }
 
-          this.store.dispatch({type: SET_DAEMON_VERSION, payload: tools.formatVersion(data[0].version)});
-          this.store.dispatch({type: WALLET_INFO, payload: data[0]});
-          this.store.dispatch({type: CHAIN_INFO, payload: data[0]});
-          this.store.dispatch({type: WALLET_INFO_SEC, payload: data[4]});
-          this.store.dispatch ({type: PAYMENT_CHAIN_SYNC, payload: data[0].blocks === 0 || data[0].headers === 0 ? 0 : syncedPercentage});
+          this.store.dispatch({ type: SET_DAEMON_VERSION, payload: tools.formatVersion(data[0].version) });
+          this.store.dispatch({ type: WALLET_INFO, payload: data[0] });
+          this.store.dispatch({ type: CHAIN_INFO, payload: data[0] });
+          this.store.dispatch({ type: WALLET_INFO_SEC, payload: data[4] });
+          this.store.dispatch({ type: PAYMENT_CHAIN_SYNC, payload: data[0].blocks === 0 || data[0].headers === 0 ? 0 : syncedPercentage });
         }
       });
-    } catch(err) {
+    } catch (err) {
       console.log(err);
       setTimeout(async () => {
         await this.mainCycle();
       }, this.firstRun && this.transactionsIndexed ? 1000 : 4000);
       return;
     }
-    if(!this.firstRun && !this.isIndexingTransactions && !this.transactionsIndexed){
+    if (!this.firstRun && !this.isIndexingTransactions && !this.transactionsIndexed) {
       await this.loadTransactionsForProcessing();
     }
-    if(this.transactionsIndexed){
-      if(this.partialSetup && !this.unencryptedWallet){
-        this.store.dispatch({type: PARTIAL_INITIAL_SETUP, payload: false });
+    if (this.transactionsIndexed) {
+      if (this.partialSetup && !this.unencryptedWallet) {
+        this.store.dispatch({ type: PARTIAL_INITIAL_SETUP, payload: false });
         this.partialSetup = false;
-      }
-      else if(this.partialSetup && this.unencryptedWallet){
-        this.store.dispatch({type: PARTIAL_INITIAL_SETUP, payload: true });
+      } else if (this.partialSetup && this.unencryptedWallet) {
+        this.store.dispatch({ type: PARTIAL_INITIAL_SETUP, payload: true });
         this.partialSetup = false;
         this.unencryptedWallet = false;
-      }
-      else if(!this.partialSetup && this.unencryptedWallet){
-        this.store.dispatch({type: UNENCRYPTED_WALLET, payload: true });
+      } else if (!this.partialSetup && this.unencryptedWallet) {
+        this.store.dispatch({ type: UNENCRYPTED_WALLET, payload: true });
         this.unencryptedWallet = false;
       }
-      if(this.firstRun){
-        this.firstRun=false;
-        this.store.dispatch({type: LOADING, payload:{isLoading: false, loadingMessage: ''}})
-        if(this.store.getState().startup.importWalletTemp){
-          this.store.dispatch({type: IMPORT_WALLET_TEMPORARY, payload: {importWalletTemp: false, importWallet: true}})
+      if (this.firstRun) {
+        this.firstRun = false;
+        this.store.dispatch({ type: LOADING, payload: { isLoading: false, loadingMessage: '' } });
+        if (this.store.getState().startup.importWalletTemp) {
+          this.store.dispatch({ type: IMPORT_WALLET_TEMPORARY, payload: { importWalletTemp: false, importWallet: true } });
         }
       }
     }
-    if((this.store.getState().startup.daemonUpdate || this.store.getState().startup.guiUpdate) && !this.store.getState().startup.toldUserAboutUpdate && !this.store.getState().startup.loader){
+    if ((this.store.getState().startup.daemonUpdate || this.store.getState().startup.guiUpdate) && !this.store.getState().startup.toldUserAboutUpdate && !this.store.getState().startup.loader) {
       this.notifyUserOfApplicationUpdate();
     }
 
@@ -303,13 +284,13 @@ class DaemonConnector {
     }, this.firstRun && this.transactionsIndexed ? 1000 : 4000);
   }
 
-  unsubscribeFromSetupEvents(){
+  unsubscribeFromSetupEvents() {
     ipcRenderer.removeListener('initial_setup', this.handleInitialSetup);
     ipcRenderer.removeListener('setup_done', this.handleSetupDone);
     ipcRenderer.removeListener('partial_initial_setup', this.handlePartialSetup);
   }
 
-  listenToSetupEvents(){
+  listenToSetupEvents() {
     ipcRenderer.on('initial_setup', this.handleInitialSetup);
     ipcRenderer.on('setup_done', this.handleSetupDone);
     ipcRenderer.on('partial_initial_setup', this.handlePartialSetup);
@@ -318,175 +299,175 @@ class DaemonConnector {
     ipcRenderer.on('daemonUpdated', this.handleDaemonUpdated.bind(this));
     ipcRenderer.on('daemonCredentials', this.createWallet.bind(this));
 
-    //downloader events.
-    ipcRenderer.on('downloading-file', (event, arg) =>{
+    // downloader events.
+    ipcRenderer.on('downloading-file', (event, arg) => {
       // console.log("downloading-file", e, arg);
       const walletPercent = arg.percent * 100;
 
-      this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
+      this.store.dispatch({ type: FILE_DOWNLOAD_STATUS,
         payload: {
           downloadMessage: 'Downloading the required files',
           downloadPercentage: walletPercent.toFixed(2),
           downloadRemainingTime: arg.time.remaining
         }
-      })
+      });
       // console.log(payload)
     });
 
     ipcRenderer.on('downloaded-file', () => {
-      this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
+      this.store.dispatch({ type: FILE_DOWNLOAD_STATUS,
         payload: {
           downloadMessage: 'Downloading the required files',
           downloadPercentage: 100,
           downloadRemainingTime: 0.0
         }
-      })
+      });
     });
 
     ipcRenderer.on('verifying-file', () => {
-      this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
+      this.store.dispatch({ type: FILE_DOWNLOAD_STATUS,
         payload: {
           downloadMessage: 'Validating',
           downloadPercentage: undefined,
           downloadRemainingTime: 0.0
         }
-      })
+      });
     });
 
     ipcRenderer.on('unzipping-file', () => {
-      this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
+      this.store.dispatch({ type: FILE_DOWNLOAD_STATUS,
         payload: {
           downloadMessage: 'Unzipping',
           downloadPercentage: undefined,
           downloadRemainingTime: 0.0
         }
-      })
+      });
     });
     ipcRenderer.on('file-download-complete', () => {
-      this.store.dispatch({type: FILE_DOWNLOAD_STATUS,
+      this.store.dispatch({ type: FILE_DOWNLOAD_STATUS,
         payload: {
           downloadMessage: '',
           downloadPercentage: undefined,
           downloadRemainingTime: 0.0
         }
-      })
+      });
     });
     ipcRenderer.on('download-error', (e, arg) => {
-      console.log('Download failure: '+ arg.message);
-      this.store.dispatch({type: TOLD_USER_UPDATE_FAILED,
+      console.log(`Download failure: ${arg.message}`);
+      this.store.dispatch({ type: TOLD_USER_UPDATE_FAILED,
         payload: {
           updateFailed: true,
           downloadMessage: arg.message
         }
       });
-      if(this.store.getState().startup.daemonUpdate){
+      if (this.store.getState().startup.daemonUpdate) {
         this.firstRun = true;
-        this.checkStartupStatusInterval = setInterval(()=>{
+        this.checkStartupStatusInterval = setInterval(() => {
           this.stateCheckerInitialStartup();
-        }, 2000)
+        }, 2000);
       }
     });
 
 
     ipcRenderer.on('loading-error', (e, arg) => {
-      console.log('loading failure: '+ arg.message);
-      this.store.dispatch({type: DAEMON_ERROR, payload: arg.message})
-      this.store.dispatch({type: DAEMON_ERROR_POPUP, payload:true})
-      this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: arg.message}})
+      console.log(`loading failure: ${arg.message}`);
+      this.store.dispatch({ type: DAEMON_ERROR, payload: arg.message });
+      this.store.dispatch({ type: DAEMON_ERROR_POPUP, payload: true });
+      this.store.dispatch({ type: LOADING, payload: { isLoading: true, loadingMessage: arg.message } });
     });
 
-    ipcRenderer.on('message-from-log', (e, arg) =>{
-      this.store.dispatch({type: ADD_TO_DEBUG_LOG, payload: arg})
-      const castedArg = String(arg)
-      console.log(castedArg)
-      if(castedArg != null && (castedArg.indexOf('init message') !== -1 || castedArg.indexOf('Still rescanning') !== -1 || castedArg.indexOf('Corrupted block database detected') !== -1)){
-        this.loadingMessage = castedArg
-        if(castedArg.indexOf('Corrupted block database detected') !== -1){
-          console.log('Corrupted block database detected.')
-          ipcRenderer.send('loading-error', {message: 'Corrupted block database detected.'});
+    ipcRenderer.on('message-from-log', (e, arg) => {
+      this.store.dispatch({ type: ADD_TO_DEBUG_LOG, payload: arg });
+      const castedArg = String(arg);
+      console.log(castedArg);
+      if (castedArg != null && (castedArg.indexOf('init message') !== -1 || castedArg.indexOf('Still rescanning') !== -1 || castedArg.indexOf('Corrupted block database detected') !== -1)) {
+        this.loadingMessage = castedArg;
+        if (castedArg.indexOf('Corrupted block database detected') !== -1) {
+          console.log('Corrupted block database detected.');
+          ipcRenderer.send('loading-error', { message: 'Corrupted block database detected.' });
         }
       }
     });
 
     ipcRenderer.on('selected-currency', async (event, arg) => {
-      console.log('in here ',arg)
-      await this.getCoinMarketCapStats(arg)
+      console.log('in here ', arg);
+      await this.getCoinMarketCapStats(arg);
       ipcRenderer.send('refresh-complete');
     });
 
     event.on('runMainCycle', () => {
-      console.log('run main cycle')
-      if(!this.runningMainCycle){
+      console.log('run main cycle');
+      if (!this.runningMainCycle) {
         this.firstRun = true;
         this.mainCycle();
       }
     });
   }
 
-  handleDaemonUpdated(){
-    this.store.dispatch({type: UPDATE_AVAILABLE, payload: {guiUpdate: false, daemonUpdate: false}})
+  handleDaemonUpdated() {
+    this.store.dispatch({ type: UPDATE_AVAILABLE, payload: { guiUpdate: false, daemonUpdate: false } });
     this.firstRun = true;
-    this.checkStartupStatusInterval = setInterval(async()=>{
+    this.checkStartupStatusInterval = setInterval(async () => {
       await this.stateCheckerInitialStartup();
-    }, 2000)
+    }, 2000);
   }
 
-  forceUpdateDaemon(){
-    this.store.dispatch({type: ACTION_POPUP_RESULT, payload: {flag: false, successful: false, message: ''}});
+  forceUpdateDaemon() {
+    this.store.dispatch({ type: ACTION_POPUP_RESULT, payload: { flag: false, successful: false, message: '' } });
     event.emit('updateDaemon', false);
   }
 
-  notifyUserOfApplicationUpdate(){
+  notifyUserOfApplicationUpdate() {
     const callback = () => {
-      this.store.dispatch({type: SETTINGS, payload: true});
-      this.store.dispatch({type: SETTINGS_OPTION_SELECTED, payload: "General"})
-    }
+      this.store.dispatch({ type: SETTINGS, payload: true });
+      this.store.dispatch({ type: SETTINGS_OPTION_SELECTED, payload: 'General' });
+    };
     const body = this.store.getState().startup.lang.updateAvailableNotif;
 
     this.queueOrSendNotification(callback, body);
 
-    this.store.dispatch({type: TELL_USER_OF_UPDATE})
+    this.store.dispatch({ type: TELL_USER_OF_UPDATE });
   }
 
-  handleGuiUpdate(){
-    this.store.dispatch({type: UPDATE_AVAILABLE, payload: {guiUpdate: true, daemonUpdate: this.store.getState().startup.daemonUpdate} })
+  handleGuiUpdate() {
+    this.store.dispatch({ type: UPDATE_AVAILABLE, payload: { guiUpdate: true, daemonUpdate: this.store.getState().startup.daemonUpdate } });
   }
 
-  handleDaemonUpdate(){
-    this.store.dispatch({type: UPDATE_AVAILABLE, payload: {guiUpdate: this.store.getState().startup.guiUpdate, daemonUpdate: true} })
+  handleDaemonUpdate() {
+    this.store.dispatch({ type: UPDATE_AVAILABLE, payload: { guiUpdate: this.store.getState().startup.guiUpdate, daemonUpdate: true } });
   }
 
-  createWallet(event, arg){
-    this.store.dispatch({type: DAEMON_CREDENTIALS, payload: arg })
-    this.wallet = new Wallet(arg.username, arg.password)
+  createWallet(event, arg) {
+    this.store.dispatch({ type: DAEMON_CREDENTIALS, payload: arg });
+    this.wallet = new Wallet(arg.username, arg.password);
   }
 
-  handleInitialSetup(){
-    this.store.dispatch({type: INITIAL_SETUP })
+  handleInitialSetup() {
+    this.store.dispatch({ type: INITIAL_SETUP });
   }
 
-  handlePartialSetup(){
+  handlePartialSetup() {
     this.partialSetup = true;
   }
 
-  handleSetupDone(){
-    this.store.dispatch({type: SETUP_DONE, payload: true});
+  handleSetupDone() {
+    this.store.dispatch({ type: SETUP_DONE, payload: true });
     this.unsubscribeFromSetupEvents();
   }
 
-  async stateCheckerInitialStartup(){
+  async stateCheckerInitialStartup() {
     this.wallet.getInfo().then(async (data) => {
-      if(!data.encrypted){
+      if (!data.encrypted) {
         this.unencryptedWallet = true;
       }
-      if(this.loadingBlockIndexPayment){
+      if (this.loadingBlockIndexPayment) {
         this.loadingBlockIndexPayment = false;
-        this.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: false})
+        this.store.dispatch({ type: BLOCK_INDEX_PAYMENT, payload: false });
       }
-      if(this.store.getState().startup.updatingApp){
-        this.store.dispatch({type: UPDATING_APP, payload: false})
+      if (this.store.getState().startup.updatingApp) {
+        this.store.dispatch({ type: UPDATING_APP, payload: false });
       }
-      if(!this.runningMainCycle){
+      if (!this.runningMainCycle) {
         await db.sequelize.sync();
         this.runningMainCycle = true;
         await this.mainCycle();
@@ -495,77 +476,43 @@ class DaemonConnector {
       clearInterval(this.checkStartupStatusInterval);
     })
     .catch((err) => {
-      console.log(err.message)
+      console.log(err.message);
       if (err.message === 'Loading block index...' || err.message === 'Activating best chain...' ||
-        err.message === "Loading wallet..." || err.message === 'Rescanning...' ||
-        err.message === 'Internal Server Error' || err.message === "ESOCKETTIMEDOUT" ) {
-        if(!this.loadingBlockIndexPayment){
+        err.message === 'Loading wallet...' || err.message === 'Rescanning...' ||
+        err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT') {
+        if (!this.loadingBlockIndexPayment) {
           this.loadingBlockIndexPayment = true;
-          this.store.dispatch({type: BLOCK_INDEX_PAYMENT, payload: true})
+          this.store.dispatch({ type: BLOCK_INDEX_PAYMENT, payload: true });
         }
 
-        if(err.message === 'Loading block index...'){
-          if(!this.store.getState().startup.initialSetup){
-            this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: 'Loading block index...' }})
+        if (err.message === 'Loading block index...') {
+          if (!this.store.getState().startup.initialSetup) {
+            this.store.dispatch({ type: LOADING, payload: { isLoading: true, loadingMessage: 'Loading block index...' } });
           }
-        } else if(err.message === 'Rescanning...'){
+        } else if (err.message === 'Rescanning...') {
           // TODO: fix this
-          this.store.dispatch({type: LOADER_MESSAGE_FROM_LOG, payload:true})
-          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: 'Rescanning...'}})
+          this.store.dispatch({ type: LOADER_MESSAGE_FROM_LOG, payload: true });
+          this.store.dispatch({ type: LOADING, payload: { isLoading: true, loadingMessage: 'Rescanning...' } });
         }
-        if((err.message === 'Internal Server Error' || err.message === "ESOCKETTIMEDOUT") && (currentLogEntry.indexOf('Still rescanning') != -1)){
-          this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: 'Rescanning...'}})
+        if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT')) {
+          this.store.dispatch({ type: LOADING, payload: { isLoading: true, loadingMessage: 'Rescanning...' } });
         }
       }
     });
   }
 
-  getLastBlockFromServer(){
+  getEccDonationGoals() {
     return new Promise((resolve, reject) => {
-      let options = {
-        url: 'https://ecc.network/api/v1/block_height',
-      };
-      let self = this;
-      function callback(error, response, body) {
-        if (!error && response.statusCode == 200) {
-          let json = JSON.parse(body);
-          let height = json.block_height;
-          console.log("Server height: ", height)
-          let localHeight = self.store.getState().chains.headersPayment;
-          console.log("Local height: ", self.store.getState().chains.headersPayment)
-          if(localHeight >= height){
-            clearInterval(self.heighestBlockFromServerInterval);
-            resolve(localHeight);
-            return;
-          }
-          if(height < self.heighestBlockFromServer)
-          {
-            resolve(self.heighestBlockFromServer);
-            return;
-          }
-          resolve(json.block_height);
-        }
-        else
-        {
-          resolve(self.heighestBlockFromServer);
-        }
-      }
-      request(options, callback);
-    });
-  }
-
-  getEccDonationGoals (){
-    return new Promise((resolve, reject) => {
-      let options = {
+      const options = {
         url: 'https://ecc.network/api/v1/donation_goals',
       };
-      let self = this;
+      const self = this;
       function callback(error, response, body) {
         if (!error && response.statusCode == 200) {
-          let json = JSON.parse(body);
-          console.log(json)
+          const json = JSON.parse(body);
+          console.log(json);
 
-          self.store.dispatch({type: DONATION_GOALS,
+          self.store.dispatch({ type: DONATION_GOALS,
             payload: {
               goals: json.goals,
               lastUpdated: moment().unix()
@@ -577,132 +524,130 @@ class DaemonConnector {
     });
   }
 
-  fixNewsText(text){
+  fixNewsText(text) {
     let result = text.replace(new RegExp('</p><p>', 'g'), ' ');
     result = result.replace(new RegExp('</blockquote><p>', 'g'), '. ');
     return result;
   }
 
-  getECCPosts(){
-    let posts = this.store.getState().application.eccPosts;
-    let lastCheckedNews = this.store.getState().notifications.lastCheckedNews;
+  getECCPosts() {
+    const posts = this.store.getState().application.eccPosts;
+    const lastCheckedNews = this.store.getState().notifications.lastCheckedNews;
     https.get('https://medium.com/feed/@project_ecc', (res) => {
       if (res.statusCode != 200) {
         console.error(new Error(`status code ${res.statusCode}`));
         return;
       }
       const today = new Date();
-      let parser = new FeedMe();
+      const parser = new FeedMe();
       let totalNews = 0;
-      let title = this.store.getState().startup.lang.eccNews;
+      const title = this.store.getState().startup.lang.eccNews;
       parser.on('end', () => {
-        if(totalNews == 0 || !this.store.getState().notifications.newsNotificationsEnabled) return;
+        if (totalNews == 0 || !this.store.getState().notifications.newsNotificationsEnabled) return;
         const body = totalNews == 1 ? title : `${totalNews} ${title}`;
         const callback = () => {
-          this.store.dispatch({type: SELECTED_PANEL, payload: "news"});
-          this.store.dispatch({type: SELECTED_SIDEBAR, payload: {undefined}})
+          this.store.dispatch({ type: SELECTED_PANEL, payload: 'news' });
+          this.store.dispatch({ type: SELECTED_SIDEBAR, payload: { undefined } });
         };
 
         this.queueOrSendNotification(callback, body);
       });
 
       parser.on('item', (item) => {
-        let url = item.guid.text;
-        let hasVideo = item["content:encoded"].indexOf('iframe');
-        let text = $(this.fixNewsText(item["content:encoded"])).text();
-        let index = text.indexOf("Team");
-        if(index == 13){
-         text = text.slice(index + 4);
+        const url = item.guid.text;
+        const hasVideo = item['content:encoded'].indexOf('iframe');
+        let text = $(this.fixNewsText(item['content:encoded'])).text();
+        const index = text.indexOf('Team');
+        if (index == 13) {
+          text = text.slice(index + 4);
         }
-        let date = item["pubdate"];
-        let iTime = new Date(date);
-        let time = Tools.calculateTimeSince(this.store.getState().startup.lang, today, iTime);
+        const date = item.pubdate;
+        const iTime = new Date(date);
+        const time = Tools.calculateTimeSince(this.store.getState().startup.lang, today, iTime);
 
-        //push post (fetch existing posts)
-        let post = undefined;
-        if(posts.length == 0 || posts[posts.length-1].date > iTime.getTime()){
+        // push post (fetch existing posts)
+        let post;
+        if (posts.length == 0 || posts[posts.length - 1].date > iTime.getTime()) {
           post = {
             title: item.title,
             timeSince: time,
-            hasVideo: hasVideo != -1 ? true : false, //probably going to remove this video flag
-            url: url,
+            hasVideo: hasVideo != -1, // probably going to remove this video flag
+            url,
             body: text,
             date: iTime.getTime()
           };
           posts.push(post);
-          this.store.dispatch({type: ECC_POST, payload: posts})
+          this.store.dispatch({ type: ECC_POST, payload: posts });
         }
-        //put post in the first position of the array (new post)
-        else if(posts[0].date < iTime.getTime()){
+        // put post in the first position of the array (new post)
+        else if (posts[0].date < iTime.getTime()) {
           post = {
             title: item.title,
             timeSince: time,
-            hasVideo: hasVideo != -1 ? true : false,
-            url: url,
+            hasVideo: hasVideo != -1,
+            url,
             body: text,
             date: iTime.getTime()
           };
           posts.unshift(post);
-          this.store.dispatch({type: ECC_POST, payload: posts});
-          //update render
-          this.store.dispatch({type: POSTS_PER_CONTAINER, payload: this.store.getState().application.postsPerContainerEccNews})
+          this.store.dispatch({ type: ECC_POST, payload: posts });
+          // update render
+          this.store.dispatch({ type: POSTS_PER_CONTAINER, payload: this.store.getState().application.postsPerContainerEccNews });
         }
-        if(post && post.date > lastCheckedNews && this.store.getState().notifications.newsNotificationsEnabled ){
+        if (post && post.date > lastCheckedNews && this.store.getState().notifications.newsNotificationsEnabled) {
           totalNews++;
-          this.store.dispatch({type: NEWS_NOTIFICATION, payload: post.date})
+          this.store.dispatch({ type: NEWS_NOTIFICATION, payload: post.date });
         }
       });
       res.pipe(parser);
     });
   }
 
-  getCoinMarketCapStats(currency = ''){
+  getCoinMarketCapStats(currency = '') {
     return new Promise((resolve, reject) => {
-      let url = ''
-      if(currency === ''){
-        currency = 'USD'
-        url = 'https://api.coinmarketcap.com/v2/ticker/212'
-      } else{
+      let url = '';
+      if (currency === '') {
+        currency = 'USD';
+        url = 'https://api.coinmarketcap.com/v2/ticker/212';
+      } else {
         currency = currency.toUpperCase();
-        url = 'https://api.coinmarketcap.com/v2/ticker/212/?convert='+ currency
+        url = `https://api.coinmarketcap.com/v2/ticker/212/?convert=${currency}`;
       }
 
-      let options = {
-        url: url,
+      const options = {
+        url,
       };
-      let self = this;
+      const self = this;
       function callback(error, response, body) {
         if (!error && response.statusCode == 200) {
-          let json = JSON.parse(body);
+          const json = JSON.parse(body);
           // console.log(json)
-          self.store.dispatch({type: COIN_MARKET_CAP,
-          payload: {
-            stats:{
-              price: Tools.formatNumber(Number(json['data']['quotes'][currency].price)),
-              rank: json['data'].rank,
-              marketCap:  Tools.formatNumber(Number(json['data']['quotes'][currency].market_cap)),
-              volume: Tools.formatNumber(Number(json['data']['quotes'][currency].volume_24h))
-            },
-            lastUpdated: moment().unix()
-          }
-        });
-          resolve(true)
-        }
-        else
-        {
-          resolve(undefined)
-          console.log(error)
+          self.store.dispatch({ type: COIN_MARKET_CAP,
+            payload: {
+              stats: {
+                price: Tools.formatNumber(Number(json.data.quotes[currency].price)),
+                rank: json.data.rank,
+                marketCap: Tools.formatNumber(Number(json.data.quotes[currency].market_cap)),
+                volume: Tools.formatNumber(Number(json.data.quotes[currency].volume_24h))
+              },
+              lastUpdated: moment().unix()
+            }
+          });
+          resolve(true);
+        } else {
+          resolve(undefined);
+          console.log(error);
         }
       }
       request(options, callback);
     });
   }
 
-  //DATABASE RELATED CODE (EARNINGS FROM STAKING)
+  // DATABASE RELATED CODE (EARNINGS FROM STAKING)
 
-  needToReloadTransactions(){
-    for(let i = 0; i < this.currentAddresses.length -1; i++){
-      if(this.processedAddresses === undefined || !this.processedAddresses.includes(this.currentAddresses[i].address)){
+  needToReloadTransactions() {
+    for (let i = 0; i < this.currentAddresses.length - 1; i++) {
+      if (this.processedAddresses === undefined || !this.processedAddresses.includes(this.currentAddresses[i].address)) {
         return true;
       }
     }
@@ -710,12 +655,12 @@ class DaemonConnector {
   }
 
   // if addresses were added or removed, re-index transactions
-  async updateProcessedAddresses(){
-    for(let i = 0; i < this.currentAddresses.length; i++){
-      let currentAddress = this.currentAddresses[i].address;
-      this.processedAddresses.push(currentAddress)
+  async updateProcessedAddresses() {
+    for (let i = 0; i < this.currentAddresses.length; i++) {
+      const currentAddress = this.currentAddresses[i].address;
+      this.processedAddresses.push(currentAddress);
     }
-    this.store.dispatch({type: RESET_STAKING_EARNINGS});
+    this.store.dispatch({ type: RESET_STAKING_EARNINGS });
     this.from = 0;
     this.transactionsIndexed = false;
     await truncateTransactions();
@@ -729,29 +674,28 @@ class DaemonConnector {
     return aux;
   }
 
-  async checkIfTransactionsNeedToBeDeleted(){
-    if(this.needToReloadTransactions())
-      await this.updateProcessedAddresses();
+  async checkIfTransactionsNeedToBeDeleted() {
+    if (this.needToReloadTransactions()) { await this.updateProcessedAddresses(); }
   }
 
-  async loadTransactionsForProcessing(){
+  async loadTransactionsForProcessing() {
     this.isIndexingTransactions = true;
 
     await this.checkIfTransactionsNeedToBeDeleted();
 
-    let txId = "";
+    let txId = '';
     let time = 0;
     let amount = 0;
-    let category = "";
-    let address = "";
+    let category = '';
+    let address = '';
     let fee = 0;
     let confirmations = 0;
     let shouldRequestAnotherPage = false;
-    let transactions = await this.wallet.getTransactions("*", this.transactionsToRequest, this.transactionsToRequest * this.transactionsPage);
-    if(transactions === null){
-      setTimeout(async ()=>{
+    let transactions = await this.wallet.getTransactions('*', this.transactionsToRequest, this.transactionsToRequest * this.transactionsPage);
+    if (transactions === null) {
+      setTimeout(async () => {
         await this.loadTransactionsForProcessing();
-      }, 1000)
+      }, 1000);
     }
 
     transactions = this.orderTransactions(transactions);
@@ -759,7 +703,7 @@ class DaemonConnector {
     // load transactions into transactionsMap for processing
     for (let i = 0; i < transactions.length; i++) {
       time = transactions[i].time;
-      if(time > this.currentFrom || !this.transactionsIndexed){
+      if (time > this.currentFrom || !this.transactionsIndexed) {
         // console.log(transactions[i])
         shouldRequestAnotherPage = true;
         txId = transactions[i].txid;
@@ -768,106 +712,102 @@ class DaemonConnector {
         address = transactions[i].address;
         fee = transactions[i].fee === undefined ? 0 : transactions[i].fee;
         confirmations = transactions[i].confirmations;
-        if(!this.transactionsMap[txId]){
-            this.transactionsMap[txId] = [];
+        if (!this.transactionsMap[txId]) {
+          this.transactionsMap[txId] = [];
         }
         this.transactionsMap[txId].push({
-          txId: txId,
-          time: time,
-          amount: amount,
-          category: category,
-          address: address,
-          fee: fee,
-          confirmations: confirmations,
+          txId,
+          time,
+          amount,
+          category,
+          address,
+          fee,
+          confirmations,
           is_main: false
         });
-      }else{
+      } else {
         shouldRequestAnotherPage = false;
       }
     }
 
-    if(transactions.length === this.transactionsToRequest && shouldRequestAnotherPage){
+    if (transactions.length === this.transactionsToRequest && shouldRequestAnotherPage) {
       this.transactionsPage++;
       await this.loadTransactionsForProcessing();
-    }
-    else{
+    } else {
       await this.processTransactions();
     }
   }
 
-  async processTransactions(){
+  async processTransactions() {
     let entries = [];
-    let rewards = [];
-    let staked = [];
-    let change = [];
+    const rewards = [];
+    const staked = [];
+    const change = [];
 
-    //process transactions
+    // process transactions
     for (const key of Object.keys(this.transactionsMap)) {
-
-      let values = this.transactionsMap[key];
+      const values = this.transactionsMap[key];
       let generatedFound = false;
 
       // check if current values array contains a staked transaction, if it does flag the rest of them as category staked
       restartLoop:
         while (true) {
-          for(let i = 0; i <= values.length - 1; i++) {
+          for (let i = 0; i <= values.length - 1; i++) {
             if ((values[i].category === 'generate' || values[i].category === 'immature') && generatedFound === false) {
-              generatedFound = true
+              generatedFound = true;
               continue restartLoop;
             }
-            if(generatedFound) {
-              if(values[i].category !== 'generate' && values[i].category !== 'immature') {
-                values[i].category = "staked";
+            if (generatedFound) {
+              if (values[i].category !== 'generate' && values[i].category !== 'immature') {
+                values[i].category = 'staked';
               } else {
                 values[i].is_main = true;
                 values[i].category = 'generate';
               }
-              rewards.push({...values[i], txId: key})
+              rewards.push({ ...values[i], txId: key });
             }
           }
           break;
         }
 
       // if the above condition doesnt fit calculate the lev
-      if (!generatedFound){
-        for(let i = 0; i <= values.length - 1; i++){
+      if (!generatedFound) {
+        for (let i = 0; i <= values.length - 1; i++) {
+          entries.push({ ...values[i], txId: key });
 
-          entries.push({...values[i], txId: key});
-
-          for(let j = 0; j < entries.length - 1; j++ ){
-            let original = entries[j];
-            let current = values[i];
-            if(current.txId === original.txId) {
+          for (let j = 0; j < entries.length - 1; j++) {
+            const original = entries[j];
+            const current = values[i];
+            if (current.txId === original.txId) {
               // console.log('txId match')
 
               // if original == send
-              if(original.category === "receive" && current.category === "send" || original.category === "send" && current.category === "receive"){
-                if(tools.similarity(original.amount.toString(), current.amount.toString()) > 0.6){
-                  current.category = "change";
-                  original.category = "change";
-                  change.push({...current, txId: key});
-                  change.push({...original, txId: key});
+              if (original.category === 'receive' && current.category === 'send' || original.category === 'send' && current.category === 'receive') {
+                if (tools.similarity(original.amount.toString(), current.amount.toString()) > 0.6) {
+                  current.category = 'change';
+                  original.category = 'change';
+                  change.push({ ...current, txId: key });
+                  change.push({ ...original, txId: key });
                   entries.splice(entries.indexOf(original), 1);
                   entries.splice(entries.indexOf(current), 1);
                 } else {
                   // console.log('similarity too low')
                   // console.log(tools.similarity(original.amount.toString(), current.amount.toString()))
                 }
-              } else{
+              } else {
                 // console.log('Sim value')
                 // console.log(tools.similarity(original.amount.toString(), current.amount.toString()))
                 // console.log('values dont line up')
               }
             }
           }
-
         }
       }
       generatedFound = false;
     }
 
     // Set every transaction still left in entries as the main transaction.
-    for(let j = 0; j <= entries.length - 1; j++) {
+    for (let j = 0; j <= entries.length - 1; j++) {
       entries[j].is_main = true;
     }
 
@@ -878,68 +818,65 @@ class DaemonConnector {
     entries = entries.concat(rewards, staked, change);
     // console.log(entries.length)
     // console.log(JSON.stringify(entries))
-    await this.insertIntoDb(entries)
+    await this.insertIntoDb(entries);
   }
 
-  goToEarningsPanel(){
+  goToEarningsPanel() {
     // this.store.dispatch({type: IS_FILTERING_TRANSACTIIONS, payload: true})
-    this.store.dispatch({type: TRANSACTIONS_TYPE, payload: "generate"});
-    this.store.dispatch({type: SELECTED_PANEL, payload: "transactions"});
-    this.store.dispatch({type: SELECTED_SIDEBAR, payload: {parent: "walletSelected", child: "transactionsSelected"}});
+    this.store.dispatch({ type: TRANSACTIONS_TYPE, payload: 'generate' });
+    this.store.dispatch({ type: SELECTED_PANEL, payload: 'transactions' });
+    this.store.dispatch({ type: SELECTED_SIDEBAR, payload: { parent: 'walletSelected', child: 'transactionsSelected' } });
   }
 
-  async insertIntoDb(entries){
-
-    let lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
+  async insertIntoDb(entries) {
+    const lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
     let earningsCountNotif = 0;
     let earningsTotalNotif = 0;
-    let shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
+    const shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
 
     for (let i = 0; i < entries.length; i++) {
       // console.log(lastCheckedEarnings)
-      if(this.firstRun){
-        this.store.dispatch({type: LOADING, payload:{isLoading: true, loadingMessage: `Indexing transaction ${i}/${entries.length}`}})
+      if (this.firstRun) {
+        this.store.dispatch({ type: LOADING, payload: { isLoading: true, loadingMessage: `Indexing transaction ${i}/${entries.length}` } });
       }
-      let entry = entries[i];
-      if(Number(entry.confirmations) < 30){
-        this.store.dispatch({type: PENDING_TRANSACTION, payload: entry.txId})
-
+      const entry = entries[i];
+      if (Number(entry.confirmations) < 30) {
+        this.store.dispatch({ type: PENDING_TRANSACTION, payload: entry.txId });
       }
 
       let isPending = false;
 
-      if(entry.category === 'generate' || entry.category === 'staked'){
+      if (entry.category === 'generate' || entry.category === 'staked') {
         isPending = Number(entry.confirmations) < 30;
       } else {
         isPending = Number(entry.confirmations) < 10;
       }
-      await addTransaction(entry, isPending)
+      await addTransaction(entry, isPending);
 
-      //update with 1 new staking reward since previous ones have already been loaded on startup
-      if(entry.category === "generate"){
-
-        if(entry.time > lastCheckedEarnings && shouldNotifyEarnings){
-          this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: entry.amount, date: entry.time}});
+      // update with 1 new staking reward since previous ones have already been loaded on startup
+      if (entry.category === 'generate') {
+        if (entry.time > lastCheckedEarnings && shouldNotifyEarnings) {
+          this.store.dispatch({ type: STAKING_NOTIFICATION, payload: { earnings: entry.amount, date: entry.time } });
           earningsCountNotif++;
           earningsTotalNotif += entry.amount;
         }
       }
     }
 
-    if(shouldNotifyEarnings && earningsCountNotif > 0){
+    if (shouldNotifyEarnings && earningsCountNotif > 0) {
       earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
-      let title = `Staking reward - ${earningsTotalNotif} ECC`;
+      const title = `Staking reward - ${earningsTotalNotif} ECC`;
       const body = earningsCountNotif === 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`;
-      const callback = () => {this.goToEarningsPanel();}
+      const callback = () => { this.goToEarningsPanel(); };
       this.queueOrSendNotification(callback, body);
     }
 
-    //no more transactions to process, mark as done to avoid spamming the daemon
-    if(!this.transactionsIndexed){
+    // no more transactions to process, mark as done to avoid spamming the daemon
+    if (!this.transactionsIndexed) {
       this.transactionsIndexed = true;
-      this.store.dispatch({type: INDEXING_TRANSACTIONS, payload: false});
-      let rewards = await getAllRewardTransactions();
-      this.store.dispatch({type: STAKING_REWARD, payload: rewards})
+      this.store.dispatch({ type: INDEXING_TRANSACTIONS, payload: false });
+      const rewards = await getAllRewardTransactions();
+      this.store.dispatch({ type: STAKING_REWARD, payload: rewards });
     }
 
     this.transactionsPage = 0;
@@ -947,109 +884,107 @@ class DaemonConnector {
     this.isIndexingTransactions = false;
   }
 
-  async processPendingTransactions(){
-	  let pendingTransactions = await getAllPendingTransactions()
+  async processPendingTransactions() {
+	  const pendingTransactions = await getAllPendingTransactions();
     for (const [index, pending] of pendingTransactions.entries()) {
 	    // console.log(pending)
       // handle the response
-      let id = pending.transaction_id;
-      let rawT = await this.getRawTransaction(id);
+      const id = pending.transaction_id;
+      const rawT = await this.getRawTransaction(id);
       await updatePendingTransaction(id, rawT.confirmations);
     }
   }
 
-  removeTransactionFromMemory(transactionId, deleteFromTransactions){
-    let pendingTransactions = this.store.getState().application.pendingTransactions;
-    let index = pendingTransactions.indexOf(transactionId);
+  removeTransactionFromMemory(transactionId, deleteFromTransactions) {
+    const pendingTransactions = this.store.getState().application.pendingTransactions;
+    const index = pendingTransactions.indexOf(transactionId);
 
     if (index !== -1) {
-        pendingTransactions.splice(index, 1);
+      pendingTransactions.splice(index, 1);
     }
-    if(deleteFromTransactions){
-      let transactions = this.store.getState().application.stakingRewards;
-      for(let i = 0; i < transactions.length; i++){
-        if(transactions[i].transaction_id === transactionId){
-          let index = transactions.indexOf(transactions[i]);
-          transactions.splice(index, 1);
-          this.store.dispatch({type: STAKING_REWARD, payload: transactions});
-          this.store.dispatch({type: PENDING_TRANSACTION, payload: pendingTransactions});
+    if (deleteFromTransactions) {
+      const transactions = this.store.getState().application.stakingRewards;
+      for (let i = 0; i < transactions.length; i++) {
+        if (transactions[i].transaction_id === transactionId) {
+          const ele = transactions.indexOf(transactions[i]);
+          transactions.splice(ele, 1);
+          this.store.dispatch({ type: STAKING_REWARD, payload: transactions });
+          this.store.dispatch({ type: PENDING_TRANSACTION, payload: pendingTransactions });
           return;
         }
       }
     }
   }
 
-  async loadTransactionFromDb(){
+  async loadTransactionFromDb() {
     return new Promise(async (resolve, reject) => {
-      let lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
+      const lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
       let earningsCountNotif = 0;
       let earningsTotalNotif = 0;
-      let shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
+      const shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
 
 
-      //map all income from transactions
-      this.store.dispatch({type: RESET_STAKING_EARNINGS});
-      let transactions = await getAllRewardTransactions();
-      this.store.dispatch({type: STAKING_REWARD, payload: transactions})
+      // map all income from transactions
+      this.store.dispatch({ type: RESET_STAKING_EARNINGS });
+      const transactions = await getAllRewardTransactions();
+      this.store.dispatch({ type: STAKING_REWARD, payload: transactions });
       transactions.map((transaction) => {
-        let time = transaction.time;
-        let amount = transaction.amount;
-        if(time > lastCheckedEarnings && shouldNotifyEarnings){
-
-          this.store.dispatch({type: STAKING_NOTIFICATION, payload: {earnings: amount, date: time}});
+        const time = transaction.time;
+        const amount = transaction.amount;
+        if (time > lastCheckedEarnings && shouldNotifyEarnings) {
+          this.store.dispatch({ type: STAKING_NOTIFICATION, payload: { earnings: amount, date: time } });
           earningsCountNotif++;
           earningsTotalNotif += amount;
         }
       });
 
-      //map all rewards from staking rewards
-      let rewards = await getAllRewardTransactions();
+      // map all rewards from staking rewards
+      const rewards = await getAllRewardTransactions();
 
-      this.store.dispatch({type: STAKING_REWARD, payload: rewards});
+      this.store.dispatch({ type: STAKING_REWARD, payload: rewards });
 
 
       // map all pending transaction
-      let pendingTransactions = await getAllPendingTransactions();
+      const pendingTransactions = await getAllPendingTransactions();
 
-      let aux = [];
+      const aux = [];
       pendingTransactions.map((val) => {
-        aux.push(val.transaction_id)
+        aux.push(val.transaction_id);
       });
-      this.store.dispatch({type: PENDING_TRANSACTION, payload: aux});
+      this.store.dispatch({ type: PENDING_TRANSACTION, payload: aux });
 
       // TODO: make this do some better error handling.
       resolve();
     });
   }
 
-  //MISC METHODS
+  // MISC METHODS
 
-  async updateConfirmations(){
+  async updateConfirmations() {
     getAllTransactions()
       .then(async (transactionData) => {
-        const walletTransactions = await this.wallet.getTransactions("*", transactionData.length,0);
-        await Promise.all(walletTransactions.map(async(transactions) => {
+        const walletTransactions = await this.wallet.getTransactions('*', transactionData.length, 0);
+        await Promise.all(walletTransactions.map(async (transactions) => {
           try {
             const result = await updateTransactionsConfirmations(transactions.txid, transactions.confirmations);
-            return result
-          }catch (err){
-             console.log(err)
+            return result;
+          } catch (err) {
+            console.log(err);
           }
         }));
-    }).catch(errors => {
-      console.log(errors)
-    });
-
+      }).catch(errors => {
+        console.log(errors);
+      });
   }
 
-  queueOrSendNotification(callback, body){
-    if(this.store.getState().startup.loading || this.store.getState().startup.loader || !this.store.getState().startup.setupDone){
-      this.queuedNotifications.push({callback: callback, body: body})
+  queueOrSendNotification(callback, body) {
+    if (this.store.getState().startup.loading || this.store.getState().startup.loader || !this.store.getState().startup.setupDone) {
+      this.queuedNotifications.push({ callback, body });
     } else {
       Tools.sendOSNotification(body, callback);
     }
   }
-  async getAddresses(allReceived, allAddresses){
+  async getAddresses(allReceived, allAddresses) {
     const normalAddresses = [].concat.apply([], allAddresses).map(group => {
       return {
         account: group.length > 2 ? group[2] : null,
@@ -1057,7 +992,7 @@ class DaemonConnector {
         normalAddress: group[0],
         amount: tools.formatNumber(parseFloat(group[1])),
         ans: false,
-      }
+      };
     });
 
     const allAddressesWithANS = await Promise.all(normalAddresses.map(async (address) => {
@@ -1073,7 +1008,7 @@ class DaemonConnector {
           code: ansRecord.Code,
           expiryTime: ansRecord.ExpireTime,
           ans: true
-        }
+        };
       } else {
         retval = address;
       }
@@ -1089,60 +1024,58 @@ class DaemonConnector {
                           normalAddress: address.address,
                           amount: 0,
                           ans: false,
-                        }
+                        };
                       });
 
     let toReturn = allAddressesWithANS.concat(toAppend);
-    toReturn = Object.values(toReturn).sort(function(a,b){
-      if(!b.ans || !a.ans){
-        return b.ans - a.ans
+    toReturn = Object.values(toReturn).sort((a, b) => {
+      if (!b.ans || !a.ans) {
+        return b.ans - a.ans;
       }
-      else{
-        return b.address < a.address
-      }
+      return b.address < a.address;
     });
 
 
     // if my current database addresses are not all in the addresses returned from the daemon,
     const myAddresses = await getAllMyAddresses();
 
-    for (const [i, add] of myAddresses.entries()){
+    for (const [i, add] of myAddresses.entries()) {
       const found = toReturn.filter((daemonAddress) => {
-        return daemonAddress.normalAddress === add.address
+        return daemonAddress.normalAddress === add.address;
       });
-      if (!found || found.length === 0){
+      if (!found || found.length === 0) {
         await clearDB();
-        console.log('in here')
+        console.log('in here');
         this.transactionsIndexed = false;
         break;
       }
     }
     // if(normalAddresses.length > this.currentAddresses.length) {
-      for (const [index, address] of toReturn.entries()) {
+    for (const [index, address] of toReturn.entries()) {
         // handle the response
-        const addressObj = await addAddress(address, address.ans, true);
-        if(addressObj[1] !== null && addressObj[1] === true){
-          this.queueOrSendNotification(()=>{}, `${this.translator.ansReady}.\n\n${this.translator.username}: ${addressObj[0].name}#${addressObj[0].code}`);
-        }
+      const addressObj = await addAddress(address, address.ans, true);
+      if (addressObj[1] !== null && addressObj[1] === true) {
+        this.queueOrSendNotification(() => {}, `${this.translator.ansReady}.\n\n${this.translator.username}: ${addressObj[0].name}#${addressObj[0].code}`);
       }
+    }
 
-      const addresses = await getAllMyAddresses();
-      this.store.dispatch({type: USER_ADDRESSES, payload: addresses});
+    const addresses = await getAllMyAddresses();
+    this.store.dispatch({ type: USER_ADDRESSES, payload: addresses });
     // }
-    //We need to have the addresses loaded to be able to index transactions
+    // We need to have the addresses loaded to be able to index transactions
     this.currentAddresses = normalAddresses;
-    if(!this.transactionsIndexed && this.firstRun && this.currentAddresses.length > 0 && !this.isIndexingTransactions){
+    if (!this.transactionsIndexed && this.firstRun && this.currentAddresses.length > 0 && !this.isIndexingTransactions) {
       await this.loadTransactionsForProcessing();
-      this.store.dispatch({type: INDEXING_TRANSACTIONS, payload: true})
+      this.store.dispatch({ type: INDEXING_TRANSACTIONS, payload: true });
     }
   }
 
-  getRawTransaction(transactionId){
+  getRawTransaction(transactionId) {
     return new Promise((resolve, reject) => {
       this.wallet.getRawTransaction(transactionId).then((data) => {
         resolve(data);
       }).catch((err) => {
-        reject(err)
+        reject(err);
       });
     });
   }
