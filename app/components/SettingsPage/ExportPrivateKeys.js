@@ -45,6 +45,7 @@ class ExportPrivateKeys extends React.Component {
       message: this.props.lang.wrongPassword,
       color: 'red'
     });
+    this.props.setPopupLoading(false);
   }
 
   componentWillUnmount(){
