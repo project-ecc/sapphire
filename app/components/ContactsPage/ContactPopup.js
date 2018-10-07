@@ -8,6 +8,7 @@ import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
 
 import {addContact, getContacts, findContact} from "../../Managers/SQLManager";
+import Toast from "../../globals/Toast/Toast";
 
 const Tools = require('../../utils/tools');
 
@@ -18,7 +19,6 @@ class ContactPopup extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleInput = this.handleInput.bind(this);
-    this.addressAddedSuccessfuly = this.addressAddedSuccessfuly.bind(this);
     this.cleanupAfterPopup = this.cleanupAfterPopup.bind(this);
     this.state = {
       selected: {},
@@ -78,7 +78,11 @@ class ContactPopup extends React.Component {
 
     const tt = await findContact(ans === true ? name + '#' + code : name)
     if (tt.length > 0) {
-      this.addressAlreadyExists();
+      Toast({
+        title: this.props.lang.error,
+        message: this.props.lang.contactAlreadyExists,
+        color: 'red'
+      });
       this.cleanupAfterPopup();
     }
     // add the contact
@@ -89,8 +93,10 @@ class ContactPopup extends React.Component {
     const friendList = await getContacts();
     this.props.setContacts(friendList);
 
-
-    this.addressAddedSuccessfuly();
+    Toast({
+      title: this.props.lang.success,
+      message: this.props.lang.contactAddedSuccessfully
+    });
     this.cleanupAfterPopup();
   }
 
@@ -103,15 +109,6 @@ class ContactPopup extends React.Component {
 
   handleCancel(){
     this.cleanupAfterPopup()
-  }
-
-  addressAddedSuccessfuly(){
-    TweenMax.fromTo('#addressAdded', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
-    TweenMax.to('#addressAdded', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
-  }
-  addressAlreadyExists(){
-    TweenMax.fromTo('#addressExists', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
-    TweenMax.to('#addressExists', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
   }
 
   getNameOrAddressHtml(){

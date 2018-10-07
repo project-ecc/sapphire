@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { traduction, language } from '../../lang/lang';
 import * as actions from '../../actions';
-import {TweenMax} from "gsap";
+import { TweenMax } from 'gsap';
 import { ipcRenderer } from 'electron';
 
 class ImportWallet extends React.Component {
- constructor() {
+  constructor() {
     super();
     this.openFile = this.openFile.bind(this);
     this.sendActionImportCancelled = this.sendActionImportCancelled.bind(this);
@@ -14,81 +14,80 @@ class ImportWallet extends React.Component {
     this.sendActionImportStarted = this.sendActionImportStarted.bind(this);
   }
 
-  componentWillMount(){
+  componentWillMount() {
     ipcRenderer.on('importedWallet', this.sendActionImportedWallet);
     ipcRenderer.on('importStarted', this.sendActionImportStarted);
     ipcRenderer.on('importCancelled', this.sendActionImportCancelled);
   }
 
-  sendActionImportedWallet(){
-    if(this.props.setupDone){
+  sendActionImportedWallet() {
+    if (this.props.setupDone) {
       this.props.setImportingWalletWithSetupDone(true);
-    }      
+    }
     this.props.importedWallet();
-    TweenMax.to('#importing', 0.2, {autoAlpha: 0, scale: 0.5});
-    TweenMax.fromTo('#imported', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
+    TweenMax.to('#importing', 0.2, { autoAlpha: 0, scale: 0.5 });
+    TweenMax.fromTo('#imported', 0.2, { autoAlpha: 0, scale: 0.5 }, { autoAlpha: 1, scale: 1 });
   }
 
-  sendActionImportCancelled(){
+  sendActionImportCancelled() {
     this.props.importCancelled();
   }
 
-  sendActionImportStarted(){
+  sendActionImportStarted() {
     this.props.importStarted();
-    TweenMax.to('#import', 0.2, {autoAlpha: 0, scale: 0.5});
-    TweenMax.to('#importing', 0.2, {autoAlpha: 1, scale: 1});
+    TweenMax.to('#import', 0.2, { autoAlpha: 0, scale: 0.5 });
+    TweenMax.to('#importing', 0.2, { autoAlpha: 1, scale: 1 });
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     ipcRenderer.removeListener('importedWallet', this.sendActionImportedWallet);
     ipcRenderer.removeListener('importStarted', this.sendActionImportStarted);
     ipcRenderer.removeListener('importCancelled', this.sendActionImportCancelled);
 
-    if(this.props.shouldImportWallet){
-      this.props.setImportWalletTemporary({importWalletTemp: true, importWallet: false});
+    if (this.props.shouldImportWallet) {
+      this.props.setImportWalletTemporary({ importWalletTemp: true, importWallet: false });
     }
   }
 
   openFile() {
-    if(this.props.importing)
-      return;
+    if (this.props.importing) { return; }
     this.props.importingWallet();
     ipcRenderer.send('importWallet');
   }
 
-  toRender(){
+  toRender() {
     return (
       <div>
-        <p style={{fontWeight:"300"}} className="subTitle">
-         { this.props.lang.importExistingWallet }
+        <p style={{ fontWeight: '300' }} className="subTitle">
+          { this.props.lang.importExistingWallet }
         </p>
         <div id="import">
-           <div onClick={this.openFile} id="importButton">
-             { this.props.lang.import }
-           </div>
+          <div onClick={this.openFile} id="importButton">
+            { this.props.lang.import }
+          </div>
         </div>
-        <div style={{fontWeight:"300"}} id="importing">
+        <div style={{ fontWeight: '300' }} id="importing">
           { this.props.lang.importingYourWallet }
         </div>
-        <div style={{fontWeight:"300"}} id="imported">
+        <div style={{ fontWeight: '300' }} id="imported">
           { this.props.lang.imported }
         </div>
       </div>
-    )
+    );
   }
 
   render() {
-     return (
+    return (
       <div>
         {this.toRender()}
       </div>
-      );
-    }
+    );
+  }
 
 }
 
 const mapStateToProps = state => {
-  return{
+  return {
     lang: state.startup.lang,
     importing: state.setup.importing,
     importHasStarted: state.setup.importStarted,

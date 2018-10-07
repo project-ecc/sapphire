@@ -43,16 +43,6 @@ class Contacts extends Component {
     this.props.setAddingContact(false);
   }
 
-  addressAlreadyExists(){
-    TweenMax.fromTo('#addressExists', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
-    TweenMax.to('#addressExists', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
-  }
-
-  addressAddedSuccessfuly(){
-    TweenMax.fromTo('#addressAdded', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
-    TweenMax.to('#addressAdded', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
-  }
-
   async addNormalAddress() {
     let result;
     let code = "";
@@ -94,7 +84,11 @@ class Contacts extends Component {
         const tt = await findContact(ans == true ? name + '#' + code : name)
         console.log(tt)
         if (tt.length > 0) {
-          this.addressAlreadyExists();
+          Toast({
+            title: this.props.lang.error,
+            message: this.props.lang.contactAlreadyExists,
+            color: 'red'
+          });
           this.resetFields();
           return;
         }
@@ -106,7 +100,10 @@ class Contacts extends Component {
           console.log(friendList)
           // const friendList = low.get('friends').value();
           this.props.setContacts(friendList);
-          this.addressAddedSuccessfuly();
+          Toast({
+            title: this.props.lang.success,
+            message: this.props.lang.contactAddedSuccessfully
+          });
         }else {
           this.props.setNewContactAddress(address)
           this.props.setAddingContact(true);
@@ -131,10 +128,6 @@ class Contacts extends Component {
     return (
       <div className="panel">
         <AddressBook sendPanel={false}/>
-        <div style={{position: "relative", top: "60px"}}>
-          <p id="addressExists" className="contactsMessage">{ this.props.lang.contactAlreadyExists }</p>
-          <p id="addressAdded" className="contactsMessage">{ this.props.lang.contactAddedSuccessfully }</p>
-        </div>
         <div id="inputAddress" style={{width: "650px", margin: "0 auto", display:"flex", justifyContent: "space-between", marginTop:"100px"}}>
           <Input
             placeholder= { this.props.lang.ansNameOrAddress }
