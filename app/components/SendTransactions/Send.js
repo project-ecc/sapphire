@@ -9,6 +9,7 @@ import Input from '../Others/Input';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup'
 
 import $ from 'jquery';
+import Toast from "../../globals/Toast/Toast";
 
 const Tools = require('../../utils/tools');
 
@@ -44,7 +45,10 @@ class Send extends Component {
     }
     if(this.props.addressOrUsername !== "" && this.props.amount !== "" && Number(this.props.amount) > 0){
       if(Number(this.props.amount) > Number(this.props.balance)){
-        Tools.showTemporaryMessage('.Send__message-status', this.props.lang.notEnoughBalance);
+        Toast({
+          message: this.props.lang.notEnoughBalance,
+          color: 'red'
+        });
         Tools.highlightInput('#inputAmountSend', 2100)
       }
       else{
@@ -66,7 +70,11 @@ class Send extends Component {
         }
 
         if (!result) {
-          Tools.showTemporaryMessage('.Send__message-status', this.props.lang.invalidFailedAddress);
+          Toast({
+            title: this.props.lang.error,
+            message: this.props.lang.invalidFailedAddress,
+            color: 'red'
+          });
           Tools.highlightInput('#inputAddressSend', 2100)
         }
         else{
@@ -90,7 +98,6 @@ class Send extends Component {
             </div>
           </div>
         </div>
-          <p className="Send__message-status">{ this.props.lang.addressCopiedBelow }</p>
           <div className="Send__form">
             <div className="Send__inputs-wrapper">
               <Input

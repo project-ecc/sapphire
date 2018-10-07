@@ -17875,16 +17875,6 @@ aside {
 .Send__form-confirm-btn {
   padding: 0px 45px; }
 
-.Send__message-status {
-  position: relative;
-  text-align: center;
-  font-size: 15px;
-  visibility: hidden;
-  top: 65px; }
-  .theme-defaultEcc .Send__message-status {
-    color: #d09128; }
-  .theme-darkEcc .Send__message-status {
-    color: #c39c59; }
 
 #rows {
   overflow-y: scroll;

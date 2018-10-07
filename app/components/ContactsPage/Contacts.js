@@ -4,6 +4,7 @@ import * as actions from '../../actions';
 import { connect } from 'react-redux';
 import AddressBook from '../SendTransactions/AddressBook';
 import Input from '../Others/Input';
+import Toast from "../../globals/Toast/Toast";
 const Tools = require('../../utils/tools');
 
 
@@ -52,11 +53,6 @@ class Contacts extends Component {
     TweenMax.to('#addressAdded', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
   }
 
-  addressInvalid(){
-    TweenMax.fromTo('#addressInvalid', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
-    TweenMax.to('#addressInvalid', 0.2, {autoAlpha: 0, scale: 0.5, delay: 3});
-  }
-
   async addNormalAddress() {
     let result;
     let code = "";
@@ -86,7 +82,11 @@ class Contacts extends Component {
     }
 
     if (!result) {
-      Tools.showTemporaryMessage('#addressInvalid');
+      Toast({
+        title: this.props.lang.error,
+        message: this.props.lang.invalidAddress,
+        color: 'red'
+      });
       this.resetFields(false);
     }
     else{
@@ -134,7 +134,6 @@ class Contacts extends Component {
         <div style={{position: "relative", top: "60px"}}>
           <p id="addressExists" className="contactsMessage">{ this.props.lang.contactAlreadyExists }</p>
           <p id="addressAdded" className="contactsMessage">{ this.props.lang.contactAddedSuccessfully }</p>
-          <p id="addressInvalid" className="contactsMessage">{ this.props.lang.invalidAddress }</p>
         </div>
         <div id="inputAddress" style={{width: "650px", margin: "0 auto", display:"flex", justifyContent: "space-between", marginTop:"100px"}}>
           <Input

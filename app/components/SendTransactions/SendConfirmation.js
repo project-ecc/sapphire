@@ -21,7 +21,6 @@ class SendConfirmation extends React.Component {
     this.sendECC = this.sendECC.bind(this);
     this.getNameOrAddressHtml = this.getNameOrAddressHtml.bind(this);
     this.reset = this.reset.bind(this);
-    this.showMessage = this.showMessage.bind(this);
     this.animated = false;
   }
 
@@ -65,25 +64,23 @@ class SendConfirmation extends React.Component {
           }
           this.reset();
           this.props.setTemporaryBalance(this.props.balance - this.props.amount);
-          this.showMessage(this.props.lang.sentSuccessfully);
+          Toast({
+            title: this.props.lang.success,
+            message: this.props.lang.sentSuccessfully
+          });
         }
         else{
-          this.showMessage(this.props.lang.failedToSend);
-          this.reset();
+          throw('Failed to send');
         }
       }).catch((err) => {
-        this.showMessage(this.props.lang.failedToSend);
+        Toast({
+          title: this.props.lang.error,
+          message: this.props.lang.failedToSend,
+          color: 'red'
+        });
         this.reset();
       });
     })
-  }
-
-  showMessage(message){
-    $('.Send__message-status').text(message);
-    Tools.showTemporaryMessage('.Send__message-status');
-    setTimeout(() => {
-      $('.Send__message-status').text(this.props.lang.addressCopiedBelow)
-    }, 2500)
   }
 
   reset(){
