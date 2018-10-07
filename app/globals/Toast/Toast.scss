@@ -3,15 +3,20 @@
   position: fixed;
   bottom: 10px;
   left: 10px;
+  z-index: 12;
 
   & > div {
-	background-color: darkgreen;
+	background-color: #34924c;
 	color: white;
 	padding: 7px 14px;
 	margin-top: 10px;
 	max-width: 300px;
 	font-size: 1em;
 	pointer-events: all;
+
+	&.bg-red {
+	  background-color: #92000e;
+	}
 
 	& > .buttons {
 	  display: flex;

@@ -6,6 +6,7 @@ import CloseButtonPopup from '../Others/CloseButtonPopup';
 import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
 import $ from 'jquery';
+import Toast from "../../globals/Toast/Toast";
 const Tools = require('../../utils/tools');
 
 class ChangePassword extends React.Component {
@@ -14,10 +15,6 @@ class ChangePassword extends React.Component {
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.changePassword = this.changePassword.bind(this);
-  }
-
-  showWrongPassword(){
-    Tools.showTemporaryMessage('#wrongPassword');
   }
 
   componentWillUnmount(){
@@ -33,13 +30,19 @@ class ChangePassword extends React.Component {
         if(wasStaking){
 
         }
-        Tools.showTemporaryMessage('#wrongPassword', this.props.lang.operationSuccessful );
+        Toast({
+          message: this.props.lang.operationSuccessful
+        });
         setTimeout(()=>{
           this.props.setChangingPassword(false)
         }, 2000)
       }
       else if(data.code && data.code === -14){
-        Tools.showTemporaryMessage('#wrongPassword', this.props.lang.wrongPasswordProper );
+        Toast({
+          title: this.props.lang.error,
+          message: this.props.lang.wrongPasswordProper,
+          color: 'red'
+        });
       }
       this.props.setPopupLoading(false)
     })
@@ -51,10 +54,18 @@ class ChangePassword extends React.Component {
 
   handleConfirm(){
     if(this.props.passwordVal === "" || this.props.passwordValConfirmation === "" || this.props.newPassword === ""){
-      Tools.showTemporaryMessage('#wrongPassword', this.props.lang.fillAllFields );
+      Toast({
+        title: this.props.lang.error,
+        message: this.props.lang.fillAllFields,
+        color: 'red'
+      });
     }
     else if(this.props.newPassword !== this.props.passwordValConfirmation){
-      Tools.showTemporaryMessage('#wrongPassword', this.props.lang.passwordsDontMatch );
+      Toast({
+        title: this.props.lang.error,
+        message: this.props.lang.passwordsDontMatch,
+        color: 'red'
+      });
     }
     else{
       this.props.setPopupLoading(true);
@@ -102,7 +113,6 @@ class ChangePassword extends React.Component {
           onSubmit={this.handleConfirm}
           style={{width: "60%"}}
         />
-        <p id="wrongPassword" className="wrongPassword" style= {{paddingTop:"10px", marginTop:"0px"}}>{ this.props.lang.wrongPassword }</p>
         <ConfirmButtonPopup inputId={"#enterPasswordId, #enterPasswordId, #repeatNewPasswordId"} handleConfirm={this.handleConfirm} textLoading={this.props.lang.confirming} text={ this.props.lang.confirm }/>
       </div>
       );

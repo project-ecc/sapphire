@@ -308,19 +308,6 @@ aside{
   overflow: hidden;
 }
 
-
-
-#wrongPassword{
-  @include themify($themes) {
-    color: themed('popupMessageText');
-  }
-  width: 100%;
-  visibility: hidden;
-  margin-bottom: 14px;
-  margin-top: 9px;
-  font-size: 16px;
-}
-
 .closeButtonPopup{
   @include themify($themes) {
     border: themed('popupCloseButtonBorder');

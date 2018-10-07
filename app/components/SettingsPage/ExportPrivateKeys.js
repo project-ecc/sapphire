@@ -9,6 +9,7 @@ import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
 
 import $ from 'jquery';
+import Toast from '../../globals/Toast/Toast';
 
 const Tools = require('../../utils/tools');
 const os = require('os');
@@ -39,7 +40,11 @@ class ExportPrivateKeys extends React.Component {
   }
 
   showWrongPassword(){
-    Tools.showTemporaryMessage('#wrongPassword');
+    Toast({
+      title: this.props.lang.error,
+      message: this.props.lang.wrongPassword,
+      color: 'red'
+    });
   }
 
   componentWillUnmount(){
@@ -119,7 +124,6 @@ class ExportPrivateKeys extends React.Component {
             autoFocus
             onSubmit={this.handlePanels}
           />
-          <p id="wrongPassword" className="wrongPassword">{ this.props.lang.wrongPassword }</p>
         </div>
       </div>
     )

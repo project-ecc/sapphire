@@ -1,4 +1,5 @@
 {
+    "error": "Error",
     "contactAlreadyExists": "Contact already exists",
     "contactAddedSuccessfully": "Contact added successfully",
     "invalidAddress": "Invalid Address",
@@ -140,6 +141,7 @@
     "clickToBackupWallet": "Backup Wallet",
     "disableANSSubscription": "Disable ANS subscription",
     "upgradeToANS": "Upgrade to ANS Address",
+    "addressNotEnoughFunds": "Not enough funds in the address. You need to have a little over 50 ECC to account for the transfer fees.",
 
     "addressCopiedBelow": "Address copied below",
     "selectAContactToSend1": "Select a contact to send",

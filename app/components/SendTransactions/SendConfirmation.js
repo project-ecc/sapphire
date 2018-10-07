@@ -8,6 +8,7 @@ import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
 
 import $ from 'jquery';
+import Toast from "../../globals/Toast/Toast";
 
 const Tools = require('../../utils/tools');
 
@@ -25,7 +26,11 @@ class SendConfirmation extends React.Component {
   }
 
   showWrongPassword(){
-    Tools.showTemporaryMessage('#wrongPassword');
+    Toast({
+      title: this.props.lang.error,
+      message: this.props.lang.wrongPassword,
+      color: 'red'
+    });
   }
 
   componentWillMount(){
@@ -199,9 +204,6 @@ class SendConfirmation extends React.Component {
             autoFocus
             onSubmit={this.handleConfirm}
           />
-          <div>
-            <p id="wrongPassword" className="wrongPassword" style={{marginBottom: this.props.multipleAddresses.length > 0 ? "60px" : "14px"}}>Wrong password</p>
-          </div>
           <ConfirmButtonPopup
             inputId={"#sendPasswordId"}
             handleConfirm={this.handleConfirm}

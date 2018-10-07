@@ -312,9 +312,6 @@ class Receive extends Component {
           <img src={ansAddresImage} />
           <p className="ansLabel">{ this.props.lang.ansAddresses }</p>
           <p className="Receive__upgrade-text" onClick={this.handleUpgradeAddress} style={{visibility: selectedAddress ? selectedAddress.ansrecords.length > 0 ? "hidden" : "visible" : "hidden"}}>Upgrade to ANS address</p>
-          <div>
-            <p id="wrongPassword" style={{textAlign: 'center'}} > </p>
-          </div>
         </div>
       </div>
     );

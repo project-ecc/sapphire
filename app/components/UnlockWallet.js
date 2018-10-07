@@ -8,6 +8,7 @@ import ConfirmButtonPopup from './Others/ConfirmButtonPopup';
 import Input from './Others/Input';
 
 import $ from 'jquery';
+import Toast from "../globals/Toast/Toast";
 
 const Tools = require('../utils/tools');
 
@@ -21,6 +22,14 @@ class UnlockWallet extends React.Component {
 
   componentWillMount(){
     Tools.hideFunctionIcons();
+  }
+
+  wrongPasswordToast () {
+    Toast({
+      title: this.props.lang.error,
+      message: this.props.lang.wrongPassword,
+      color: 'red'
+    });
   }
 
   async unlockWallet(){
@@ -37,7 +46,7 @@ class UnlockWallet extends React.Component {
           console.log("data: ", data);
           data = data[0];
           if (data !== null && data.code === -14) {
-            Tools.showTemporaryMessage('#wrongPassword');
+            this.wrongPasswordToast();
           } else if (data !== null && data.code === 'ECONNREFUSED') {
             console.log("daemong ain't working mate :(")
           } else if (data === null) {
@@ -66,7 +75,7 @@ class UnlockWallet extends React.Component {
 
   handleConfirm(){
     if(this.props.passwordVal === ""){
-      Tools.showTemporaryMessage('#wrongPassword');
+      this.wrongPasswordToast();
       this.props.setPassword("");
       return;
     }
@@ -101,9 +110,6 @@ class UnlockWallet extends React.Component {
             autoFocus
             onSubmit={this.handleConfirm}
           />
-          <div>
-            <p id="wrongPassword" >{ this.props.lang.wrongPassword }</p>
-          </div>
         </div>
         <ConfirmButtonPopup
           inputId="#unlockWalletPassword"

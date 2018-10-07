@@ -112,16 +112,32 @@ class ConfirmNewAddress extends React.Component {
       .catch(err => {
         console.log('error creating ANS address: ', err);
         if(err.message.indexOf("Insufficient funds") !== -1){
-          Tools.showTemporaryMessage('#wrongPassword', "Not enough funds in the address. You need to have a little over 50 ECC to account for the transfer fees.", 7000, this.props.lang.wrongPassword);
+          Toast({
+            title: this.props.lang.error,
+            message: this.props.lang.addressNotEnoughFunds,
+            color: 'red'
+          });
         }
         else if(err.message.indexOf("there can only be") !== -1){
-          Tools.showTemporaryMessage('#wrongPassword', this.props.lang.ansInputsError, 7000, this.props.lang.wrongPassword);
+          Toast({
+            title: this.props.lang.error,
+            message: this.props.lang.ansInputsError,
+            color: 'red'
+          });
         }
         else if(err.message.indexOf("Username contains invalid") !== -1){
-          Tools.showTemporaryMessage('#wrongPassword', this.props.lang.usernamInvalid, 7000, this.props.lang.wrongPassword);
+          Toast({
+            title: this.props.lang.error,
+            message: this.props.lang.usernamInvalid,
+            color: 'red'
+          });
         }
         else if(err.message.indexOf("maxiumum length of") !== -1){
-          Tools.showTemporaryMessage('#wrongPassword', this.props.usernameTooBig, 5000, this.props.lang.wrongPassword);
+          Toast({
+            title: this.props.lang.error,
+            message: this.props.lang.usernameTooBig,
+            color: 'red'
+          });
         }
         this.props.setPopupLoading(false)
       });
@@ -179,7 +195,11 @@ class ConfirmNewAddress extends React.Component {
       console.log(data)
       data = data[0];
       if (data !== null && (data.code === -14 || data.code === -1)) {
-        Tools.showTemporaryMessage('#wrongPassword');
+        Toast({
+          title: this.props.lang.error,
+          message: this.props.lang.wrongPassword,
+          color: 'red'
+        });
         this.props.setPopupLoading(false)
       } else if (data !== null && data.code === 'ECONNREFUSED') {
           console.log("Daemon not running - Dev please look into this and what exactly triggered it");
@@ -271,7 +291,6 @@ class ConfirmNewAddress extends React.Component {
         <div>
           <p className="popupTitle">{ this.props.upgradingAddress ? this.props.lang.upgradingAns : this.props.lang.confirmNewAddress }</p>
           {this.getConfirmationText()}
-          <p id="wrongPassword" style={{width: "75%", margin: "13px auto 66px"}} className="wrongPassword">{ this.props.lang.wrongPassword }</p>
         </div>
         <ConfirmButtonPopup
           inputId="#passwordAnsId, #usernameAnsId"

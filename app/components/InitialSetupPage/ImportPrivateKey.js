@@ -7,6 +7,7 @@ import $ from 'jquery';
 import CloseButtonPopup from '../Others/CloseButtonPopup';
 const Tools = require('../../utils/tools');
 import Input from '../Others/Input';
+ import Toast from "../../globals/Toast/Toast";
 
 class ImportPrivateKey extends React.Component {
  constructor() {
@@ -194,7 +195,11 @@ class ImportPrivateKey extends React.Component {
   }
 
   showWrongPassword(){
-    Tools.showTemporaryMessage('#wrongPassword');
+    Toast({
+      title: this.props.lang.error,
+      message: this.props.lang.wrongPassword,
+      color: 'red'
+    });
   }
 
   toRender(){
@@ -251,7 +256,6 @@ class ImportPrivateKey extends React.Component {
               style={{width:"400px"}}
               onSubmit={this.importPrivateKey}
             />
-          <p id="wrongPassword" className="wrongPassword">{ this.props.lang.wrongPassword }</p>
           <div onClick={this.importPrivateKey} className={this.props.notInitialSetup ? "buttonPrimary buttonFixPrivKey" : ""} id= {this.props.notInitialSetup ? "" : "importButton"}>
             { this.props.lang.import }
            </div>

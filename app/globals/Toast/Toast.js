@@ -18,8 +18,13 @@ export default function (options) {
   const message = options.message || null;
   const title = options.title || null;
   const buttons = options.buttons || [];
+  const color = options.color || null;
 
   const alert = document.createElement('div');
+  if (color !== null) {
+    alert.className = `bg-${color}`;
+  }
+
   if (title !== null) {
     const titleDom = document.createElement('h4');
     titleDom.innerText = title;
