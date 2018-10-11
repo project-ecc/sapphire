@@ -124,8 +124,6 @@ import {
   ADD_TO_DEBUG_LOG,
   SELECTED_CURRENCY,
   DONATION_GOALS,
-  SELECTED_GOAL,
-  DONATION_POPUP,
   DAEMON_ERROR_POPUP,
   DAEMON_ERROR
 } from "./types";
@@ -973,18 +971,6 @@ export const setDonationGoals = (val) => {
     payload: val
   }
 }
-export const setSelectedGoal = (val) => {
-  return {
-    type: SELECTED_GOAL,
-    payload: val
-  }
-}
-export const setDonationPopup = (val) => {
-  return {
-    type: DONATION_POPUP,
-    payload: val
-  }
-}
 
 export const setDaemonErrorPopup = (val) => {
   return {
@@ -993,9 +979,3 @@ export const setDaemonErrorPopup = (val) => {
   }
 }
 
-export const setDaemonError = (val) => {
-  return {
-    type: DONATION_POPUP,
-    payload: val
-  }
-}

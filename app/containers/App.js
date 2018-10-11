@@ -26,7 +26,7 @@ import DaemonErrorModal from '../components/Others/DaemonErrorModal';
 import ContactPopup from '../components/ContactsPage/ContactPopup';
 
 import $ from 'jquery';
-import DonateModal from '../components/SettingsPage/DonateModal';
+import DonateModal from '../components/SettingsPage/partials/DonateModal';
 
 const settings = require('electron').remote.require('electron-settings');
 const Tools = require('../utils/tools');
@@ -129,8 +129,6 @@ class App extends Component<Props> {
       component = <UnlockWallet />;
     } else if (this.props.addingContact) {
       component = <ContactPopup />;
-    } else if (this.props.donationPopup) {
-      component = <DonateModal />;
     } else if (this.props.daemonErrorPopup) {
       component = <DaemonErrorModal />;
     } else if (this.props.closingApplication) {
@@ -330,7 +328,6 @@ const mapStateToProps = state => {
     actionPopupMessage: state.application.actionPopupMessage,
     actionPopupStatus: state.application.actionPopupStatus,
     addingContact: state.application.addingContact,
-    donationPopup: state.application.donationPopup,
     daemonErrorPopup: state.application.daemonErrorPopup
   };
 };
