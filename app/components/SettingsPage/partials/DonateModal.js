@@ -28,7 +28,7 @@ class DonateModal extends Component {
       open: !this.state.open
     });
 
-    if (this.state.open) {
+    if (!this.state.open) {
       Tools.hideFunctionIcons();
     }
     else {

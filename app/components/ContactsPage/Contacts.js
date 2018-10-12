@@ -6,7 +6,7 @@ import AddressBook from '../SendTransactions/AddressBook';
 import Input from '../Others/Input';
 import Toast from "../../globals/Toast/Toast";
 const Tools = require('../../utils/tools');
-
+import ContactModal from './partials/ContactModal';
 
 class Contacts extends Component {
   constructor(props) {
@@ -37,10 +37,6 @@ class Contacts extends Component {
       console.log('do validate');
       await this.addContact()
     }
-  }
-
-  componentWillUnmount(){
-    this.props.setAddingContact(false);
   }
 
   async addNormalAddress() {
@@ -106,12 +102,12 @@ class Contacts extends Component {
           });
         }else {
           this.props.setNewContactAddress(address)
-          this.props.setAddingContact(true);
+          this.modal.getWrappedInstance().toggle(true);
         }
       }
       else{
         this.props.setMultipleAnsAddresses(result.addresses);
-        this.props.setAddingContact(true);
+        this.modal.getWrappedInstance().toggle(true);
       }
       //this is a temporary workaround because setContacts is not triggering a re-render of AddressBook.js
       this.props.setHoveredAddress(["a"]);
@@ -146,6 +142,8 @@ class Contacts extends Component {
           { this.props.lang.addContact }
           </div>
         </div>
+
+        <ContactModal ref={(e) => {this.modal = e}} />
       </div>
     );
   }

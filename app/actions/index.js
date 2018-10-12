@@ -925,13 +925,6 @@ export const setMultipleAnsAddresses = (val) => {
   }
 }
 
-export const setAddingContact = (val, newContact) => {
-  return {
-    type: ADDING_CONTACT,
-    payload: {flag: val, newContact: val ? newContact : undefined}
-  }
-}
-
 export const setShowZeroBalance = (val) => {
   return {
     type: SHOW_ZERO_BALANCE,

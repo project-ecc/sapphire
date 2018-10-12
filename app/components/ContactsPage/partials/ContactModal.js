@@ -1,28 +1,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {TweenMax} from "gsap";
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import * as actions from '../../../actions/index';
+import ConfirmButtonPopup from '../../Others/ConfirmButtonPopup';
+import Input from '../../Others/Input';
 
-import * as actions from '../../actions';
-import PopupBar from '../Others/PopupBar';
-import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
-import Input from '../Others/Input';
+import {addContact, getContacts, findContact} from "../../../Managers/SQLManager";
+import Toast from "../../../globals/Toast/Toast";
 
-import {addContact, getContacts, findContact} from "../../Managers/SQLManager";
-import Toast from "../../globals/Toast/Toast";
+const Tools = require('../../../utils/tools');
 
-const Tools = require('../../utils/tools');
-
-class ContactPopup extends React.Component {
+class ContactModal extends React.Component {
  constructor(props) {
     super(props);
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.handleCancel = this.handleCancel.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.cleanupAfterPopup = this.cleanupAfterPopup.bind(this);
+    this.toggle = this.toggle.bind(this);
     this.state = {
       selected: {},
-      contactName: ''
+      contactName: '',
+      open: false
     };
   }
 
@@ -56,6 +56,12 @@ class ContactPopup extends React.Component {
    this.props.setSelectedAddress(val);
   }
 
+  toggle(forceVal) {
+    this.setState({
+      open: (typeof(forceVal) === 'boolean' ? forceVal : !this.state.open)
+    });
+  }
+
   async handleConfirm(){
 
     let name = '';
@@ -86,7 +92,6 @@ class ContactPopup extends React.Component {
       this.cleanupAfterPopup();
     }
     // add the contact
-    this.props.setAddingContact(true, {name, address, code, ans});
     await addContact({name, address, code, ans}, ans);
 
     //refresh the redux store with new contacts
@@ -100,15 +105,12 @@ class ContactPopup extends React.Component {
     this.cleanupAfterPopup();
   }
 
+  // reset state when modal is closed
   cleanupAfterPopup(){
     //clean up afterwould.
     this.props.setNewContactAddress('')
     this.props.setMultipleAnsAddresses([]);
-    this.props.setAddingContact(false);
-  }
-
-  handleCancel(){
-    this.cleanupAfterPopup()
+    this.toggle(false);
   }
 
   getNameOrAddressHtml(){
@@ -158,9 +160,11 @@ class ContactPopup extends React.Component {
   render() {
     let rowClassName = "row normalWeight tableRowCustom";
      return (
-      <div ref="second" style={{height: "300px"}}>
-        <PopupBar title="Add Contact" handleClose={this.handleCancel}/>
+      <Modal isOpen={this.state.open} toggle={this.toggle} ref="second" style={{height: "300px"}}>
+        <ModalHeader toggle={this.toggle}>{this.props.lang.addContact}</ModalHeader>
+        <ModalBody>
         {this.getNameOrAddressHtml()}
+        </ModalBody>
 
           <ConfirmButtonPopup
             inputId={"#sendPasswordId"}
@@ -168,7 +172,7 @@ class ContactPopup extends React.Component {
             textLoading={this.props.lang.confirming}
             text={ this.props.lang.confirm }
           />
-      </div>
+      </Modal>
       );
     }
 
@@ -185,4 +189,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connect(mapStateToProps, actions)(ContactPopup);
+export default connect(mapStateToProps, actions, null, { withRef: true })(ContactModal);

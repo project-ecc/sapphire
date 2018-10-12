@@ -17515,45 +17515,6 @@ i.fa.fa-chevron-down {
     margin: 0 auto;
     margin-top: 28px; }
 
-.PopupBar {
-  height: 36px;
-  position: relative;
-  background-image: linear-gradient(to top, #15161b, #18191f);
-  box-shadow: 0 2px 4px -3px rgba(0, 0, 0, 0.74);
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center; }
-  .PopupBar__title {
-    position: absolute;
-    text-align: center;
-    width: 100%;
-    color: #cecece;
-    font-weight: 500;
-    font-size: 18px; }
-  .PopupBar__close-button {
-    z-index: 2;
-    font-size: 20px;
-    transition: all 0.2s;
-    cursor: pointer;
-    font-weight: 400;
-    width: 40px; }
-    .PopupBar__close-button:hover {
-      color: #c39c59;
-      transition: all 0.2s; }
-  .PopupBar__back-button {
-    width: 20px;
-    margin-left: 10px;
-    cursor: pointer;
-    height: 20px;
-    z-index: 2; }
-    .PopupBar__back-button g {
-      fill: #cecece;
-      transition: all 0.2s; }
-    .PopupBar__back-button:hover g {
-      fill: #c39c59;
-      transition: all 0.2s; }
-
 @font-face {
   font-family: 'Muli';
   src: url(../dist/92860f9d8b244fd8a21ec0fd726d795e.ttf) format("truetype");

@@ -23,7 +23,7 @@ import GenericPanel from './GenericPanel';
 import TransitionComponent from '../components/Others/TransitionComponent';
 import ActionResultPopup from '../components/SettingsPage/ActionResultPopup';
 import DaemonErrorModal from '../components/Others/DaemonErrorModal';
-import ContactPopup from '../components/ContactsPage/ContactPopup';
+import ContactPopup from '../components/ContactsPage/partials/ContactModal';
 
 import $ from 'jquery';
 import DonateModal from '../components/SettingsPage/partials/DonateModal';
@@ -127,8 +127,6 @@ class App extends Component<Props> {
       component = <ConfirmNewAddress />;
     } else if (this.props.unlocking) {
       component = <UnlockWallet />;
-    } else if (this.props.addingContact) {
-      component = <ContactPopup />;
     } else if (this.props.daemonErrorPopup) {
       component = <DaemonErrorModal />;
     } else if (this.props.closingApplication) {
@@ -327,7 +325,6 @@ const mapStateToProps = state => {
     actionPopupResult: state.application.actionPopupResult,
     actionPopupMessage: state.application.actionPopupMessage,
     actionPopupStatus: state.application.actionPopupStatus,
-    addingContact: state.application.addingContact,
     daemonErrorPopup: state.application.daemonErrorPopup
   };
 };
