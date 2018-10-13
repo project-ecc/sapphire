@@ -417,6 +417,7 @@ module.exports = {
     }, 400);
   },
 
+
   showFunctionIcons(element) {
     TweenMax.set('.functionIcon', { css: { display: 'inline-block' } });
     TweenMax.staggerFromTo('.functionIcon', 0.4, { x: 20, autoAlpha: 0 }, { x: 0, autoAlpha: 1 }, -0.2);
