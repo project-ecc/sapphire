@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Modal, ModalHeader, ModalBody, CustomInput } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
+import { RadioGroup, RadioButton } from 'react-radio-buttons';
 import * as actions from '../../../actions/index';
 import Input from '../../Others/Input';
 import Tools from './../../../utils/tools';
@@ -47,27 +48,26 @@ class ContactModal extends Component {
       if (response.addresses.length === 1) {
         payload = {
           newContact: {
-            address: response.addresses[0].Address
+            ...this.state.newContact,
+            address: (response.ans ? response.addresses[0].Address : response.addresses[0].address)
           }
         };
       }
       this.setState({
         results: response.addresses,
         ans: response.ans,
-        ...this.state.newContact,
         ...payload
       });
-      console.log(response);
     } catch (err) {
       this.setState({
         results: [],
         ans: false,
-        ...this.state.newContact,
         newContact: {
+          ...this.state.newContact,
           address: null
         }
       });
-      console.log('Error searching for ANS Name / Address', err);
+      console.log('Error searching for ANS Name / Address');
     }
   }
 
@@ -79,7 +79,8 @@ class ContactModal extends Component {
     this.setState({
       newContact: {
         ...this.state.newContact,
-        ansOrName: val
+        ansOrName: val,
+        address: null
       }
     });
 
@@ -113,14 +114,23 @@ class ContactModal extends Component {
 
     return (
       <div>
-        { title }
-        <div>
+        <div className="mb-2">{ title }</div>
+        <RadioGroup value={this.state.newContact.address}>
           {this.state.results.map((val, index) => {
-            const label = `${val.Name}#${val.Code}`;
+            let label = `${val.Name}#${val.Code}`;
+            if (!this.state.ans) {
+              label = `${val.address}`;
+            }
+            const address = (this.state.ans ? val.Address : val.address);
             return (
-              <CustomInput key={index} id={`contactAddGroup${index}`} type="radio" label={label} name="contactAddGroup" checked={this.state.newContact.address === val.Address} />
+              <RadioButton key={index} value={address}>
+                {label}
+              </RadioButton>
             );
           })}
+        </RadioGroup>
+        <div className="mt-2 d-flex justify-content-end">
+          <Button color="primary" disabled={this.state.newContact.address === null}>Add Contact</Button>
         </div>
       </div>
     );
