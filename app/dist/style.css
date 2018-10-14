@@ -17665,8 +17665,7 @@ aside {
     .theme-darkEcc .inputDiv p {
       color: #464b5a; }
   .inputDiv input {
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 1.1em;
     background-color: transparent;
     border: none;
     text-align: center;

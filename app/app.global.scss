@@ -197,13 +197,12 @@ aside{
   }
 
   & input{
-	  @include themify($themes) {
-	    color: themed('inputColor');
-	    border-bottom: themed('inputBorderBottom');
-	  }
-		font-size: 15px;
-    font-weight: 600;
-    background-color: transparent;
+	@include themify($themes) {
+	  color: themed('inputColor');
+	  border-bottom: themed('inputBorderBottom');
+	}
+	font-size: 1.1em;
+	background-color: transparent;
     border: none;
     text-align: center;
     position: relative;

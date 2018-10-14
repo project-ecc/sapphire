@@ -23,7 +23,7 @@ import GenericPanel from './GenericPanel';
 import TransitionComponent from '../components/Others/TransitionComponent';
 import ActionResultPopup from '../components/SettingsPage/ActionResultPopup';
 import DaemonErrorModal from '../components/Others/DaemonErrorModal';
-import ContactPopup from '../components/ContactsPage/partials/ContactModal';
+import ContactPopup from '../components/ContactsPage/partials/OldContactModal';
 
 import $ from 'jquery';
 import DonateModal from '../components/SettingsPage/partials/DonateModal';
