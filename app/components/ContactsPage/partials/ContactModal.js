@@ -12,6 +12,7 @@ class ContactModal extends Component {
     this.toggle = this.toggle.bind(this);
     this.search = this.search.bind(this);
     this.onSearchChanged = this.onSearchChanged.bind(this);
+    this.onSelectAddress = this.onSelectAddress.bind(this);
 
     this.state = {
       open: false,
@@ -45,14 +46,6 @@ class ContactModal extends Component {
         this.state.newContact.ansOrName
       );
       let payload = {}
-      if (response.addresses.length === 1) {
-        payload = {
-          newContact: {
-            ...this.state.newContact,
-            address: (response.ans ? response.addresses[0].Address : response.addresses[0].address)
-          }
-        };
-      }
       this.setState({
         results: response.addresses,
         ans: response.ans,
@@ -61,11 +54,7 @@ class ContactModal extends Component {
     } catch (err) {
       this.setState({
         results: [],
-        ans: false,
-        newContact: {
-          ...this.state.newContact,
-          address: null
-        }
+        ans: false
       });
       console.log('Error searching for ANS Name / Address');
     }
@@ -87,6 +76,15 @@ class ContactModal extends Component {
     this.timeout = setTimeout(() => {
       this.search();
     }, 500);
+  }
+
+  onSelectAddress(val) {
+    this.setState({
+      newContact: {
+        ...this.state.newContact,
+        address: val
+      }
+    });
   }
 
   renderSearchBox() {
@@ -115,7 +113,7 @@ class ContactModal extends Component {
     return (
       <div>
         <div className="mb-2">{ title }</div>
-        <RadioGroup value={this.state.newContact.address}>
+        <RadioGroup onChange={this.onSelectAddress}>
           {this.state.results.map((val, index) => {
             let label = `${val.Name}#${val.Code}`;
             if (!this.state.ans) {
