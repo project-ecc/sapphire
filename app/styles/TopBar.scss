@@ -97,8 +97,7 @@
 .miniButton{
   position: fixed;
   top: 8px;
-  left: -10px;
-  transition: left 0.3s;
+  left: 10px;
   cursor: pointer;
   -webkit-app-region: no-drag;
   -webkit-user-select: none;

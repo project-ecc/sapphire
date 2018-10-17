@@ -27,7 +27,6 @@ class Sidebar extends Component {
       $('.sidebar').css('left', '0px');
       $('.mainSubPanel').css('padding-left', '224px');
       this.props.setSidebarHidden(false);
-      $('.miniButton').css('left', '-10px');
       $('#appButtonsMac').css('left', '20px');
       if(!this.checkPopupActive()){
         TweenMax.to($('.mancha'), 0.3, { autoAlpha:0, ease: Linear.easeNone});
@@ -44,7 +43,6 @@ class Sidebar extends Component {
       }
     }
     if($(window).width() <= 1023){
-      $('.miniButton').css('left', '10px');
       $('#appButtonsMac').css('left', '39px')
     }
   }
@@ -56,8 +54,7 @@ class Sidebar extends Component {
             //$('.sidebar').css('left', '-224px');
             //$('.mainSubPanel').css('padding-left', '0px');
             self.props.setSidebarHidden(true);
-            $('.miniButton').css('left', '10px');
-            $('#appButtonsMac').css('left', '39px')
+            $('#appButtonsMac').css('left', '39px');
       }
       $(".sidebar-menu > li.have-children a.mainOption").on("click", function(i){
           i.stopPropagation();
@@ -110,7 +107,6 @@ class Sidebar extends Component {
   componentWillUnmount() {
     window.removeEventListener('resize', this.resize);
     $( window ).off('click');
-    $('.miniButton').css('left', '-10px');
   }
 
   toggleHover(e){
