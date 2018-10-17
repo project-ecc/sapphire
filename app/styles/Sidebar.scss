@@ -1,9 +1,9 @@
 @import "./themes.scss";
 
 .sidebar {
-  @include themify($themes) { 
-    background-color: themed('sidebarBackgroundColor'); 
-    box-shadow: themed('sidebarBoxShadow'); 
+  @include themify($themes) {
+    background-color: themed('sidebarBackgroundColor');
+    box-shadow: themed('sidebarBoxShadow');
   }
   width: 224px;
   position: fixed;
@@ -25,11 +25,11 @@
 }
 
 .arrowMenu {
-  @include themify($themes) { 
-    border: themed('sidebarArrowBorder'); 
+  @include themify($themes) {
+    border: themed('sidebarArrowBorder');
     border-width: 3px 3px 0 0;
   }
-  height: 9px; 
+  height: 9px;
   width: 9px;
   transform: rotate(135deg);
   position: absolute;
@@ -53,8 +53,8 @@ ul.sidebar-menu {
   left: auto;
 }
 .sidebar-menu li a  {
-  @include themify($themes) { 
-    color: themed('sidebarItemColor'); 
+  @include themify($themes) {
+    color: themed('sidebarItemColor');
   }
   padding: 13px 25px;
   display: block;
@@ -63,13 +63,13 @@ ul.sidebar-menu {
 }
 li.have-children ul {
   padding: 0px;
-} 
+}
 li.have-children ul li a {
-  @include themify($themes) { 
-    background-color: themed('sidebarSubOptionRectangleBackgroundColor'); 
+  @include themify($themes) {
+    background-color: themed('sidebarSubOptionRectangleBackgroundColor');
   }
   padding-left: 74px;
-} 
+}
 
 li.have-children, li {
   position: relative;
@@ -94,7 +94,7 @@ li.active.have-children span::after {
   border-top: .4rem solid black;
   border-right: .4rem solid black;
   transition: all 200ms ease;
-  
+
   &.left {
     left: 0;
     transform: translate3d(0,-50%,0) rotate(-135deg);
@@ -104,7 +104,7 @@ li.active.have-children span::after {
     right: 0;
     transform: translate3d(0,-50%,0) rotate(45deg);
   }
-  
+
   &:hover {
     border-top: .4rem solid orange;
     border-right: .4rem solid orange;
@@ -128,11 +128,11 @@ li.active.have-children span::after {
 }
 
 .connections {
-  @include themify($themes) { 
-    color: themed('bodyParagraphColor'); 
+  @include themify($themes) {
+    color: themed('bodyParagraphColor');
   }
-  position: absolute; 
-  bottom: 50px; 
+  position: absolute;
+  bottom: 50px;
   width: 100%;
   z-index: 10;
   text-align: center;
@@ -140,8 +140,8 @@ li.active.have-children span::after {
 }
 
 .sidebarItemSelected{
-  @include themify($themes) { 
-    color: themed('sidebarSelectedItemColor') !important; 
+  @include themify($themes) {
+    color: themed('sidebarSelectedItemColor') !important;
   }
 }
 
@@ -166,8 +166,8 @@ li.active.have-children span::after {
 }
 
 .progress {
-    @include themify($themes) { 
-      background-color: themed('sidebarProgressBarFirstBackgroundColor'); 
+    @include themify($themes) {
+      background-color: themed('sidebarProgressBarFirstBackgroundColor');
     }
     margin: 10px;
     height: 6px;
@@ -180,8 +180,8 @@ li.active.have-children span::after {
 }
 
 .bar {
-    @include themify($themes) { 
-      background-color: themed('sidebarProgressBarBackgroundColor'); 
+    @include themify($themes) {
+      background-color: themed('sidebarProgressBarBackgroundColor');
       box-shadow: themed('sidebarProgressBarBoxShadow');
     }
     height: 6px;

@@ -40,7 +40,6 @@ import {
   SELECTED_ADDRESS,
   CREATING_ADDRESS,
   NEW_ADDRESS_ACCOUNT,
-  NEW_CONTACT_NAME,
   NEW_CONTACT_ADDRESS,
   HOVERED_ADDRESS,
   USER_ADDRESSES,
@@ -386,20 +385,6 @@ export const setCreatingAddress = (val) =>{
 export const setUpgradingAddress = (val) =>{
 	return{
 		type: UPGRADING_ADDRESS,
-		payload: val
-	}
-};
-
-export const setNewContactName = (val) => {
-	return{
-		type: NEW_CONTACT_NAME,
-		payload: val
-	}
-};
-
-export const setNewContactAddress = (val) => {
-	return{
-		type: NEW_CONTACT_ADDRESS,
 		payload: val
 	}
 };
@@ -845,13 +830,6 @@ export const setUserClickedButton = (val) => {
 	return{
 		type: USER_HAS_CLICKED_BUTTON,
 		payload: {clickType: val}
-	}
-}
-
-export const setHoveredSettingsSocialIcon = (val) => {
-	return{
-		type: HOVERED_SETTINGS_SOCIAL_ICON,
-		payload: val
 	}
 }
 

@@ -5,6 +5,7 @@ const homedir = require('os').homedir();
 const Tools = require('../utils/tools');
 import * as actions from '../actions';
 import ReactTooltip from 'react-tooltip'
+import { CurrencyUsdIcon, SendIcon, FormatListBulletedIcon, ContactsIcon, ForumIcon } from 'mdi-react';
 
 class Sidebar extends Component {
   constructor(props) {
@@ -156,24 +157,17 @@ class Sidebar extends Component {
     let messagingStyle = "";
     let contactsStyle = "";
     let wallet = Tools.getIconForTheme("wallet", false);
-    let overview = Tools.getIconForTheme("overview", false);
-    let send = Tools.getIconForTheme("send", false);
     let addresses = Tools.getIconForTheme("addresses", false);
-    let transactions = Tools.getIconForTheme("transactions", false);
     let fileStorage = Tools.getIconForTheme("fileStorage", false);
-    let messaging = Tools.getIconForTheme("messaging", false);
-    let contacts = Tools.getIconForTheme("contacts", false);
 
     if(this.props.walletHovered || this.props.walletSelected){
       wallet = Tools.getIconForTheme("wallet", true);
       walletStyle = " sidebarItemSelected";
     }
     if(this.props.overviewHovered || this.props.overviewSelected){
-      overview = Tools.getIconForTheme("overview", true);
       overviewStyle = " sidebarItemSelected";
     }
     if(this.props.sendHovered || this.props.sendSelected){
-      send = Tools.getIconForTheme("send", true);
       sendStyle = " sidebarItemSelected";
     }
     if(this.props.addressesHovered || this.props.addressesSelected){
@@ -181,7 +175,6 @@ class Sidebar extends Component {
       addressesStyle = " sidebarItemSelected";
     }
     if(this.props.transactionsHovered || this.props.transactionsSelected){
-      transactions = Tools.getIconForTheme("transactions", true);
       transactionsStyle = " sidebarItemSelected";
     }
     if(this.props.fileStorageHovered || this.props.fileStorageSelected){
@@ -189,11 +182,9 @@ class Sidebar extends Component {
       fileStorageStyle = " sidebarItemSelected";
     }
     if(this.props.messagingHovered || this.props.messagingSelected){
-      messaging = Tools.getIconForTheme("messaging", true);
       messagingStyle = " sidebarItemSelected";
     }
     if(this.props.contactsHovered || this.props.contactsSelected){
-      contacts = Tools.getIconForTheme("contacts", true);
       contactsStyle = " sidebarItemSelected";
     }
 
@@ -206,10 +197,19 @@ class Sidebar extends Component {
         <ul className="sidebar-menu">
           <li className="have-children"><a href="#" onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="wallet" className={"mainOption" + walletStyle}><div className="arrowMenu"></div><img style={{position: "relative", top:"-2px"}} src={wallet}/><span></span>{ this.props.lang.wallet }</a>
             <ul>
-              <li><img className="sidebarImage" src={overview}/> <a className={overviewStyle} onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="overview">{ this.props.lang.overview }</a></li>
-              <li><img className="sidebarImage" src={send}/> <a onClick={this.handleClicked} className={sendStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="send">{ this.props.lang.send }</a></li>
+              <li><a className={overviewStyle} onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="overview">
+                <CurrencyUsdIcon size={20} className="sidebarImage" />
+                { this.props.lang.overview }
+              </a></li>
+              <li><a onClick={this.handleClicked} className={sendStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="send">
+                <SendIcon size={20} className="sidebarImage" />
+                { this.props.lang.send }
+              </a></li>
               <li><img className="sidebarImage" src={addresses}/> <a onClick={this.handleClicked} className={addressesStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="addresses"><img className="sidebarImage" src={addresses}/>{ this.props.lang.addresses }</a></li>
-              <li><img className="sidebarImage" src={transactions}/>  <a onClick={this.handleClicked} className={transactionsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="transactions">{ this.props.lang.transactions }</a></li>
+              <li><a onClick={this.handleClicked} className={transactionsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="transactions">
+                <FormatListBulletedIcon size={20} className="sidebarImage" />
+                { this.props.lang.transactions }
+              </a></li>
             </ul>
           </li>
           {/*<li className="have-children"><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="fileStorage" className={"mainOption" + fileStorageStyle}><div className="arrowMenu"></div><img src={fileStorage}/><span></span>{ this.props.lang.fileStorage }</a>
@@ -221,8 +221,14 @@ class Sidebar extends Component {
             </ul>
           </li>*/}
           <li><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="fileStorage" className={"mainOption" + fileStorageStyle}><img style={{position: "relative", top:"-2px"}} src={fileStorage}/><span></span>{ this.props.lang.fileStorage }</a></li>
-          <li><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="messaging" className={"mainOption" + messagingStyle}><img style={{position: "relative", top:"-1px"}} src={messaging}/><span></span>{ this.props.lang.messaging }</a></li>
-          <li><a onClick={this.handleClicked} className={contactsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="contacts"><img style={{marginRight: "20px", position: "relative", top:"-2px"}} src={contacts}/>{ this.props.lang.contacts }</a></li>
+          <li><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="messaging" className={"mainOption" + messagingStyle}>
+            <ForumIcon size={20} style={{position: "relative", top:"-1px", marginRight: "20px"}} />
+            { this.props.lang.messaging }
+          </a></li>
+          <li><a onClick={this.handleClicked} className={contactsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="contacts">
+            <ContactsIcon size={20} style={{marginRight: "20px", position: "relative", top:"-2px"}} />
+            { this.props.lang.contacts }
+          </a></li>
         </ul>
         <div className="connections sidebar-section-container">
         <a data-tip="View network stats" onClick={this.handleClicked} data-id="network" style={{textDecoration: "none", cursor:"pointer"}}>

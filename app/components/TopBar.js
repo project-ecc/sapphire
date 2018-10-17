@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
+import { MenuIcon, BellOutlineIcon } from 'mdi-react';
 
 import * as actions from '../actions';
 
@@ -119,7 +120,6 @@ class TopBar extends React.Component {
       close = require('../../resources/images/mac-unfocused.png');
     }
 
-    const miniButton = require('../../resources/images/logo_setup.png');
     let settings = require('../../resources/images/settings-white.png');
     const notification = require('../../resources/images/notification-white.png');
     let news = require('../../resources/images/news-white.png');
@@ -135,7 +135,7 @@ class TopBar extends React.Component {
 
     return (
       <div>
-        <img className="miniButton" src={miniButton} />
+        <MenuIcon className="miniButton" size={24} />
         <div id="appButtonsMac">
           <div onClick={this.close} className="appButtonMac">
             <img src={close} />
@@ -152,7 +152,8 @@ class TopBar extends React.Component {
             <div className="appButtons__notifications-counter-holder">
               <p className="appButtons__notifications-total">{numberOfNotifications > 0 ? numberOfNotifications : ''}</p>
             </div>
-            <img src={notification} />
+            <BellOutlineIcon size={24} />
+            {/*<img src={notification} />*/}
           </div>
           <div onClick={this.news} className="appButton functionIcon" id="eccNewsIcon">
             <img src={news} />
@@ -169,7 +170,6 @@ class TopBar extends React.Component {
     const minimize = require('../../resources/images/minimize.png');
     const maximize = require('../../resources/images/maximize.png');
     const close = require('../../resources/images/close.png');
-    const miniButton = require('../../resources/images/logo_setup.png');
     let settings = require('../../resources/images/settings-white.png');
     const notification = require('../../resources/images/notification-white.png');
     let news = require('../../resources/images/news-white.png');
@@ -185,14 +185,15 @@ class TopBar extends React.Component {
 
     return (
       <div>
-        <img className="miniButton" src={miniButton} />
+        <MenuIcon className="miniButton" size={24} />
         {/* <p id="topBarCustomTitle" className= {process.platform === 'darwin' ? "topBarCustomTitleMac" : "topBarCustomTitleWin"}>Messaging</p> */}
         <div id="appButtons">
           <div onClick={this.notification} className="appButton functionIcon" id="eccNewsIcon">
             <div className="appButtons__notifications-counter-holder">
               <p className="appButtons__notifications-total">{numberOfNotifications > 0 ? numberOfNotifications : ''}</p>
             </div>
-            <img src={notification} />
+            <BellOutlineIcon size={24} />
+            {/*<img src={notification} />*/}
           </div>
           <div onClick={this.news} className="appButton functionIcon" id="eccNewsIcon">
             <img src={news} />

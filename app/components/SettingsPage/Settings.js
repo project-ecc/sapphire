@@ -24,6 +24,7 @@ import Wallet from '../../utils/wallet';
 const guiVersion = version;
 import {getSapphireDirectory} from "../../utils/platform.service";
 import Donations from "./Donations";
+import { FacebookIcon, TwitterIcon, MediumIcon, SlackIcon, RedditIcon } from 'mdi-react';
 
 var jsonFormat = require('json-format');
 var open = require("open");
@@ -481,14 +482,6 @@ class Settings extends Component {
     }
   }
 
-  handleIconHover(name){
-    this.props.setHoveredSettingsSocialIcon(name);
-  }
-
-  handleIconUnhover(){
-    this.props.setHoveredSettingsSocialIcon(undefined);
-  }
-
   shouldComponentUpdate(props){
     console.log(props.theme);
     console.log(this.props.theme);
@@ -500,30 +493,6 @@ class Settings extends Component {
   }
 
   render() {
-    let twitter = Tools.getIconForTheme("twitter", false, this.props.theme);
-    let facebook = Tools.getIconForTheme("facebook", false, this.props.theme);
-    let medium = Tools.getIconForTheme("medium", false, this.props.theme);
-    let reddit = Tools.getIconForTheme("reddit", false, this.props.theme);
-    let slack = Tools.getIconForTheme("slack", false, this.props.theme);
-
-    const hoveredIcon = this.props.hoveredIcon;
-
-    if(hoveredIcon && hoveredIcon === "twitter"){
-      twitter = Tools.getIconForTheme("twitter", true);
-    }
-    else if(hoveredIcon && hoveredIcon === "facebook"){
-      facebook = Tools.getIconForTheme("facebook", true);
-    }
-    else if(hoveredIcon && hoveredIcon === "medium"){
-      medium = Tools.getIconForTheme("medium", true);
-    }
-    else if(hoveredIcon && hoveredIcon === "reddit"){
-      reddit = Tools.getIconForTheme("reddit", true);
-    }
-    else if(hoveredIcon && hoveredIcon === "slack"){
-      slack = Tools.getIconForTheme("slack", true);
-    }
-
     return (
       <div>
         <div id="brigher">
@@ -542,11 +511,11 @@ class Settings extends Component {
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Donate")} selected={this.props.settingsOptionSelected === "Donate"} text={ this.props.lang.donate } />
               <SettingsSidebarItem handleClicked={this.handleSidebarClicked.bind(this, "Advanced")} selected={this.props.settingsOptionSelected === "Advanced"} text={ this.props.lang.advanced } />
               <div id="socialIcons">
-                <img onMouseEnter={this.handleIconHover.bind(this, "twitter")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://twitter.com/project_ecc")} src={twitter} />
-                <img onMouseEnter={this.handleIconHover.bind(this, "facebook")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://www.facebook.com/projectECC/")} src={facebook} />
-                <img onMouseEnter={this.handleIconHover.bind(this, "medium")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://medium.com/@project_ecc")} src={medium} />
-                <img onMouseEnter={this.handleIconHover.bind(this, "reddit")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://www.reddit.com/r/ecc/")} src={reddit} />
-                <img onMouseEnter={this.handleIconHover.bind(this, "slack")} onMouseLeave={this.handleIconUnhover.bind(this)} onClick={this.goToUrl.bind(this, "https://ecc.network/#join-slack")} src={slack} />
+                <TwitterIcon onClick={this.goToUrl.bind(this, "https://twitter.com/project_ecc")} size={20} />
+                <FacebookIcon onClick={this.goToUrl.bind(this, "https://www.facebook.com/projectECC/")} size={20} />
+                <MediumIcon onClick={this.goToUrl.bind(this, "https://medium.com/@project_ecc")} size={20} />
+                <RedditIcon onClick={this.goToUrl.bind(this, "https://www.reddit.com/r/ecc/")} size={20} />
+                <SlackIcon onClick={this.goToUrl.bind(this, "https://ecc.network/#join-slack")} size={20} />
               </div>
             </div>
             <div className="subSettings">
@@ -575,7 +544,6 @@ const mapStateToProps = state => {
     operativeSystemNotifications: state.notifications.operativeSystemNotificationsEnabled,
     newsNotifications: state.notifications.newsNotificationsEnabled,
     stakingNotifications: state.notifications.stakingNotificationsEnabled,
-    hoveredIcon: state.application.settingsHoveredSocialIcon,
     theme: state.application.theme,
     daemonVersion: state.chains.daemonVersion,
     debugLog: state.application.debugLog

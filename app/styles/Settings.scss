@@ -231,11 +231,15 @@
 	width: 100%;
 	margin-top: 30px;
 	margin-left: 10px;
-}
 
-#socialIcons img{
-	margin-right: 15px;
-	cursor: pointer;
+  	& > .mdi-icon {
+	  margin-right: 15px;
+	  cursor: pointer;
+
+	  &:hover {
+		color: #fff;
+	  }
+	}
 }
 
 .settingsToggleSubText{

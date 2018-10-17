@@ -135,7 +135,6 @@ class AddressBook extends Component {
   editContact(friend) {}
 
   render() {
-    const bin = Tools.getIconForTheme('deleteContact', false);
     const rowClassName = 'row normalWeight tableRowCustom';
 
     return (
