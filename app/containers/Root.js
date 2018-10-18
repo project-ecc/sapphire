@@ -2,11 +2,11 @@
 import React, { Component } from 'react';
 import {connect, Provider} from 'react-redux';
 import { HashRouter as Router } from 'react-router-dom';
+import { renderRoutes } from 'react-router-config';
 import { ipcRenderer } from 'electron';
 import $ from 'jquery';
 import TopBar from './../components/TopBar';
 import routes from './../router/routes';
-import SubRoute from './../router/SubRoute';
 import { traduction } from '../lang/lang';
 import * as actions from '../actions';
 
@@ -105,7 +105,7 @@ class Root extends Component {
           <div className={this.props.theme}>
             <div id="main">
               <TopBar />
-              {ready && <div>{routes.map((route, i) => <SubRoute key={i} {...route} />)}</div>}
+              {ready && <div>{renderRoutes(routes)}</div>}
             </div>
           </div>
         </Router>

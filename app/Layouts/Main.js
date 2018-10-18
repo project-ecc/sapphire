@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import SubRoute from './../router/SubRoute';
+import { renderRoutes } from 'react-router-config';
 import {connect} from "react-redux";
 import * as actions from '../actions';
 import Sidebar from './../containers/Sidebar';
 
 class Main extends Component {
   render () {
-    const { routes } = this.props
+    const { route } = this.props
 
     return (
       <div>
         <Sidebar />
-        {routes.map((route, i) => <SubRoute key={i} {...route} />)}
+        {renderRoutes(route.routes)}
       </div>
     );
   }

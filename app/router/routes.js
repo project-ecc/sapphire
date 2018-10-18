@@ -16,11 +16,11 @@ import SettingsLayout from './../Layouts/Settings';
 
 export default [
   {
-    path: '/',
     component: MainLayout,
     routes: [
       {
         path: '/',
+        exact: true,
         component: HomePage
       },
       {
