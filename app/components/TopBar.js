@@ -3,6 +3,7 @@ import $ from 'jquery';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
 import { MenuIcon, BellOutlineIcon } from 'mdi-react';
+import { Link } from 'react-router-dom';
 
 import * as actions from '../actions';
 
@@ -158,9 +159,9 @@ class TopBar extends React.Component {
           <div onClick={this.news} className="appButton functionIcon" id="eccNewsIcon">
             <img src={news} />
           </div>
-          <div onClick={this.settings} className="appButton functionIcon">
+          <Link to="/settings" className="appButton functionIcon">
             <img src={settings} />
-          </div>
+          </Link>
         </div>
       </div>
     );
@@ -198,9 +199,9 @@ class TopBar extends React.Component {
           <div onClick={this.news} className="appButton functionIcon" id="eccNewsIcon">
             <img src={news} />
           </div>
-          <div onClick={this.settings} className="appButton functionIcon">
+          <Link to="/settings" className="appButton functionIcon">
             <img src={settings} />
-          </div>
+          </Link>
           <div onClick={this.minimize} className="appButton">
             <img src={minimize} />
           </div>
