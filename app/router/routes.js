@@ -16,6 +16,16 @@ import SettingsLayout from './../Layouts/Settings';
 
 export default [
   {
+    component: SettingsLayout,
+    path: '/settings',
+    routes: [
+      {
+        path: '/settings',
+        component: SettingsPage
+      }
+    ]
+  },
+  {
     component: MainLayout,
     routes: [
       {
@@ -54,16 +64,6 @@ export default [
       {
         path: '/files',
         component: FileStoragePage
-      }
-    ]
-  },
-  {
-    path: '/settings',
-    component: SettingsLayout,
-    routes: [
-      {
-        path: '',
-        component: SettingsPage
       }
     ]
   }

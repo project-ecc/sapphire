@@ -105,7 +105,9 @@ class Root extends Component {
           <div className={this.props.theme}>
             <div id="main">
               <TopBar />
-              {ready && <div>{renderRoutes(routes)}</div>}
+              <div className="wrapper">
+                {ready && <div>{renderRoutes(routes)}</div>}
+              </div>
             </div>
           </div>
         </Router>
