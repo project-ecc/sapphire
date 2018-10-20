@@ -26,7 +26,7 @@ class Sidebar extends Component {
 
   resize() {
     if ($(window).width() >= 1024) {
-      $('.sidebar').css('left', '0px');
+      $('.sidebar').removeClass('hide');
       $('.mainSubPanel').css('padding-left', '224px');
       this.props.setSidebarHidden(false);
       $('#appButtonsMac').css('left', '20px');
@@ -35,7 +35,7 @@ class Sidebar extends Component {
         TweenMax.set($('.mancha'), { zIndex: 11 });
       }
     } else if ($(window).width() <= 1023) {
-      $('.sidebar').css('left', '-224px');
+      $('.sidebar').addClass('hide');
       $('.mainSubPanel').css('padding-left', '0px');
       this.props.setSidebarHidden(true);
       if (!this.checkPopupActive()) {
@@ -75,12 +75,12 @@ class Sidebar extends Component {
       $('.miniButton').on('click', () => {
         const offset = $('.sidebar').offset().left;
         if (offset < 0 && !self.checkPopupActive()) {
-          $('.sidebar').css('left', '0px');
+          $('.sidebar').removeClass('hide');
           // TweenMax.set($('.mancha'), { zIndex:3});
           // TweenMax.set($('.mancha'), {css: {display: "block"}})
           // TweenMax.fromTo($('.mancha'), 0.3, {autoAlpha:0}, { autoAlpha:1, ease: Linear.easeNone});
         } else if (!self.checkPopupActive()) {
-          $('.sidebar').css('left', '-224px');
+          $('.sidebar').addClass('hide');
           $('.mainSubPanel').css('padding-left', '0px');
           // TweenMax.to($('.mancha'), 0.3, { autoAlpha:0, ease: Linear.easeNone});
           // TweenMax.set($('.mancha'), { zIndex:8, delay: 0.3});
@@ -98,7 +98,7 @@ class Sidebar extends Component {
       }
       const offset = $('.sidebar').offset().left;
       if ($(window).width() <= 1023 && offset == 0) {
-        $('.sidebar').css('left', '-224px');
+        $('.sidebar').addClass('hide');
       }
     });
   }
@@ -124,7 +124,7 @@ class Sidebar extends Component {
     this.props.selectedSideBar(this.getParent(page), page);
     this.props.setSelectedPanel(page);
     if ($(window).width() <= 1023) {
-      $('.sidebar').css('left', '-224px');
+      $('.sidebar').addClass('hide');
       $('.mainSubPanel').css('padding-left', '0px');
       TweenMax.to($('.mancha'), 0.3, { autoAlpha: 0, ease: Linear.easeNone });
     }
@@ -183,12 +183,12 @@ class Sidebar extends Component {
 
     const usericon = require('../../resources/images/logo_setup.png');
     return (
-      <div className="sidebar" style={{ left: $(window).width() <= 1023 ? '-224px' : '0px' }}>
+      <div className="sidebar">
         <div className="userimage">
           <img id="sidebarLogo" src={usericon} />
         </div>
         <ul className="sidebar-menu">
-          <li className="have-children"><a href="#" onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="wallet" className={`mainOption${walletStyle}`}><div className="arrowMenu" /><img style={{ position: 'relative', top: '-2px' }} src={wallet} /><span />{ this.props.lang.wallet }</a>
+          <li className="have-children"><a data-id="wallet" className={`mainOption${walletStyle}`}><div className="arrowMenu" /><img style={{ position: 'relative', top: '-2px' }} src={wallet} /><span />{ this.props.lang.wallet }</a>
             <ul>
               <li><Link to="/" className={overviewStyle} onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="overview">
                 <CurrencyUsdIcon size={20} className="sidebarImage" />

@@ -1,20 +1,52 @@
 @import "./themes.scss";
 
+#page {
+  display: flex;
+  min-height: calc(100vh - 40px);
+  margin-top: 40px;
+
+  & > .sidebar {
+	flex: 0;
+
+	@media screen and (min-width: 1024px) {
+	  & + .container-fluid {
+		margin-left: 225px;
+	  }
+
+	  &.hide + .container-fluid {
+		margin-left: 0px;
+	  }
+	}
+  }
+
+  & > .container-fluid {
+	flex: 1 1 auto;
+	margin: 0;
+	padding: 0;
+	transition: margin-left 0.4s ease;
+  }
+}
+
 .sidebar {
   @include themify($themes) {
     background-color: themed('sidebarBackgroundColor');
     box-shadow: themed('sidebarBoxShadow');
   }
-  width: 224px;
   position: fixed;
   left: 0;
-  height: 100vh;
+  width: 225px;
+  height: calc(100vh - 40px);
   overflow-y: auto;
   overflow-x: hidden;
   font-weight: normal;
-  transition: left 0.3s;
+  transition: transform 0.3s;
+  transform: translateX(0px);
   z-index: 5;
-  margin-top: 40px;
+}
+
+.sidebar.hide {
+  transform: translateX(-100%);
+  flex: 0;
 }
 
 .sidebarlist {

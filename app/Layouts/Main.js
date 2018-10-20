@@ -9,9 +9,11 @@ class Main extends Component {
     const { route } = this.props
 
     return (
-      <div>
+      <div id="page">
         <Sidebar />
-        {renderRoutes(route.routes)}
+        <div className="container-fluid">
+          {renderRoutes(route.routes)}
+        </div>
       </div>
     );
   }
