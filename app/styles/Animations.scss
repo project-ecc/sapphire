@@ -1,0 +1,24 @@
+// Page transition
+.pageTransition-appear,
+.pageTransition-enter {
+  opacity:0;
+  transform:translateY(50px);
+}
+
+.pageTransition-appear-active,
+.pageTransition-enter-active {
+  transition: all .15s ease;
+  opacity:1;
+  transform:translateY(0px);
+}
+
+
+.pageTransition-exit {
+  opacity:1;
+  transform:translateY(0px);
+  transition: all .25s ease;
+}
+
+.pageTransition-exit-active {
+  opacity: 0.001;
+}
