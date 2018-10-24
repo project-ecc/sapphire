@@ -4,13 +4,12 @@
 	text-align: center;
 	top: 20%;
 	position: relative;
-	@include themify($themes) { 
-		color: themed('popupColor');  
+	@include themify($themes) {
+		color: themed('popupColor');
 	}
-	
+
 	& .fileStorage__image{
-	    position: relative;
-    	top: -30px;
+    	margin: 30px 0px;
 	}
 
 	& .fileStorage__title{
@@ -31,8 +30,8 @@
 
 	    & span{
 	    	text-decoration: underline;
-    		@include themify($themes) { 
-				color: themed('popupSpanColor');  
+    		@include themify($themes) {
+				color: themed('popupSpanColor');
 			}
 	    	cursor: pointer;
 	    }

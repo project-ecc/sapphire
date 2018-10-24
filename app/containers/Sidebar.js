@@ -113,15 +113,6 @@ class Sidebar extends Component {
   render() {
     const progressBar = this.props.paymentChainSync;
 
-    let walletStyle = '';
-    let overviewStyle = '';
-    let sendStyle = '';
-    let addressesStyle = '';
-    let transactionsStyle = '';
-    let fileStorageStyle = '';
-    let messagingStyle = '';
-    let contactsStyle = '';
-    let wallet = Tools.getIconForTheme('wallet', false);
     let addresses = Tools.getIconForTheme('addresses', false);
     let fileStorage = Tools.getIconForTheme('fileStorage', false);
 
@@ -131,42 +122,60 @@ class Sidebar extends Component {
         <div className="userimage">
           <img id="sidebarLogo" src={usericon} />
         </div>
-        <ul className="sidebar-menu">
-          <li className="have-children"><a data-id="wallet" className={`mainOption${walletStyle}`}><div className="arrowMenu" /><img style={{ position: 'relative', top: '-2px' }} src={wallet} /><span />{ this.props.lang.wallet }</a>
-            <ul>
-              <li><NavLink to="/" className={overviewStyle} data-id="overview">
-                <CurrencyUsdIcon size={20} className="sidebarImage" />
+        <div className="menu">
+          <ul>
+            <li>
+              <a className="subheading">{ this.props.lang.wallet }</a>
+            </li>
+            <li>
+              <NavLink to="/" exact activeClassName="active">
+                <CurrencyUsdIcon size={20} />
                 { this.props.lang.overview }
-              </NavLink></li>
-              <li><NavLink to="/send" className={sendStyle} data-id="send">
-                <SendIcon size={20} className="sidebarImage" />
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/send" activeClassName="active">
+                <SendIcon size={20} />
                 { this.props.lang.send }
-              </NavLink></li>
-              <li><img className="sidebarImage" src={addresses} /> <NavLink to="/addresses" className={addressesStyle} data-id="addresses"><img className="sidebarImage" src={addresses} />{ this.props.lang.addresses }</NavLink></li>
-              <li><NavLink to="/transactions" className={transactionsStyle} data-id="transactions">
-                <FormatListBulletedIcon size={20} className="sidebarImage" />
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/addresses" activeClassName="active">
+                <img src={addresses} />
+                { this.props.lang.addresses }
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/transactions" activeClassName="active">
+                <FormatListBulletedIcon size={20} />
                 { this.props.lang.transactions }
-              </NavLink></li>
-            </ul>
-          </li>
-          {/* <li className="have-children"><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="fileStorage" className={"mainOption" + fileStorageStyle}><div className="arrowMenu"></div><img src={fileStorage}/><span></span>{ this.props.lang.fileStorage }</a>
-            <ul>
-              <li><a href="#">{ this.props.lang.customer }</a></li>
-              <li><a href="#">{ this.props.lang.viewFiles }</a></li>
-              <li><a href="#">{ this.props.lang.gallery }</a></li>
-              <li><a href="#">{ this.props.lang.provider }</a></li>
-            </ul>
-          </li> */}
-          <li><NavLink to="/files" data-id="fileStorage" className={`mainOption${fileStorageStyle}`}><img style={{ position: 'relative', top: '-2px' }} src={fileStorage} /><span />{ this.props.lang.fileStorage }</NavLink></li>
-          <li><NavLink to="/messages" data-id="messaging" className={`mainOption${messagingStyle}`}>
-            <ForumIcon size={20} style={{ position: 'relative', top: '-1px', marginRight: '20px' }} />
-            { this.props.lang.messaging }
-          </NavLink></li>
-          <li><NavLink to="/contacts" data-id="contacts">
-            <ContactsIcon size={20} style={{ marginRight: '20px', position: 'relative', top: '-2px' }} />
-            { this.props.lang.contacts }
-          </NavLink></li>
-        </ul>
+              </NavLink>
+            </li>
+          </ul>
+          <ul>
+            <li>
+              <a className="subheading">{ this.props.lang.default }</a>
+            </li>
+            <li>
+              <NavLink to="/files">
+                <img src={fileStorage} />
+                { this.props.lang.fileStorage }
+                </NavLink>
+            </li>
+            <li>
+              <NavLink to="/messages">
+                <ForumIcon size={20} />
+                { this.props.lang.messaging }
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/contacts">
+                <ContactsIcon size={20} />
+                { this.props.lang.contacts }
+              </NavLink>
+            </li>
+          </ul>
+        </div>
         <div className="connections sidebar-section-container">
           <NavLink to="/network" data-tip="View network stats" data-id="network" style={{ textDecoration: 'none', cursor: 'pointer' }}>
             <p style={{ fontSize: '13px' }}>{`${this.props.lang.syncing} ${progressBar}%`}</p>
@@ -199,4 +208,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, actions)(Sidebar);
+export default connect(mapStateToProps, actions, null, { pure: false })(Sidebar);

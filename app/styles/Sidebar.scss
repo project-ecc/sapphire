@@ -10,8 +10,28 @@
   display: flex;
   min-height: calc(100vh - 40px);
 
+  /* Sidebar */
   & > .sidebar {
+	@include themify($themes) {
+	  background-color: themed('sidebarBackgroundColor');
+	  box-shadow: themed('sidebarBoxShadow');
+	}
+	position: fixed;
+	left: 0;
+	width: 225px;
+	height: calc(100vh - 40px);
+	overflow-y: auto;
+	overflow-x: hidden;
+	font-weight: normal;
+	transition: transform 0.3s;
+	transform: translateX(0px);
+	z-index: 5;
 	flex: 0;
+
+	&.hide {
+	  transform: translateX(-100%);
+	  flex: 0;
+	}
 
 	@media screen and (min-width: 1024px) {
 	  & + .container-fluid {
@@ -20,6 +40,57 @@
 
 	  &.hide + .container-fluid {
 		margin-left: 0px;
+	  }
+	}
+
+	/* Navigation items */
+	.menu {
+	  margin-top: 50px;
+
+	  /* Each group of nav items */
+	  & > ul {
+		margin: 0 0 40px 0;
+		padding: 0;
+		list-style: none;
+
+		&:last-child {
+		  margin-bottom: 0px;
+		}
+
+		/* (Sub)heading for group */
+		.subheading {
+		  padding: 5px 25px;
+		  text-transform: uppercase;
+		  font-weight: 800;
+		  font-size:0.8em;
+		}
+
+		/* Link items */
+		a {
+		  @include themify($themes) {
+			color: themed('sidebarItemColor');
+		  }
+		  display: block;
+		  padding: 10px 50px 10px 25px;
+		  position: relative;
+		  transition: background-color 0.3s ease;
+		  text-decoration: none;
+
+		  svg, img {
+			position: absolute;
+			right:25px;
+			top:0;
+			bottom:0;
+			margin: auto;
+		  }
+		}
+
+		a:not(.subheading):hover, a.active {
+		  @include themify($themes) {
+			background-color: themed('sidebarSubOptionRectangleBackgroundColor');
+			color: themed('sidebarSelectedItemColor') !important;
+		  }
+		}
 	  }
 	}
   }
@@ -42,131 +113,6 @@
   }
 }
 
-.sidebar {
-  @include themify($themes) {
-    background-color: themed('sidebarBackgroundColor');
-    box-shadow: themed('sidebarBoxShadow');
-  }
-  position: fixed;
-  left: 0;
-  width: 225px;
-  height: calc(100vh - 40px);
-  overflow-y: auto;
-  overflow-x: hidden;
-  font-weight: normal;
-  transition: transform 0.3s;
-  transform: translateX(0px);
-  z-index: 5;
-}
-
-.sidebar.hide {
-  transform: translateX(-100%);
-  flex: 0;
-}
-
-.sidebarlist {
-  margin-top: 25px;
-  list-style: none;
-  padding-left: 0;
-  text-align: left;
-}
-
-.arrowMenu {
-  @include themify($themes) {
-    border: themed('sidebarArrowBorder');
-    border-width: 3px 3px 0 0;
-  }
-  height: 9px;
-  width: 9px;
-  transform: rotate(135deg);
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  transition: all 0.3s;
-}
-
-ul.sidebar-menu {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  list-style-type: none;
-  margin-top: 50px;
-  transition: margin-top 0.3s;
-}
-.sidebar-menu li a span {
-  margin-right: 20px;
-  position: relative;
-  width: auto;
-  left: auto;
-}
-.sidebar-menu li a  {
-  @include themify($themes) {
-    color: themed('sidebarItemColor');
-  }
-  padding: 13px 25px;
-  display: block;
-  text-decoration: none;
-  cursor: pointer;
-}
-li.have-children ul {
-  padding: 0px;
-}
-li.have-children ul li a {
-  @include themify($themes) {
-    background-color: themed('sidebarSubOptionRectangleBackgroundColor');
-  }
-  padding-left: 74px;
-}
-
-li.have-children, li {
-  position: relative;
-}
-
-li.active.have-children span::after {
-  -moz-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  -webkit-transform: rotate(90deg);
-  transform: rotate(90deg);
-}
-.sidebar-menu .have-children > ul {
-    display: none;
-}
-
-.arrow {
-  position: absolute;
-  top: 50%;
-  width: 2rem;
-  height: 2rem;
-  background: transparent;
-  border-top: .4rem solid black;
-  border-right: .4rem solid black;
-  transition: all 200ms ease;
-
-  &.left {
-    left: 0;
-    transform: translate3d(0,-50%,0) rotate(-135deg);
-  }
-
-  &.right {
-    right: 0;
-    transform: translate3d(0,-50%,0) rotate(45deg);
-  }
-
-  &:hover {
-    border-top: .4rem solid orange;
-    border-right: .4rem solid orange;
-    box-shadow: .2rem -.2rem 0 black;
-
-    &.left {
-      left: -.2rem;
-    }
-
-    &.right {
-      right: -.2rem;
-    }
-  }
-}
-
 .userimage {
   margin-top: 60px;
   margin-bottom: 10px;
@@ -184,12 +130,6 @@ li.active.have-children span::after {
   z-index: 10;
   text-align: center;
   font-size: 0.8em;
-}
-
-.sidebarItemSelected{
-  @include themify($themes) {
-    color: themed('sidebarSelectedItemColor') !important;
-  }
 }
 
 .connections p {
