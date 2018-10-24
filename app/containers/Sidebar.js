@@ -194,7 +194,7 @@ class Sidebar extends Component {
           </ul>
         </div>
         <div className="connections sidebar-section-container">
-          <NavLink to="/network" data-tip="View network stats" data-id="network" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+          <NavLink to="/network" data-tip="View network stats" data-id="network">
             <p style={{ fontSize: '13px' }}>{`${this.props.lang.syncing} ${progressBar}%`}</p>
             <div className="progress">
               <div className="bar" style={{ width: `${progressBar}%` }} />
