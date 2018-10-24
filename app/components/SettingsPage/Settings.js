@@ -532,7 +532,6 @@ class Settings extends Component {
 const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
-    sidebarHidden: state.sideBar.sidebarHidden,
     hideTrayIcon: state.application.hideTrayIcon,
     minimizeToTray: state.application.minimizeToTray,
     minimizeOnClose: state.application.minimizeOnClose,

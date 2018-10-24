@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
-import { MenuIcon, BellOutlineIcon } from 'mdi-react';
-import { Link } from 'react-router-dom';
+import { MenuIcon, BellOutlineIcon, NewspaperIcon, SettingsOutlineIcon } from 'mdi-react';
+import { NavLink } from 'react-router-dom';
 
+import hash from './../router/hash';
 import * as actions from '../actions';
 
-class TopBar extends React.Component {
+class TopBar extends Component {
   constructor() {
     super();
     this.getDarwinBar = this.getDarwinBar.bind(this);
@@ -65,8 +66,7 @@ class TopBar extends React.Component {
     if (this.props.news && !settingsSelected) {
       return;
     }
-    this.props.setSelectedPanel('news');
-    this.props.selectedSideBar(undefined);
+    hash.push('/news');
     this.props.setShowingNews(settingsSelected ? true : !this.props.news);
     if (this.props.settings) {
       this.props.setSettings(false);
@@ -159,9 +159,9 @@ class TopBar extends React.Component {
           <div onClick={this.news} className="appButton functionIcon" id="eccNewsIcon">
             <img src={news} />
           </div>
-          <Link to="/settings" className="appButton functionIcon">
+          <NavLink to="/settings" className="appButton functionIcon" activeClassName="active">
             <img src={settings} />
-          </Link>
+          </NavLink>
         </div>
       </div>
     );
@@ -196,12 +196,14 @@ class TopBar extends React.Component {
             <BellOutlineIcon size={24} />
             {/*<img src={notification} />*/}
           </div>
-          <div onClick={this.news} className="appButton functionIcon" id="eccNewsIcon">
-            <img src={news} />
-          </div>
-          <Link to="/settings" className="appButton functionIcon">
-            <img src={settings} />
-          </Link>
+          <NavLink to="/news" className="appButton functionIcon" id="eccNewsIcon">
+            <NewspaperIcon size={24} />
+            {/*<img src={news} />*/}
+          </NavLink>
+          <NavLink to="/settings" className="appButton functionIcon">
+            <SettingsOutlineIcon size={24} />
+            {/*<img src={settings} />*/}
+          </NavLink>
           <div onClick={this.minimize} className="appButton">
             <img src={minimize} />
           </div>

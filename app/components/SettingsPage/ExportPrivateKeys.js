@@ -396,7 +396,6 @@ const mapStateToProps = state => {
     passwordVal: state.application.password,
     panelNumber: state.application.panelExportPrivateKey,
     locationToExport: state.application.locationToExport,
-    sideBarHidden: state.sideBar.sidebarHidden,
     wallet: state.application.wallet,
     staking: state.chains.isStaking,
     addresses: state.application.userAddresses

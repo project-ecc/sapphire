@@ -23,8 +23,6 @@ import {
   NEWS_NOTIFICATION,
   STAKING_NOTIFICATION,
   UNENCRYPTED_WALLET,
-  SELECTED_PANEL,
-  SELECTED_SIDEBAR,
   SETTINGS,
   SETTINGS_OPTION_SELECTED,
   TELL_USER_OF_UPDATE,
@@ -60,6 +58,7 @@ const Tools = require('../utils/tools');
 const request = require('request');
 const db = require('../../app/utils/database/db');
 const moment = require('moment');
+import hash from './../router/hash';
 
 // this class acts as a bridge between wallet.js (daemon) and the redux store
 class DaemonConnector {
@@ -546,8 +545,7 @@ class DaemonConnector {
         if (totalNews == 0 || !this.store.getState().notifications.newsNotificationsEnabled) return;
         const body = totalNews == 1 ? title : `${totalNews} ${title}`;
         const callback = () => {
-          this.store.dispatch({ type: SELECTED_PANEL, payload: 'news' });
-          this.store.dispatch({ type: SELECTED_SIDEBAR, payload: { undefined } });
+          hash.push('/news');
         };
 
         this.queueOrSendNotification(callback, body);
@@ -824,8 +822,7 @@ class DaemonConnector {
   goToEarningsPanel() {
     // this.store.dispatch({type: IS_FILTERING_TRANSACTIIONS, payload: true})
     this.store.dispatch({ type: TRANSACTIONS_TYPE, payload: 'generate' });
-    this.store.dispatch({ type: SELECTED_PANEL, payload: 'transactions' });
-    this.store.dispatch({ type: SELECTED_SIDEBAR, payload: { parent: 'walletSelected', child: 'transactionsSelected' } });
+    hash.push('/transactions');
   }
 
   async insertIntoDb(entries) {

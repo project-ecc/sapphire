@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
+import hash from './../../../router/hash';
 import * as actions from '../../../actions/index';
-
 const Tools = require('../../../utils/tools');
 
 class DonateModal extends Component {
@@ -40,7 +41,7 @@ class DonateModal extends Component {
     this.toggle()
     this.props.setAddressSend(eccObject.address);
     this.props.setAddressOrUsernameSend(eccObject.address);
-    this.props.setSelectedPanel('send');
+    hash.push('/send');
     this.props.setSettings(false);
   }
 

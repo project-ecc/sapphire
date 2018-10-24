@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import {connect, Provider} from 'react-redux';
+import { withRouter } from 'react-router';
 import { HashRouter as Router } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ipcRenderer } from 'electron';

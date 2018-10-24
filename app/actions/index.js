@@ -20,10 +20,6 @@ import {
   ENCRYPTING,
   BLOCK_INDEX_PAYMENT,
   BLOCK_INDEX_PAYMENT_PERCENTAGE,
-  HOVERED_SIDEBAR,
-  UNHOVERED_SIDEBAR,
-  SELECTED_SIDEBAR,
-  SIDEBAR_HIDDEN,
   STAKING,
   UNLOCKING,
   PASSWORD_UNLOCK,
@@ -72,7 +68,6 @@ import {
   UPDATE_APPLICATION,
   UPDATING_APP,
   UPDATE_AVAILABLE,
-  SELECTED_PANEL,
   SETTINGS_OPTION_SELECTED,
   NOTIFICATIONS_POPUP,
   NEWS_CHECKED,
@@ -236,36 +231,6 @@ export const updateBlockIndexPayment = (value) => {
 export const isEncrypting = (val) => {
 	return {
 		type: ENCRYPTING,
-		payload: val
-	}
-};
-
-export const hoveredSideBar = (val) => {
-	return{
-		type: HOVERED_SIDEBAR,
-		payload: val
-	}
-};
-
-export const unhoveredSideBar = (val) => {
-	return{
-		type: UNHOVERED_SIDEBAR,
-		payload: val
-	}
-};
-
-export const selectedSideBar = (parent, child) => {
-	const p = parent ? parent + "Selected" : undefined;
-	const c = child ? child + "Selected" : undefined;
-	return{
-		type: SELECTED_SIDEBAR,
-		payload: {parent: p, child:  c}
-	}
-};
-
-export const setSidebarHidden = (val) => {
-	return{
-		type: SIDEBAR_HIDDEN,
 		payload: val
 	}
 };
@@ -614,13 +579,6 @@ export const setUpdateAvailable = () => {
 	return{
 		type: UPDATE_AVAILABLE,
 		payload: {guiUpdate: false, daemonUpdate: false}
-	}
-};
-
-export const setSelectedPanel = (val) => {
-	return{
-		type: SELECTED_PANEL,
-		payload: val
 	}
 };
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {TweenMax} from "gsap";
 
+import hash from './../router/hash';
 import * as actions from '../actions';
 
 import $ from 'jquery';
@@ -29,15 +30,13 @@ class NotificationPopup extends React.Component {
 
   componentDidMount(){
     $('#newsNotifications').on("click", () => {
-      this.props.setSelectedPanel("news");
+      hash.push('/news')
       this.props.setNotifications(false);
-      this.props.selectedSideBar("news");
       this.props.setShowingNews(true);
     });
     $('#earningsNotification').on("click", () => {
-      this.props.setSelectedPanel("transactions");
+      hash.push('/transactions')
       this.props.setTransactionsData(this.props.transactions, "all");
-      this.props.selectedSideBar("wallet", "transactions");
       this.props.setNotifications(false);
     });
     $('#applicationUpdate').on("click", () => {

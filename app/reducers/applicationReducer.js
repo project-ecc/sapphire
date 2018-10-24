@@ -44,7 +44,6 @@ import {
   SHOWING_NEWS,
   NEWS_SWITCHING_PAGE,
   UPDATE_APPLICATION,
-  SELECTED_PANEL,
   SETTINGS_OPTION_SELECTED,
   SHOWING_FUNCTION_ICONS,
   GENERIC_PANEL_ANIMATION_ON,
@@ -133,9 +132,6 @@ export default(state = INITIAL_STATE, action) => {
 	}
 	else if(action.type == SETTINGS_OPTION_SELECTED){
 		return {...state, settingsOptionSelected: action.payload}
-	}
-	else if(action.type == SELECTED_PANEL){
-		return {...state, selectedPanel: action.payload}
 	}
 	else if(action.type == UPDATE_APPLICATION){
 		return {...state, updateApplication: action.payload}

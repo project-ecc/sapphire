@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import $ from 'jquery';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import * as actions from '../actions';
 import ReactTooltip from 'react-tooltip';
 import { CurrencyUsdIcon, SendIcon, FormatListBulletedIcon, ContactsIcon, ForumIcon } from 'mdi-react';
@@ -12,9 +12,6 @@ const Tools = require('../utils/tools');
 class Sidebar extends Component {
   constructor(props) {
     super(props);
-    this.toggleHover = this.toggleHover.bind(this);
-    this.toggleUnhover = this.toggleUnhover.bind(this);
-    this.handleClicked = this.handleClicked.bind(this);
     this.checkPopupActive = this.checkPopupActive.bind(this);
     this.resize = this.resize.bind(this);
     window.addEventListener('resize', this.resize);
@@ -28,7 +25,6 @@ class Sidebar extends Component {
     if ($(window).width() >= 1024) {
       $('.sidebar').removeClass('hide');
       $('.mainSubPanel').css('padding-left', '224px');
-      this.props.setSidebarHidden(false);
       $('#appButtonsMac').css('left', '20px');
       if (!this.checkPopupActive()) {
         TweenMax.to($('.mancha'), 0.3, { autoAlpha: 0, ease: Linear.easeNone });
@@ -37,7 +33,6 @@ class Sidebar extends Component {
     } else if ($(window).width() <= 1023) {
       $('.sidebar').addClass('hide');
       $('.mainSubPanel').css('padding-left', '0px');
-      this.props.setSidebarHidden(true);
       if (!this.checkPopupActive()) {
         TweenMax.to($('.mancha'), 0.3, { autoAlpha: 0, ease: Linear.easeNone });
         TweenMax.set($('.mancha'), { zIndex: 11 });
@@ -54,7 +49,6 @@ class Sidebar extends Component {
       if ($(window).width() <= 1023) {
             // $('.sidebar').css('left', '-224px');
             // $('.mainSubPanel').css('padding-left', '0px');
-        self.props.setSidebarHidden(true);
         $('#appButtonsMac').css('left', '39px');
       }
       $('.sidebar-menu > li.have-children a.mainOption').on('click', function (i) {
@@ -108,28 +102,6 @@ class Sidebar extends Component {
     $(window).off('click');
   }
 
-  toggleHover(e) {
-    this.props.hoveredSideBar(e.currentTarget.dataset.id);
-  }
-
-  toggleUnhover(e) {
-    this.props.unhoveredSideBar(e.currentTarget.dataset.id);
-  }
-
-  handleClicked(e) {
-    const page = e.currentTarget.dataset.id;
-    const parent = e.currentTarget.dataset.parent;
-    if (page == 'wallet') return;
-    if (this.props.settings) { this.props.setSettings(false); }
-    this.props.selectedSideBar(this.getParent(page), page);
-    this.props.setSelectedPanel(page);
-    if ($(window).width() <= 1023) {
-      $('.sidebar').addClass('hide');
-      $('.mainSubPanel').css('padding-left', '0px');
-      TweenMax.to($('.mancha'), 0.3, { autoAlpha: 0, ease: Linear.easeNone });
-    }
-  }
-
   getParent(page) {
     if (page == 'overview' || page == 'send' || page == 'addresses' || page == 'transactions') {
       return 'wallet';
@@ -153,34 +125,6 @@ class Sidebar extends Component {
     let addresses = Tools.getIconForTheme('addresses', false);
     let fileStorage = Tools.getIconForTheme('fileStorage', false);
 
-    if (this.props.walletHovered || this.props.walletSelected) {
-      wallet = Tools.getIconForTheme('wallet', true);
-      walletStyle = ' sidebarItemSelected';
-    }
-    if (this.props.overviewHovered || this.props.overviewSelected) {
-      overviewStyle = ' sidebarItemSelected';
-    }
-    if (this.props.sendHovered || this.props.sendSelected) {
-      sendStyle = ' sidebarItemSelected';
-    }
-    if (this.props.addressesHovered || this.props.addressesSelected) {
-      addresses = Tools.getIconForTheme('addresses', true);
-      addressesStyle = ' sidebarItemSelected';
-    }
-    if (this.props.transactionsHovered || this.props.transactionsSelected) {
-      transactionsStyle = ' sidebarItemSelected';
-    }
-    if (this.props.fileStorageHovered || this.props.fileStorageSelected) {
-      fileStorage = Tools.getIconForTheme('fileStorage', true);
-      fileStorageStyle = ' sidebarItemSelected';
-    }
-    if (this.props.messagingHovered || this.props.messagingSelected) {
-      messagingStyle = ' sidebarItemSelected';
-    }
-    if (this.props.contactsHovered || this.props.contactsSelected) {
-      contactsStyle = ' sidebarItemSelected';
-    }
-
     const usericon = require('../../resources/images/logo_setup.png');
     return (
       <div className="sidebar">
@@ -190,19 +134,19 @@ class Sidebar extends Component {
         <ul className="sidebar-menu">
           <li className="have-children"><a data-id="wallet" className={`mainOption${walletStyle}`}><div className="arrowMenu" /><img style={{ position: 'relative', top: '-2px' }} src={wallet} /><span />{ this.props.lang.wallet }</a>
             <ul>
-              <li><Link to="/" className={overviewStyle} onClick={this.handleClicked} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="overview">
+              <li><NavLink to="/" className={overviewStyle} data-id="overview">
                 <CurrencyUsdIcon size={20} className="sidebarImage" />
                 { this.props.lang.overview }
-              </Link></li>
-              <li><Link to="/send" className={sendStyle} data-id="send">
+              </NavLink></li>
+              <li><NavLink to="/send" className={sendStyle} data-id="send">
                 <SendIcon size={20} className="sidebarImage" />
                 { this.props.lang.send }
-              </Link></li>
-              <li><img className="sidebarImage" src={addresses} /> <Link to="/addresses" className={addressesStyle} data-id="addresses"><img className="sidebarImage" src={addresses} />{ this.props.lang.addresses }</Link></li>
-              <li><Link to="/transactions" className={transactionsStyle} data-id="transactions">
+              </NavLink></li>
+              <li><img className="sidebarImage" src={addresses} /> <NavLink to="/addresses" className={addressesStyle} data-id="addresses"><img className="sidebarImage" src={addresses} />{ this.props.lang.addresses }</NavLink></li>
+              <li><NavLink to="/transactions" className={transactionsStyle} data-id="transactions">
                 <FormatListBulletedIcon size={20} className="sidebarImage" />
                 { this.props.lang.transactions }
-              </Link></li>
+              </NavLink></li>
             </ul>
           </li>
           {/* <li className="have-children"><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="fileStorage" className={"mainOption" + fileStorageStyle}><div className="arrowMenu"></div><img src={fileStorage}/><span></span>{ this.props.lang.fileStorage }</a>
@@ -213,24 +157,24 @@ class Sidebar extends Component {
               <li><a href="#">{ this.props.lang.provider }</a></li>
             </ul>
           </li> */}
-          <li><Link to="/files" data-id="fileStorage" className={`mainOption${fileStorageStyle}`}><img style={{ position: 'relative', top: '-2px' }} src={fileStorage} /><span />{ this.props.lang.fileStorage }</Link></li>
-          <li><Link to="/messages" data-id="messaging" className={`mainOption${messagingStyle}`}>
+          <li><NavLink to="/files" data-id="fileStorage" className={`mainOption${fileStorageStyle}`}><img style={{ position: 'relative', top: '-2px' }} src={fileStorage} /><span />{ this.props.lang.fileStorage }</NavLink></li>
+          <li><NavLink to="/messages" data-id="messaging" className={`mainOption${messagingStyle}`}>
             <ForumIcon size={20} style={{ position: 'relative', top: '-1px', marginRight: '20px' }} />
             { this.props.lang.messaging }
-          </Link></li>
-          <li><Link to="/contacts" data-id="contacts">
+          </NavLink></li>
+          <li><NavLink to="/contacts" data-id="contacts">
             <ContactsIcon size={20} style={{ marginRight: '20px', position: 'relative', top: '-2px' }} />
             { this.props.lang.contacts }
-          </Link></li>
+          </NavLink></li>
         </ul>
         <div className="connections sidebar-section-container">
-          <a data-tip="View network stats" onClick={this.handleClicked} data-id="network" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+          <NavLink to="/network" data-tip="View network stats" data-id="network" style={{ textDecoration: 'none', cursor: 'pointer' }}>
             <p style={{ fontSize: '13px' }}>{`${this.props.lang.syncing} ${progressBar}%`}</p>
             <div className="progress">
               <div className="bar" style={{ width: `${progressBar}%` }} />
             </div>
             <p style={{ fontSize: '13px' }}>{`${this.props.lang.activeConnections}: ${this.props.connections}`}</p>
-          </a>
+          </NavLink>
         </div>
         <ReactTooltip />
       </div>
@@ -241,22 +185,6 @@ class Sidebar extends Component {
 const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
-    walletHovered: state.sideBar.walletHovered,
-    overviewHovered: state.sideBar.overviewHovered,
-    sendHovered: state.sideBar.sendHovered,
-    addressesHovered: state.sideBar.addressesHovered,
-    transactionsHovered: state.sideBar.transactionsHovered,
-    fileStorageHovered: state.sideBar.fileStorageHovered,
-    messagingHovered: state.sideBar.messagingHovered,
-    contactsHovered: state.sideBar.contactsHovered,
-    walletSelected: state.sideBar.walletSelected,
-    overviewSelected: state.sideBar.overviewSelected,
-    sendSelected: state.sideBar.sendSelected,
-    addressesSelected: state.sideBar.addressesSelected,
-    transactionsSelected: state.sideBar.transactionsSelected,
-    fileStorageSelected: state.sideBar.fileStorageSelected,
-    messagingSelected: state.sideBar.messagingSelected,
-    contactsSelected: state.sideBar.contactsSelected,
     unlocking: state.application.unlocking,
     sendingEcc: state.application.sendingEcc,
     creatingAddress: state.application.creatingAddress,
