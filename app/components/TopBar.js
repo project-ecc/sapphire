@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
-import { MenuIcon, BellOutlineIcon, NewspaperIcon, SettingsOutlineIcon } from 'mdi-react';
-import { NavLink } from 'react-router-dom';
+import { MenuIcon, BellOutlineIcon } from 'mdi-react';
 
-import hash from './../router/hash';
 import * as actions from '../actions';
 
 class TopBar extends Component {
@@ -13,8 +11,6 @@ class TopBar extends Component {
     super();
     this.getDarwinBar = this.getDarwinBar.bind(this);
     this.close = this.close.bind(this);
-    this.settings = this.settings.bind(this);
-    this.news = this.news.bind(this);
     this.notification = this.notification.bind(this);
     this.maximize = this.maximize.bind(this);
   }
@@ -60,25 +56,6 @@ class TopBar extends Component {
     ipcRenderer.send('quit');
   }
 
-  news() {
-    const settingsSelected = this.props.settings;
-    this.props.setNotifications(false);
-    if (this.props.news && !settingsSelected) {
-      return;
-    }
-    hash.push('/news');
-    this.props.setShowingNews(settingsSelected ? true : !this.props.news);
-    if (this.props.settings) {
-      this.props.setSettings(false);
-      this.props.setExportingPrivateKeys(false);
-      this.props.setPanelExportingPrivateKeys(1);
-      this.props.setImportingPrivateKey(false);
-      this.props.setChangingPassword(false);
-      this.props.setUpdateApplication(false);
-      TweenMax.to($('.mancha'), 0.2, { autoAlpha: 0, ease: Linear.easeNone });
-    }
-  }
-
   notification() {
     if (!this.props.notificationPopup) {
       this.props.setExportingPrivateKeys(false);
@@ -89,19 +66,6 @@ class TopBar extends Component {
       TweenMax.to($('.mancha'), 0.2, { autoAlpha: 0, ease: Linear.easeNone });
     }
     this.props.setNotifications(!this.props.notificationPopup);
-  }
-
-  settings() {
-    if (this.props.genericPanelAnimationOn) return;
-    this.props.setNotifications(false);
-    if (this.props.checkingDaemonStatusPrivateKey) return;
-    this.props.setSettings(!this.props.settings);
-    this.props.setExportingPrivateKeys(false);
-    this.props.setPanelExportingPrivateKeys(1);
-    this.props.setImportingPrivateKey(false);
-    this.props.setChangingPassword(false);
-    this.props.setUpdateApplication(false);
-    TweenMax.to($('.mancha'), 0.2, { autoAlpha: 0, ease: Linear.easeNone });
   }
 
   getDarwinBar() {
@@ -121,15 +85,7 @@ class TopBar extends Component {
       close = require('../../resources/images/mac-unfocused.png');
     }
 
-    let settings = require('../../resources/images/settings-white.png');
     const notification = require('../../resources/images/notification-white.png');
-    let news = require('../../resources/images/news-white.png');
-    if (this.props.settings) {
-      settings = require('../../resources/images/settings-orange.png');
-    }
-    if (this.props.news && !this.props.settings) {
-      news = require('../../resources/images/news-orange.png');
-    }
 
     let numberOfNotifications = this.props.notifications.total;
     if (this.props.updateAvailable) { numberOfNotifications += 1; }
@@ -156,12 +112,6 @@ class TopBar extends Component {
             <BellOutlineIcon size={24} />
             {/*<img src={notification} />*/}
           </div>
-          <div onClick={this.news} className="appButton functionIcon" id="eccNewsIcon">
-            <img src={news} />
-          </div>
-          <NavLink to="/settings" className="appButton functionIcon" activeClassName="active">
-            <img src={settings} />
-          </NavLink>
         </div>
       </div>
     );
@@ -171,15 +121,7 @@ class TopBar extends Component {
     const minimize = require('../../resources/images/minimize.png');
     const maximize = require('../../resources/images/maximize.png');
     const close = require('../../resources/images/close.png');
-    let settings = require('../../resources/images/settings-white.png');
     const notification = require('../../resources/images/notification-white.png');
-    let news = require('../../resources/images/news-white.png');
-    if (this.props.settings) {
-      settings = require('../../resources/images/settings-orange.png');
-    }
-    if (this.props.news && !this.props.settings) {
-      news = require('../../resources/images/news-orange.png');
-    }
 
     let numberOfNotifications = this.props.notifications.total;
     if (this.props.updateAvailable) { numberOfNotifications += 1; }
@@ -196,14 +138,6 @@ class TopBar extends Component {
             <BellOutlineIcon size={24} />
             {/*<img src={notification} />*/}
           </div>
-          <NavLink to="/news" className="appButton functionIcon" id="eccNewsIcon">
-            <NewspaperIcon size={24} />
-            {/*<img src={news} />*/}
-          </NavLink>
-          <NavLink to="/settings" className="appButton functionIcon">
-            <SettingsOutlineIcon size={24} />
-            {/*<img src={settings} />*/}
-          </NavLink>
           <div onClick={this.minimize} className="appButton">
             <img src={minimize} />
           </div>
@@ -238,8 +172,6 @@ class TopBar extends Component {
 
 const mapStateToProps = state => {
   return {
-    settings: state.application.settings,
-    news: state.application.selectedPanel === 'news',
     macButtonsHover: state.application.macButtonsHover,
     macButtonsFocus: state.application.macButtonsFocus,
     genericPanelAnimationOn: state.application.genericPanelAnimationOn,

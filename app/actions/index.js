@@ -29,18 +29,14 @@ import {
   SENDING_ECC,
   TRANSACTIONS_DATA,
   TRANSACTIONS_PAGE,
-  TRANSACTIONS_LAST_PAGE,
-  TRANSACTIONS_REQUESTING,
   NEW_ADDRESS_NAME,
   ADDRESS_CREATE_ANS,
   SELECTED_ADDRESS,
   CREATING_ADDRESS,
   NEW_ADDRESS_ACCOUNT,
-  NEW_CONTACT_ADDRESS,
   HOVERED_ADDRESS,
   USER_ADDRESSES,
   CONTACTS,
-  SETTINGS,
   TRAY,
   START_AT_LOGIN,
   MINIMIZE_TO_TRAY,
@@ -298,13 +294,6 @@ export const setTransactionsData = (data, type) => {
 	}
 };
 
-export const setTransactionsRequesting = (val) => {
-	return{
-		type: TRANSACTIONS_REQUESTING,
-		payload: val
-	}
-};
-
 export const setNewAddressName = (val) => {
 	return{
 		type: NEW_ADDRESS_NAME,
@@ -364,13 +353,6 @@ export const setHoveredAddress = (val) => {
 export const setContacts = (val) => {
 	return{
 		type: CONTACTS,
-		payload: val
-	}
-};
-
-export const setSettings = (val) => {
-	return{
-		type: SETTINGS,
 		payload: val
 	}
 };

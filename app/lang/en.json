@@ -1,6 +1,7 @@
 {
     "error": "Error",
     "success": "Success",
+    "services": "Services",
     "contactAlreadyExists": "Contact already exists",
     "contactAddedSuccessfully": "Contact added successfully",
     "invalidAddress": "Invalid Address",
@@ -208,6 +209,7 @@
     "helpTranslate3": "translation platform",
     "language": "Language",
     "theme": "Theme",
+    "settings": "Settings",
     "appSettings": "APP SETTINGS",
     "general": "General",
     "wallet": "Wallet",

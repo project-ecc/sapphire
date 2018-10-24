@@ -82,7 +82,8 @@ class Root extends Component {
     const ns = settings.get('settings.notifications');
 
     if (ns && ns.operative_system !== undefined && ns.operative_system) { operativeSystemNotifications = true; }
-    if (ns && ns.news !== undefined && ns.news) { newsNotifications = true; }
+    // TODO : news notifications?
+    // if (ns && ns.news !== undefined && ns.news) { newsNotifications = true; }
     if (ns && ns.staking !== undefined && ns.staking) { stakingNotifications = true; }
 
     this.props.setOperativeSystemNotifications(operativeSystemNotifications);
@@ -128,7 +129,6 @@ const mapStateToProps = state => {
     importingPrivateKey: state.application.importingPrivateKey,
     changingPassword: state.application.changingPassword,
     checkingDaemonStatusPrivateKey: state.application.checkingDaemonStatusPrivateKey,
-    news: state.application.selectedPanel === 'news',
     updateApplication: state.application.updateApplication,
     updatingApplication: state.startup.updatingApp,
     unlocking: state.application.unlocking,

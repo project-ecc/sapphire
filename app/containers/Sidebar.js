@@ -4,7 +4,7 @@ import $ from 'jquery';
 import { NavLink } from 'react-router-dom';
 import * as actions from '../actions';
 import ReactTooltip from 'react-tooltip';
-import { CurrencyUsdIcon, SendIcon, FormatListBulletedIcon, ContactsIcon, ForumIcon } from 'mdi-react';
+import { CurrencyUsdIcon, SendIcon, FormatListBulletedIcon, ContactsIcon, ForumIcon, SettingsOutlineIcon, NewspaperIcon } from 'mdi-react';
 
 const homedir = require('os').homedir();
 const Tools = require('../utils/tools');
@@ -154,7 +154,7 @@ class Sidebar extends Component {
           </ul>
           <ul>
             <li>
-              <a className="subheading">{ this.props.lang.default }</a>
+              <a className="subheading">{ this.props.lang.services }</a>
             </li>
             <li>
               <NavLink to="/files">
@@ -172,6 +172,23 @@ class Sidebar extends Component {
               <NavLink to="/contacts">
                 <ContactsIcon size={20} />
                 { this.props.lang.contacts }
+              </NavLink>
+            </li>
+          </ul>
+          <ul>
+            <li>
+              <a className="subheading">{ this.props.lang.default }</a>
+            </li>
+            <li>
+              <NavLink to="/news">
+                <NewspaperIcon size={20} />
+                { this.props.lang.eccNews }
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/settings">
+                <SettingsOutlineIcon size={20} />
+                { this.props.lang.settings }
               </NavLink>
             </li>
           </ul>

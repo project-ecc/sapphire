@@ -22,7 +22,6 @@ class UpdateApplication extends React.Component {
     this.props.setUpdateApplication(false);
     setTimeout(() => {
       this.props.setUpdatingApplication(true);
-      this.props.setSettings(false);
       ipcRenderer.send('update');
     }, 300)
   }

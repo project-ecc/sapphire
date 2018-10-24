@@ -42,7 +42,6 @@ class DonateModal extends Component {
     this.props.setAddressSend(eccObject.address);
     this.props.setAddressOrUsernameSend(eccObject.address);
     hash.push('/send');
-    this.props.setSettings(false);
   }
 
   renderGoals() {

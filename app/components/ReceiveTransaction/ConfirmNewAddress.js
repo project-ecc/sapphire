@@ -44,7 +44,6 @@ class ConfirmNewAddress extends React.Component {
 
   goToBackupPage(){
     this.props.setSettingsOptionSelected("Wallet");
-    this.props.setSettings(true);
   }
 
   createNormalAddress(){
