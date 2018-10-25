@@ -125,10 +125,7 @@
   @include themify($themes) {
     color: themed('bodyParagraphColor');
   }
-  position: absolute;
-  bottom: 50px;
-  width: 100%;
-  z-index: 10;
+  padding: 50px 10px 20px 10px;
   text-align: center;
   font-size: 0.8em;
 }

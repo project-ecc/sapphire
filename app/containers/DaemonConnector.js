@@ -135,6 +135,7 @@ class DaemonConnector {
     this.currentHighestBlock = 0;
     this.translator = this.store.getState().startup.lang;
     this.latestBlockTime = 0;
+    console.log('setting up the daemon')
   }
 
   subscribeToEvents() {
