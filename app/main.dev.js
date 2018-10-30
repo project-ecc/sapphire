@@ -152,7 +152,7 @@ app.on('ready', async () => {
     minHeight: 600,
     title: "Sapphire",
     backgroundColor: getBackgroundColor(),
-    frame: false,
+    frame: true,
     webPreferences: {backgroundThrottling: false}
   });
 

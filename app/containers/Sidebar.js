@@ -2,19 +2,28 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import $ from 'jquery';
 import { NavLink } from 'react-router-dom';
-import * as actions from '../actions';
 import ReactTooltip from 'react-tooltip';
-import { CurrencyUsdIcon, SendIcon, FormatListBulletedIcon, ContactsIcon, ForumIcon, SettingsOutlineIcon, NewspaperIcon } from 'mdi-react';
+import { MenuIcon, CurrencyUsdIcon, SendIcon, FormatListBulletedIcon, ContactsIcon, ForumIcon, SettingsOutlineIcon, NewspaperIcon } from 'mdi-react';
 
-const homedir = require('os').homedir();
+import * as actions from '../actions';
 const Tools = require('../utils/tools');
 
 class Sidebar extends Component {
   constructor(props) {
     super(props);
+    this.toggle = this.toggle.bind(this);
     this.checkPopupActive = this.checkPopupActive.bind(this);
     this.resize = this.resize.bind(this);
     window.addEventListener('resize', this.resize);
+    this.state = {
+      open: true
+    };
+  }
+
+  toggle(val = !this.state.open) {
+    this.setState({
+      open: val
+    });
   }
 
   checkPopupActive() {
@@ -22,25 +31,31 @@ class Sidebar extends Component {
   }
 
   resize() {
-    if ($(window).width() >= 1024) {
-      $('.sidebar').removeClass('hide');
-      $('.mainSubPanel').css('padding-left', '224px');
-      $('#appButtonsMac').css('left', '20px');
-      if (!this.checkPopupActive()) {
-        TweenMax.to($('.mancha'), 0.3, { autoAlpha: 0, ease: Linear.easeNone });
-        TweenMax.set($('.mancha'), { zIndex: 11 });
-      }
-    } else if ($(window).width() <= 1023) {
-      $('.sidebar').addClass('hide');
-      $('.mainSubPanel').css('padding-left', '0px');
-      if (!this.checkPopupActive()) {
-        TweenMax.to($('.mancha'), 0.3, { autoAlpha: 0, ease: Linear.easeNone });
-        TweenMax.set($('.mancha'), { zIndex: 11 });
-      }
+    if (window.innerWidth >= 1024) {
+      this.toggle(true);
     }
-    if ($(window).width() <= 1023) {
-      $('#appButtonsMac').css('left', '39px');
+    else {
+      this.toggle(false);
     }
+    // if ($(window).width() >= 1024) {
+    //   $('.sidebar').removeClass('hide');
+    //   $('.mainSubPanel').css('padding-left', '224px');
+    //   $('#appButtonsMac').css('left', '20px');
+    //   if (!this.checkPopupActive()) {
+    //     TweenMax.to($('.mancha'), 0.3, { autoAlpha: 0, ease: Linear.easeNone });
+    //     TweenMax.set($('.mancha'), { zIndex: 11 });
+    //   }
+    // } else if ($(window).width() <= 1023) {
+    //   $('.sidebar').addClass('hide');
+    //   $('.mainSubPanel').css('padding-left', '0px');
+    //   if (!this.checkPopupActive()) {
+    //     TweenMax.to($('.mancha'), 0.3, { autoAlpha: 0, ease: Linear.easeNone });
+    //     TweenMax.set($('.mancha'), { zIndex: 11 });
+    //   }
+    // }
+    // if ($(window).width() <= 1023) {
+    //   $('#appButtonsMac').css('left', '39px');
+    // }
   }
 
   componentDidMount() {
@@ -51,21 +66,6 @@ class Sidebar extends Component {
             // $('.mainSubPanel').css('padding-left', '0px');
         $('#appButtonsMac').css('left', '39px');
       }
-      $('.sidebar-menu > li.have-children a.mainOption').on('click', function (i) {
-        i.stopPropagation();
-        if (!$(this).parent().hasClass('active')) {
-          $('.sidebar-menu li ul').slideUp();
-          $(this).next().slideToggle();
-          $('.sidebar-menu li').removeClass('active');
-          $(this).parent().addClass('active');
-          // $($($(this).parent().siblings().children()[0]).children()[0]).css("transform", "rotate(135deg)");
-          $($(this).children()[0]).css('transform', 'rotate(315deg)');
-        } else {
-          $(this).next().slideToggle();
-          $('.sidebar-menu li').removeClass('active');
-          $($(this).children()[0]).css('transform', 'rotate(135deg)');
-        }
-      });
       $('.miniButton').on('click', () => {
         const offset = $('.sidebar').offset().left;
         if (offset < 0 && !self.checkPopupActive()) {
@@ -110,7 +110,10 @@ class Sidebar extends Component {
 
     const usericon = require('../../resources/images/logo_setup.png');
     return (
-      <div className="sidebar">
+      <div className={`sidebar ${!this.state.open && 'hide'}`}>
+        <div id="menu" onClick={this.toggle}>
+          <MenuIcon size={24} />
+        </div>
         <div className="d-flex flex-column justify-content-between" style={{minHeight: '100%'}}>
           <div>
             <div className="userimage">

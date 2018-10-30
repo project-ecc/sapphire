@@ -28,6 +28,14 @@
 	z-index: 5;
 	flex: 0;
 
+	#menu {
+	  position: fixed;
+	  top: 0px;
+	  left: 15px;
+	  cursor:pointer;
+	  padding: 5px 10px;
+	}
+
 	&.hide {
 	  transform: translateX(-100%);
 	  flex: 0;
