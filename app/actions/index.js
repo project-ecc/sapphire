@@ -41,8 +41,6 @@ import {
   START_AT_LOGIN,
   MINIMIZE_TO_TRAY,
   MINIMIZE_ON_CLOSE,
-  EXPORT_PRIVATE_KEYS,
-  PANEL_EXPORT_PRIVATE_KEYS,
   LOCATION_TO_EXPORT,
   FILTER_OWN_ADDRESSES,
   BACKUP_OPERATION_IN_PROGRESS,
@@ -53,7 +51,6 @@ import {
   FILTER_EXPENSES_TYPE,
   FILTER_EXPENSES_TIME,
   IMPORTING_PRIVATE_KEY,
-  CHANGING_PASSWORD,
   WAS_STAKING,
   NEW_PASSWORD,
   CHECKING_DAEMON_STATUS_PRIVKEY,
@@ -469,13 +466,6 @@ export const setFilterExpensesType = (val) => {
 export const setImportingPrivateKey = (val) => {
 	return{
 		type: IMPORTING_PRIVATE_KEY,
-		payload: val
-	}
-};
-
-export const setChangingPassword = (val) => {
-	return{
-		type: CHANGING_PASSWORD,
 		payload: val
 	}
 };

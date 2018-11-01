@@ -59,7 +59,6 @@ class TopBar extends Component {
   notification() {
     if (!this.props.notificationPopup) {
       this.props.setImportingPrivateKey(false);
-      this.props.setChangingPassword(false);
       this.props.setUpdateApplication(false);
       TweenMax.to($('.mancha'), 0.2, { autoAlpha: 0, ease: Linear.easeNone });
     }

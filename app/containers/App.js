@@ -10,7 +10,6 @@ import Loading from '../components/LoaderPage/LoaderPage';
 import * as actions from '../actions';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import ImportPrivateKey from '../components/InitialSetupPage/ImportPrivateKey';
-import ChangePassword from '../components/SettingsPage/ChangePassword';
 import UpdateApplication from '../components/SettingsPage/UpdateApplication';
 import SendConfirmation from '../components/SendTransactions/SendConfirmation';
 import ConfirmNewAddress from '../components/ReceiveTransaction/ConfirmNewAddress';
@@ -110,10 +109,6 @@ class App extends Component<Props> {
     let classVal = '';
     if (this.props.importingPrivateKey) {
       component = <ImportPrivateKey notInitialSetup />;
-    } else if (this.props.changingPassword) {
-      component = <ChangePassword />;
-    } else if (this.props.changingPassword) {
-      component = <ImportPrivateKey />;
     } else if (this.props.updateApplication) {
       component = <UpdateApplication />;
     } else if (this.props.sending) {
@@ -300,7 +295,6 @@ const mapStateToProps = state => {
     pathname: state.router.location.pathname,
     settings: state.application.settings,
     importingPrivateKey: state.application.importingPrivateKey,
-    changingPassword: state.application.changingPassword,
     checkingDaemonStatusPrivateKey: state.application.checkingDaemonStatusPrivateKey,
     news: state.application.selectedPanel === 'news',
     updateApplication: state.application.updateApplication,

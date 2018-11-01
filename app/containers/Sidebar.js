@@ -27,7 +27,7 @@ class Sidebar extends Component {
   }
 
   checkPopupActive() {
-    return this.props.unlocking || this.props.sendingEcc || this.props.creatingAddress || this.props.importingPrivateKey || this.props.changingPassword || this.props.closingApplication;
+    return this.props.unlocking || this.props.sendingEcc || this.props.creatingAddress || this.props.importingPrivateKey || this.props.closingApplication;
   }
 
   resize() {
@@ -153,18 +153,18 @@ class Sidebar extends Component {
                 <li>
                   <a className="subheading">{ this.props.lang.services }</a>
                 </li>
-                <li>
-                  <NavLink to="/files">
-                    <img src={fileStorage} />
-                    { this.props.lang.fileStorage }
-                    </NavLink>
-                </li>
-                <li>
-                  <NavLink to="/messages">
-                    <ForumIcon size={20} />
-                    { this.props.lang.messaging }
-                  </NavLink>
-                </li>
+                {/*<li>*/}
+                  {/*<NavLink to="/files">*/}
+                    {/*<img src={fileStorage} />*/}
+                    {/*{ this.props.lang.fileStorage }*/}
+                    {/*</NavLink>*/}
+                {/*</li>*/}
+                {/*<li>*/}
+                  {/*<NavLink to="/messages">*/}
+                    {/*<ForumIcon size={20} />*/}
+                    {/*{ this.props.lang.messaging }*/}
+                  {/*</NavLink>*/}
+                {/*</li>*/}
                 <li>
                   <NavLink to="/contacts">
                     <ContactsIcon size={20} />
@@ -217,7 +217,6 @@ const mapStateToProps = state => {
     paymentChainSync: state.chains.paymentChainSync,
     settings: state.application.settings,
     importingPrivateKey: state.application.importingPrivateKey,
-    changingPassword: state.application.changingPassword,
     eccNews: state.application.showingNews,
     closingApplication: state.application.closingApplication
   };

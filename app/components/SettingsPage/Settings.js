@@ -22,6 +22,7 @@ const homedir = require('os').homedir();
 const Tools = require('../../utils/tools');
 import Wallet from '../../utils/wallet';
 import ExportPrivateKeysModal from './partials/ExportPrivateKeysModal';
+import ChangePasswordModal from './partials/ChangePasswordModal';
 const guiVersion = version;
 import {getSapphireDirectory} from "../../utils/platform.service";
 import Donations from "./Donations";
@@ -198,7 +199,7 @@ class Settings extends Component {
   }
 
   handleChangePasswordClicked(){
-    this.props.setChangingPassword(true);
+    this.passwordModal.getWrappedInstance().toggle();
   }
 
   handleSidebarClicked(option){
@@ -366,6 +367,7 @@ class Settings extends Component {
           {/*</div>*/}
         </div>
         <ExportPrivateKeysModal ref={(e) => {this.modal = e}} />
+        <ChangePasswordModal ref={(e) => {this.passwordModal = e}} />
       </div>
     );
   }

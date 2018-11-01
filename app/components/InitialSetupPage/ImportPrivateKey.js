@@ -310,4 +310,4 @@ class ImportPrivateKey extends React.Component {
 };
 
 
-export default connect(mapStateToProps, actions)(ImportPrivateKey);
+export default connect(mapStateToProps, actions, null, { withRef: true })(ImportPrivateKey);
