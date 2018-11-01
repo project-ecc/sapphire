@@ -99,18 +99,18 @@ class NetworkStats extends Component {
         </div>
         <div className="container" style={{margin: "0 auto", padding:"0px 0px", marginTop: "50px", width:"100%", maxWidth: "1140px"}}>
           <div className="row">
-            <div className="col-sm-4 text-center">
-              <p className="networkStatsChainTitle">{ this.props.lang.messagingChain }</p>
-              {this.getHtmlChainInfo(false, 0, 0, 0, 0, "rgb(41,213, 90)", this.props.messagingChain ? require('../../../resources/images/connections-green.png') : require('../../../resources/images/connections-default.png'), "messagingChainCircle", "messaging")}
-            </div>
+            {/*<div className="col-sm-4 text-center">*/}
+              {/*<p className="networkStatsChainTitle">{ this.props.lang.messagingChain }</p>*/}
+              {/*{this.getHtmlChainInfo(false, 0, 0, 0, 0, "rgb(41,213, 90)", this.props.messagingChain ? require('../../../resources/images/connections-green.png') : require('../../../resources/images/connections-default.png'), "messagingChainCircle", "messaging")}*/}
+            {/*</div>*/}
             <div className="col-sm-4 text-center">
               <p className="networkStatsChainTitle">{ this.props.lang.paymentChain }</p>
                 {this.getHtmlChainInfo(true, this.props.percentagePaymentChain, this.props.connectionsPayment, this.props.headersPaymentChain, this.props.blockPaymentChain, "rgb(213,149, 41)", Tools.getIconForTheme("connectionsPaymentChain", false), "paymentChainCircle")}
             </div>
-            <div className="col-sm-4 text-center">
-              <p className="networkStatsChainTitle">{ this.props.lang.fileStorageChain }</p>
-              {this.getHtmlChainInfo(false, 0, 0, 0, 0, "rgb(32,114, 156)", this.props.fileStorage ? require('../../../resources/images/connections-blue.png') : require('../../../resources/images/connections-default.png'), "fileStorageChainCircle", "fileStorage")}
-            </div>
+            {/*<div className="col-sm-4 text-center">*/}
+              {/*<p className="networkStatsChainTitle">{ this.props.lang.fileStorageChain }</p>*/}
+              {/*{this.getHtmlChainInfo(false, 0, 0, 0, 0, "rgb(32,114, 156)", this.props.fileStorage ? require('../../../resources/images/connections-blue.png') : require('../../../resources/images/connections-default.png'), "fileStorageChainCircle", "fileStorage")}*/}
+            {/*</div>*/}
           </div>
         </div>
       </div>

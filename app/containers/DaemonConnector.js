@@ -76,7 +76,6 @@ class DaemonConnector {
     this.updateConfirmations = this.updateConfirmations.bind(this);
     this.forceUpdateDaemon = this.forceUpdateDaemon.bind(this);
     this.ListenToSetupEvents();
-    this.step = 1;
     this.loadingBlockIndexPayment = false;
     this.handleStoreChange = this.handleStoreChange.bind(this);
     this.unsubscribe = this.store.subscribe(this.handleStoreChange);
@@ -130,7 +129,7 @@ class DaemonConnector {
     this.stakingRewardsCountNotif = 0;
     this.stakingRewardsTotalEarnedNotif = 0;
     this.queuedNotifications = [];
-    this.checkQueuedNotificationsInterval;
+    this.checkQueuedNotificationsInterval = null;
     this.checkQueuedNotifications = this.checkQueuedNotifications.bind(this);
     this.queueOrSendNotification = this.queueOrSendNotification.bind(this);
     this.unencryptedWallet = false;

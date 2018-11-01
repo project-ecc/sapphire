@@ -220,8 +220,8 @@ class Sidebar extends Component {
               <li><a href="#">{ this.props.lang.provider }</a></li>
             </ul>
           </li>*/}
-          <li><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="fileStorage" className={"mainOption" + fileStorageStyle}><img style={{position: "relative", top:"-2px"}} src={fileStorage}/><span></span>{ this.props.lang.fileStorage }</a></li>
-          <li><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="messaging" className={"mainOption" + messagingStyle}><img style={{position: "relative", top:"-1px"}} src={messaging}/><span></span>{ this.props.lang.messaging }</a></li>
+          {/*<li><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="fileStorage" className={"mainOption" + fileStorageStyle}><img style={{position: "relative", top:"-2px"}} src={fileStorage}/><span></span>{ this.props.lang.fileStorage }</a></li>*/}
+          {/*<li><a onClick={this.handleClicked} href="#" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="messaging" className={"mainOption" + messagingStyle}><img style={{position: "relative", top:"-1px"}} src={messaging}/><span></span>{ this.props.lang.messaging }</a></li>*/}
           <li><a onClick={this.handleClicked} className={contactsStyle} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleUnhover} data-id="contacts"><img style={{marginRight: "20px", position: "relative", top:"-2px"}} src={contacts}/>{ this.props.lang.contacts }</a></li>
         </ul>
         <div className="connections sidebar-section-container">
