@@ -385,20 +385,6 @@ export const setMinimizeOnClose = (val) => {
 	}
 };
 
-export const setExportingPrivateKeys = (val) => {
-	return{
-		type: EXPORT_PRIVATE_KEYS,
-		payload: val
-	}
-};
-
-export const setPanelExportingPrivateKeys = (val) => {
-	return{
-		type: PANEL_EXPORT_PRIVATE_KEYS,
-		payload: val
-	}
-};
-
 export const setLocationToExport = (val) => {
 	return{
 		type: LOCATION_TO_EXPORT,

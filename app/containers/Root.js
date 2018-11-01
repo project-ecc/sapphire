@@ -125,7 +125,6 @@ const mapStateToProps = state => {
     setupDone: state.startup.setupDone,
     loader: state.startup.loader || (state.chains.loadingBlockIndexPayment && !state.startup.initialSetup),
     settings: state.application.settings,
-    exportingPrivateKeys: state.application.exportingPrivateKeys,
     importingPrivateKey: state.application.importingPrivateKey,
     changingPassword: state.application.changingPassword,
     checkingDaemonStatusPrivateKey: state.application.checkingDaemonStatusPrivateKey,

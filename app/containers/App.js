@@ -9,7 +9,6 @@ import Settings from '../components/SettingsPage/Settings';
 import Loading from '../components/LoaderPage/LoaderPage';
 import * as actions from '../actions';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
-import ExportPrivateKeys from '../components/SettingsPage/ExportPrivateKeys';
 import ImportPrivateKey from '../components/InitialSetupPage/ImportPrivateKey';
 import ChangePassword from '../components/SettingsPage/ChangePassword';
 import UpdateApplication from '../components/SettingsPage/UpdateApplication';
@@ -109,9 +108,7 @@ class App extends Component<Props> {
     const animateIn = Tools.animatePopupIn;
     const animateOut = Tools.animatePopupOut;
     let classVal = '';
-    if (this.props.exportingPrivateKeys) {
-      component = <ExportPrivateKeys />;
-    } else if (this.props.importingPrivateKey) {
+    if (this.props.importingPrivateKey) {
       component = <ImportPrivateKey notInitialSetup />;
     } else if (this.props.changingPassword) {
       component = <ChangePassword />;
@@ -302,7 +299,6 @@ const mapStateToProps = state => {
     // had to add this for production, otherwise clicking on sidebar would not cause the tab to change (no idea why)
     pathname: state.router.location.pathname,
     settings: state.application.settings,
-    exportingPrivateKeys: state.application.exportingPrivateKeys,
     importingPrivateKey: state.application.importingPrivateKey,
     changingPassword: state.application.changingPassword,
     checkingDaemonStatusPrivateKey: state.application.checkingDaemonStatusPrivateKey,

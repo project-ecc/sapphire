@@ -28,13 +28,6 @@ class DonateModal extends Component {
     this.setState({
       open: !this.state.open
     });
-
-    if (!this.state.open) {
-      Tools.hideFunctionIcons();
-    }
-    else {
-      Tools.showFunctionIcons();
-    }
   }
 
   handleECCDonation(eccObject) {

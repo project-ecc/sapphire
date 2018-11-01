@@ -27,7 +27,7 @@ class Sidebar extends Component {
   }
 
   checkPopupActive() {
-    return this.props.unlocking || this.props.sendingEcc || this.props.creatingAddress || this.props.exportingPrivateKeys || this.props.importingPrivateKey || this.props.changingPassword || this.props.closingApplication;
+    return this.props.unlocking || this.props.sendingEcc || this.props.creatingAddress || this.props.importingPrivateKey || this.props.changingPassword || this.props.closingApplication;
   }
 
   resize() {
@@ -216,7 +216,6 @@ const mapStateToProps = state => {
     connections: state.chains.connections,
     paymentChainSync: state.chains.paymentChainSync,
     settings: state.application.settings,
-    exportingPrivateKeys: state.application.exportingPrivateKeys,
     importingPrivateKey: state.application.importingPrivateKey,
     changingPassword: state.application.changingPassword,
     eccNews: state.application.showingNews,

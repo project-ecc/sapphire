@@ -58,8 +58,6 @@ class TopBar extends Component {
 
   notification() {
     if (!this.props.notificationPopup) {
-      this.props.setExportingPrivateKeys(false);
-      this.props.setPanelExportingPrivateKeys(1);
       this.props.setImportingPrivateKey(false);
       this.props.setChangingPassword(false);
       this.props.setUpdateApplication(false);

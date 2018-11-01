@@ -21,6 +21,7 @@ const app = remote.app;
 const homedir = require('os').homedir();
 const Tools = require('../../utils/tools');
 import Wallet from '../../utils/wallet';
+import ExportPrivateKeysModal from './partials/ExportPrivateKeysModal';
 const guiVersion = version;
 import {getSapphireDirectory} from "../../utils/platform.service";
 import Donations from "./Donations";
@@ -131,7 +132,7 @@ class Settings extends Component {
   }
 
   handleExportPrivateKeys(){
-    this.props.setExportingPrivateKeys(!this.props.exportingPrivateKeys)
+    this.modal.getWrappedInstance().toggle();
   }
 
   handleImportWalletFile(){
@@ -326,7 +327,7 @@ class Settings extends Component {
   getWalletSettings(){
     return(
       <div>
-      <p id="walletBackup">{ this.props.lang.backup }</p>
+        <p id="walletBackup">{ this.props.lang.backup }</p>
         <p id="walletBackupExplanation">{ this.props.lang.backupExplanation }</p>
         <div className="row" style={{marginTop:"30px", marginBottom:"30px"}}>
           <div className="col-sm-6 text-center">
@@ -364,6 +365,7 @@ class Settings extends Component {
             {/*</div>*/}
           {/*</div>*/}
         </div>
+        <ExportPrivateKeysModal ref={(e) => {this.modal = e}} />
       </div>
     );
   }
