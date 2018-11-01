@@ -200,7 +200,7 @@ class App extends Component<Props> {
   }
 
   getMainApp() {
-    if (!this.props.unencryptedWallet && !this.props.shouldImportWallet && this.props.setupDone && !this.props.loader && !this.props.updatingApplication && !this.props.settings && !this.props.importingWalletWithSetupDone) {
+    if (!this.props.unencryptedWallet && !this.props.shouldImportWallet && this.props.setupDone && !this.props.loader && !this.props.updatingApplication && !this.props.importingWalletWithSetupDone) {
       return (
         <TransitionGroup component="section">
           <TransitionComponent
@@ -293,7 +293,6 @@ const mapStateToProps = state => {
     loader: state.startup.loader || (state.chains.loadingBlockIndexPayment && !state.startup.initialSetup),
     // had to add this for production, otherwise clicking on sidebar would not cause the tab to change (no idea why)
     pathname: state.router.location.pathname,
-    settings: state.application.settings,
     importingPrivateKey: state.application.importingPrivateKey,
     checkingDaemonStatusPrivateKey: state.application.checkingDaemonStatusPrivateKey,
     news: state.application.selectedPanel === 'news',

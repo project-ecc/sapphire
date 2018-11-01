@@ -71,8 +71,7 @@ const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
     selectedPanel: state.application.selectedPanel,
-    showingFunctionIcons: state.application.showingFunctionIcons,
-    settings: state.application.settings
+    showingFunctionIcons: state.application.showingFunctionIcons
   };
 };
 

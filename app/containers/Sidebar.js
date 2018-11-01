@@ -215,9 +215,7 @@ const mapStateToProps = state => {
     creatingAddress: state.application.creatingAddress,
     connections: state.chains.connections,
     paymentChainSync: state.chains.paymentChainSync,
-    settings: state.application.settings,
     importingPrivateKey: state.application.importingPrivateKey,
-    eccNews: state.application.showingNews,
     closingApplication: state.application.closingApplication
   };
 };

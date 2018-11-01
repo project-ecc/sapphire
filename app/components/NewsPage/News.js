@@ -65,7 +65,6 @@ class News extends Component {
 
   componentWillUnmount() {
     $(window).off('resize');
-    this.props.setShowingNews(false);
   }
 
   getSpliceValue() {

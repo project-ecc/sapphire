@@ -56,7 +56,6 @@ import {
   CHECKING_DAEMON_STATUS_PRIVKEY,
   POSTS_PER_CONTAINER,
   ECC_POSTS_PAGE,
-  SHOWING_NEWS,
   NEWS_SWITCHING_PAGE,
   UPDATE_APPLICATION,
   UPDATING_APP,
@@ -501,13 +500,6 @@ export const setPostsPerContainer = (val) => {
 export const setEccPostsPage = (val) => {
 	return{
 		type: ECC_POSTS_PAGE,
-		payload: val
-	}
-};
-
-export const setShowingNews = (val) => {
-	return{
-		type: SHOWING_NEWS,
 		payload: val
 	}
 };

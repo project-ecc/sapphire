@@ -32,7 +32,6 @@ class NotificationPopup extends React.Component {
     $('#newsNotifications').on("click", () => {
       hash.push('/news')
       this.props.setNotifications(false);
-      this.props.setShowingNews(true);
     });
     $('#earningsNotification').on("click", () => {
       hash.push('/transactions')

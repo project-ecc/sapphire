@@ -69,7 +69,6 @@ export const ECC_POST = "ecc_post";
 export const POSTS_PER_CONTAINER = "posts_per_container";
 export const ECC_POSTS_PAGE = "ecc_posts_page";
 export const COIN_MARKET_CAP = "coin_market_cap";
-export const SHOWING_NEWS = "showing_news";
 export const NEWS_SWITCHING_PAGE = "news_switching_page";
 export const UPDATE_APPLICATION = "update_application";
 export const UPDATING_APP = "updating_app";
