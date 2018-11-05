@@ -89,7 +89,6 @@ class TopBar extends Component {
 
     return (
       <div>
-        <MenuIcon className="miniButton" size={24} />
         <div id="appButtonsMac">
           <div onClick={this.close} className="appButtonMac">
             <img src={close} />
@@ -125,7 +124,6 @@ class TopBar extends Component {
 
     return (
       <div>
-        <MenuIcon className="miniButton" size={24} />
         {/* <p id="topBarCustomTitle" className= {process.platform === 'darwin' ? "topBarCustomTitleMac" : "topBarCustomTitleWin"}>Messaging</p> */}
         <div id="appButtons">
           <div onClick={this.notification} className="appButton functionIcon" id="eccNewsIcon">

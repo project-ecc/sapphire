@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import Sidebar from './Sidebar';
-import InitialSetup from './Pages/InitialSetup';
+import InitialSetup from '../Layouts/Setup';
 import Settings from '../components/SettingsPage/Settings';
-import Loading from '../components/LoaderPage/LoaderPage';
+import Loading from '../Layouts/Loading';
 import * as actions from '../actions';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import ImportPrivateKey from '../components/InitialSetupPage/ImportPrivateKey';

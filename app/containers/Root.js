@@ -10,6 +10,7 @@ import TopBar from './../components/TopBar';
 import routes from './../router/routes';
 import { traduction } from '../lang/lang';
 import * as actions from '../actions';
+import hash from './../router/hash';
 
 const lang = traduction();
 const Tools = require('../utils/tools');
@@ -101,6 +102,17 @@ class Root extends Component {
     const { store } = this.props;
     const ready = (!this.props.unencryptedWallet && !this.props.shouldImportWallet && this.props.setupDone && !this.props.loader && !this.props.updatingApplication && !this.props.importingWalletWithSetupDone);
 
+    if (!this.props.setupDone && !this.props.loader && !this.props.updatingApplication || this.props.unencryptedWallet || this.props.shouldImportWallet || this.props.importingWalletWithSetupDone) {
+      hash.push('/setup');
+    }
+
+    if (!this.props.importingWalletWithSetupDone && (this.props.loader || this.props.updatingApplication)) {
+      hash.push('/loading');
+    }
+    else {
+      hash.push('/');
+    }
+
     return (
       <Provider store={store}>
         <Router>
@@ -108,7 +120,7 @@ class Root extends Component {
             <div id="main">
               <TopBar />
               <div className="wrapper">
-                {ready && <div>{renderRoutes(routes)}</div>}
+                <div>{renderRoutes(routes)}</div>
               </div>
             </div>
           </div>
