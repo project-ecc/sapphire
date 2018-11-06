@@ -11,6 +11,7 @@ import routes from './../router/routes';
 import { traduction } from '../lang/lang';
 import * as actions from '../actions';
 import hash from './../router/hash';
+import Loading from './../Layouts/Loading';
 
 const lang = traduction();
 const Tools = require('../utils/tools');
@@ -106,19 +107,17 @@ class Root extends Component {
       hash.push('/setup');
     }
 
-    if (!this.props.importingWalletWithSetupDone && (this.props.loader || this.props.updatingApplication)) {
-      hash.push('/loading');
-    }
-    else {
-      hash.push('/');
-    }
-
     return (
       <Provider store={store}>
         <Router>
           <div className={this.props.theme}>
             <div id="main">
               <TopBar />
+              {!this.props.importingWalletWithSetupDone && (this.props.loader || this.props.updatingApplication) &&
+                <aside>
+                  <Loading />
+                </aside>
+              }
               <div className="wrapper">
                 <div>{renderRoutes(routes)}</div>
               </div>

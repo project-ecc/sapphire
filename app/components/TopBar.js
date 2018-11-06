@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
-import { MenuIcon, BellOutlineIcon } from 'mdi-react';
+import { BellOutlineIcon } from 'mdi-react';
 
 import * as actions from '../actions';
 
@@ -15,41 +15,17 @@ class TopBar extends Component {
     this.maximize = this.maximize.bind(this);
   }
 
-  componentDidMount() {
-    $('#appButtonsMac').on('mouseenter', () => {
-      this.props.setMacButtonsHover(true);
-    });
-    $('#appButtonsMac').on('mouseleave', () => {
-      this.props.setMacButtonsHover(false);
-    });
-
-    if (process.platform === 'darwin') {
-      ipcRenderer.on('full-screen', () => { this.fullScreenMac(true); });
-      ipcRenderer.on('unfocused', () => { this.props.setMacButtonsFocus(false); });
-      ipcRenderer.on('focused', () => { this.props.setMacButtonsFocus(true); });
-    }
-  }
-
-  componentWillUnmount() {
-    $('#appButtonsMac').off('mouseenter');
-    $('#appButtonsMac').off('mouseleave');
-  }
-
   minimize() {
     ipcRenderer.send('minimize');
     $('.appButton').removeClass('appButtonHover');
   }
 
-  fullScreenMac(externalAction) {
-    if (!externalAction) {
-      ipcRenderer.send('full-screen');
-    }
-    this.props.setAppMaximized(!this.props.appMaximized);
+  fullScreen() {
+    ipcRenderer.send('full-screen');
   }
 
   maximize() {
     ipcRenderer.send('maximize');
-    this.props.setAppMaximized(!this.props.appMaximized);
   }
 
   close() {
@@ -66,22 +42,6 @@ class TopBar extends Component {
   }
 
   getDarwinBar() {
-    let minimize = require('../../resources/images/mac-minimize-inactive.png');
-    let maximize = require('../../resources/images/mac-fullscreen-inactive.png');
-    let close = require('../../resources/images/mac-close-inactive.png');
-
-    if (this.props.macButtonsHover) {
-      minimize = require('../../resources/images/mac-minimize-active.png');
-      maximize = require('../../resources/images/mac-fullscreen-active.png');
-      close = require('../../resources/images/mac-close-active.png');
-    }
-
-    if (!this.props.macButtonsFocus) {
-      minimize = require('../../resources/images/mac-unfocused.png');
-      maximize = require('../../resources/images/mac-unfocused.png');
-      close = require('../../resources/images/mac-unfocused.png');
-    }
-
     const notification = require('../../resources/images/notification-white.png');
 
     let numberOfNotifications = this.props.notifications.total;
@@ -89,17 +49,6 @@ class TopBar extends Component {
 
     return (
       <div>
-        <div id="appButtonsMac">
-          <div onClick={this.close} className="appButtonMac">
-            <img src={close} />
-          </div>
-          <div onClick={this.minimize} className="appButtonMac">
-            <img src={minimize} />
-          </div>
-          <div onClick={this.fullScreenMac.bind(this, false)} className="appButtonMac">
-            <img src={maximize} />
-          </div>
-        </div>
         <div id="appButtons">
           <div onClick={this.notification} className="appButton functionIcon" id="eccNewsIcon">
             <div className="appButtons__notifications-counter-holder">
@@ -114,11 +63,6 @@ class TopBar extends Component {
   }
 
   getWinLinBar() {
-    const minimize = require('../../resources/images/minimize.png');
-    const maximize = require('../../resources/images/maximize.png');
-    const close = require('../../resources/images/close.png');
-    const notification = require('../../resources/images/notification-white.png');
-
     let numberOfNotifications = this.props.notifications.total;
     if (this.props.updateAvailable) { numberOfNotifications += 1; }
 
@@ -133,15 +77,6 @@ class TopBar extends Component {
             <BellOutlineIcon size={24} />
             {/*<img src={notification} />*/}
           </div>
-          <div onClick={this.minimize} className="appButton">
-            <img src={minimize} />
-          </div>
-          <div onClick={this.maximize.bind(this, false)} className="appButton">
-            <img src={maximize} />
-          </div>
-          <div onClick={this.close} className="appButton appButtonClose">
-            <img src={close} />
-          </div>
         </div>
       </div>
     );
@@ -152,13 +87,19 @@ class TopBar extends Component {
     if (process.platform === 'darwin') {
       menuBar = this.getDarwinBar();
     } else {
-      menuBar = this.getWinLinBar();
+      menuBar = this.getDarwinBar();
     }
+
+    const platform = process.platform === 'darwin' ? 'darwin' : 'win';
     return (
-      <div id="wrapperToBeAbleToResize">
-        <div id="topBar">
-          {menuBar}
+      <div id="topBar" className={`${platform}`}>
+        <div className="buttons">
+          <a onClick={this.fullScreen.bind(this, false)} className="fullscreen" />
+          <a onClick={this.minimize} className="minimize" />
+          <a onClick={this.maximize.bind(this, false)} className="maximize" />
+          <a onClick={this.close} className="close" />
         </div>
+        {/*{menuBar}*/}
       </div>
     );
   }
@@ -167,14 +108,9 @@ class TopBar extends Component {
 
 const mapStateToProps = state => {
   return {
-    macButtonsHover: state.application.macButtonsHover,
-    macButtonsFocus: state.application.macButtonsFocus,
-    genericPanelAnimationOn: state.application.genericPanelAnimationOn,
     notificationPopup: state.notifications.popupEnabled,
-    appMaximized: state.application.maximized,
     notifications: state.notifications.entries,
     updateAvailable: state.startup.guiUpdate || state.startup.daemonUpdate,
-    minimizeOnClose: state.application.minimizeOnClose
   };
 };
 

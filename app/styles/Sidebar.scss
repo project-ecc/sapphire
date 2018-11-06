@@ -1,24 +1,8 @@
 @import "./themes.scss";
 
-#main {
-  & > .wrapper {
-	margin-top: 40px;
-  }
-}
-
 #page {
   display: flex;
-  min-height: calc(100vh - 40px);
-
-  /* Toggle menu */
-  #menu {
-	position: fixed;
-	top: 0px;
-	left: 0px;
-	cursor:pointer;
-	padding: 5px 10px;
-	z-index: 200;
-  }
+  min-height: 100vh;
 
   /* Sidebar */
   .sidebar {
@@ -28,8 +12,9 @@
 	}
 	position: fixed;
 	left: 0;
+	top: 0;
 	width: 225px;
-	height: calc(100vh - 40px);
+	height: 100vh;
 	overflow-y: auto;
 	overflow-x: hidden;
 	font-weight: normal;
@@ -43,7 +28,8 @@
 	  flex: 0;
 	}
 
-	@media screen and (min-width: 1024px) {
+	// this media query is unused
+	@media screen and (min-width: 1023px) {
 	  & + .container-fluid {
 		margin-left: 225px;
 	  }
@@ -108,7 +94,7 @@
 
   & > .container-fluid {
 	flex: 1 1 auto;
-	margin: 0;
+	margin: 40px 0 0 0;
 	padding: 0;
 	transition: margin-left 0.4s ease;
 	position:relative;
@@ -182,17 +168,6 @@
     height: 6px;
     border-radius: 5px;
     border-bottom-right-radius: 5px;
-}
-
-
-@media screen and (max-height: 730px) {
-    .userimage{
-      opacity: 0;
-    }
-
-    ul.sidebar-menu{
-      margin-top: -150px;
-    }
 }
 
 .fixLink{

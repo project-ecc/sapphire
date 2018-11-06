@@ -1,107 +1,125 @@
 @import "./themes.scss";
 
 #topBar{
-    @include themify($themes) {
-        background-color: themed('topBarBackgroundColor');
-    }
-    width: 100%;
-    height: 37px;
-    position: fixed;
-    top: 3px;
-    left: 3px;
-    right: 3px;
-    -webkit-app-region:drag;
-    z-index: 2000;
-    overflow-y: hidden;
-}
-
-#wrapperToBeAbleToResize{
-    @include themify($themes) {
-        background-color: themed('topBarBackgroundColor');
-    }
-    height: 40px;
-    width: 100%;
-    z-index: 101;
-    position: fixed;
-    overflow-y: hidden;
-}
-
-#appButtonsMac{
-    position: fixed;
-    z-index: 2;
-    height: 40px;
-    top: 5px;
-    left: 20px;
-    -webkit-app-region: no-drag;
-    transition: .3s left;
-}
-
-#appButtons img{
-  display: block;
-  margin: 0 auto;
-  position: relative;
-  top: 14px;
-}
-
-#appButtons{
-  position: fixed;
-  right: 0px;
-  z-index: 2;
+  @include themify($themes) {
+	  //background-color: themed('topBarBackgroundColor');
+  }
+  width: 100%;
   height: 40px;
-  top: 0px;
-  -webkit-app-region: no-drag;
-  -webkit-user-select: none;
-}
-
-#eccNewsIcon img{
-  width: 19px;
-  top: 13px;
-}
-
-#topBarCustomTitle{
-  position: relative;
-  display: inline-block;
-  top: 3px;
-  color: #464b5a;
-  font-weight: 600;
-  font-size: 20px;
-  text-align: center;
-  visibility: hidden;
-  z-index: -1;
-
-}
-
-.topBarCustomTitleWin{
-  width: calc(100% - 242px);
-}
-
-.topBarCustomTitleMac{
-  width: calc(100% - 212px);
-}
-
-.appButtonMac img{
-	width: 12px;
-}
-
-.appButtonMac{
-	display: inline-block;
-    width: 20px;
-    height: 100%;
-}
-
-.functionIcon{
-  position: relative;
-  visibility: hidden;
-}
-
-.miniButton{
   position: fixed;
-  top: 8px;
-  left: 10px;
-  cursor: pointer;
-  -webkit-app-region: no-drag;
-  -webkit-user-select: none;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  -webkit-app-region: drag;
+  z-index: 2000;
+  overflow-y: hidden;
+  display: flex;
+
+  /* Styling for all buttons */
+  .buttons {
+	display: flex;
+	-webkit-app-region: no-drag;
+	-webkit-user-select: none;
+
+	& > a {
+	  cursor: pointer;
+	  width: 42px;
+	  height: 100%;
+	  background-position: center;
+	  background-repeat: no-repeat;
+	  opacity: 1;
+	}
+  }
+
+  /* MacOS styling */
+  &.darwin {
+	justify-content: flex-start;
+
+	.buttons {
+	  flex-direction: row-reverse;
+	  margin-left: 20px;
+
+	  & > a {
+		background-size: 15px;
+		width: 25px;
+
+		&.close {
+		  background-image: url('/resources/images/mac-close-inactive.png');
+		}
+
+		&.close:hover {
+		  background-image: url('/resources/images/mac-close-active.png');
+		}
+
+		&.minimize {
+		  background-image: url('/resources/images/mac-minimize-inactive.png');
+		}
+
+		&.minimize:hover {
+		  background-image: url('/resources/images/mac-minimize-active.png');
+		}
+
+		&.fullscreen {
+		  background-image: url('/resources/images/mac-fullscreen-inactive.png');
+		}
+
+		&.fullscreen:hover {
+		  background-image: url('/resources/images/mac-fullscreen-active.png');
+		}
+
+		&.maximize {
+		  display: none;
+		}
+	  }
+	}
+  }
+
+  /* Windows styling */
+  &.win {
+	justify-content: flex-end;
+
+	.buttons {
+	  flex-direction: row;
+
+	  & > a {
+		height: 35px;
+
+		&.fullscreen {
+		  display: none;
+		}
+
+		&.close {
+		  background-image: url('/resources/images/close.png');
+		}
+
+		&.close:hover {
+		  background-color: #e20000;
+		}
+
+		&.close:active {
+		  background-color: #910000;
+		}
+
+		&.minimize {
+		  background-image: url('/resources/images/minimize.png');
+		}
+
+		&.maximize {
+		  background-image: url('/resources/images/maximize.png');
+		}
+
+		&.minimize:hover, &.maximize:hover {
+		  background-color:rgba(255,255,255,0.1);
+		}
+
+		&.minimize:active, &.maximize:active {
+		  background-color:rgba(255,255,255,0.2);
+		}
+	  }
+	}
+  }
 }
+
 
 .appButton{
   display: inline-block;

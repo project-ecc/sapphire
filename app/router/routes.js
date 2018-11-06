@@ -14,7 +14,6 @@ import FileStoragePage from './../containers/Pages/FileStoragePage';
 import MainLayout from './../Layouts/Main';
 import SettingsLayout from './../Layouts/Settings';
 import SetupLayout from './../Layouts/Setup';
-import LoadingLayout from './../Layouts/Loading';
 
 export default [
   {
@@ -30,10 +29,6 @@ export default [
   {
     component: SetupLayout,
     path: '/setup'
-  },
-  {
-    component: LoadingLayout,
-    path: '/loading'
   },
   {
     component: MainLayout,

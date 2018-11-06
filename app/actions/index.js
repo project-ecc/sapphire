@@ -70,11 +70,7 @@ import {
   STAKING_NOTIFICATIONS,
   SETUP_DONE_INTERNAL,
   SHOWING_FUNCTION_ICONS,
-  GENERIC_PANEL_ANIMATION_ON,
   CLOSING_APPLICATION,
-  MAC_BUTTONS_HOVER,
-  MAC_BUTTONS_FOCUS,
-  APP_MAXIMIZED,
   SELECTED_THEME,
   SELECTED_THEME_BACKUP,
   CHANGED_THEME,
@@ -601,38 +597,9 @@ export const setShowingFunctionIcons = (val) => {
 		payload: val
 	}
 };
-
-export const setGenericAnimationOn = (val) => {
-	return{
-		type: GENERIC_PANEL_ANIMATION_ON,
-		payload: val
-	}
-};
-
 export const setClosingApplication = () => {
 	return{
 		type: CLOSING_APPLICATION
-	}
-};
-
-export const setMacButtonsHover = (val) => {
-	return{
-		type: MAC_BUTTONS_HOVER,
-		payload: val
-	}
-};
-
-export const setMacButtonsFocus = (val) => {
-	return{
-		type: MAC_BUTTONS_FOCUS,
-		payload: val
-	}
-};
-
-export const setAppMaximized = (val) => {
-	return{
-		type: APP_MAXIMIZED,
-		payload: val
 	}
 };
 
