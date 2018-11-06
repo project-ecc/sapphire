@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {TweenMax} from "gsap";
+import { TweenMax } from 'gsap';
+import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 
 import hash from './../router/hash';
 import * as actions from '../actions';
@@ -20,207 +21,203 @@ const os = require('os');
 */
 
 class NotificationPopup extends React.Component {
- constructor() {
+  constructor() {
     super();
     this.getNotificationsBody = this.getNotificationsBody.bind(this);
     this.getNewsNotifications = this.getNewsNotifications.bind(this);
     this.handleHoverAnsPayments = this.handleHoverAnsPayments.bind(this);
     this.handleHoverOutAnsPayments = this.handleHoverOutAnsPayments.bind(this);
+    this.toggle = this.toggle.bind(this);
+
+    this.state = {
+      open: false
+    };
   }
 
-  componentDidMount(){
-    $('#newsNotifications').on("click", () => {
-      hash.push('/news')
-      this.props.setNotifications(false);
+  toggle () {
+    this.setState({
+      open: !this.state.open
+    })
+  }
+
+  componentDidMount() {
+    $('#newsNotifications').on('click', () => {
+      hash.push('/news');
     });
-    $('#earningsNotification').on("click", () => {
-      hash.push('/transactions')
-      this.props.setTransactionsData(this.props.transactions, "all");
-      this.props.setNotifications(false);
+    $('#earningsNotification').on('click', () => {
+      hash.push('/transactions');
+      this.props.setTransactionsData(this.props.transactions, 'all');
     });
-    $('#applicationUpdate').on("click", () => {
+    $('#applicationUpdate').on('click', () => {
       this.props.setUpdateApplication(true);
-      this.props.setNotifications(false);
     });
-    $('#notificationContainer').on("click", (event) => {
+    $('#notificationContainer').on('click', (event) => {
       event.stopPropagation();
     });
-    setTimeout(() => {
-      this.subscribeToEvent();
-    }, 100);
   }
 
-  subscribeToEvent(){
-    $(window).on("click", () => {
-      this.props.setNotifications(false)
-    });
-  }
-
-  componentWillUnmount(){
+  componentWillUnmount() {
     $(window).off();
     $('#notificationContainer').off();
   }
 
-  handleCancel(){
+  handleCancel() {
     this.props.setUnlocking(false);
   }
 
-  getNotificationsBody(){
-    if(this.props.notifications["total"] === 0 && !this.props.updateAvailable){
-      return(
+  getNotificationsBody() {
+    if (this.props.notifications.total === 0 && !this.props.updateAvailable) {
+      return (
         <p id="noNotifications" className="notificationsHeaderContentFix">{ this.props.lang.noNotifications }</p>
-      )
+      );
     }
-    else{
-      return(
-        <div id="notificationsBody">
-          {this.getNewsNotifications()}
-          {this.getStakingNotifications()}
-          {this.getAnsIncomingPayments()}
-          {this.getUpdateNotification()}
-        </div>
-      )
-    }
+
+    return (
+      <div>
+        {this.getNewsNotifications()}
+        {this.getStakingNotifications()}
+        {this.getAnsIncomingPayments()}
+        {this.getUpdateNotification()}
+      </div>
+    );
   }
 
-  handleHoverAnsPayments(){
-    TweenMax.fromTo('#payAns', 0.3, {autoAlpha:0, scale:0.5}, {autoAlpha: 1, scale:1})
+  handleHoverAnsPayments() {
+    TweenMax.fromTo('#payAns', 0.3, { autoAlpha: 0, scale: 0.5 }, { autoAlpha: 1, scale: 1 });
   }
 
-  handleHoverOutAnsPayments(){
-    TweenMax.fromTo('#payAns', 0.3, {autoAlpha:1, scale: 1}, {autoAlpha: 0, scale:0.5})
+  handleHoverOutAnsPayments() {
+    TweenMax.fromTo('#payAns', 0.3, { autoAlpha: 1, scale: 1 }, { autoAlpha: 0, scale: 0.5 });
   }
 
-  getAnsIncomingPayments(){
-    if(this.props.notifications["ansPayments"]["payments"].length === 0){
+  getAnsIncomingPayments() {
+    if (this.props.notifications.ansPayments.payments.length === 0) {
       return null;
     }
-    let earnings = Tools.getIconForTheme("overview", false);
-    let ansPaymentsObject = this.props.notifications["ansPayments"];
-    let totalAnsPayments = ansPaymentsObject["payments"].count;
-    let date = ansPaymentsObject["firstDueDate"];
-    let body = <p id="mediumPosts">{ this.props.lang.ansPayment } - {Tools.formatNumber(ansPaymentsObject["payments"][0]["cost"])} <span className="ecc">ECC</span></p>;
+    const earnings = Tools.getIconForTheme('overview', false);
+    const ansPaymentsObject = this.props.notifications.ansPayments;
+    const totalAnsPayments = ansPaymentsObject.payments.count;
+    const date = ansPaymentsObject.firstDueDate;
+    let body = <p id="mediumPosts">{ this.props.lang.ansPayment } - {Tools.formatNumber(ansPaymentsObject.payments[0].cost)} <span className="ecc">ECC</span></p>;
     const today = new Date();
-    let time = Tools.calculateTimeTo(this.props.lang, today, new Date(date));
-    if(totalAnsPayments > 1)
-     body = <p id="mediumPosts">{totalAnsPayments} { this.props.lang.ansPayments } - {Tools.formatNumber(ansPaymentsObject["payments"][0]["cost"])} <span className="ecc">ECC</span></p>;
-    return(
-      <div style={{position: "relative"}} onMouseEnter={this.handleHoverAnsPayments} onMouseLeave={this.handleHoverOutAnsPayments}>
+    const time = Tools.calculateTimeTo(this.props.lang, today, new Date(date));
+    if (totalAnsPayments > 1) { body = <p id="mediumPosts">{totalAnsPayments} { this.props.lang.ansPayments } - {Tools.formatNumber(ansPaymentsObject.payments[0].cost)} <span className="ecc">ECC</span></p>; }
+    return (
+      <div style={{ position: 'relative' }} onMouseEnter={this.handleHoverAnsPayments} onMouseLeave={this.handleHoverOutAnsPayments}>
         <NotificationItem
           id="ansPaymentsNotification"
           handleMouseIn={this.props.handleHoverPayments}
-          image = {earnings}
-          body = {body}
-          time = {time}
-          class = {this.props.last === "incomingStakingPayments" && !this.props.updateAvailable ? "notificationItem newsItemRoundCorners resetCursor" : "notificationItem newsItemBorder resetCursor" }/>
-          <div className="payAns" id="payAns">
-            <p>{totalAnsPayments > 1 ? this.props.lang.extendANSSubscriptions : this.props.lang.extendANSSubscription }</p>
-          </div>
+          image={earnings}
+          body={body}
+          time={time}
+          class={this.props.last === 'incomingStakingPayments' && !this.props.updateAvailable ? 'notificationItem newsItemRoundCorners resetCursor' : 'notificationItem newsItemBorder resetCursor'}
+        />
+        <div className="payAns" id="payAns">
+          <p>{totalAnsPayments > 1 ? this.props.lang.extendANSSubscriptions : this.props.lang.extendANSSubscription }</p>
         </div>
-    )
+      </div>
+    );
   }
 
-  getUpdateNotification(){
-    if(!this.props.updateAvailable) return null;
-    let settings = require('../../resources/images/settings-white.png');
-    let body = <p>{ this.props.lang.clickToUpdateApp }</p>;
-    let className = "applicationUpdate";
-    if(this.props.notifications["differentKinds"] === 0){
-      className = "applicationUpdateOnlyNotif"
+  getUpdateNotification() {
+    if (!this.props.updateAvailable) return null;
+    const settings = require('../../resources/images/settings-white.png');
+    const body = <p>{ this.props.lang.clickToUpdateApp }</p>;
+    let className = 'applicationUpdate';
+    if (this.props.notifications.differentKinds === 0) {
+      className = 'applicationUpdateOnlyNotif';
     }
-    return(
+    return (
       <div className={className} id="applicationUpdate">
-       <img src={settings}/>
+        <img src={settings} />
         {body}
       </div>
-    )
+    );
   }
 
-  getStakingNotifications(){
-    if(this.props.notifications["stakingEarnings"].total === 0){
+  getStakingNotifications() {
+    if (this.props.notifications.stakingEarnings.total === 0) {
       return null;
     }
-    let earnings = Tools.getIconForTheme("overview", false);
-    let earningsObject = this.props.notifications["stakingEarnings"];
-    let totalEarnings = earningsObject.count;
-    let date = earningsObject.date;
-    let body = <p id="mediumPosts">{ this.props.lang.stakingReward } - {Tools.formatNumber(earningsObject["total"])} <span className="ecc">ECC</span></p>;
+    const earnings = Tools.getIconForTheme('overview', false);
+    const earningsObject = this.props.notifications.stakingEarnings;
+    const totalEarnings = earningsObject.count;
+    const date = earningsObject.date;
+    let body = <p id="mediumPosts">{ this.props.lang.stakingReward } - {Tools.formatNumber(earningsObject.total)} <span className="ecc">ECC</span></p>;
     const today = new Date();
-    let time = Tools.calculateTimeSince(this.props.lang, today, new Date(date));
-    if(totalEarnings > 1)
-     body = <p id="mediumPosts">{totalEarnings} { this.props.lang.stakingRewards } - {Tools.formatNumber(earningsObject["total"])} <span className="ecc">ECC</span></p>;
-    return(
+    const time = Tools.calculateTimeSince(this.props.lang, today, new Date(date));
+    if (totalEarnings > 1) { body = <p id="mediumPosts">{totalEarnings} { this.props.lang.stakingRewards } - {Tools.formatNumber(earningsObject.total)} <span className="ecc">ECC</span></p>; }
+    return (
       <NotificationItem
         id="earningsNotification"
-        image = {earnings}
-        body = {body}
-        time = {time}
-        class = {this.props.last === "earnings" && !this.props.updateAvailable ? "notificationItem newsItemRoundCorners" : "notificationItem newsItemBorder" }/>
-    )
+        image={earnings}
+        body={body}
+        time={time}
+        class={this.props.last === 'earnings' && !this.props.updateAvailable ? 'notificationItem newsItemRoundCorners' : 'notificationItem newsItemBorder'}
+      />
+    );
   }
 
-  getNewsNotifications(){
-    if(this.props.notifications["news"].total === 0){
+  getNewsNotifications() {
+    if (this.props.notifications.news.total === 0) {
       return null;
     }
-    let news = Tools.getIconForTheme("eccNewsNotif", false);
-    let totalNews = this.props.notifications["news"].total;
-    let date = this.props.notifications["news"].date;
+    const news = Tools.getIconForTheme('eccNewsNotif', false);
+    const totalNews = this.props.notifications.news.total;
+    const date = this.props.notifications.news.date;
     let newsBody = <p id="mediumPosts">{ this.props.lang.newMediumPost }</p>;
     const today = new Date();
-    let time = Tools.calculateTimeSince(this.props.lang, today, new Date(date));
-    if(totalNews > 1)
-      newsBody = <p id="mediumPosts">{totalNews} { this.props.lang.newMediumPosts }</p>;
-    return(
+    const time = Tools.calculateTimeSince(this.props.lang, today, new Date(date));
+    if (totalNews > 1) { newsBody = <p id="mediumPosts">{totalNews} { this.props.lang.newMediumPosts }</p>; }
+    return (
       <NotificationItem
         id="newsNotifications"
-        image = {news}
-        body = {newsBody}
-        time = {time}
-        class = {this.props.last === "news" && !this.props.updateAvailable ? "notificationItem newsItemRoundCorners" : "notificationItem newsItemBorder" }/>
-    )
+        image={news}
+        body={newsBody}
+        time={time}
+        class={this.props.last === 'news' && !this.props.updateAvailable ? 'notificationItem newsItemRoundCorners' : 'notificationItem newsItemBorder'}
+      />
+    );
   }
 
-  getNotificationsCounter(){
-    if(this.props.notifications["total"] === 0 && !this.props.updateAvailable){
+  getNotificationsCounter() {
+    if (this.props.notifications.total === 0 && !this.props.updateAvailable) {
       return null;
     }
-    return(
-      <div id="notificationCounter">
-        <p>{this.props.updateAvailable ? 1 + this.props.notifications["total"] : this.props.notifications["total"]}</p>
-      </div>
-    )
+    return (
+      <span style={{marginLeft: 5}}>
+        ({this.props.updateAvailable ? 1 + this.props.notifications.total : this.props.notifications.total})
+      </span>
+    );
   }
 
   render() {
-     return (
-      <div ref="second">
-        <div id="notificationContainer" className={process.platform === 'darwin' ? "notificationContainerMac" : ""}>
-          <div id="notificationHeader">
-            <div id="notificationsHeaderContent" style={{top: this.props.notifications["total"] === 0 && !this.props.updateAvailable ? "6px" : "0px"}}>
-            <p>{ this.props.lang.notifications }</p>
-            {this.getNotificationsCounter()}
-          </div>
-          </div>
+    return (
+      <Modal isOpen={this.state.open} toggle={this.toggle}>
+        <ModalHeader toggle={this.toggle}>
+          { this.props.lang.notifications }
+          { this.getNotificationsCounter() }
+        </ModalHeader>
+        <ModalBody>
           {this.getNotificationsBody()}
-        </div>
-      </div>
-      );
-    }
+        </ModalBody>
+      </Modal>
+    );
+  }
 }
 
 const mapStateToProps = state => {
-  return{
+  return {
     lang: state.startup.lang,
     notifications: state.notifications.entries,
     transactions: state.chains.transactionsData,
-    last: state.notifications.entries["last"],
+    last: state.notifications.entries.last,
     updateAvailable: state.startup.guiUpdate || state.startup.daemonUpdate,
   };
 };
 
 
-export default connect(mapStateToProps, actions)(NotificationPopup);
+export default connect(mapStateToProps, actions, null, { withRef: true })(NotificationPopup);
 
 
 class NotificationItem extends Component {
@@ -231,7 +228,7 @@ class NotificationItem extends Component {
   render() {
     return (
       <div className={this.props.class} id={this.props.id}>
-       <img src={this.props.image}/>
+        <img src={this.props.image} />
         {this.props.body}
         <p className="timeNews">{this.props.time}</p>
       </div>

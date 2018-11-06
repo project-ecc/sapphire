@@ -1,5 +1,4 @@
 import {
-	NOTIFICATIONS_POPUP,
 	NEWS_CHECKED,
 	EARNINGS_CHECKED,
 	NEWS_NOTIFICATION,
@@ -15,7 +14,7 @@ import notificationsInfo from '../utils/notificationsInfo';
 // I might end up splitting notifications, so that there is a tab specific to messaging, unsure...
 // too many clicks to get to something is also no good.
 
-const INITIAL_STATE = { popupEnabled: false,
+const INITIAL_STATE = {
   lastCheckedNews: notificationsInfo.get('info').value().lastCheckedNews,
   lastCheckedEarnings: notificationsInfo.get('info').value().lastCheckedEarnings,
   operativeSystemNotificationsEnabled: false,
@@ -36,9 +35,7 @@ const INITIAL_STATE = { popupEnabled: false,
 };
 
 export default(state = INITIAL_STATE, action) => {
-  if (action.type == NOTIFICATIONS_POPUP) {
-    return { ...state, popupEnabled: action.payload };
-  }	else if (action.type == OPERATIVE_SYSTEM_NOTIFICATIONS) {
+  if (action.type == OPERATIVE_SYSTEM_NOTIFICATIONS) {
     return { ...state, operativeSystemNotificationsEnabled: action.payload };
   }	else if (action.type == NEWS_NOTIFICATIONS) {
     return { ...state, newsNotificationsEnabled: action.payload };

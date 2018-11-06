@@ -61,7 +61,6 @@ import {
   UPDATING_APP,
   UPDATE_AVAILABLE,
   SETTINGS_OPTION_SELECTED,
-  NOTIFICATIONS_POPUP,
   NEWS_CHECKED,
   EARNINGS_CHECKED,
   UNENCRYPTED_WALLET,
@@ -531,13 +530,6 @@ export const setUpdateAvailable = () => {
 export const setSettingsOptionSelected = (val) => {
 	return{
 		type: SETTINGS_OPTION_SELECTED,
-		payload: val
-	}
-};
-
-export const setNotifications = (val) => {
-	return{
-		type: NOTIFICATIONS_POPUP,
 		payload: val
 	}
 };
