@@ -39,8 +39,6 @@ class Loader extends React.Component {
   handleDismissUpdateFailed() {
     this.props.settellUserUpdateFailed(false);
     this.props.setUpdatingApplication(false);
-    Tools.showFunctionIcons();
-    this.props.setShowingFunctionIcons(true);
     this.props.wallet.walletstart((result) => {
       if (result) {
         console.log('started daemon');
@@ -59,13 +57,6 @@ class Loader extends React.Component {
   	$('#gettingReady').text(message);
 	  TweenMax.to(['#blockIndexLoad'], 0.2, { autoAlpha: 0, scale: 0.5 });
     TweenMax.fromTo('#message', 0.2, { autoAlpha: 0, scale: 0.5 }, { autoAlpha: 1, scale: 1 });
-  }
-
-  componentWillMount() {
-  	if (this.props.showingFunctionIcons) {
-  	  Tools.hideFunctionIcons();
-    this.props.setShowingFunctionIcons(false);
-  	}
   }
 
   componentDidMount() {
@@ -257,7 +248,6 @@ const mapStateToProps = state => {
     loadingMessage: state.startup.loadingMessage,
     loading: state.startup.loading,
     updatingApplication: state.startup.updatingApp,
-    showingFunctionIcons: state.application.showingFunctionIcons,
     downloadMessage: state.application.downloadMessage,
     percentage: state.application.downloadPercentage,
     updateFailed: state.application.updateFailed,

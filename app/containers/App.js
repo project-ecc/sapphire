@@ -46,17 +46,7 @@ class App extends Component<Props> {
       if (this.props.loader) {
         TweenMax.to('#loading-wrapper', 0.3, { autoAlpha: 0.5 });
       }
-      Tools.hideFunctionIcons();
       this.props.setClosingApplication();
-    });
-
-    ipcRenderer.on('focused', (e) => {
-      $('.appButton').mouseover(function () {
-        $(this).addClass('appButtonHover');
-      });
-      $('.appButton').mouseleave(function () {
-        $(this).removeClass('appButtonHover');
-      });
     });
   }
 

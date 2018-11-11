@@ -43,15 +43,6 @@ class DaemonErrorModal extends React.Component {
     });
   }
 
-  componentWillMount() {
-    Tools.hideFunctionIcons();
-  }
-
-  componentWillUnmount() {
-    Tools.showFunctionIcons();
-  }
-
-
   handleCancel() {
     this.props.setDaemonErrorPopup(false);
   }

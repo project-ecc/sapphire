@@ -11,7 +11,6 @@ class TopBar extends Component {
 
   minimize() {
     ipcRenderer.send('minimize');
-    $('.appButton').removeClass('appButtonHover');
   }
 
   fullScreen() {

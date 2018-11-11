@@ -45,15 +45,6 @@ class GenericPanel extends Component {
     }
   }
 
-  componentWillMount(){
-    if(!this.props.showingFunctionIcons){
-      setTimeout(() => {
-        Tools.showFunctionIcons();
-        this.props.setShowingFunctionIcons(true);
-      }, 400)
-    }
-  }
-
   render() {
     return (
       <div>
@@ -70,8 +61,7 @@ class GenericPanel extends Component {
 const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
-    selectedPanel: state.application.selectedPanel,
-    showingFunctionIcons: state.application.showingFunctionIcons
+    selectedPanel: state.application.selectedPanel
   };
 };
 

@@ -1,0 +1,12 @@
+@import "./themes.scss";
+
+.modal-dialog {
+  & > .modal-content {
+	@include themify($themes) {
+	  background-color: themed('popupBackgroundColor');
+	  box-shadow: themed('popupBoxShadow');
+	  color: themed('bodyParagraphColor');
+	}
+	border-radius: 0px;
+  }
+}

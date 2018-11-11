@@ -68,7 +68,6 @@ import {
   NEWS_NOTIFICATIONS,
   STAKING_NOTIFICATIONS,
   SETUP_DONE_INTERNAL,
-  SHOWING_FUNCTION_ICONS,
   CLOSING_APPLICATION,
   SELECTED_THEME,
   SELECTED_THEME_BACKUP,
@@ -77,7 +76,6 @@ import {
   MESSAGING_INPUT_VAL,
   IMPORTING_WALLET_SETUP_DONE,
   NEW_MESSAGE,
-  MESSAGING_MOBILE_VIEW,
   SHOWING_CHAT_LIST_ONLY,
   MESSAGE_ID,
   IN_MESSAGING,
@@ -583,12 +581,6 @@ export const setSetupDoneInternal = (val) => {
 	}
 };
 
-export const setShowingFunctionIcons = (val) => {
-	return{
-		type: SHOWING_FUNCTION_ICONS,
-		payload: val
-	}
-};
 export const setClosingApplication = () => {
 	return{
 		type: CLOSING_APPLICATION
@@ -640,13 +632,6 @@ export const setImportingWalletWithSetupDone = (val) => {
 export const addNewMessage = (val) => {
 	return{
 		type: NEW_MESSAGE,
-		payload: val
-	}
-};
-
-export const setMobileView = (val) => {
-	return{
-		type: MESSAGING_MOBILE_VIEW,
 		payload: val
 	}
 };

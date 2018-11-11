@@ -2,7 +2,6 @@ import {
 		MESSAGING_SHOW_TITLE_TOPBAR,
 		MESSAGING_INPUT_VAL,
 		NEW_MESSAGE,
-		MESSAGING_MOBILE_VIEW,
 		SHOWING_CHAT_LIST_ONLY,
 		MESSAGE_ID,
 		IN_MESSAGING,
@@ -13,7 +12,7 @@ import {
 } from '../actions/types';
 
 
-const INITIAL_STATE = {showingTitleTopBar: false, chatsPreview:[], inputValue: "", messages: {}, mobileView: false, selectedId: 1, showingChatListOnly: false, activeContactName: "Sapphire", inMessaging: false, warning:true, enabled: false, userHoveredOptionsIcon: false, userHasCheckedGriffithChat: false, clickedSearchButton: false, clickedBinButton: false, clickedSendEccButton: false, clickedFileButton: false, clickedNotificationsButton: false, clickedSearchInputButton: false, clickAddContactButton: false, clickChatListButton: false, sentMessageAboutFullMessagingMode: false}
+const INITIAL_STATE = {showingTitleTopBar: false, chatsPreview:[], inputValue: "", messages: {}, selectedId: 1, showingChatListOnly: false, activeContactName: "Sapphire", inMessaging: false, warning:true, enabled: false, userHoveredOptionsIcon: false, userHasCheckedGriffithChat: false, clickedSearchButton: false, clickedBinButton: false, clickedSendEccButton: false, clickedFileButton: false, clickedNotificationsButton: false, clickedSearchInputButton: false, clickAddContactButton: false, clickChatListButton: false, sentMessageAboutFullMessagingMode: false}
 
 export default(state = INITIAL_STATE, action) => {
    	if(action.type == MESSAGING_SHOW_TITLE_TOPBAR){
@@ -31,17 +30,17 @@ export default(state = INITIAL_STATE, action) => {
 		let sentMessageAboutFullMessagingMode = state.sentMessageAboutFullMessagingMode;
 
 		switch(action.payload.clickType){
-			case "search": 
+			case "search":
 				clickedSearchButton = true; break;
-			case "bin": 
+			case "bin":
 				clickedBinButton = true; break;
-			case "sendEcc": 
+			case "sendEcc":
 				clickedSendEccButton = true; break;
-			case "file": 
+			case "file":
 				clickedFileButton = true; break;
-			case "notifications": 
+			case "notifications":
 				clickedNotificationsButton = true; break;
-			case "searchInput": 
+			case "searchInput":
 				clickedSearchInputButton = true; break;
 			case "add":
 				clickAddContactButton = true; break;
@@ -76,9 +75,6 @@ export default(state = INITIAL_STATE, action) => {
 	}
 	else if(action.type == SHOWING_CHAT_LIST_ONLY){
 		return {...state, showingChatListOnly: action.payload}
-	}
-	else if(action.type == MESSAGING_MOBILE_VIEW){
-		return {...state, mobileView: action.payload}
 	}
 	else if(action.type == IN_MESSAGING){
 		return {...state, inMessaging: action.payload}

@@ -21,15 +21,6 @@ class ActionResultPopup extends React.Component {
     }
   }
 
-  componentWillMount(){
-    Tools.hideFunctionIcons();
-  }
-
-  componentWillUnmount()
-  {
-    Tools.showFunctionIcons();
-  }
-
   handleCancel(){
     this.props.setActionPopupResult({flag: false, successful: false, message: ''});
   }

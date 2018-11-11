@@ -60,27 +60,12 @@ class ImportPrivateKey extends React.Component {
     });
   }
 
-  hideFunctionIcons(){
-    if(this.props.showingFunctionIcons){
-      Tools.hideFunctionIcons();
-      this.props.setShowingFunctionIcons(false);
-    }
-  }
-
-  showFunctionIcons(){
-    if(!this.props.showingFunctionIcons){
-      Tools.showFunctionIcons();
-      this.props.setShowingFunctionIcons(true);
-    }
-  }
-
   importPrivateKey(){
     if(this.props.passwordVal === ""){
       this.showWrongPassword();
       return;
     }
     this.unlockWallet(false, 5, () => {
-      this.hideFunctionIcons();
       this.importingAddress();
       this.props.setCheckingDaemonStatusPrivKey(true);
       const method = "importprivkey";
@@ -90,7 +75,6 @@ class ImportPrivateKey extends React.Component {
         if(result[0] === null){
           console.log("imported address");
           this.props.setCheckingDaemonStatusPrivKey(false);
-          this.showFunctionIcons();
           this.addressImported();
         }
         //loading wallet
@@ -104,15 +88,12 @@ class ImportPrivateKey extends React.Component {
           console.log("failed to import address");
           this.failedToImportAddress();
           this.props.setCheckingDaemonStatusPrivKey(false);
-          setTimeout(() =>
-          this.showFunctionIcons(), 600)
         }
       }).catch((result) => {
         console.log("ERROR IMPORTING ADDRESS: ", result);
         if(result.code === "ECONNREFUSED"){
           this.failedToImportAddress();
           this.props.setCheckingDaemonStatusPrivKey(false);
-          this.showFunctionIcons();
         }
         //imported but rescaning
         else if(result.code === "ESOCKETTIMEDOUT"){
@@ -127,7 +108,6 @@ class ImportPrivateKey extends React.Component {
     var self = this;
     this.props.wallet.getInfo().then((data) => {
       // TODO tell the daemon connector to reindex transactions
-      self.showFunctionIcons();
       self.props.setCheckingDaemonStatusPrivKey(false);
       self.addressImported();
     })
@@ -303,7 +283,6 @@ class ImportPrivateKey extends React.Component {
     wallet: state.application.wallet,
     passwordVal: state.setup.password,
     checkingDaemonStatusPrivateKey: state.application.checkingDaemonStatusPrivateKey,
-    showingFunctionIcons: state.application.showingFunctionIcons,
     setupDoneInternal: state.startup.setupDoneInternal,
     rescanningLogInfo: state.application.debugLog
   };

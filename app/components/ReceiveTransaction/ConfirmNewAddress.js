@@ -31,13 +31,8 @@ class ConfirmNewAddress extends React.Component {
     }
   }
 
-  componentWillMount(){
-    Tools.hideFunctionIcons();
-  }
-
   componentWillUnmount()
   {
-    Tools.showFunctionIcons();
     this.props.setNewAddressNamePopup("");
     this.props.setPassword('');
   }

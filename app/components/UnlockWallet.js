@@ -20,10 +20,6 @@ class UnlockWallet extends React.Component {
     this.unlockWallet = this.unlockWallet.bind(this);
   }
 
-  componentWillMount(){
-    Tools.hideFunctionIcons();
-  }
-
   wrongPasswordToast () {
     Toast({
       title: this.props.lang.error,
@@ -70,7 +66,6 @@ class UnlockWallet extends React.Component {
   {
     this.props.setPopupLoading(false)
     this.props.setPassword("");
-    Tools.showFunctionIcons();
   }
 
   handleConfirm(){

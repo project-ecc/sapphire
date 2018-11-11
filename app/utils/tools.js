@@ -417,18 +417,6 @@ module.exports = {
     }, 400);
   },
 
-  showFunctionIcons(element) {
-    TweenMax.set('.functionIcon', { css: { display: 'inline-block' } });
-    TweenMax.staggerFromTo('.functionIcon', 0.4, { x: 20, autoAlpha: 0 }, { x: 0, autoAlpha: 1 }, -0.2);
-  },
-
-  hideFunctionIcons(element) {
-    TweenMax.staggerTo('.functionIcon', 0.4, { x: 20, autoAlpha: 0 }, -0.2);
-    setTimeout(() => {
-      TweenMax.set('.functionIcon', { css: { display: 'none' } });
-    }, 600);
-  },
-
   highlightInput(element, duration) {
     $(element).addClass('inputCustomHighlight');
     setTimeout(() => {

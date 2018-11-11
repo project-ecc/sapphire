@@ -23,15 +23,6 @@ class Root extends Component {
     this.startUp = this.startUp.bind(this);
   }
 
-  componentWillMount() {
-    if(!this.props.showingFunctionIcons){
-      setTimeout(() => {
-        Tools.showFunctionIcons();
-        this.props.setShowingFunctionIcons(true);
-      }, 400);
-    }
-  }
-
   componentDidMount() {
     this.props.getSetup();
     this.startUp();
@@ -40,17 +31,7 @@ class Root extends Component {
       if (this.props.loader) {
         TweenMax.to('#loading-wrapper', 0.3, { autoAlpha: 0.5 });
       }
-      Tools.hideFunctionIcons();
       this.props.setClosingApplication();
-    });
-
-    ipcRenderer.on('focused', (e) => {
-      $('.appButton').mouseover(function () {
-        $(this).addClass('appButtonHover');
-      });
-      $('.appButton').mouseleave(function () {
-        $(this).removeClass('appButtonHover');
-      });
     });
   }
 
@@ -85,7 +66,7 @@ class Root extends Component {
 
     if (ns && ns.operative_system !== undefined && ns.operative_system) { operativeSystemNotifications = true; }
     // TODO : news notifications?
-    // if (ns && ns.news !== undefined && ns.news) { newsNotifications = true; }
+    if (ns && ns.news !== undefined && ns.news) { newsNotifications = true; }
     if (ns && ns.staking !== undefined && ns.staking) { stakingNotifications = true; }
 
     this.props.setOperativeSystemNotifications(operativeSystemNotifications);
@@ -99,6 +80,16 @@ class Root extends Component {
     }
   }
 
+  checkThemeClass (theme) {
+    const availablethemes = ['theme-darkEcc', 'theme-defaultEcc'];
+    for (const ele in availablethemes) {
+      if (document.body.classList.contains(availablethemes[ele])) {
+        document.body.classList.remove(availablethemes[ele]);
+      }
+    }
+    document.body.classList.add(theme);
+  }
+
   render() {
     const { store } = this.props;
     const ready = (!this.props.unencryptedWallet && !this.props.shouldImportWallet && this.props.setupDone && !this.props.loader && !this.props.updatingApplication && !this.props.importingWalletWithSetupDone);
@@ -107,20 +98,21 @@ class Root extends Component {
       hash.push('/setup');
     }
 
+    /* Add the theme class to body */
+    this.checkThemeClass(this.props.theme);
+
     return (
       <Provider store={store}>
         <Router>
-          <div className={this.props.theme}>
-            <div id="main">
-              <TopBar />
-              {!this.props.importingWalletWithSetupDone && (this.props.loader || this.props.updatingApplication) &&
-                <aside>
-                  <Loading />
-                </aside>
-              }
-              <div className="wrapper">
-                <div>{renderRoutes(routes)}</div>
-              </div>
+          <div>
+            <TopBar />
+            {!this.props.importingWalletWithSetupDone && (this.props.loader || this.props.updatingApplication) &&
+              <aside>
+                <Loading />
+              </aside>
+            }
+            <div className="wrapper">
+              <div>{renderRoutes(routes)}</div>
             </div>
           </div>
         </Router>

@@ -32,13 +32,8 @@ class SendConfirmation extends React.Component {
     });
   }
 
-  componentWillMount(){
-    Tools.hideFunctionIcons();
-  }
-
   componentWillUnmount()
   {
-    Tools.showFunctionIcons();
     this.props.setMultipleAnsAddresses([]);
     this.props.setUsernameSend("");
   }
