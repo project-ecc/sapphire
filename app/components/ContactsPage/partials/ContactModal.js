@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, Button, ModalFooter } from 'reactstrap';
 import * as actions from '../../../actions/index';
 import Input from '../../Others/Input';
 import Tools from './../../../utils/tools';
@@ -199,9 +199,6 @@ class ContactModal extends Component {
             );
           })}
         </div>
-        <div className="mt-2 d-flex justify-content-end">
-          <Button color="primary" disabled={this.state.newContact.address === null} onClick={this.addContact}>Add Contact</Button>
-        </div>
       </div>
     );
   }
@@ -215,6 +212,9 @@ class ContactModal extends Component {
           <hr />
           {this.renderResults()}
         </ModalBody>
+        <ModalFooter>
+          <Button color="primary" disabled={this.state.newContact.address === null} onClick={this.addContact}>Add Contact</Button>
+        </ModalFooter>
       </Modal>
     );
   }

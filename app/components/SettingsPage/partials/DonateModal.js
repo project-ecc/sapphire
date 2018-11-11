@@ -19,11 +19,6 @@ class DonateModal extends Component {
     this.toggle = this.toggle.bind(this);
   }
 
-  componentDidUpdate(p1, p2) {
-    console.log(p1);
-    console.log(p2);
-  }
-
   toggle() {
     this.setState({
       open: !this.state.open
@@ -51,8 +46,8 @@ class DonateModal extends Component {
           <p className="popupTitle" style={{ fontWeight: 700, color: 'white', paddingTop: '0px', textTransform: 'uppercase' }}>{t.ticker}</p>
           <p className="selectableText" style={{ fontSize: '0.75em' }}>{t.address}</p>
           <p className="">{Tools.formatNumber(t.balance)}</p>
-          {t.ticker == 'ecc' ? <div className="buttonPrimary caps" onClick={this.handleECCDonation.bind(this, t)}>
-            <span className="fa fa-gift" /> Donate Now!</div> : null}
+          {t.ticker == 'ecc' && <Button color="warning mt-1" size="sm" onClick={this.handleECCDonation.bind(this, t)}>
+            <span className="fa fa-gift" /> Donate Now!</Button>}
         </div>
       );
     });

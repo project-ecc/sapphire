@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import {connect} from "react-redux";
+import { Button } from 'reactstrap';
+import * as actions from "../../../actions";
 
 class Goal extends Component {
   constructor(props) {
@@ -60,12 +63,18 @@ class Goal extends Component {
             </div>
           </div>
           {goal.currentBTCTotal >= goal.goalBTCTotal ? <span className="buttonPrimary caps disabled"><img src="/img/ecc_logo_white.svg" />Thanks</span> :
-            <div className="buttonPrimary caps" onClick={() => this.props.handleClick(goal)} data-toggle="modal" data-target={`#goal-${goal.id}-detail`}>
-              <span className="fa fa-gift" /> Donate</div>}
+            <Button color="warning" onClick={() => this.props.handleClick(goal)} data-toggle="modal" data-target={`#goal-${goal.id}-detail`}>
+              <span className="fa fa-gift" /> {this.props.lang.donate}</Button>}
         </div>
       </div>
     );
   }
 }
 
-export default Goal;
+const mapStateToProps = state => {
+  return {
+    lang: state.startup.lang
+  };
+};
+
+export default connect(mapStateToProps, actions)(Goal);

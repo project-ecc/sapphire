@@ -1,6 +1,8 @@
 @import "./themes.scss";
 
 .modal-dialog {
+  margin-top: 2.75rem;
+
   & > .modal-content {
 	@include themify($themes) {
 	  background-color: themed('popupBackgroundColor');
@@ -8,5 +10,25 @@
 	  color: themed('bodyParagraphColor');
 	}
 	border-radius: 0px;
+	padding: 10px;
+
+	& > .modal-header {
+	  border-bottom: none;
+
+	  .modal-title {
+		font-weight: 800;
+		font-size: 1.5em;
+	  }
+
+	  .close {
+		color: #fff;
+		text-shadow: none;
+		font-size: 1.75rem;
+	  }
+	}
+
+	& > .modal-footer {
+	  border-top: none;
+	}
   }
 }

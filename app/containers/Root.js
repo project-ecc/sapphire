@@ -111,9 +111,7 @@ class Root extends Component {
                 <Loading />
               </aside>
             }
-            <div className="wrapper">
-              <div>{renderRoutes(routes)}</div>
-            </div>
+            <div>{renderRoutes(routes)}</div>
           </div>
         </Router>
       </Provider>
