@@ -1,5 +1,17 @@
 @import "./themes.scss";
 
+.modal-backdrop.show {
+  opacity: 0.8 !important;
+}
+
+.modal.fade .modal-dialog {
+  transform: translate(0, -25%) scale(0.9);
+}
+
+.modal.show .modal-dialog {
+  transform: translate(0, 0) scale(1);
+}
+
 .modal-dialog {
   margin-top: 2.75rem;
 

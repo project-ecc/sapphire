@@ -8,6 +8,7 @@ import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 import Input from '../Others/Input';
 import renderHTML from 'react-render-html';
 import Toast from './../../globals/Toast/Toast';
+import hash from './../../router/hash';
 
 import $ from 'jquery';
 import {getAddress} from "../../Managers/SQLManager";
@@ -38,7 +39,7 @@ class ConfirmNewAddress extends React.Component {
   }
 
   goToBackupPage(){
-    this.props.setSettingsOptionSelected("Wallet");
+   hash.push('/settings/wallet');
   }
 
   createNormalAddress(){

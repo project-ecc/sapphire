@@ -18,7 +18,7 @@
 	overflow-y: auto;
 	overflow-x: hidden;
 	font-weight: normal;
-	transition: transform 0.3s;
+	transition: transform 0.3s, background-color 0.25s ease, color 0.25s ease;
 	transform: translateX(0px);
 	z-index: 5;
 	flex: 0;
@@ -80,6 +80,13 @@
 			top:0;
 			bottom:0;
 			margin: auto;
+
+			&.left-align {
+			  position: relative;
+			  right:0;
+			  top:-1px;
+			  margin-right: 10px;
+			}
 		  }
 		}
 
@@ -88,6 +95,21 @@
 			background-color: themed('sidebarSubOptionRectangleBackgroundColor');
 			color: themed('sidebarSelectedItemColor') !important;
 		  }
+		}
+	  }
+	}
+
+	.social{
+	  width: 100%;
+	  margin-top: 30px;
+	  margin-left: 10px;
+
+	  & > .mdi-icon {
+		margin-right: 15px;
+		cursor: pointer;
+
+		&:hover {
+		  color: #fff;
 		}
 	  }
 	}

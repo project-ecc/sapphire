@@ -4,17 +4,24 @@ import { Switch } from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import {connect} from "react-redux";
 import * as actions from '../actions';
-import Sidebar from './../containers/Sidebar';
+import Sidebar from '../containers/MainSidebar';
 
 class Main extends Component {
+  sidebar () {
+    const Sidebar = this.props.route.sidebar;
+    return (
+      <Sidebar />
+    );
+  }
+
   render () {
-    const { route, location } = this.props
-    const currentKey = location.pathname.split('/')[1] || '/'
-    const timeout = { enter: 150, exit: 250 }
+    const { route, location } = this.props;
+    const currentKey = location.pathname.split('/')[1] || '/';
+    const timeout = { enter: 150, exit: 250 };
 
     return (
       <div id="page">
-        <Sidebar />
+        { this.sidebar() }
         <div className="container-fluid">
           <TransitionGroup component="main">
             <CSSTransition key={currentKey} timeout={timeout} classNames="pageTransition" appear>

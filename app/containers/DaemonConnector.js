@@ -23,7 +23,6 @@ import {
   NEWS_NOTIFICATION,
   STAKING_NOTIFICATION,
   UNENCRYPTED_WALLET,
-  SETTINGS_OPTION_SELECTED,
   TELL_USER_OF_UPDATE,
   SET_DAEMON_VERSION,
   STAKING_REWARD_UPDATE,
@@ -417,7 +416,7 @@ class DaemonConnector {
 
   notifyUserOfApplicationUpdate() {
     const callback = () => {
-      this.store.dispatch({ type: SETTINGS_OPTION_SELECTED, payload: 'General' });
+      hash.push('/settings');
     };
     const body = this.store.getState().startup.lang.updateAvailableNotif;
 

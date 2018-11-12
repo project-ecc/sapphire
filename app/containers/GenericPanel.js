@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
 import ToggleButton from 'react-toggle';
-import Sidebar from './Sidebar';
+import Sidebar from './MainSidebar';
 import MessagingPage from './Pages/MessagingPage';
 import HomePage from './Pages/HomePage';
 import ReceivePage from './Pages/ReceivePage';

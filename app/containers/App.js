@@ -3,7 +3,7 @@ import { ipcRenderer } from 'electron';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import Sidebar from './Sidebar';
+import Sidebar from './MainSidebar';
 import InitialSetup from '../Layouts/Setup';
 import Settings from '../components/SettingsPage/Settings';
 import Loading from '../Layouts/Loading';

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import $ from 'jquery';
 import { NavLink } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
 import { BellOutlineIcon, CurrencyUsdIcon, SendIcon, FormatListBulletedIcon, ContactsIcon, ForumIcon, SettingsOutlineIcon, NewspaperIcon } from 'mdi-react';
@@ -10,7 +9,7 @@ import * as actions from '../actions';
 
 const Tools = require('../utils/tools');
 
-class Sidebar extends Component {
+class MainSidebar extends Component {
   constructor(props) {
     super(props);
 
@@ -151,4 +150,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, actions, null, { pure: false })(Sidebar);
+export default connect(mapStateToProps, actions, null, { pure: false })(MainSidebar);

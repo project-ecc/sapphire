@@ -63,6 +63,7 @@ body {
 	background-color: themed('bodyBackgroundColor');
 	color: themed('bodyParagraphColor');
   }
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 p{
@@ -308,6 +309,11 @@ input::-webkit-inner-spin-button {
   z-index: 11;
   display: none;
   opacity: 0;
+}
+
+/* Style fixes */
+.btn.disabled, .btn:disabled {
+	opacity: 0.2;
 }
 
 @import "./styles/Send.scss";

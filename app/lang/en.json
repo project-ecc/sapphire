@@ -322,5 +322,6 @@
     "eth": "ETH",
     "ltc": "LTC",
     "bch": "BCH",
-    "donate" : "Donate"
+    "donate" : "Donate",
+    "back": "Back"
 }

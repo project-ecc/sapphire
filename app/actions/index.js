@@ -60,7 +60,6 @@ import {
   UPDATE_APPLICATION,
   UPDATING_APP,
   UPDATE_AVAILABLE,
-  SETTINGS_OPTION_SELECTED,
   NEWS_CHECKED,
   EARNINGS_CHECKED,
   UNENCRYPTED_WALLET,
@@ -522,13 +521,6 @@ export const setUpdateAvailable = () => {
 	return{
 		type: UPDATE_AVAILABLE,
 		payload: {guiUpdate: false, daemonUpdate: false}
-	}
-};
-
-export const setSettingsOptionSelected = (val) => {
-	return{
-		type: SETTINGS_OPTION_SELECTED,
-		payload: val
 	}
 };
 

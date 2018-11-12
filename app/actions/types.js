@@ -73,7 +73,6 @@ export const NEWS_SWITCHING_PAGE = "news_switching_page";
 export const UPDATE_APPLICATION = "update_application";
 export const UPDATING_APP = "updating_app";
 export const UPDATE_AVAILABLE = "update_available";
-export const SETTINGS_OPTION_SELECTED = "settings_option_selected";
 export const NEWS_CHECKED = "news_checked";
 export const EARNINGS_CHECKED = "earnings_checked";
 export const NEWS_NOTIFICATION = "news_notification";
