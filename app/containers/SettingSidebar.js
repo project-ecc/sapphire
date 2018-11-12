@@ -34,14 +34,6 @@ class SettingSidebar extends Component {
             <div className="menu">
               <ul>
                 <li>
-                  <NavLink to="/" exact activeClassName="active">
-                    <ArrowLeftIcon size={20} className="left-align" />
-                    { this.props.lang.back }
-                  </NavLink>
-                </li>
-              </ul>
-              <ul>
-                <li>
                   <a className="subheading">{ this.props.lang.appSettings }</a>
                 </li>
                 <li>

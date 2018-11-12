@@ -70,42 +70,43 @@ export default [
   {
     component: MainLayout,
     sidebar: MainSidebar,
+    path: '/coin',
     routes: [
       {
-        path: '/',
+        path: '/coin',
         exact: true,
         component: HomePage
       },
       {
-        path: '/send',
+        path: '/coin/send',
         component: SendPage
       },
       {
-        path: '/addresses',
+        path: '/coin/addresses',
         component: ReceivePage
       },
       {
-        path: '/transactions',
+        path: '/coin/transactions',
         component: TransactionPage
       },
       {
-        path: '/news',
+        path: '/coin/news',
         component: NewsPage
       },
       {
-        path: '/network',
+        path: '/coin/network',
         component: NetworkStatsPage
       },
       {
-        path: '/contacts',
+        path: '/coin/contacts',
         component: ContactsPage
       },
       {
-        path: '/messages',
+        path: '/coin/messages',
         component: MessagingPage
       },
       {
-        path: '/files',
+        path: '/coin/files',
         component: FileStoragePage
       }
     ]

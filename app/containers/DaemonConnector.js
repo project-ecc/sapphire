@@ -542,7 +542,7 @@ class DaemonConnector {
         if (totalNews == 0 || !this.store.getState().notifications.newsNotificationsEnabled) return;
         const body = totalNews == 1 ? title : `${totalNews} ${title}`;
         const callback = () => {
-          hash.push('/news');
+          hash.push('/coin/news');
         };
 
         this.queueOrSendNotification(callback, body);
@@ -819,7 +819,7 @@ class DaemonConnector {
   goToEarningsPanel() {
     // this.store.dispatch({type: IS_FILTERING_TRANSACTIIONS, payload: true})
     this.store.dispatch({ type: TRANSACTIONS_TYPE, payload: 'generate' });
-    hash.push('/transactions');
+    hash.push('/coin/transactions');
   }
 
   async insertIntoDb(entries) {

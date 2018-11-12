@@ -43,25 +43,25 @@ class MainSidebar extends Component {
                   <a className="subheading">{ this.props.lang.wallet }</a>
                 </li>
                 <li>
-                  <NavLink to="/" exact activeClassName="active">
+                  <NavLink to="/coin" exact activeClassName="active">
                     <CurrencyUsdIcon size={20} />
                     { this.props.lang.overview }
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/send" activeClassName="active">
+                  <NavLink to="/coin/send" activeClassName="active">
                     <SendIcon size={20} />
                     { this.props.lang.send }
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/addresses" activeClassName="active">
+                  <NavLink to="/coin/addresses" activeClassName="active">
                     <img src={addresses} />
                     { this.props.lang.addresses }
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/transactions" activeClassName="active">
+                  <NavLink to="/coin/transactions" activeClassName="active">
                     <FormatListBulletedIcon size={20} />
                     { this.props.lang.transactions }
                   </NavLink>
@@ -84,7 +84,7 @@ class MainSidebar extends Component {
                 {/* </NavLink> */}
                 {/* </li> */}
                 <li>
-                  <NavLink to="/contacts">
+                  <NavLink to="/coin/contacts">
                     <ContactsIcon size={20} />
                     { this.props.lang.contacts }
                   </NavLink>
@@ -104,22 +104,16 @@ class MainSidebar extends Component {
                   </a>
                 </li>
                 <li>
-                  <NavLink to="/news">
+                  <NavLink to="/coin/news">
                     <NewspaperIcon size={20} />
                     { this.props.lang.eccNews }
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to="/settings">
-                    <SettingsOutlineIcon size={20} />
-                    { this.props.lang.settings }
                   </NavLink>
                 </li>
               </ul>
             </div>
           </div>
           <div className="connections sidebar-section-container">
-            <NavLink to="/network" data-tip="View network stats" data-id="network">
+            <NavLink to="/coin/network" data-tip="View network stats" data-id="network">
               <p style={{ fontSize: '13px' }}>{`${this.props.lang.syncing} ${progressBar}%`}</p>
               <div className="progress">
                 <div className="bar" style={{ width: `${progressBar}%` }} />

@@ -29,7 +29,7 @@ class DonateModal extends Component {
     this.toggle()
     this.props.setAddressSend(eccObject.address);
     this.props.setAddressOrUsernameSend(eccObject.address);
-    hash.push('/send');
+    hash.push('/coin/send');
   }
 
   renderGoals() {
