@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
+import { SettingsIcon } from 'mdi-react';
+
 import * as actions from '../../../actions';
 import SettingsToggle from './../SettingsToggle';
+import Header from './../../Others/Header';
+import Body from './../../Others/Body';
 
 const settings = require('electron').remote.require('electron-settings');
 
@@ -44,26 +48,32 @@ class Notifications extends Component {
   render() {
     return (
       <div>
-        <SettingsToggle
-          keyVal={2}
-          text={this.props.lang.operativeSystemNotifications}
-          subText={this.props.operativeSystemNotifications ? <p className="settingsToggleSubText">{ this.props.lang.operativeSystemNotificationDisable }</p> : <p className="settingsToggleSubText">{ this.props.lang.operativeSystemNotificationEnable }</p>}
-          handleChange={this.handleOperativeSystemNotifications}
-          checked={this.props.operativeSystemNotifications}
-        />
-        <SettingsToggle
-          keyVal={3}
-          text={<p>{ this.props.lang.eccNewsNotificationsFrom } <span className="mediumToggle" onClick={this.handleMediumClick}>Medium</span></p>}
-          handleChange={this.handleNewsNotifications}
-          checked={this.props.newsNotifications}
-        />
-        <SettingsToggle
-          keyVal={1}
-          text={this.props.lang.stakingNotifications}
-          subText={this.props.stakingNotifications ? <p className="settingsToggleSubText">{ this.props.lang.stakingNotificationsDisable }</p> : <p className="settingsToggleSubText">{ this.props.lang.stakingNotificationsEnable }</p>}
-          handleChange={this.handleStakingNotifications}
-          checked={this.props.stakingNotifications}
-        />
+        <Header>
+          <SettingsIcon />
+          { this.props.lang.notifications }
+        </Header>
+        <Body>
+          <SettingsToggle
+            keyVal={2}
+            text={this.props.lang.operativeSystemNotifications}
+            subText={this.props.operativeSystemNotifications ? <p className="settingsToggleSubText">{ this.props.lang.operativeSystemNotificationDisable }</p> : <p className="settingsToggleSubText">{ this.props.lang.operativeSystemNotificationEnable }</p>}
+            handleChange={this.handleOperativeSystemNotifications}
+            checked={this.props.operativeSystemNotifications}
+          />
+          <SettingsToggle
+            keyVal={3}
+            text={<p>{ this.props.lang.eccNewsNotificationsFrom } <span className="mediumToggle" onClick={this.handleMediumClick}>Medium</span></p>}
+            handleChange={this.handleNewsNotifications}
+            checked={this.props.newsNotifications}
+          />
+          <SettingsToggle
+            keyVal={1}
+            text={this.props.lang.stakingNotifications}
+            subText={this.props.stakingNotifications ? <p className="settingsToggleSubText">{ this.props.lang.stakingNotificationsDisable }</p> : <p className="settingsToggleSubText">{ this.props.lang.stakingNotificationsEnable }</p>}
+            handleChange={this.handleStakingNotifications}
+            checked={this.props.stakingNotifications}
+          />
+        </Body>
       </div>
     );
   }

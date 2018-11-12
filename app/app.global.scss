@@ -320,3 +320,41 @@ input::-webkit-inner-spin-button {
 @import "./styles/UnlockWallet.scss";
 @import "./styles/Receive.scss";
 @import "./styles/CreateAddressPopup.scss";
+
+
+/* Main page components */
+.header {
+  padding:0px 0px 20px 0px;
+  margin-bottom: 30px;
+  margin: 0 40px 30px 40px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  position: relative;
+  z-index: 1;
+
+  .title {
+	font-size: 30px;
+  }
+
+  svg {
+	position:relative;
+	top:-2px;
+	margin-right: 10px;
+  }
+
+  &:after {
+	content: '';
+	position: absolute;
+	height: 80px;
+	top:calc(100% + 1px);
+	right:0;
+	left:0;
+	pointer-events: none;
+	background: radial-gradient(ellipse at 50% -3%, rgba(0, 0, 0, 0.3), rgba(97, 97, 97, 0) 70%);
+  }
+}
+
+.body {
+  position: relative;
+  z-index: 2;
+  padding: 20px 40px 40px 40px;
+}

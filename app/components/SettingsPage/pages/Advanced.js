@@ -4,9 +4,13 @@ import { getSapphireDirectory } from '../../../utils/platform.service';
 import * as actions from '../../../actions';
 import Console from './../Console';
 import fs from 'fs';
+import { SettingsIcon } from 'mdi-react';
 
 const remote = require('electron').remote;
 const app = remote.app;
+
+import Header from './../../Others/Header';
+import Body from './../../Others/Body';
 
 class Advanced extends Component {
   constructor(props) {
@@ -45,30 +49,36 @@ class Advanced extends Component {
   render() {
     return (
       <div>
-        <div className="row settingsToggle" >
-          <div className="col-sm-9 text-left removePadding">
-            <p>Delete And Reindex</p>
-            <p className="walletBackupOptions" style={{ fontSize: '14px', fontWeight: '700' }}>Delete Index Transactions database (WARNING) this will delete your contacts</p>
+        <Header>
+          <SettingsIcon />
+          { this.props.lang.advanced }
+        </Header>
+        <Body>
+          <div className="row settingsToggle" >
+            <div className="col-sm-9 text-left removePadding">
+              <p>Delete And Reindex</p>
+              <p className="walletBackupOptions" style={{ fontSize: '14px', fontWeight: '700' }}>Delete Index Transactions database (WARNING) this will delete your contacts</p>
+            </div>
+            <div className="col-sm-3 text-right removePadding">
+              <p onClick={this.deleteAndReIndex.bind(this)} style={{ cursor: 'pointer' }}>Delete & Relaunch</p>
+            </div>
           </div>
-          <div className="col-sm-3 text-right removePadding">
-            <p onClick={this.deleteAndReIndex.bind(this)} style={{ cursor: 'pointer' }}>Delete & Relaunch</p>
+          <div className="row settingsToggle">
+            <div className="col-sm-6 text-left removePadding">
+              <p>Banlist</p>
+              <p id="applicationVersion">Click clear banlist to remove all the banned nodes.</p>
+            </div>
+            <div className="col-sm-6 text-right removePadding">
+              <p onClick={this.clearBanlist.bind(this)} style={{ cursor: 'pointer' }}>Clear Banlist</p>
+            </div>
           </div>
-        </div>
-        <div className="row settingsToggle">
-          <div className="col-sm-6 text-left removePadding">
-            <p>Banlist</p>
-            <p id="applicationVersion">Click clear banlist to remove all the banned nodes.</p>
+          <div className="row settingsToggle text-left">
+            <div className="col-xs-12" style={{ width: '100%' }}>
+              <p>Console</p>
+              <Console />
+            </div>
           </div>
-          <div className="col-sm-6 text-right removePadding">
-            <p onClick={this.clearBanlist.bind(this)} style={{ cursor: 'pointer' }}>Clear Banlist</p>
-          </div>
-        </div>
-        <div className="row settingsToggle text-left">
-          <div className="col-xs-12" style={{ width: '100%' }}>
-            <p>Console</p>
-            <Console />
-          </div>
-        </div>
+        </Body>
       </div>
     );
   }

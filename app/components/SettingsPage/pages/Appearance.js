@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { SettingsIcon } from 'mdi-react';
+
 import * as actions from '../../../actions';
 import ThemeSelector from '../../Others/ThemeSelector';
+import Header from './../../Others/Header';
+import Body from './../../Others/Body';
 
 class Appearance extends Component {
   constructor(props) {
@@ -11,8 +15,14 @@ class Appearance extends Component {
   render() {
     return (
       <div>
-        <p id="walletBackup">{ this.props.lang.theme }</p>
-        <ThemeSelector />
+        <Header>
+          <SettingsIcon />
+          { this.props.lang.appearance }
+        </Header>
+        <Body>
+          <p id="walletBackup">{ this.props.lang.theme }</p>
+          <ThemeSelector />
+        </Body>
       </div>
     );
   }

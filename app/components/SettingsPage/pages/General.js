@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
 import fs from 'fs';
+import { SettingsIcon } from 'mdi-react';
 
 import * as actions from '../../../actions';
 import { version } from './../../../../package.json';
 import SettingsToggle from './../SettingsToggle';
+import Header from './../../Others/Header';
+import Body from './../../Others/Body';
 
 const settings = require('electron').remote.require('electron-settings');
 const remote = require('electron').remote;
@@ -113,47 +116,53 @@ class General extends Component {
   render() {
     return (
       <div>
-        <SettingsToggle
-          keyVal={4}
-          text={this.props.lang.startOnLogin}
-          handleChange={this.handleStartAtLogin}
-          checked={this.props.startAtLogin}
-        />
-        <SettingsToggle
-          keyVal={5}
-          text={this.props.lang.hideTrayIcon}
-          handleChange={this.setTrayIcon}
-          checked={this.props.hideTrayIcon}
-        />
-        <SettingsToggle
-          keyVal={6}
-          text={process.platform === 'darwin' ? this.props.lang.minimizeToTrayMac : this.props.lang.minimizeToTray}
-          handleChange={this.handleMinimizeToTray}
-          checked={this.props.minimizeToTray}
-        />
-        <SettingsToggle
-          keyVal={7}
-          text={this.props.lang.minimizeOnClose}
-          handleChange={this.handleMinimizeOnClose}
-          checked={this.props.minimizeOnClose}
-        />
-        <div className="row settingsToggle">
-          <div className="col-sm-6 text-left removePadding">
-            <p>{ this.props.lang.applicationVersion }</p>
-            <p id="applicationVersion">v{guiVersion}g & v{this.props.daemonVersion}d</p>
+        <Header>
+          <SettingsIcon />
+          { this.props.lang.general }
+        </Header>
+        <Body>
+          <SettingsToggle
+            keyVal={4}
+            text={this.props.lang.startOnLogin}
+            handleChange={this.handleStartAtLogin}
+            checked={this.props.startAtLogin}
+          />
+          <SettingsToggle
+            keyVal={5}
+            text={this.props.lang.hideTrayIcon}
+            handleChange={this.setTrayIcon}
+            checked={this.props.hideTrayIcon}
+          />
+          <SettingsToggle
+            keyVal={6}
+            text={process.platform === 'darwin' ? this.props.lang.minimizeToTrayMac : this.props.lang.minimizeToTray}
+            handleChange={this.handleMinimizeToTray}
+            checked={this.props.minimizeToTray}
+          />
+          <SettingsToggle
+            keyVal={7}
+            text={this.props.lang.minimizeOnClose}
+            handleChange={this.handleMinimizeOnClose}
+            checked={this.props.minimizeOnClose}
+          />
+          <div className="row settingsToggle">
+            <div className="col-sm-6 text-left removePadding">
+              <p>{ this.props.lang.applicationVersion }</p>
+              <p id="applicationVersion">v{guiVersion}g & v{this.props.daemonVersion}d</p>
+            </div>
+            <div className="col-sm-6 text-right removePadding">
+              <p onClick={this.handleUpdateApplication.bind(this)} id={this.props.updateAvailable ? 'updateAvailable' : 'updateUnavailable'}>{this.props.updateAvailable ? this.props.lang.installUpdate : this.props.lang.noUpdateAvailable }</p>
+            </div>
           </div>
-          <div className="col-sm-6 text-right removePadding">
-            <p onClick={this.handleUpdateApplication.bind(this)} id={this.props.updateAvailable ? 'updateAvailable' : 'updateUnavailable'}>{this.props.updateAvailable ? this.props.lang.installUpdate : this.props.lang.noUpdateAvailable }</p>
+          <div className="row settingsToggle" >
+            <div className="col-sm-10 text-left removePadding">
+              <p className="walletBackupOptions" style={{ fontSize: '14px', fontWeight: '700' }}>{this.props.lang.sapphireInfoDesc}.</p>
+            </div>
+            <div className="col-sm-2 text-right removePadding">
+              <p onClick={this.handleHelpFile.bind(this)} style={{ cursor: 'pointer' }}>Generate</p>
+            </div>
           </div>
-        </div>
-        <div className="row settingsToggle" >
-          <div className="col-sm-10 text-left removePadding">
-            <p className="walletBackupOptions" style={{ fontSize: '14px', fontWeight: '700' }}>{this.props.lang.sapphireInfoDesc}.</p>
-          </div>
-          <div className="col-sm-2 text-right removePadding">
-            <p onClick={this.handleHelpFile.bind(this)} style={{ cursor: 'pointer' }}>Generate</p>
-          </div>
-        </div>
+        </Body>
       </div>
     );
   }
