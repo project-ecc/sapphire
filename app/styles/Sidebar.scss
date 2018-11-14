@@ -4,6 +4,12 @@
   display: flex;
   min-height: 100vh;
 
+  & > div:nth-child(2) {
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: row;
+  }
+
   /* Sections */
   .sections {
 	@include themify($themes) {
@@ -40,6 +46,7 @@
 	  text-align:center;
 	  position:relative;
 	  padding: 5px 0px;
+	  cursor: pointer;
 
 	  &:before {
 		content: '';
@@ -48,10 +55,9 @@
 		left:0;
 		top:0;
 		bottom:0;
-		background-color:#fff;
-		width:3px;
-		opacity: 0;
-		transition: opacity 0.5s ease;
+		background-color:transparent;
+		width:0px;
+		transition: background-color 0.25s ease, width 0.5s ease;
 	  }
 
 	  &:hover {
@@ -60,11 +66,16 @@
 		}
 	  }
 
+	  &.highlight {
+		color: #cba051;
+	  }
+
 	  &.active {
 		color: #fff !important;
 
 		&:before {
-		  opacity: 1;
+		  width: 3px;
+		  background-color:#fff;
 		}
 	  }
 	}
@@ -166,21 +177,29 @@
 	}
   }
 
-  & > .container-fluid {
+  .right-sidebar {
+	@include themify($themes) {
+	  background-color: themed('rightSidebarBackgroundColor');
+	}
+	flex: 0 0 280px;
+	padding-top:40px;
+  }
+
+  .container-fluid {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+
+	&.with-right {
+	  padding-right: 0px;
+	}
+  }
+
+  main {
 	flex: 1 1 auto;
 	margin: 40px 0 0 0;
 	padding: 0;
 	transition: margin-left 0.4s ease;
-	position:relative;
-
-	& > main > * {
-	  position:absolute;
-	  top:0;
-	  left:0;
-	  right:0;
-	  bottom:0;
-	  overflow: auto;
-	}
   }
 }
 

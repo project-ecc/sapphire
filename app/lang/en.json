@@ -323,5 +323,6 @@
     "ltc": "LTC",
     "bch": "BCH",
     "donate" : "Donate",
-    "back": "Back"
+    "back": "Back",
+    "marketStats": "Market Stats"
 }

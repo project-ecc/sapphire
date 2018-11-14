@@ -7,6 +7,9 @@ import { ipcRenderer } from 'electron';
 import $ from 'jquery';
 import ReactTooltip from 'react-tooltip';
 
+import Header from './../Others/Header';
+import Body from './../Others/Body';
+import RightSidebar from './../Others/RightSidebar';
 const event = require('../../utils/eventhandler');
 const Tools = require('../../utils/tools');
 
@@ -141,100 +144,96 @@ class News extends Component {
     const lastUpdated = Tools.calculateTimeSince(this.props.lang, new Date(), iTime);
     const spinClass = this.state.isLoading ? 'fa-spin' : '';
     return (
-      <div className="panel">
-        <div className="row">
-          <div className="col-md-6">
-            <p id="eccNews">{this.props.lang.eccNews}</p>
-          </div>
-          <div className="col-md-6">
-            {
-              <div className="dropdownFilterSelector" style={{/* width: "100px", marginLeft: "100px", top: "6px", */ height: '35px', padding: '0 0', textAlign: 'center', top: '50px', left: '250px' }} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
-                <div className="selectFilterSelector" style={{ border: 'none', position: 'relative', top: '-1px', height: '30px' }}>
-                  <p className="normalWeight">{this.getValue(this.props.selectedCurrency)}</p>
-                  <i className="fa fa-chevron-down" />
-                </div>
-                <input type="hidden" name="gender" />
-                <ul className="dropdown-menuFilterSelector normalWeight " style={{ margin: '0 0' }}>
-                  <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="usd">{ this.props.lang.usd }</li>
-                  <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="gbp">{ this.props.lang.gbp }</li>
-                  <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="eur">{ this.props.lang.eur }</li>
-                  <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="aud">{ this.props.lang.aud }</li>
-                  <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="btc">{ this.props.lang.btc }</li>
-                  <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="eth">{ this.props.lang.eth }</li>
-                  <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="ltc">{ this.props.lang.ltc }</li>
-                  <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="bch">{ this.props.lang.bch }</li>
-                </ul>
-              </div>
+      <div>
+        <main>
+          <Header>
+            {this.props.lang.eccNews}
+          </Header>
+          <Body>
+            <div id="panelHolder">
+              {this.props.eccPostsArrays.map((array, indexArray) => {
+                return (
+                  <div
+                    className="postsContainer"
+                    id={`postsContainer${indexArray}`}
+                    style={{ opacity: indexArray === (this.props.eccPostsPage - 1) ? '1' : '0',
+                      visibility: indexArray === (this.props.eccPostsPage - 1) ? 'visible' : 'hidden',
+                      transform: indexArray === (this.props.eccPostsPage - 1) ? 'initial' : '' }}
+                    key={`newsPostContainer_${indexArray}`}
+                  >
+                    {array.map((post, index) => {
+                      if (indexArray === (this.props.eccPostsPage - 1)) { items++; }
+                      return (
+                        <NewsItem
+                          title={post.title}
+                          body={`${post.body.slice(0, this.getSpliceValue())} ...`}
+                          time={post.timeSince}
+                          date={post.date}
+                          key={`newsPost_${post.url}`}
+                          hasVideo={post.hasVideo}
+                          url={post.url}
+                        />
+                      );
+                    })
+                }
+                  </div>
+                );
+              })
             }
-          </div>
-        </div>
+            </div>
+            <div id="arrows" style={{ top: items >= this.props.postsPerContainer ? `${155 * this.props.postsPerContainer + 180}px` : `${155 * items + 180}px` }}>
+              <div onClick={this.switchPage.bind(this, 'left')} className={this.props.eccPostsPage - 1 == 0 ? 'increaseClickArea increaseClickAreaLeft cursorPointerFalse' : 'increaseClickArea increaseClickAreaLeft'}>
+                <div id="arrowLeft" className={this.props.eccPostsPage - 1 === 0 ? 'arrowNews arrowInactive arrowLeftNews' : 'arrowNews arrowLeftNews'} />
+              </div>
+              <div onClick={this.switchPage.bind(this, 'right')} className={this.props.eccPostsPage * this.props.postsPerContainer < Object.keys(this.props.eccPosts).length ? 'increaseClickArea' : 'increaseClickArea cursorPointerFalse'}>
+                <div id="arrowRight" className={this.props.eccPostsPage * this.props.postsPerContainer < Object.keys(this.props.eccPosts).length ? 'arrowNews arrowRightNews' : 'arrowNews arrowInactive arrowRightNews'} />
+              </div>
+            </div>
+          </Body>
+        </main>
+        <RightSidebar>
+          <div className="p-4">
+            <div className="dropdownFilterSelector" style={{/* width: "100px", marginLeft: "100px", top: "6px", */ height: '35px', padding: '0 0 20px 0', textAlign: 'center' }} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
+              <div className="selectFilterSelector" style={{ border: 'none', position: 'relative', top: '-1px', height: '30px' }}>
+                <p className="normalWeight">{this.getValue(this.props.selectedCurrency)}</p>
+                <i className="fa fa-chevron-down" />
+              </div>
+              <input type="hidden" name="gender" />
+              <ul className="dropdown-menuFilterSelector normalWeight " style={{ margin: '0 0' }}>
+                <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="usd">{ this.props.lang.usd }</li>
+                <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="gbp">{ this.props.lang.gbp }</li>
+                <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="eur">{ this.props.lang.eur }</li>
+                <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="aud">{ this.props.lang.aud }</li>
+                <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="btc">{ this.props.lang.btc }</li>
+                <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="eth">{ this.props.lang.eth }</li>
+                <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="ltc">{ this.props.lang.ltc }</li>
+                <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="bch">{ this.props.lang.bch }</li>
+              </ul>
+            </div>
 
-        <div id="panelHolder">
-          {this.props.eccPostsArrays.map((array, indexArray) => {
-            return (
-              <div
-                className="postsContainer"
-                id={`postsContainer${indexArray}`}
-                style={{ opacity: indexArray === (this.props.eccPostsPage - 1) ? '1' : '0',
-                  visibility: indexArray === (this.props.eccPostsPage - 1) ? 'visible' : 'hidden',
-                  transform: indexArray === (this.props.eccPostsPage - 1) ? 'initial' : '' }}
-                key={`newsPostContainer_${indexArray}`}
-              >
-                {array.map((post, index) => {
-                  if (indexArray === (this.props.eccPostsPage - 1)) { items++; }
-                  return (
-                    <NewsItem
-                      title={post.title}
-                      body={`${post.body.slice(0, this.getSpliceValue())} ...`}
-                      time={post.timeSince}
-                      date={post.date}
-                      key={`newsPost_${post.url}`}
-                      hasVideo={post.hasVideo}
-                      url={post.url}
-                    />
-                  );
-                })
-            }
-              </div>
-            );
-          })
-        }
-        </div>
-        <div id="arrows" style={{ top: items >= this.props.postsPerContainer ? `${155 * this.props.postsPerContainer + 180}px` : `${155 * items + 180}px` }}>
-          <div onClick={this.switchPage.bind(this, 'left')} className={this.props.eccPostsPage - 1 == 0 ? 'increaseClickArea increaseClickAreaLeft cursorPointerFalse' : 'increaseClickArea increaseClickAreaLeft'}>
-            <div id="arrowLeft" className={this.props.eccPostsPage - 1 === 0 ? 'arrowNews arrowInactive arrowLeftNews' : 'arrowNews arrowLeftNews'} />
-          </div>
-          <div onClick={this.switchPage.bind(this, 'right')} className={this.props.eccPostsPage * this.props.postsPerContainer < Object.keys(this.props.eccPosts).length ? 'increaseClickArea' : 'increaseClickArea cursorPointerFalse'}>
-            <div id="arrowRight" className={this.props.eccPostsPage * this.props.postsPerContainer < Object.keys(this.props.eccPosts).length ? 'arrowNews arrowRightNews' : 'arrowNews arrowInactive arrowRightNews'} />
-          </div>
-        </div>
-        <div id="stats">
-          <div style={{ textAlign: 'center', margin: 'auto' }} className="row">
-            <p id="marketStats" style={{ margin: 'auto' }}>Market Stats</p>
-            <button data-tip={`Last Updated ${lastUpdated}`} style={{ cursor: 'pointer', borderStyle: 'none', background: 'none' }} onClick={this.refreshCoinData}><span className="icon" style={{ marginTop: '5px', top: '0' }}><i style={{ color: '#b9b9b9' }} className={`fa fa-refresh ${spinClass}`} /></span></button>
-          </div>
-          <div className="row">
-            <div className="statsItem" id="rank">
+            <button data-tip={`Last Updated ${lastUpdated}`} style={{ cursor: 'pointer', borderStyle: 'none', background: 'none' }} onClick={this.refreshCoinData}><span className="icon" style={{ marginTop: '5px' }}><i style={{ color: '#b9b9b9' }} className={`fa fa-refresh ${spinClass}`} /></span></button>
+
+            <div className="subheading">
+              { this.props.lang.marketStats }
+            </div>
+            <div className="statsItem">
               <p>{ this.props.lang.rank }</p>
               <p>{this.props.cmcStats.rank}</p>
-              <div className="mask" />
             </div>
-            <div className="statsItem" id="marketCap">
+            <div className="statsItem">
               <p>{ this.props.lang.marketCap }</p>
               <p>{`${this.props.cmcStats.marketCap} ${selectedCurrency}`}</p>
-              <div className="mask" />
             </div>
-            <div className="statsItem" id="price">
+            <div className="statsItem">
               <p>{ this.props.lang.price }</p>
               <p>{`${this.props.cmcStats.price} ${selectedCurrency}` }</p>
-              <div className="mask" />
             </div>
-            <div className="statsItem" id="volume">
+            <div className="statsItem">
               <p>{ this.props.lang.volume }</p>
               <p>{ `${this.props.cmcStats.volume} ${selectedCurrency}` }</p>
             </div>
           </div>
-        </div>
+        </RightSidebar>
         <ReactTooltip />
       </div>
     );

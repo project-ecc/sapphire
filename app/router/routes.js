@@ -21,6 +21,7 @@ import SettingsGeneral from '../components/SettingsPage/pages/General';
 // Layouts
 import MainLayout from './../Layouts/Main';
 import SetupLayout from './../Layouts/Setup';
+import BasicLayout from './../Layouts/Basic';
 
 // Sidebars
 import MainSidebar from '../containers/MainSidebar';
@@ -32,82 +33,88 @@ export default [
     path: '/setup'
   },
   {
-    component: MainLayout,
-    sidebar: SettingSidebar,
-    path: '/settings',
+    component: BasicLayout,
+    path: '/',
     routes: [
       {
+        component: MainLayout,
+        sidebar: SettingSidebar,
         path: '/settings',
-        exact: true,
-        component: SettingsGeneral
+        routes: [
+          {
+            path: '/settings',
+            exact: true,
+            component: SettingsGeneral
+          },
+          {
+            path: '/settings/wallet',
+            component: SettingsWallet
+          },
+          {
+            path: '/settings/notifications',
+            component: SettingsNotifications
+          },
+          {
+            path: '/settings/appearance',
+            component: SettingsAppearance
+          },
+          {
+            path: '/settings/language',
+            component: SettingsLanguage
+          },
+          {
+            path: '/settings/donate',
+            component: SettingsDonate
+          },
+          {
+            path: '/settings/advanced',
+            component: SettingsAdvanced
+          }
+        ]
       },
       {
-        path: '/settings/wallet',
-        component: SettingsWallet
-      },
-      {
-        path: '/settings/notifications',
-        component: SettingsNotifications
-      },
-      {
-        path: '/settings/appearance',
-        component: SettingsAppearance
-      },
-      {
-        path: '/settings/language',
-        component: SettingsLanguage
-      },
-      {
-        path: '/settings/donate',
-        component: SettingsDonate
-      },
-      {
-        path: '/settings/advanced',
-        component: SettingsAdvanced
-      }
-    ]
-  },
-  {
-    component: MainLayout,
-    sidebar: MainSidebar,
-    path: '/coin',
-    routes: [
-      {
+        component: MainLayout,
+        sidebar: MainSidebar,
         path: '/coin',
-        exact: true,
-        component: HomePage
+        routes: [
+          {
+            path: '/coin',
+            exact: true,
+            component: HomePage
+          },
+          {
+            path: '/coin/send',
+            component: SendPage
+          },
+          {
+            path: '/coin/addresses',
+            component: ReceivePage
+          },
+          {
+            path: '/coin/transactions',
+            component: TransactionPage
+          },
+          {
+            path: '/coin/network',
+            component: NetworkStatsPage
+          },
+          {
+            path: '/coin/contacts',
+            component: ContactsPage
+          },
+          {
+            path: '/coin/messages',
+            component: MessagingPage
+          },
+          {
+            path: '/coin/files',
+            component: FileStoragePage
+          }
+        ]
       },
       {
-        path: '/coin/send',
-        component: SendPage
-      },
-      {
-        path: '/coin/addresses',
-        component: ReceivePage
-      },
-      {
-        path: '/coin/transactions',
-        component: TransactionPage
-      },
-      {
-        path: '/coin/news',
+        path: '/news',
         component: NewsPage
-      },
-      {
-        path: '/coin/network',
-        component: NetworkStatsPage
-      },
-      {
-        path: '/coin/contacts',
-        component: ContactsPage
-      },
-      {
-        path: '/coin/messages',
-        component: MessagingPage
-      },
-      {
-        path: '/coin/files',
-        component: FileStoragePage
       }
     ]
   }

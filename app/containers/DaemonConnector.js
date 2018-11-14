@@ -542,7 +542,7 @@ class DaemonConnector {
         if (totalNews == 0 || !this.store.getState().notifications.newsNotificationsEnabled) return;
         const body = totalNews == 1 ? title : `${totalNews} ${title}`;
         const callback = () => {
-          hash.push('/coin/news');
+          hash.push('/news');
         };
 
         this.queueOrSendNotification(callback, body);

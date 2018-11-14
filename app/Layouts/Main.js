@@ -7,6 +7,7 @@ import * as actions from '../actions';
 import Sections from '../containers/Sections';
 
 class Main extends Component {
+  /* Sidebar content is dynamic */
   sidebar () {
     const Sidebar = this.props.route.sidebar;
     return (
@@ -20,8 +21,7 @@ class Main extends Component {
     const timeout = { enter: 150, exit: 250 };
 
     return (
-      <div id="page">
-        <Sections />
+      <div>
         { this.sidebar() }
         <div className="container-fluid" style={{overflow: 'auto'}}>
           <TransitionGroup component="main">

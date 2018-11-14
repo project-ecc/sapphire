@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
 import { BellOutlineIcon, CurrencyUsdIcon, SendIcon, FormatListBulletedIcon, ContactsIcon, ForumIcon, SettingsOutlineIcon, NewspaperIcon } from 'mdi-react';
-import NotificationPopup from '../components/NotificationPopup';
 
 import * as actions from '../actions';
 
@@ -12,12 +11,6 @@ const Tools = require('../utils/tools');
 class MainSidebar extends Component {
   constructor(props) {
     super(props);
-
-    this.openNotifications = this.openNotifications.bind(this);
-  }
-
-  openNotifications() {
-    this.notificationModal.getWrappedInstance().toggle();
   }
 
   render() {
@@ -25,9 +18,6 @@ class MainSidebar extends Component {
 
     const addresses = Tools.getIconForTheme('addresses', false);
     const fileStorage = Tools.getIconForTheme('fileStorage', false);
-
-    let numberOfNotifications = this.props.notifications.total;
-    if (this.props.updateAvailable) { numberOfNotifications += 1; }
 
     const usericon = require('../../resources/images/logo_setup.png');
     return (
@@ -71,42 +61,10 @@ class MainSidebar extends Component {
                 <li>
                   <a className="subheading">{ this.props.lang.services }</a>
                 </li>
-                {/* <li> */}
-                {/* <NavLink to="/files"> */}
-                {/* <img src={fileStorage} /> */}
-                {/* { this.props.lang.fileStorage } */}
-                {/* </NavLink> */}
-                {/* </li> */}
-                {/* <li> */}
-                {/* <NavLink to="/messages"> */}
-                {/* <ForumIcon size={20} /> */}
-                {/* { this.props.lang.messaging } */}
-                {/* </NavLink> */}
-                {/* </li> */}
                 <li>
                   <NavLink to="/coin/contacts">
                     <ContactsIcon size={20} />
                     { this.props.lang.contacts }
-                  </NavLink>
-                </li>
-              </ul>
-              <ul>
-                <li>
-                  <a className="subheading">{ this.props.lang.default }</a>
-                </li>
-                <li>
-                  <a className={numberOfNotifications > 0 ? 'font-weight-bold' : ''} onClick={this.openNotifications}>
-                    <BellOutlineIcon size={20} />
-                    { this.props.lang.notifications }
-                    { numberOfNotifications > 0 && (
-                      <span style={{ marginLeft: 5 }}>({ numberOfNotifications })</span>
-                    )}
-                  </a>
-                </li>
-                <li>
-                  <NavLink to="/coin/news">
-                    <NewspaperIcon size={20} />
-                    { this.props.lang.eccNews }
                   </NavLink>
                 </li>
               </ul>
@@ -123,7 +81,6 @@ class MainSidebar extends Component {
             <ReactTooltip />
           </div>
         </div>
-        <NotificationPopup ref={(e) => (this.notificationModal = e)} />
       </div>
     );
   }
@@ -138,9 +95,7 @@ const mapStateToProps = state => {
     connections: state.chains.connections,
     paymentChainSync: state.chains.paymentChainSync,
     importingPrivateKey: state.application.importingPrivateKey,
-    closingApplication: state.application.closingApplication,
-    notifications: state.notifications.entries,
-    updateAvailable: state.startup.guiUpdate || state.startup.daemonUpdate
+    closingApplication: state.application.closingApplication
   };
 };
 

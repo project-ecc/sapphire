@@ -1,15 +1,5 @@
 @import "./themes.scss";
 
-#eccNews{
-	@include themify($themes) {
-		color: themed('bigPanelTimeColor');
-	}
-	font-size: 70px;
-	font-weight: 800;
-	margin-top: 15px;
-	margin-bottom: 20px;
-}
-
 .newsItemTitle{
 	font-size: 19px;
 	font-weight: 500;
@@ -22,7 +12,6 @@
 
 #panelHolder{
 	position: relative;
-	margin-right: 40px;
 }
 
 .newsItemBody{
@@ -54,8 +43,6 @@
 
 .postsContainer{
 	overflow-y: hidden;
-	margin-left: 30px;
-	position: absolute;
 	width: 100%;
 }
 
@@ -115,7 +102,6 @@
 
 #arrows{
 	margin-left: 30px;
-	position: absolute;
 }
 
 .mediumIcon{
@@ -134,34 +120,9 @@
     opacity: 0.7;
 }
 
-#stats{
-	width: 800px;
-	position: fixed;
-	bottom:0px;
-	left: 50%;
-	margin-left: -270px;
-	transition: all 0.3s;
-    margin-bottom: 10px;
-}
-
 .statsItem{
-	height: 100%;
 	position:relative;
 	font-size: 16px;
-	text-align: center;
-	display: inline-block;
-}
-
-.mask {
-	@include themify($themes) {
-		border-right: themed('newsMarkerDetailsSplitterBorderRight');
-	}
-	position: absolute;
-	top: 12px;
-	left:1px;
-	height:50%;
-	width: 100%;
-	opacity: 0.23;
 }
 
 .statsItem p:first-child{
@@ -169,7 +130,6 @@
 		color: themed('bodySecondaryParagraphColor');
 	}
 	font-weight: 700;
-	padding-bottom: 12px;
 }
 
 .statsItem p:nth-child(2){
@@ -177,26 +137,5 @@
 		color: themed('newsMarketDetailsValueColor');
 	}
 	font-weight: 600;
-}
-
-#rank{
-	width: 130px;
-}
-
-#marketCap{
-	width: 250px;
-}
-
-#price{
-	width: 200px;
-}
-
-#volume{
-	width: 220px;
-}
-
-@media screen and (max-width: 1024px) {
-	#stats{
-		margin-left: -400px;
-	}
+  padding-bottom: 12px;
 }
