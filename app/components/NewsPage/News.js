@@ -90,12 +90,12 @@ class News extends Component {
     const spinClass = this.state.isLoading ? 'fa-spin' : '';
     console.log(this.props.eccPosts);
     return (
-      <div>
-        <main>
-          <Header>
+      <div className="d-flex w-100">
+        <div className="padding-titlebar wrapper">
+          <Header className="no-margin-bottom">
             {this.props.lang.eccNews}
           </Header>
-          <Body className="no-padding">
+          <Body className="no-padding scrollable">
             {this.props.eccPosts.map((post, index) => {
               return (
                 <NewsItem
@@ -109,8 +109,8 @@ class News extends Component {
                 />
               );
             })}
-          </Body>F
-        </main>
+          </Body>
+        </div>
         <RightSidebar>
           <div className="p-4">
             <div className="dropdownFilterSelector" style={{/* width: "100px", marginLeft: "100px", top: "6px", */ height: '35px', padding: '0 0 20px 0', textAlign: 'center' }} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>

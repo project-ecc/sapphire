@@ -3,10 +3,6 @@ import classnames from 'classnames';
 
 class Body extends Component {
   render() {
-    const classNames = {
-      'body': true,
-      ...(this.props.className || {})
-    }
     return (
       <div className={classnames('body', this.props.className)}>
         <div className="container-fluid">

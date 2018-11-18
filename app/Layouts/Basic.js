@@ -8,7 +8,9 @@ class Basic extends Component {
     return (
       <div id="page">
         <Sections />
-        {renderRoutes(route.routes)}
+        <div>
+          {renderRoutes(route.routes)}
+        </div>
       </div>
     );
   }

@@ -115,7 +115,7 @@ class General extends Component {
 
   render() {
     return (
-      <div>
+      <div className="wrapper padding-titlebar">
         <Header>
           <SettingsIcon />
           { this.props.lang.general }

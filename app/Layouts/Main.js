@@ -21,9 +21,9 @@ class Main extends Component {
     const timeout = { enter: 150, exit: 250 };
 
     return (
-      <div>
+      <div className="d-flex w-100">
         { this.sidebar() }
-        <div className="container-fluid" style={{overflow: 'auto'}}>
+        <div className="w-100 position-relative" style={{overflow: 'auto'}}>
           <TransitionGroup component="main">
             <CSSTransition key={currentKey} timeout={timeout} classNames="pageTransition" appear>
               <Switch location={location}>

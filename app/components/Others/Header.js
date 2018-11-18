@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import classnames from 'classnames';
 
 class Header extends Component {
-  render () {
+  render() {
     return (
-      <div className="header">
+      <div className={classnames('header', this.props.className)}>
         <div className="title">{ this.props.children }</div>
       </div>
     );

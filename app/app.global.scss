@@ -316,11 +316,14 @@ input::-webkit-inner-spin-button {
 /* Main page components */
 .header {
   padding:0px 0px 20px 0px;
-  margin-bottom: 30px;
   margin: 0 40px 30px 40px;
   border-bottom:1px solid rgba(255,255,255,0.05);
   position: relative;
   z-index: 1;
+
+  &.no-margin-bottom {
+	margin-bottom: 0px;
+  }
 
   .title {
 	font-size: 30px;
@@ -352,4 +355,19 @@ input::-webkit-inner-spin-button {
   &.no-padding {
 	padding: 0;
   }
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: auto;
+
+  & > .body.scrollable {
+	overflow: auto;
+  }
+}
+
+.padding-titlebar {
+  padding-top: 40px;
 }
