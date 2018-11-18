@@ -240,6 +240,7 @@
     "react-router-config": "^4.4.0-beta.4",
     "react-router-dom": "^4.3.1",
     "react-router-redux": "^5.0.0-alpha.6",
+    "react-spinners": "^0.4.7",
     "react-toggle": "^4.0.2",
     "react-tooltip": "^3.9.0",
     "react-transition-group": "^2.5.0",

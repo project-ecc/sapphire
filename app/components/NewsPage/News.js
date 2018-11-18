@@ -10,13 +10,12 @@ import ReactTooltip from 'react-tooltip';
 import Header from './../Others/Header';
 import Body from './../Others/Body';
 import RightSidebar from './../Others/RightSidebar';
-const event = require('../../utils/eventhandler');
+
 const Tools = require('../../utils/tools');
 
 class News extends Component {
   constructor(props) {
     super(props);
-    this.updateContainer = this.updateContainer.bind(this);
     this.onItemClick = this.onItemClick.bind(this);
     this.refreshCoinData = this.refreshCoinData.bind(this);
     this.state = {
@@ -32,10 +31,6 @@ class News extends Component {
   }
 
   componentDidMount() {
-    $(window).on('resize', () => {
-      this.updateContainer(true);
-    });
-    this.updateContainer(false);
     this.props.setNewsChecked(new Date().getTime());
   }
 
@@ -50,57 +45,12 @@ class News extends Component {
     $('.dropdownFilterSelector').find('.dropdown-menuFilterSelector').slideUp(300);
   }
 
-  updateContainer(forceRefresh) {
-    const containerSize = $(window).height() - 300;
-    $('.postsContainer').css('height', containerSize);
-    const postsPerContainer = Math.floor(containerSize / 155);
-    const currentPostsPerContainer = this.props.postsPerContainer;
-    if (currentPostsPerContainer !== postsPerContainer) {
-      this.props.setEccPostsPage(1);
+  getSpliceValue(str) {
+    const dots = '...';
+    if (str.length > 150) {
+      str = str.substring(0, 250) + dots;
     }
-    this.props.setPostsPerContainer(postsPerContainer);
-    if (forceRefresh) {
-      setTimeout(() => {
-        this.updateContainer(false);
-      }, 200);
-    }
-  }
-
-  componentWillUnmount() {
-    $(window).off('resize');
-  }
-
-  getSpliceValue() {
-    const width = $('.panel').width() - 80;
-    return Math.floor(width / 4.1);
-  }
-
-  updateArrows(page) {
-    const items = $(`#postsContainer${page}`).children().length;
-    TweenMax.to('#arrows', 0.3, { css: { top: items >= this.props.postsPerContainer ? (155 * this.props.postsPerContainer + 180) : (155 * items + 180) } });
-  }
-
-  switchPage(direction) {
-    if (this.props.switchingPage) return;
-    if (direction === 'right' && !$('#arrowRight').hasClass('arrowInactive')) {
-      this.props.setNewsSwitchingPage(true);
-      TweenMax.to(`#postsContainer${this.props.eccPostsPage - 1}`, 0.5, { x: -1500, autoAlpha: 0 });
-      TweenMax.fromTo(`#postsContainer${this.props.eccPostsPage}`, 0.5, { x: 1500, autoAlpha: 0 }, { x: 0, autoAlpha: 1 });
-      setTimeout(() => {
-        this.props.setEccPostsPage(this.props.eccPostsPage + 1);
-        this.props.setNewsSwitchingPage(false);
-      }, 400);
-      this.updateArrows(this.props.eccPostsPage);
-    } else if (direction === 'left' && !$('#arrowLeft').hasClass('arrowInactive')) {
-      this.props.setNewsSwitchingPage(true);
-      TweenMax.to(`#postsContainer${this.props.eccPostsPage - 1}`, 0.5, { x: 1500, autoAlpha: 0 });
-      TweenMax.fromTo(`#postsContainer${this.props.eccPostsPage - 2}`, 0.5, { x: -1500, autoAlpha: 0 }, { x: 0, autoAlpha: 1 });
-      setTimeout(() => {
-        this.props.setEccPostsPage(this.props.eccPostsPage - 1);
-        this.props.setNewsSwitchingPage(false);
-      }, 400);
-      this.updateArrows(this.props.eccPostsPage - 2);
-    }
+    return str;
   }
 
   async onItemClick(ev) {
@@ -121,6 +71,7 @@ class News extends Component {
 
   getValue(val) {
     switch (val) {
+      default:
       case 'usd' : return this.props.lang.usd;
       case 'eur' : return this.props.lang.eur;
       case 'aud' : return this.props.lang.aud;
@@ -132,64 +83,33 @@ class News extends Component {
     }
   }
 
-  /* shouldComponentUpdate(props){
-    if(props.eccPostsPage < 1 || props.eccPostsPage * props.postsPerContainer > Object.keys(props.eccPosts).length) return false;
-    return true;
-  } */
-
   render() {
-    let items = 0;
     const selectedCurrency = this.props.selectedCurrency.toUpperCase();
     const iTime = new Date(this.props.lastUpdated * 1000);
     const lastUpdated = Tools.calculateTimeSince(this.props.lang, new Date(), iTime);
     const spinClass = this.state.isLoading ? 'fa-spin' : '';
+    console.log(this.props.eccPosts);
     return (
       <div>
         <main>
           <Header>
             {this.props.lang.eccNews}
           </Header>
-          <Body>
-            <div id="panelHolder">
-              {this.props.eccPostsArrays.map((array, indexArray) => {
-                return (
-                  <div
-                    className="postsContainer"
-                    id={`postsContainer${indexArray}`}
-                    style={{ opacity: indexArray === (this.props.eccPostsPage - 1) ? '1' : '0',
-                      visibility: indexArray === (this.props.eccPostsPage - 1) ? 'visible' : 'hidden',
-                      transform: indexArray === (this.props.eccPostsPage - 1) ? 'initial' : '' }}
-                    key={`newsPostContainer_${indexArray}`}
-                  >
-                    {array.map((post, index) => {
-                      if (indexArray === (this.props.eccPostsPage - 1)) { items++; }
-                      return (
-                        <NewsItem
-                          title={post.title}
-                          body={`${post.body.slice(0, this.getSpliceValue())} ...`}
-                          time={post.timeSince}
-                          date={post.date}
-                          key={`newsPost_${post.url}`}
-                          hasVideo={post.hasVideo}
-                          url={post.url}
-                        />
-                      );
-                    })
-                }
-                  </div>
-                );
-              })
-            }
-            </div>
-            <div id="arrows" style={{ top: items >= this.props.postsPerContainer ? `${155 * this.props.postsPerContainer + 180}px` : `${155 * items + 180}px` }}>
-              <div onClick={this.switchPage.bind(this, 'left')} className={this.props.eccPostsPage - 1 == 0 ? 'increaseClickArea increaseClickAreaLeft cursorPointerFalse' : 'increaseClickArea increaseClickAreaLeft'}>
-                <div id="arrowLeft" className={this.props.eccPostsPage - 1 === 0 ? 'arrowNews arrowInactive arrowLeftNews' : 'arrowNews arrowLeftNews'} />
-              </div>
-              <div onClick={this.switchPage.bind(this, 'right')} className={this.props.eccPostsPage * this.props.postsPerContainer < Object.keys(this.props.eccPosts).length ? 'increaseClickArea' : 'increaseClickArea cursorPointerFalse'}>
-                <div id="arrowRight" className={this.props.eccPostsPage * this.props.postsPerContainer < Object.keys(this.props.eccPosts).length ? 'arrowNews arrowRightNews' : 'arrowNews arrowInactive arrowRightNews'} />
-              </div>
-            </div>
-          </Body>
+          <Body className="no-padding">
+            {this.props.eccPosts.map((post, index) => {
+              return (
+                <NewsItem
+                  title={post.title}
+                  body={this.getSpliceValue(post.body)}
+                  time={post.timeSince}
+                  date={post.date}
+                  key={`newsPost_${post.url}`}
+                  hasVideo={post.hasVideo}
+                  url={post.url}
+                />
+              );
+            })}
+          </Body>F
         </main>
         <RightSidebar>
           <div className="p-4">
@@ -243,9 +163,6 @@ class News extends Component {
 const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
-    eccPostsArrays: state.application.eccPostsArrays,
-    postsPerContainer: state.application.postsPerContainerEccNews,
-    eccPostsPage: state.application.eccPostsPage,
     eccPosts: state.application.eccPosts,
     cmcStats: state.application.coinMarketCapStats,
     switchingPage: state.application.eccNewsSwitchingPage,

@@ -54,8 +54,6 @@ import {
   WAS_STAKING,
   NEW_PASSWORD,
   CHECKING_DAEMON_STATUS_PRIVKEY,
-  POSTS_PER_CONTAINER,
-  ECC_POSTS_PAGE,
   NEWS_SWITCHING_PAGE,
   UPDATE_APPLICATION,
   UPDATING_APP,
@@ -477,21 +475,6 @@ export const setNewPassword = (val) => {
 export const setCheckingDaemonStatusPrivKey = (val) => {
 	return{
 		type: CHECKING_DAEMON_STATUS_PRIVKEY,
-		payload: val
-	}
-};
-
-
-export const setPostsPerContainer = (val) => {
-	return{
-		type: POSTS_PER_CONTAINER,
-		payload: val
-	}
-};
-
-export const setEccPostsPage = (val) => {
-	return{
-		type: ECC_POSTS_PAGE,
 		payload: val
 	}
 };

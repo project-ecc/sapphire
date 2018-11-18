@@ -348,4 +348,8 @@ input::-webkit-inner-spin-button {
   position: relative;
   z-index: 2;
   padding: 20px 40px 40px 40px;
+
+  &.no-padding {
+	padding: 0;
+  }
 }

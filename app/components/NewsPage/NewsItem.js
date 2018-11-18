@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { ChevronRightIcon } from 'mdi-react';
+import { Button } from 'reactstrap';
 var open = require("open");
 
 class NewsItem extends Component {
@@ -11,15 +13,16 @@ class NewsItem extends Component {
   }
 
   render() {
-    let mediumIcon = require('../../../resources/images/medium.png');
-    let playIcon = require('../../../resources/images/play-button.png');
     return (
-      <div className="newsPost">
+      <div className="newsPost" onClick={this.handleOnClick.bind(this, this.props.url)}>
         <p className="newsItemTitle">{this.props.title}</p>
         <p className="newsItemBody">{this.props.body}</p>
-        <p className="newsItemTime">{this.props.time}</p>
-        <img onClick={this.handleOnClick.bind(this, this.props.url)} className="mediumIcon" src={mediumIcon}/>
-        {/*this.props.hasVideo ? <img className="playIcon" src={playIcon}/> : null*/}
+        <div className="d-flex justify-content-between">
+          <p className="newsItemTime">{this.props.time}</p>
+          <Button size="sm" color="link" style={{color: '#fff'}}>
+            <ChevronRightIcon size={20} />
+          </Button>
+        </div>
       </div>
     );
   }

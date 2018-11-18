@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import {connect, Provider} from 'react-redux';
+import { connect, Provider } from 'react-redux';
 import { withRouter } from 'react-router';
 import { HashRouter as Router, Redirect } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
@@ -80,7 +80,7 @@ class Root extends Component {
     }
   }
 
-  checkThemeClass (theme) {
+  checkThemeClass(theme) {
     const availablethemes = ['theme-darkEcc', 'theme-defaultEcc'];
     for (const ele in availablethemes) {
       if (document.body.classList.contains(availablethemes[ele])) {
@@ -107,11 +107,7 @@ class Root extends Component {
           <div>
             <Redirect from="/" to="/coin" />
             <TopBar />
-            {!this.props.importingWalletWithSetupDone && (this.props.loader || this.props.updatingApplication) &&
-              <aside>
-                <Loading />
-              </aside>
-            }
+            {!this.props.importingWalletWithSetupDone && (this.props.loader || this.props.updatingApplication) && (<Loading />)}
             <div>{renderRoutes(routes)}</div>
           </div>
         </Router>

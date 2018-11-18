@@ -19,7 +19,6 @@ import {
   COIN_MARKET_CAP,
   UPDATE_AVAILABLE,
   UPDATING_APP,
-  POSTS_PER_CONTAINER,
   NEWS_NOTIFICATION,
   STAKING_NOTIFICATION,
   UNENCRYPTED_WALLET,
@@ -586,8 +585,6 @@ class DaemonConnector {
           };
           posts.unshift(post);
           this.store.dispatch({ type: ECC_POST, payload: posts });
-          // update render
-          this.store.dispatch({ type: POSTS_PER_CONTAINER, payload: this.store.getState().application.postsPerContainerEccNews });
         }
         if (post && post.date > lastCheckedNews && this.store.getState().notifications.newsNotificationsEnabled) {
           totalNews++;
