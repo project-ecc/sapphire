@@ -20,17 +20,52 @@ import SettingsGeneral from '../components/SettingsPage/pages/General';
 
 // Layouts
 import MainLayout from './../Layouts/Main';
-import SetupLayout from './../Layouts/Setup';
+import Setup from '../components/Setup/Index';
 import BasicLayout from './../Layouts/Basic';
 
 // Sidebars
 import MainSidebar from '../containers/MainSidebar';
 import SettingSidebar from '../containers/SettingSidebar';
 
+// Setup
+import SetupStart from './../components/Setup/partials/Start';
+import SetupTheme from './../components/Setup/partials/Theme';
+import SetupImportWallet from '../components/Setup/partials/ImportWallet';
+import SetupEncrypt from './../components/Setup/partials/Encrypt';
+import SetupImportPrivateKeys from './../components/Setup/partials/ImportPrivateKeys';
+import SetupComplete from './../components/Setup/partials/Complete';
+
 export default [
   {
-    component: SetupLayout,
-    path: '/setup'
+    component: Setup,
+    path: '/setup',
+    routes: [
+      {
+        path: '/setup',
+        exact: true,
+        component: SetupStart
+      },
+      {
+        path: '/setup/theme',
+        component: SetupTheme
+      },
+      {
+        path: '/setup/import',
+        component: SetupImportWallet
+      },
+      {
+        path: '/setup/encrypt',
+        component: SetupEncrypt
+      },
+      {
+        path: '/setup/keys',
+        component: SetupImportPrivateKeys
+      },
+      {
+        path: '/setup/complete',
+        component: SetupComplete
+      }
+    ]
   },
   {
     component: BasicLayout,

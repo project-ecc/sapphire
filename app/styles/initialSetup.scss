@@ -1,11 +1,8 @@
 @import "./themes.scss";
 
 #mainPanel{
-  position: fixed;
-  top: 15%;
   width: 100%;
   text-align: center;
-  z-index: 10000;
 }
 
 .content{
@@ -58,14 +55,14 @@ polyline, circle{
 }
 
 #buttons polyline, #buttons circle{
-    @include themify($themes) { 
-      stroke: themed('initialSetupButtonActiveStrokeColor');  
+    @include themify($themes) {
+      stroke: themed('initialSetupButtonActiveStrokeColor');
     }
 }
 
 .intialSetupButtonInactive{
-   @include themify($themes) { 
-      stroke: themed('initialSetupButtonStrokeColor') !important;  
+   @include themify($themes) {
+      stroke: themed('initialSetupButtonStrokeColor') !important;
     }
 }
 

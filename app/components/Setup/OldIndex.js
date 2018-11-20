@@ -3,19 +3,19 @@ import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 
-import ImportWallet from '../components/InitialSetupPage/ImportWallet';
-import LanguageSelector from '../components/InitialSetupPage/LanguageSelector';
-import ThemeSelectorStep from '../components/InitialSetupPage/ThemeSelectorStep';
-import ImportPrivateKey from '../components/InitialSetupPage/ImportPrivateKey';
-import EncryptWallet from '../components/InitialSetupPage/EncryptWallet';
-import SetupDone from '../components/InitialSetupPage/SetupDone';
-import { traduction } from '../lang/lang';
-import * as actions from '../actions/index';
-import TransitionComponent from '../components/Others/TransitionComponent';
+import ImportWallet from '../InitialSetupPage/ImportWallet';
+import LanguageSelector from '../InitialSetupPage/LanguageSelector';
+import ThemeSelectorStep from '../InitialSetupPage/ThemeSelectorStep';
+import ImportPrivateKey from '../InitialSetupPage/ImportPrivateKey';
+import EncryptWallet from '../InitialSetupPage/EncryptWallet';
+import SetupDone from '../InitialSetupPage/SetupDone';
+import { traduction } from '../../lang/lang';
+import * as actions from '../../actions/index';
+import TransitionComponent from '../Others/TransitionComponent';
 
-const Tools = require('../utils/tools');
+const Tools = require('../../utils/tools');
 
-class Setup extends Component {
+class OldIndex extends Component {
   constructor(props) {
     super(props);
     this.handleForward = this.handleForward.bind(this);
@@ -24,18 +24,8 @@ class Setup extends Component {
     this.renderInitialSetup = this.renderInitialSetup.bind(this);
   }
 
-  componentDidAppear() {
-    const el = this.refs.second;
-    TweenMax.fromTo(el, 0.5, { opacity: 0 }, { opacity: 1, ease: Linear.easeNone });
-  }
-
   componentWillEnter(callback) {
     callback();
-  }
-
-  componentWillLeave(callback) {
-    const el = this.refs.second;
-    TweenMax.to(el, 0.3, { opacity: 0, ease: Linear.easeNone, onComplete: callback });
   }
 
   handleForward() {
@@ -58,6 +48,7 @@ class Setup extends Component {
 
   // this is not the prettiest thing but for components to animate OUT they need to be unmounted from the TransitionComponent... The TransitionComponent needs to stay in the DOM otherwise we don't get the animation out (when the child component unmounts)
   renderInitialSetup() {
+    console.log('STEP: ', this.props.step)
     return (
       <div>
         {/* <TransitionGroup key="1" component="article">
@@ -130,6 +121,7 @@ class Setup extends Component {
   }
 
   renderPartialInitialSetup() {
+    console.log('PARTIAL STEP: ', this.props.step)
     return (
       <div>
         {/* <TransitionGroup key="1" component="article">
@@ -209,6 +201,7 @@ class Setup extends Component {
   }
 
   renderImportWallet() {
+    console.log('IMPORT STEP: ', this.props.step)
     return (
       <div>
         <TransitionGroup key="1" component="article">
@@ -270,9 +263,9 @@ class Setup extends Component {
       cursor: this.props.importing || this.props.encrypting || this.props.importingPrivKey ? 'default' : 'pointer'
     };
 
-    const logo = require('../../resources/images/logo_setup.png');
+    const logo = require('../../../resources/images/logo_setup.png');
     return (
-      <div ref="second">
+      <div id="page">
         <div id="mainPanel">
           <div id="logo">
             <img src={logo} />
@@ -325,4 +318,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, actions)(Setup);
+export default connect(mapStateToProps, actions)(OldIndex);

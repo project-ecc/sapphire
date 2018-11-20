@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import Sidebar from './MainSidebar';
-import InitialSetup from '../Layouts/Setup';
+import InitialSetup from '../components/Setup/OldIndex';
 import Settings from '../components/SettingsPage/Settings';
 import Loading from '../Layouts/Loading';
 import * as actions from '../actions';
