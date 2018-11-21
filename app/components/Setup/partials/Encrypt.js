@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import hash from './../../../router/hash';
 import { Button } from 'reactstrap';
 import EncryptWallet from '../../InitialSetupPage/EncryptWallet';
+import {connect} from "react-redux";
+import * as actions from "../../../actions";
 
 class Encrypt extends Component {
   constructor(props) {
@@ -11,7 +13,8 @@ class Encrypt extends Component {
   }
 
   nextStep() {
-    hash.push('/setup/keys');
+    this.props.setStepInitialSetup('complete');
+    hash.push('/setup/complete');
   }
 
   render() {
@@ -25,4 +28,11 @@ class Encrypt extends Component {
   }
 }
 
-export default Encrypt;
+const mapStateToProps = state => {
+  return {
+    lang: state.startup.lang
+  };
+};
+
+
+export default connect(mapStateToProps, actions)(Encrypt);

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import hash from './../../../router/hash';
 import { Button } from 'reactstrap';
+import {connect} from "react-redux";
+import * as actions from "../../../actions";
 
 class Start extends Component {
   constructor(props) {
@@ -10,6 +12,7 @@ class Start extends Component {
   }
 
   nextStep() {
+    this.props.setStepInitialSetup('theme');
     hash.push('/setup/theme');
   }
 
@@ -23,4 +26,11 @@ class Start extends Component {
   }
 }
 
-export default Start;
+const mapStateToProps = state => {
+  return {
+    lang: state.startup.lang
+  };
+};
+
+
+export default connect(mapStateToProps, actions)(Start);

@@ -362,7 +362,10 @@ function setupEventHandlers() {
   });
 
   event.on('wallet', (exists, daemonCredentials) => {
+    // exists: does vallet.dat exist
+    // deamonCredentials: object of username and password
     var initialSetup = settings.has('settings.initialSetup');
+    console.log('GOT MESSAGE', exists, daemonCredentials);
 
     sendMessage("daemonCredentials", daemonCredentials)
 

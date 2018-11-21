@@ -54,12 +54,12 @@ export default [
         component: SetupImportWallet
       },
       {
-        path: '/setup/encrypt',
-        component: SetupEncrypt
-      },
-      {
         path: '/setup/keys',
         component: SetupImportPrivateKeys
+      },
+      {
+        path: '/setup/encrypt',
+        component: SetupEncrypt
       },
       {
         path: '/setup/complete',

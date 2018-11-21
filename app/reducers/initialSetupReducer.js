@@ -13,7 +13,7 @@ import {
 } from '../actions/types';
 
 
-const INITIAL_STATE = {step: 1,  importing: false, imported: false, importStarted: false, privateKey: "", password: "", confirmationPassword: "", stepOver: true, encrypting: false};
+const INITIAL_STATE = {step: 'start',  importing: false, imported: false, importStarted: false, privateKey: "", password: "", confirmationPassword: "", stepOver: true, encrypting: false};
 
 export default(state = INITIAL_STATE, action) => {
 	if(action.type == STEP_OVER){

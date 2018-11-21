@@ -2,8 +2,27 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import { renderRoutes } from 'react-router-config';
+import { Redirect } from 'react-router-dom';
 
 class Index extends Component {
+  redirectIfIncomplete () {
+    switch (this.props.step) {
+      default:
+      case 'start':
+        return (<Redirect to="/setup" />);
+      case 'theme':
+        return (<Redirect to="/setup/theme" />);
+      case 'importwallet':
+        return (<Redirect to="/setup/import" />);
+      case 'importprivatekeys':
+        return (<Redirect to="/setup/keys" />);
+      case 'encrypt':
+        return (<Redirect to="/setup/encrypt" />);
+      case 'complete':
+        return (<Redirect to="/setup/complete" />);
+    }
+  }
+
   render () {
     const logo = require('../../../resources/images/logo_setup.png');
     const { route } = this.props;
@@ -18,6 +37,7 @@ class Index extends Component {
             <p style={{ fontWeight: '200' }} id="welcome">
               { this.props.lang.welcome }
             </p>
+            {this.redirectIfIncomplete()}
             {renderRoutes(route.routes)}
           </div>
         </div>

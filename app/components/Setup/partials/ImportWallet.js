@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import hash from './../../../router/hash';
 import { Button } from 'reactstrap';
 import ImportWalletPartial from '../../InitialSetupPage/ImportWallet';
+import {connect} from "react-redux";
+import * as actions from "../../../actions";
 
 class ImportWallet extends Component {
   constructor(props) {
@@ -11,7 +13,8 @@ class ImportWallet extends Component {
   }
 
   nextStep() {
-    hash.push('/setup/encrypt');
+    this.props.setStepInitialSetup('importprivatekeys');
+    hash.push('/setup/keys');
   }
 
   render() {
@@ -25,4 +28,11 @@ class ImportWallet extends Component {
   }
 }
 
-export default ImportWallet;
+const mapStateToProps = state => {
+  return {
+    lang: state.startup.lang
+  };
+};
+
+
+export default connect(mapStateToProps, actions)(ImportWallet);

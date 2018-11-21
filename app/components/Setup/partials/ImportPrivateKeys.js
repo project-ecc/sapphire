@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import hash from './../../../router/hash';
 import { Button } from 'reactstrap';
 import ImportPrivateKey from '../../InitialSetupPage/ImportPrivateKey';
+import {connect} from "react-redux";
+import * as actions from "../../../actions";
 
 class ImportPrivateKeys extends Component {
   constructor(props) {
@@ -11,7 +13,8 @@ class ImportPrivateKeys extends Component {
   }
 
   nextStep() {
-    hash.push('/setup/complete');
+    this.props.setStepInitialSetup('encrypt');
+    hash.push('/setup/encrypt');
   }
 
   render() {
@@ -19,10 +22,17 @@ class ImportPrivateKeys extends Component {
       <div>
         Import private keys bruh
         <ImportPrivateKey notInitialSetup={false} />
-        <Button onClick={this.nextStep}>Select Theme</Button>
+        <Button onClick={this.nextStep}>Next Step</Button>
       </div>
     );
   }
 }
 
-export default ImportPrivateKeys;
+const mapStateToProps = state => {
+  return {
+    lang: state.startup.lang
+  };
+};
+
+
+export default connect(mapStateToProps, actions)(ImportPrivateKeys);

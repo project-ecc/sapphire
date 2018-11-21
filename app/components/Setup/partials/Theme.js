@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import ThemeSelectorStep from '../../InitialSetupPage/ThemeSelectorStep';
 import { Button } from 'reactstrap';
 import hash from '../../../router/hash';
+import {connect} from "react-redux";
+import * as actions from "../../../actions";
 
 class Theme extends Component {
   constructor(props) {
@@ -11,6 +13,7 @@ class Theme extends Component {
   }
 
   nextStep() {
+    this.props.setStepInitialSetup('importwallet');
     hash.push('/setup/import');
   }
 
@@ -25,4 +28,11 @@ class Theme extends Component {
   }
 }
 
-export default Theme;
+const mapStateToProps = state => {
+  return {
+    lang: state.startup.lang
+  };
+};
+
+
+export default connect(mapStateToProps, actions)(Theme);
