@@ -12,6 +12,7 @@ import { traduction } from '../lang/lang';
 import * as actions from '../actions';
 import hash from './../router/hash';
 import Loading from './../Layouts/Loading';
+import DaemonConnector from './../containers/Daemon/Connector';
 
 const lang = traduction();
 const Tools = require('../utils/tools');
@@ -105,6 +106,7 @@ class Root extends Component {
       <Provider store={store}>
         <Router>
           <div>
+            <DaemonConnector />
             <Redirect from="/" to="/coin" />
             <TopBar />
             {!this.props.importingWalletWithSetupDone && (this.props.loader || this.props.updatingApplication) && (<Loading />)}

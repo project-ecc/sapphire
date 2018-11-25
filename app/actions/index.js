@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron';
 import {
+  DAEMON_CREDENTIALS,
   APP_READY,
   INITIAL_SETUP,
   PARTIAL_INITIAL_SETUP,
@@ -103,6 +104,13 @@ import {
   DAEMON_ERROR_POPUP,
   DAEMON_ERROR
 } from "./types";
+
+export const setWalletCredentials = (args) => {
+  return {
+    type: DAEMON_CREDENTIALS,
+    payload: args
+  };
+}
 
 export const getSetup = () => dispatch => {
 	ipcRenderer.send('app:ready');

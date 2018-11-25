@@ -4,16 +4,12 @@ import { AppContainer } from 'react-hot-loader';
 import Root from './containers/Root';
 import { configureStore, history } from './store/configureStore';
 import './app.global.scss';
-import DaemonConnector from './containers/Daemon/Connector';
 
 
 const store = configureStore({});
 render(
   <AppContainer>
-    <div>
-      <DaemonConnector />
-      <Root store={store} history={history} />
-    </div>
+    <Root store={store} history={history} />
   </AppContainer>,
   document.getElementById('root')
 );
@@ -23,7 +19,6 @@ if (module.hot) {
     const NextRoot = require('./containers/Root'); // eslint-disable-line global-require
     render(
       <AppContainer>
-        <DaemonConnector />
         <NextRoot store={store} history={history} />
       </AppContainer>,
       document.getElementById('root')
