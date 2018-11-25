@@ -63,16 +63,15 @@ class DaemonConnector {
   constructor(store) {
     this.store = store;
     this.wallet = store.getState().application.wallet;
-    this.setupDone = false;
-    this.partialSetup = false;
-    this.ListenToSetupEvents = this.listenToSetupEvents.bind(this);
+
+    this.listenToSetupEvents = this.listenToSetupEvents.bind(this);
     this.handlePartialSetup = this.handlePartialSetup.bind(this);
     this.handleInitialSetup = this.handleInitialSetup.bind(this);
     this.handleSetupDone = this.handleSetupDone.bind(this);
     this.updateConfirmations = this.updateConfirmations.bind(this);
     this.forceUpdateDaemon = this.forceUpdateDaemon.bind(this);
-    this.ListenToSetupEvents();
-    this.loadingBlockIndexPayment = false;
+
+
     this.handleStoreChange = this.handleStoreChange.bind(this);
     this.unsubscribe = this.store.subscribe(this.handleStoreChange);
     this.unsubscribeFromSetupEvents = this.unsubscribeFromSetupEvents.bind(this);
@@ -91,7 +90,14 @@ class DaemonConnector {
     this.removeTransactionFromMemory = this.removeTransactionFromMemory.bind(this);
     this.goToEarningsPanel = this.goToEarningsPanel.bind(this);
     this.createWallet = this.createWallet.bind(this);
-    this.subscribeToEvents();
+    this.getCoinMarketCapStats = this.getCoinMarketCapStats.bind(this);
+    this.getEccDonationGoals = this.getEccDonationGoals.bind(this);
+    this.getECCPosts = this.getECCPosts.bind(this);
+    this.checkQueuedNotifications = this.checkQueuedNotifications.bind(this);
+    this.queueOrSendNotification = this.queueOrSendNotification.bind(this);
+
+    this.setupDone = false;
+    this.partialSetup = false;
     this.currentAddresses = [];
     this.processedAddresses = [];
     this.from = null;
@@ -100,38 +106,40 @@ class DaemonConnector {
     this.transactionsToRequest = 1000;
     this.transactionsIndexed = false;
 
+    this.stakingRewardsCountNotif = 0;
+    this.stakingRewardsTotalEarnedNotif = 0;
+    this.queuedNotifications = [];
+
     this.transactionsMap = {};
     this.runningMainCycle = false;
     this.firstRun = true;
     this.hasLoadedTransactionsFromDb = false;
+
+    this.loadingBlockIndexPayment = false;
+    this.checkQueuedNotificationsInterval = null;
+    this.unencryptedWallet = false;
+    this.currentHighestBlock = 0;
+    this.latestBlockTime = 0;
+
+    this.listenToSetupEvents();
+    this.subscribeToEvents();
+    this.getECCPosts();
+    this.getCoinMarketCapStats();
+    this.getEccDonationGoals();
+
+
     this.checkStartupStatusInterval = setInterval(() => {
       this.stateCheckerInitialStartup();
     }, 2000);
-    this.getECCPosts = this.getECCPosts.bind(this);
-    this.getECCPosts();
-    setInterval(() => {
-      this.getECCPosts();
-    }, 60000);
-    this.getCoinMarketCapStats = this.getCoinMarketCapStats.bind(this);
-    this.getEccDonationGoals = this.getEccDonationGoals.bind(this);
-    this.getCoinMarketCapStats();
-    this.getEccDonationGoals();
     setInterval(() => {
       this.getCoinMarketCapStats();
     }, 120000);
     setInterval(() => {
       this.getEccDonationGoals();
     }, 120000);
-    this.stakingRewardsCountNotif = 0;
-    this.stakingRewardsTotalEarnedNotif = 0;
-    this.queuedNotifications = [];
-    this.checkQueuedNotificationsInterval = null;
-    this.checkQueuedNotifications = this.checkQueuedNotifications.bind(this);
-    this.queueOrSendNotification = this.queueOrSendNotification.bind(this);
-    this.unencryptedWallet = false;
-    this.currentHighestBlock = 0;
-    this.translator = this.store.getState().startup.lang;
-    this.latestBlockTime = 0;
+    setInterval(() => {
+      this.getECCPosts();
+    }, 60000);
     console.log('setting up the daemon')
   }
 
