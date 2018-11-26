@@ -7,13 +7,17 @@ import * as actions from '../../actions';
 class Connector extends Component {
   constructor(props) {
     super(props);
-    this.cycle = this.cycle.bind(this);
+    this.blockCycle = this.blockCycle.bind(this);
+    this.transactionCycle = this.transactionCycle.bind(this);
+    this.addressCycle = this.addressCycle.bind(this);
 
     this.listenToEvents();
 
     this.state = {
       interval: 5000,
-      latestBlockTime: 0
+      latestBlockTime: 0,
+      currentHighestBlock: 0,
+      currentHighestHeader: 0
     };
   }
 
@@ -142,7 +146,19 @@ class Connector extends Component {
 
   processTransactions() {}
 
-  processBlockheight() {}
+  processBlockHeight(data) {
+    let syncedPercentage = (data.blocks * 100) / data.headers;
+    syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
+
+    if (data.blocks >= this.state.currentHighestBlock && this.transactionsIndexed && !this.firstRun) {
+      // do something to process new transactions here.
+    }
+    this.setState({
+      currentHighestBlock: data.blocks,
+      currentHighestHeader: data.headers,
+    });
+    this.props.updatePaymentChainSync(data[0].blocks === 0 || data[0].headers === 0 ? 0 : syncedPercentage);
+  }
 
   recalculateStakingsEarnings() {}
 
@@ -151,7 +167,22 @@ class Connector extends Component {
   /**
    * Main Daemon cycle
    */
-  cycle() {
+  blockCycle() {
+
+    this.props.wallet.getInfo().then(async (data) => {
+      // process block height in here.
+      this.processBlockHeight(data);
+    })
+  }
+
+
+
+  addressCycle(){
+
+  }
+
+
+  transactionCycle(){
 
   }
 
