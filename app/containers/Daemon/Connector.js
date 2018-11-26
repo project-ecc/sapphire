@@ -184,7 +184,7 @@ class Connector extends Component {
   createWallet(event, { credentials }) {
     this.props.setWalletCredentials(credentials);
 
-    alert('credentials');
+    // alert('credentials');
     const key = 'settings.initialSetup';
     if (settings.has(key)) {
       const val = settings.get(key);
