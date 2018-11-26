@@ -89,7 +89,8 @@ class Root extends Component {
     const { store } = this.props;
 
     if (this.props.setupStep !== 'complete') {
-      hash.push('/setup');
+      //TODO NICK UNCOMMENT THIS TO FINISH SETUP
+      // hash.push('/setup');
     }
 
     /* Add the theme class to body */

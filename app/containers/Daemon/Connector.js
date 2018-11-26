@@ -1,17 +1,45 @@
 import React, { Component } from 'react';
 import { ipcRenderer } from 'electron';
 import { connect } from 'react-redux';
-import settings from 'electron-settings';
+
+// TODO : this needs to be removed its being used for parsing some news crap.
+import $ from 'jquery';
 
 import * as actions from '../../actions';
-import event from './../../utils/eventhandler';
+import {
+  addTransaction, addAddress, truncateTransactions,
+  getAllTransactions, getAllRewardTransactions, getAllPendingTransactions,
+  getLatestTransaction, getAllAddresses, updatePendingTransaction, updateTransactionsConfirmations,
+  getAllMyAddresses, clearDB
+} from '../../Managers/SQLManager';
+import { CHAIN_INFO, ECC_POST, NEWS_NOTIFICATION, SET_DAEMON_VERSION, WALLET_INFO } from '../../actions/types';
+import * as tools from '../../utils/tools';
+import hash from '../../router/hash';
+
+const event = require('../../utils/eventhandler');
+const settings = require('electron-settings');
+const FeedMe = require('feedme');
+const https = require('https');
+const request = require('request');
+const moment = require('moment');
+const db = require('../../../app/utils/database/db');
 
 class Connector extends Component {
   constructor(props) {
     super(props);
+
+    // Cycle bindings
+    this.walletCycle = this.walletCycle.bind(this);
     this.blockCycle = this.blockCycle.bind(this);
     this.transactionCycle = this.transactionCycle.bind(this);
     this.addressCycle = this.addressCycle.bind(this);
+    this.newsFeedCycle = this.newsFeedCycle.bind(this);
+    this.marketCapCycle = this.marketCapCycle.bind(this);
+
+
+    // Misc functions
+    this.queueOrSendNotification = this.queueOrSendNotification.bind(this);
+    this.checkQueuedNotifications = this.checkQueuedNotifications.bind(this);
 
     this.listenToEvents();
 
@@ -19,8 +47,24 @@ class Connector extends Component {
       interval: 5000,
       latestBlockTime: 0,
       currentHighestBlock: 0,
-      currentHighestHeader: 0
+      currentHighestHeader: 0,
+      transactionMap: {},
+      queuedNotifications: [],
+      walletRunningInterval: null,
+      blockProcessorInterval: null,
+      eccNewsInterval: null,
+      coinMarketCapInterval: null
     };
+
+    // TODO Fix handling promise returned from this function IMPORTANT!
+    db.sequelize.sync();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.walletRunningInterval);
+    clearInterval(this.state.blockProcessorInterval);
+    clearInterval(this.state.eccNewsInterval);
+    clearInterval(this.state.coinMarketCapInterval);
   }
 
   /**
@@ -68,7 +112,7 @@ class Connector extends Component {
       console.log('run main cycle');
       if (!this.runningMainCycle) {
         this.firstRun = true;
-        this.cycle();
+        this.mainCycle();
       }
     });
   }
@@ -149,49 +193,229 @@ class Connector extends Component {
       event.emit('initialSetup');
       this.props.setStepInitialSetup('start');
     }
+
+    // we can starting syncing the block data with redux now
+    this.setState({
+      walletRunningInterval: setInterval(async () => { await this.walletCycle(); }, this.state.interval),
+      coinMarketCapInterval: setInterval(async () => { await this.marketCapCycle(); }, this.state.interval),
+      eccNewsInterval: setInterval(async () => { await this.newsFeedCycle(); }, this.state.interval)
+    });
   }
 
   processAddresses() {}
 
   processTransactions() {}
 
-  processBlockHeight(data) {
-    let syncedPercentage = (data.blocks * 100) / data.headers;
-    syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
+  recalculateStakingsEarnings() {
 
-    if (data.blocks >= this.state.currentHighestBlock && this.transactionsIndexed && !this.firstRun) {
-      // do something to process new transactions here.
-    }
-    this.setState({
-      currentHighestBlock: data.blocks,
-      currentHighestHeader: data.headers,
-    });
-    this.props.updatePaymentChainSync(data[0].blocks === 0 || data[0].headers === 0 ? 0 : syncedPercentage);
   }
 
-  recalculateStakingsEarnings() {}
-
-  updateConfirmations() {}
 
   /**
-   * Main Daemon cycle
+   * Notification based stuff, should be moved into its own file maybe?
+   * @param callback
+   * @param body
+   */
+
+
+  queueOrSendNotification(callback, body) {
+    if (this.props.startup.loading || this.props.startup.loader || !this.props.startup.setupDone) {
+      this.state.queuedNotifications.push({ callback, body });
+    } else {
+      tools.sendOSNotification(body, callback);
+    }
+  }
+
+  checkQueuedNotifications() {
+    if (!this.props.startup.loading && !this.props.startup.loader && this.props.startup.setupDone && this.state.queuedNotifications.length >= 0) {
+      if (this.state.queuedNotifications.length === 0) {
+        clearInterval(this.checkQueuedNotificationsInterval);
+      } else {
+        const notification = this.state.queuedNotifications[0];
+        this.state.queuedNotifications.splice(0, 1);
+        tools.sendOSNotification(notification.body, notification.callback);
+      }
+    }
+  }
+
+
+  /**
+   * Wallet Cycle Function: this funcntion checks if the block index is loaded and the wallet is functioning normally
+   */
+
+  async walletCycle() {
+    let data = null;
+    try {
+      data = await this.props.wallet.getInfo();
+    } catch (e) {
+      console.log(e);
+    }
+
+    if (data != null) {
+      clearInterval(this.state.walletRunningInterval);
+
+      // start all the other intervals
+      this.setState({
+        blockProcessorInterval: setInterval(() => { this.blockCycle(); }, this.state.interval)
+      });
+    }
+  }
+
+  /**
+   * This function should update the block height and sync percentage and should trigger the confirmations cycle.
    */
   blockCycle() {
     this.props.wallet.getInfo().then(async (data) => {
       // process block height in here.
-      this.processBlockHeight(data);
+      let syncedPercentage = (data.blocks * 100) / data.headers;
+      syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
+
+      // dont know if should even bother putting this here and just do it all the transaction loop.
+      // if (data.blocks >= this.state.currentHighestBlock && this.transactionsIndexed && !this.firstRun) {
+      //   // do something to process new transactions here.
+      // }
+      this.setState({
+        currentHighestBlock: data.blocks,
+        currentHighestHeader: data.headers,
+      });
+
+      // mutate redux data with data from the system.
+      this.props.updatePaymentChainSync(data.blocks === 0 || data.headers === 0 ? 0 : syncedPercentage);
+      this.props.setDaemonVersion(tools.formatVersion(data.version));
+      this.props.chainInfo(data);
+      this.props.walletInfo(data);
+    });
+
+    this.props.wallet.getWalletInfo().then(async (data) => {
+      console.log(data);
+      this.props.walletInfoSec(data);
     });
   }
 
 
+  /**
+   * This function should check all addresses to see if their balance has changed and update confirmations for
+   * addresses, at the same time this should check if the address has a registered ans name not in the database
+   * if so, store it and tell the user with a notifications.
+   */
   addressCycle() {
 
   }
 
 
+  /**
+   * This transaction cycle function should pull down any transactions not stored in the DB and process them using the
+   * algorithm i wrote. this function should not notify the user of previous transactions if they are resyncing the DB.
+   * This function should also notify if there is new transactions.
+   */
   transactionCycle() {
 
+
   }
+
+  /**
+   * This function should be fired somehow and run in the background to update all the confirmations for all
+   * stored Transations this should be coded in a way it doesnt interupt the UI and should replace the in memory
+   * transactions when its done. SHOULD NOT BE CALLED WHEN USER IS USING A TRANSACTION FILTER.
+   */
+  confirmationsCycle() {
+    getAllTransactions()
+      .then(async (transactionData) => {
+        const walletTransactions = await this.wallet.getTransactions('*', transactionData.length, 0);
+        await Promise.all(walletTransactions.map(async (transactions) => {
+          try {
+            return await updateTransactionsConfirmations(transactions.txid, transactions.confirmations);
+          } catch (err) {
+            console.log(err);
+          }
+        }));
+      }).catch(errors => {
+        console.log(errors);
+      });
+  }
+
+
+  /**
+   * This cycle should pull down the market cap information and tell the user if the price has changed since last pulled
+   */
+  marketCapCycle() {
+
+  }
+
+  /**
+   * This function should pull the news articles down from medium and notify the user if there is a new news article.
+   */
+  newsFeedCycle() {
+    const posts = this.props.application.eccPosts;
+    const lastCheckedNews = this.props.notifications.lastCheckedNews;
+    https.get('https://medium.com/feed/@project_ecc', (res) => {
+      if (res.statusCode !== 200) {
+        console.error(new Error(`status code ${res.statusCode}`));
+        return;
+      }
+      const today = new Date();
+      const parser = new FeedMe();
+      let totalNews = 0;
+      const title = this.props.startup.lang.eccNews;
+      parser.on('end', () => {
+        if (totalNews === 0 || !this.props.notifications.newsNotificationsEnabled) return;
+        const body = totalNews === 1 ? title : `${totalNews} ${title}`;
+        const callback = () => {
+          hash.push('/news');
+        };
+
+        this.queueOrSendNotification(callback, body);
+      });
+
+      parser.on('item', (item) => {
+        const url = item.guid.text;
+        const hasVideo = item['content:encoded'].indexOf('iframe');
+        let text = $(this.fixNewsText(item['content:encoded'])).text();
+        const index = text.indexOf('Team');
+        if (index === 13) {
+          text = text.slice(index + 4);
+        }
+        const date = item.pubdate;
+        const iTime = new Date(date);
+        const time = tools.calculateTimeSince(this.props.startup.lang, today, iTime);
+
+        // push post (fetch existing posts)
+        let post;
+        if (posts.length === 0 || posts[posts.length - 1].date > iTime.getTime()) {
+          post = {
+            title: item.title,
+            timeSince: time,
+            hasVideo: hasVideo !== -1, // probably going to remove this video flag
+            url,
+            body: text,
+            date: iTime.getTime()
+          };
+          posts.push(post);
+          this.store.dispatch({ type: ECC_POST, payload: posts });
+        }
+        // put post in the first position of the array (new post)
+        else if (posts[0].date < iTime.getTime()) {
+          post = {
+            title: item.title,
+            timeSince: time,
+            hasVideo: hasVideo !== -1,
+            url,
+            body: text,
+            date: iTime.getTime()
+          };
+          posts.unshift(post);
+          this.props.setEccPosts(posts);
+
+        }
+        if (post && post.date > lastCheckedNews && this.props.notifications.newsNotificationsEnabled) {
+          totalNews++;
+          this.props.setNewsNotification(post.date)
+        }
+      });
+      res.pipe(parser);
+    });
+  }
+
 
   render() {
     return null;

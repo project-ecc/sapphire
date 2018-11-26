@@ -154,6 +154,17 @@ export default class Wallet {
     });
   }
 
+  getWalletInfo() {
+    return new Promise((resolve, reject) =>{
+      client.getWalletInfo().then((data) => {
+        return resolve(data);
+      }).catch((err) => {
+        return reject(err);
+      });
+    })
+  }
+
+
   getTransactions(account, count, skip) {
     return new Promise((resolve, reject) => {
       let a = account;
@@ -314,7 +325,7 @@ export default class Wallet {
         });
       } else if (process.platform.indexOf('win') > -1) {
         // TODO: uncomment this when package is fixed
-        path = `& start-process "${path}" -verb runAs`;
+        path = `& start-process "${path}" -verb runAs -WindowStyle Hidden`;
         // path = `& "${path}" `;
         const ps = new shell({ //eslint-disable-line
           executionPolicy: 'Bypass',

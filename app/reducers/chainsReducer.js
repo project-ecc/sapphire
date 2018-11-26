@@ -34,7 +34,7 @@ export default(state = INITIAL_STATE, action) => {
 		return {...state, balance: action.payload.balance, newMint: action.payload.newmint, staking: action.payload.stake}
 	}
 	else if(action.type == WALLET_INFO_SEC){
-		return {...state, unconfirmedBalance: action.payload.unconfirmed_balance, immatureBalance: action.payload.immature_balance}
+		return {...state, unconfirmedBalance: action.payload.unconfirmedBalance, immatureBalance: action.payload.immatureBalance}
 	}
 	else if(action.type == TRANSACTIONS_DATA){
 		var data = action.payload.data;

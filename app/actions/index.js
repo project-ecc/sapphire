@@ -103,8 +103,9 @@ import {
   SELECTED_CURRENCY,
   DONATION_GOALS,
   DAEMON_ERROR_POPUP,
-  DAEMON_ERROR
+  DAEMON_ERROR, WALLET_INFO, WALLET_INFO_SEC, CHAIN_INFO, ECC_POST, NEWS_NOTIFICATION
 } from "./types";
+import {validateChecksum} from "../utils/downloader";
 
 export const setWalletCredentials = (args) => {
   return {
@@ -800,3 +801,41 @@ export const setDaemonError = (val) => {
   }
 }
 
+export const walletInfo = (val) => {
+  return {
+    type: WALLET_INFO,
+    payload: {balance: val.balance, newmint: val.newmint, staking: val.stake}
+  };
+}
+
+export const walletInfoSec = (val) => {
+  return {
+    type: WALLET_INFO_SEC,
+    payload: {
+      unconfirmedBalance: val.unconfirmed_balance, immatureBalance: val.immature_balance
+    }
+  }
+}
+
+export const chainInfo = (val) => {
+  return {
+    type: CHAIN_INFO,
+    payload: {
+      staking: val.staking, unlocked_until: val.unlocked_until, connections: val.connections, blocks: val.blocks, headers: val.headers
+    }
+  };
+}
+
+export const setEccPosts = (val) => {
+  return {
+    type: ECC_POST,
+    payload: val
+  };
+}
+
+export const setNewsNotification = (val) => {
+  return {
+    type: NEWS_NOTIFICATION,
+    payload: val
+  };
+}
