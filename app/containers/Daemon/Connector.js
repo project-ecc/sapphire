@@ -24,7 +24,6 @@ class Connector extends Component {
     // variables for state management
 
     this.latestBlocktime = 0;
-    this.
 
     this.listenToEvents();
   }
