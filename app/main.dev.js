@@ -357,30 +357,32 @@ function setupEventHandlers() {
 
   //done with initial setup tell DaemonManager to start
   ipcMain.on('initialSetup', (e, args) => {
-    settings.set('settings.initialSetup', true);
+    // settings.set('settings.initialSetup', true);
     daemonManager.startDaemonChecker();
   });
 
   event.on('wallet', (exists, daemonCredentials) => {
-    // exists: does vallet.dat exist
+    // exists: does wallet.dat exist
     // deamonCredentials: object of username and password
-    var initialSetup = settings.has('settings.initialSetup');
-    console.log('GOT MESSAGE', exists, daemonCredentials);
+    // var initialSetup = settings.has('settings.initialSetup');
+    // console.log('GOT MESSAGE', exists, daemonCredentials);
 
-    sendMessage("daemonCredentials", daemonCredentials)
-
-    if(initialSetup && exists){
-      sendMessage("setup_done");
-    }
-    else if(initialSetup && !exists){
-      sendMessage("import_wallet");
-    }
-    else if(!initialSetup && exists){
-      sendMessage("partial_initial_setup");
-    }
-    else if(!initialSetup && !exists){
-      sendMessage("initial_setup");
-    }
+    sendMessage("daemonCredentials", {
+      credentials: daemonCredentials
+    });
+    //
+    // if(initialSetup && exists){
+    //   sendMessage("setup_done");
+    // }
+    // else if(initialSetup && !exists){
+    //   sendMessage("import_wallet");
+    // }
+    // else if(!initialSetup && exists){
+    //   sendMessage("partial_initial_setup");
+    // }
+    // else if(!initialSetup && !exists){
+    //   sendMessage("initial_setup");
+    // }
   });
 
   event.on('daemonUpdate', () => {

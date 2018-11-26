@@ -43,9 +43,11 @@ class DaemonManager {
     // use this to manually throw an update message
     // this.toldUserAboutUpdate = true;
     // event.emit('daemonUpdate');
+    console.log('created daemon manager');
   }
 
   async initialSetup() {
+    console.log('CAME IN HERE INITIAL SETUP DAEMONMANAGER')
     event.on('start', () => {
       this.startDaemon((started) => {
         if (started) {

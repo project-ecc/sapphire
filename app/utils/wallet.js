@@ -1,21 +1,21 @@
 import Client from 'eccoin-js';
 import shell from 'node-powershell';
-import {getPlatformWalletUri} from "./platform.service";
+import { getPlatformWalletUri } from './platform.service';
 
 const { exec, spawn } = require('child_process');
 
-var client = undefined;
+let client;
 
 export default class Wallet {
 
-  constructor(username = "yourusername", password = "yourpassword"){
+  constructor(username = 'yourusername', password = 'yourpassword') {
     client = new Client({
       host: '127.0.0.1',
-      //network: 'testnet',
-      //port: 30001,
+      // network: 'testnet',
+      // port: 30001,
       port: 19119,
-      username: username,
-      password: password
+      username,
+      password
     });
   }
   help() {
@@ -28,16 +28,15 @@ export default class Wallet {
     });
   }
 
-  getAnsRecord(toLookup, type){
+  getAnsRecord(toLookup, type) {
     return new Promise((resolve, reject) => {
-      let batch = [];
-      batch.push({method: "getansrecord", parameters: [toLookup, type]})
+      const batch = [];
+      batch.push({ method: 'getansrecord', parameters: [toLookup, type] });
 
       client.command(batch).then((response) => {
-        try{
-          if(responses[0].name === "RpcError")
-            return resolve(undefined);
-        }catch(e){}
+        try {
+          if (responses[0].name === 'RpcError') { return resolve(undefined); }
+        } catch (e) {}
         return resolve(response[0]);
       }).catch((err) => {
         return resolve(undefined);
@@ -45,30 +44,29 @@ export default class Wallet {
     });
   }
 
-  clearBanned(){
+  clearBanned() {
     return new Promise((resolve, reject) => {
       client.clearBanned().then((response) => {
-        return resolve(response)
-      }).catch((err)=> {
-        return reject(err)
-      })
-    })
+        return resolve(response);
+      }).catch((err) => {
+        return reject(err);
+      });
+    });
   }
 
-  getAllInfo(){
+  getAllInfo() {
     return new Promise((resolve, reject) => {
-      let batch = [];
-      batch.push({method: "getInfo"})
-      batch.push({method: "listtransactions", parameters: ["*", 100, 0]})
-      batch.push({method: "listreceivedbyaddress", parameters: [0, true]})
-      batch.push({method: "listaddressgroupings"})
-      batch.push({method: "getwalletinfo"})
+      const batch = [];
+      batch.push({ method: 'getInfo' });
+      batch.push({ method: 'listtransactions', parameters: ['*', 100, 0] });
+      batch.push({ method: 'listreceivedbyaddress', parameters: [0, true] });
+      batch.push({ method: 'listaddressgroupings' });
+      batch.push({ method: 'getwalletinfo' });
 
       client.command(batch).then((responses) => {
-        try{
-          if(responses[0].name === "RpcError")
-            return resolve(undefined);
-        }catch(e){}
+        try {
+          if (responses[0].name === 'RpcError') { return resolve(undefined); }
+        } catch (e) {}
         return resolve(responses);
       }).catch((err) => {
         return resolve(undefined);
@@ -126,7 +124,7 @@ export default class Wallet {
     });
   }
 
-  dumpPrivKey(address){
+  dumpPrivKey(address) {
     return new Promise((resolve, reject) => {
       client.dumpPrivKey(address).then((privKey) => {
         return resolve(privKey);
@@ -182,11 +180,11 @@ export default class Wallet {
 
   getANSRecord(address) {
     return new Promise((resolve, reject) => {
-      client.command([{method: "getansrecord", parameters: [address, "PTR"]}]).then(record => {
+      client.command([{ method: 'getansrecord', parameters: [address, 'PTR'] }]).then(record => {
         return resolve(record[0][0]);
       }).catch(err => {
         return reject(err);
-      })
+      });
     });
   }
 
@@ -235,7 +233,7 @@ export default class Wallet {
     return result;
   }
 
-  async getBlockChainInfo(){
+  async getBlockChainInfo() {
     const result = await client.getBlockchainInfo();
     return result;
   }
@@ -296,7 +294,7 @@ export default class Wallet {
   }
 
   walletstart() {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       let path = getPlatformWalletUri();
       if (process.platform === 'linux') {
         await runExec(`chmod +x "${path}" && "${path}"`, 1000).then(() => {
@@ -311,7 +309,7 @@ export default class Wallet {
           return resolve(true);
         })
         .catch((err) => {
-          //console.log(err);
+          // console.log(err);
           reject(err);
         });
       } else if (process.platform.indexOf('win') > -1) {

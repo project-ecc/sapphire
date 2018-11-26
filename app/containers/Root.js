@@ -73,12 +73,6 @@ class Root extends Component {
     this.props.setOperativeSystemNotifications(operativeSystemNotifications);
     this.props.setNewsNotifications(newsNotifications);
     this.props.setStakingNotifications(stakingNotifications);
-
-    // added this as a temporary fix when importing a wallet when initial setup has been done
-    const initialSetup = settings.get('settings.initialSetup');
-    if (initialSetup) {
-      this.props.setSetupDone(true);
-    }
   }
 
   checkThemeClass(theme) {
@@ -93,9 +87,8 @@ class Root extends Component {
 
   render() {
     const { store } = this.props;
-    const ready = (!this.props.unencryptedWallet && !this.props.shouldImportWallet && this.props.setupDone && !this.props.loader && !this.props.updatingApplication && !this.props.importingWalletWithSetupDone);
 
-    if (!this.props.setupDone && !this.props.loader && !this.props.updatingApplication || this.props.unencryptedWallet || this.props.shouldImportWallet || this.props.importingWalletWithSetupDone) {
+    if (this.props.setupStep !== 'complete') {
       hash.push('/setup');
     }
 
@@ -120,6 +113,7 @@ class Root extends Component {
 
 const mapStateToProps = state => {
   return {
+    setupStep: state.startup.step,
     initialSetup: state.startup.initialSetup,
     partialInitialSetup: state.startup.partialInitialSetup,
     setupDone: state.startup.setupDone,

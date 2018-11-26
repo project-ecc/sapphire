@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { ipcRenderer } from 'electron';
 import { connect } from 'react-redux';
+import settings from 'electron-settings';
 
 import * as actions from '../../actions';
+import event from './../../utils/eventhandler';
 
 class Connector extends Component {
   constructor(props) {
@@ -27,13 +29,10 @@ class Connector extends Component {
   listenToEvents() {
     ipcRenderer.on('daemonCredentials', this.createWallet.bind(this));
 
-    ipcRenderer.on('initial_setup', this.handleInitialSetup);
-    ipcRenderer.on('setup_done', this.handleSetupDone);
-    ipcRenderer.on('partial_initial_setup', this.handlePartialSetup);
-    ipcRenderer.on('guiUpdate', this.handleGuiUpdate.bind(this));
-    ipcRenderer.on('daemonUpdate', this.handleDaemonUpdate.bind(this));
-    ipcRenderer.on('daemonUpdated', this.handleDaemonUpdated.bind(this));
-    ipcRenderer.on('daemonCredentials', this.createWallet.bind(this));
+    // TODO: Review these and remove them where applicable
+    // ipcRenderer.on('guiUpdate', this.handleGuiUpdate.bind(this));
+    // ipcRenderer.on('daemonUpdate', this.handleDaemonUpdate.bind(this));
+    // ipcRenderer.on('daemonUpdated', this.handleDaemonUpdated.bind(this));
 
 
     ipcRenderer.on('loading-error', (e, arg) => {
@@ -43,7 +42,7 @@ class Connector extends Component {
       this.props.setLoading({
         isLoading: true,
         loadingMessage: arg.message
-      })
+      });
     });
 
     ipcRenderer.on('message-from-log', (e, arg) => {
@@ -69,7 +68,7 @@ class Connector extends Component {
       console.log('run main cycle');
       if (!this.runningMainCycle) {
         this.firstRun = true;
-        this.mainCycle();
+        this.cycle();
       }
     });
   }
@@ -138,8 +137,18 @@ class Connector extends Component {
    * @param event
    * @param arg
    */
-  createWallet(event, arg) {
-    this.props.setWalletCredentials(arg);
+  createWallet(event, { credentials }) {
+    this.props.setWalletCredentials(credentials);
+
+    alert('credentials');
+    const key = 'settings.initialSetup';
+    if (settings.has(key)) {
+      const val = settings.get(key);
+      this.props.setStepInitialSetup(val);
+    } else {
+      event.emit('initialSetup');
+      this.props.setStepInitialSetup('start');
+    }
   }
 
   processAddresses() {}
@@ -168,21 +177,19 @@ class Connector extends Component {
    * Main Daemon cycle
    */
   blockCycle() {
-
     this.props.wallet.getInfo().then(async (data) => {
       // process block height in here.
       this.processBlockHeight(data);
-    })
+    });
   }
 
 
-
-  addressCycle(){
+  addressCycle() {
 
   }
 
 
-  transactionCycle(){
+  transactionCycle() {
 
   }
 

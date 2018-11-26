@@ -115,16 +115,16 @@ export const setWalletCredentials = (args) => {
 
 export const getSetup = () => dispatch => {
 	ipcRenderer.send('app:ready');
-
-	ipcRenderer.on('import_wallet', (e) => {
-		dispatch({ type: IMPORT_WALLET });
-	});
+    //
+	// ipcRenderer.on('import_wallet', (e) => {
+	// 	dispatch({ type: IMPORT_WALLET });
+	// });
 };
 
 export const setStepInitialSetup = (step) => {
 	return{
 		type: STEP_INITIAL_SETUP,
-		payload: {step: step}
+		payload: step
 	};
 };
 
