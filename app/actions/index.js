@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron';
 import {
+  LOADING,
   DAEMON_CREDENTIALS,
   APP_READY,
   INITIAL_SETUP,
@@ -710,6 +711,13 @@ export const settellUserUpdateFailed = (val) => {
   }
 };
 
+export const setLoading = val => {
+  return {
+    type: LOADING,
+    payload: val
+  }
+};
+
 export const setPopupLoading = (val) => {
   return {
     type: POPUP_LOADING,
@@ -781,6 +789,13 @@ export const setDonationGoals = (val) => {
 export const setDaemonErrorPopup = (val) => {
   return {
     type: DAEMON_ERROR_POPUP,
+    payload: val
+  }
+}
+
+export const setDaemonError = (val) => {
+  return {
+    type: DAEMON_ERROR,
     payload: val
   }
 }
