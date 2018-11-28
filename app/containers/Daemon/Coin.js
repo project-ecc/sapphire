@@ -42,6 +42,7 @@ class Coin extends Component {
     this.addressCycle = this.addressCycle.bind(this);
     this.marketCapCycle = this.marketCapCycle.bind(this);
     this.transactionCycle = this.transactionCycle.bind(this);
+    this.addressCycle = this.addressCycle.bind(this);
 
 
     // Misc functions
@@ -61,6 +62,7 @@ class Coin extends Component {
       blockProcessorInterval: null,
       coinMarketCapInterval: null,
       transactionProcessorInterval: null,
+      addressProcessorInterval:null,
       transactionsIndexed: false,
       lastTransactionTime: 0,
       transactionsToRequest: 4000,
@@ -451,7 +453,8 @@ class Coin extends Component {
       // start all the other intervals
       this.setState({
         blockProcessorInterval: setInterval(() => { this.blockCycle(); }, this.state.interval),
-        transactionProcessorInterval: setInterval(async () => { await this.transactionCycle(); }, this.state.interval)
+        transactionProcessorInterval: setInterval(async () => { await this.transactionCycle(); }, this.state.interval),
+        addressProcessorInterval: setInterval(async () => { await this.addressCycle(); }, this.state.interval)
       });
     }
   }
@@ -494,7 +497,12 @@ class Coin extends Component {
    * if so, store it and tell the user with a notifications.
    */
   addressCycle() {
-
+    this.props.wallet.listReceivedByAddress().then(async (data) => {
+      console.log(data)
+    })
+    this.props.wallet.listAddressGroupings().then(async (data) => {
+      console.log(data)
+    })
   }
 
 

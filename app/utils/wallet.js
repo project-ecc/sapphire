@@ -54,6 +54,26 @@ export default class Wallet {
     });
   }
 
+  listReceivedByAddress() {
+    return new Promise((resolve, reject) => {
+      client.listReceivedByAddress().then((response) => {
+        return resolve(response);
+      }).catch((err) => {
+        return reject(err);
+      });
+    });
+  }
+
+  listAddressGroupings() {
+    return new Promise((resolve, reject) => {
+      client.listAddressGroupings().then((response) => {
+        return resolve(response);
+      }).catch((err) => {
+        return reject(err);
+      });
+    });
+  }
+
   getAllInfo() {
     return new Promise((resolve, reject) => {
       const batch = [];
