@@ -15,6 +15,13 @@ import {
 import * as tools from '../../utils/tools';
 import hash from '../../router/hash';
 import ConnectorNews from './News';
+import {
+  INDEXING_TRANSACTIONS,
+  LOADING,
+  PENDING_TRANSACTION,
+  STAKING_NOTIFICATION,
+  STAKING_REWARD
+} from "../../actions/types";
 
 const event = require('../../utils/eventhandler');
 const settings = require('electron-settings');
@@ -34,6 +41,7 @@ class Connector extends Component {
     this.transactionCycle = this.transactionCycle.bind(this);
     this.addressCycle = this.addressCycle.bind(this);
     this.marketCapCycle = this.marketCapCycle.bind(this);
+    this.transactionCycle = this.transactionCycle.bind(this);
 
 
     // Misc functions
@@ -51,7 +59,12 @@ class Connector extends Component {
       queuedNotifications: [],
       walletRunningInterval: null,
       blockProcessorInterval: null,
-      coinMarketCapInterval: null
+      coinMarketCapInterval: null,
+      transactionProcessorInterval: null,
+      transactionsIndexed: false,
+      lastTransactionTime: 0,
+      transactionsToRequest: 4000,
+      shouldRequestMoreTransactions: false
     };
 
     // TODO Fix handling promise returned from this function IMPORTANT!
@@ -207,6 +220,205 @@ class Connector extends Component {
   recalculateStakingsEarnings() {
 
   }
+  async loadTransactionsForProcessing() {
+
+    // TODO : WUT
+    await this.checkIfTransactionsNeedToBeDeleted();
+
+    let txId = '', time = 0, amount = 0, category = '', address = '',
+      fee = 0, confirmations = 0;
+
+
+    const maxAttempts = 5;
+    const attempts = 0
+
+
+    let transactions = null
+    while(transactions == null && attempts <= maxAttempts){
+      transactions = await this.wallet.getTransactions('*', this.transactionsToRequest, this.transactionsToRequest * this.transactionsPage);
+    }
+
+    transactions = this.orderTransactions(transactions);
+
+    // load transactions into transactionsMap for processing
+    for (let i = 0; i < transactions.length; i++) {
+      time = transactions[i].time;
+      if (time > this.state.lastTransactionTime) {
+
+        this.setState({
+          shouldRequestMoreTransactions: true
+        });
+
+        txId = transactions[i].txid;
+        amount = transactions[i].amount;
+        category = transactions[i].category;
+        address = transactions[i].address;
+        fee = transactions[i].fee === undefined ? 0 : transactions[i].fee;
+        confirmations = transactions[i].confirmations;
+        if (!this.transactionsMap[txId]) {
+          this.transactionsMap[txId] = [];
+        }
+        this.transactionsMap[txId].push({
+          txId,
+          time,
+          amount,
+          category,
+          address,
+          fee,
+          confirmations,
+          is_main: false
+        });
+      } else {
+        this.setState({
+          shouldRequestMoreTransactions: false
+        });
+      }
+    }
+
+    if (transactions.length === this.transactionsToRequest && shouldRequestAnotherPage) {
+      this.transactionsPage++;
+      await this.loadTransactionsForProcessing();
+    } else {
+      await this.processTransactions();
+    }
+  }
+  async processTransactions() {
+    let entries = [];
+    const rewards = [];
+    const staked = [];
+    const change = [];
+
+    // process transactions
+    for (const key of Object.keys(this.transactionsMap)) {
+      const values = this.transactionsMap[key];
+      let generatedFound = false;
+
+      // check if current values array contains a staked transaction, if it does flag the rest of them as category staked
+      restartLoop:
+        while (true) {
+          for (let i = 0; i <= values.length - 1; i++) {
+            if ((values[i].category === 'generate' || values[i].category === 'immature') && generatedFound === false) {
+              generatedFound = true;
+              continue restartLoop;
+            }
+            if (generatedFound) {
+              if (values[i].category !== 'generate' && values[i].category !== 'immature') {
+                values[i].category = 'staked';
+              } else {
+                values[i].is_main = true;
+                values[i].category = 'generate';
+              }
+              rewards.push({ ...values[i], txId: key });
+            }
+          }
+          break;
+        }
+
+      // if the above condition doesnt fit calculate the lev
+      if (!generatedFound) {
+        for (let i = 0; i <= values.length - 1; i++) {
+          entries.push({ ...values[i], txId: key });
+
+          for (let j = 0; j < entries.length - 1; j++) {
+            const original = entries[j];
+            const current = values[i];
+            if (current.txId === original.txId) {
+              // console.log('txId match')
+
+              // if original == send
+              if (original.category === 'receive' && current.category === 'send' || original.category === 'send' && current.category === 'receive') {
+                if (tools.similarity(original.amount.toString(), current.amount.toString()) > 0.6) {
+                  current.category = 'change';
+                  original.category = 'change';
+                  change.push({ ...current, txId: key });
+                  change.push({ ...original, txId: key });
+                  entries.splice(entries.indexOf(original), 1);
+                  entries.splice(entries.indexOf(current), 1);
+                } else {
+                  // console.log('similarity too low')
+                  // console.log(tools.similarity(original.amount.toString(), current.amount.toString()))
+                }
+              } else {
+                // console.log('Sim value')
+                // console.log(tools.similarity(original.amount.toString(), current.amount.toString()))
+                // console.log('values dont line up')
+              }
+            }
+          }
+        }
+      }
+      generatedFound = false;
+    }
+
+    // Set every transaction still left in entries as the main transaction.
+    for (let j = 0; j <= entries.length - 1; j++) {
+      entries[j].is_main = true;
+    }
+
+    // console.log(entries);
+    // console.log(rewards);
+    // console.log(staked);
+    this.transactionsMap = {};
+    entries = entries.concat(rewards, staked, change);
+    // console.log(entries.length)
+    // console.log(JSON.stringify(entries))
+    await this.insertIntoDb(entries);
+  }
+  async insertIntoDb(entries) {
+    const lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
+    let earningsCountNotif = 0;
+    let earningsTotalNotif = 0;
+    const shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
+
+    for (let i = 0; i < entries.length; i++) {
+      // console.log(lastCheckedEarnings)
+      if (this.firstRun) {
+        this.store.dispatch({ type: LOADING, payload: { isLoading: true, loadingMessage: `Indexing transaction ${i}/${entries.length}` } });
+      }
+      const entry = entries[i];
+      if (Number(entry.confirmations) < 30) {
+        this.store.dispatch({ type: PENDING_TRANSACTION, payload: entry.txId });
+      }
+
+      let isPending = false;
+
+      if (entry.category === 'generate' || entry.category === 'staked') {
+        isPending = Number(entry.confirmations) < 30;
+      } else {
+        isPending = Number(entry.confirmations) < 10;
+      }
+      await addTransaction(entry, isPending);
+
+      // update with 1 new staking reward since previous ones have already been loaded on startup
+      if (entry.category === 'generate') {
+        if (entry.time > lastCheckedEarnings && shouldNotifyEarnings) {
+          this.store.dispatch({ type: STAKING_NOTIFICATION, payload: { earnings: entry.amount, date: entry.time } });
+          earningsCountNotif++;
+          earningsTotalNotif += entry.amount;
+        }
+      }
+    }
+
+    if (shouldNotifyEarnings && earningsCountNotif > 0) {
+      earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
+      const title = `Staking reward - ${earningsTotalNotif} ECC`;
+      const body = earningsCountNotif === 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`;
+      const callback = () => { this.goToEarningsPanel(); };
+      this.queueOrSendNotification(callback, body);
+    }
+
+    // no more transactions to process, mark as done to avoid spamming the daemon
+    if (!this.transactionsIndexed) {
+      this.transactionsIndexed = true;
+      this.store.dispatch({ type: INDEXING_TRANSACTIONS, payload: false });
+      const rewards = await getAllRewardTransactions();
+      this.store.dispatch({ type: STAKING_REWARD, payload: rewards });
+    }
+
+    this.transactionsPage = 0;
+    this.currentFrom = this.from;
+    this.isIndexingTransactions = false;
+  }
 
 
   /**
@@ -254,7 +466,8 @@ class Connector extends Component {
 
       // start all the other intervals
       this.setState({
-        blockProcessorInterval: setInterval(() => { this.blockCycle(); }, this.state.interval)
+        blockProcessorInterval: setInterval(() => { this.blockCycle(); }, this.state.interval),
+        transactionProcessorInterval: setInterval(async() => {await this.transactionCycle();}, this.state.interval)
       });
     }
   }
@@ -306,7 +519,40 @@ class Connector extends Component {
    * algorithm i wrote. this function should not notify the user of previous transactions if they are resyncing the DB.
    * This function should also notify if there is new transactions.
    */
-  transactionCycle() {
+  async transactionCycle() {
+
+    //compare the latest transaction time stored in memory against the latest 10 transactions.
+    const latestTransaction = await getLatestTransaction();
+    this.from = latestTransaction != null ? latestTransaction.time : 0;
+
+
+    const transactions = await this.props.wallet.getTransactions('*', 10, 0);
+    console.log(transactions)
+    if ((latestTransaction === undefined || latestTransaction === null) && transactions.length === 0) {
+      this.setState({
+        transactionsIndexed: true
+      });
+    } else if ((latestTransaction === undefined || latestTransaction === null) && transactions.length > 0) {
+      this.setState({
+        transactionsIndexed: false
+      });
+    } else {
+
+      this.transactionsIndexed = true;
+    }
+
+    // check if transactions have been indexed before.
+
+    // if they havent been indexed before run the indexing process, and popup a loading module to the user
+
+
+
+    // index transactions and calculate staking reward, once complete destroy this cycle.
+
+
+
+
+
 
 
   }
