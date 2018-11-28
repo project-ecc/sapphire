@@ -25,7 +25,7 @@ class Root extends Component {
   }
 
   componentDidMount() {
-    this.props.getSetup();
+    // this.props.getSetup();
     this.startUp();
 
     ipcRenderer.on('closing_daemon', () => {
@@ -90,7 +90,7 @@ class Root extends Component {
 
     if (this.props.setupStep !== 'complete') {
       //TODO NICK UNCOMMENT THIS TO FINISH SETUP
-      // hash.push('/setup');
+      hash.push('/setup');
     }
 
     /* Add the theme class to body */

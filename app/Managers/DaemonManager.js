@@ -36,7 +36,6 @@ class DaemonManager {
     this.arch = process.arch;
     this.running = false;
     this.initialSetup();
-    this.wallet = new Wallet();
     this.toldUserAboutUpdate = false;
     this.shouldRestart = undefined;
 
@@ -47,14 +46,13 @@ class DaemonManager {
   }
 
   async initialSetup() {
-    console.log('CAME IN HERE INITIAL SETUP DAEMONMANAGER')
-    event.on('start', () => {
-      this.startDaemon((started) => {
-        if (started) {
-          event.emit('daemonStarted');
-        } else event.emit('daemonFailed');
-      });
-    });
+    // event.on('start', () => {
+    //   this.startDaemon((started) => {
+    //     if (started) {
+    //       event.emit('daemonStarted');
+    //     } else event.emit('daemonFailed');
+    //   });
+    // });
 
     event.on('stop', () => {
       this.stopDaemon((err) => {
@@ -70,7 +68,7 @@ class DaemonManager {
     let daemonCredentials = await Tools.readRpcCredentials();
   	this.installedVersion = await this.checkIfDaemonExists();
     if (daemonCredentials) {
-    	this.wallet = new Wallet(daemonCredentials.username, daemonCredentials.password);
+    	// this.wallet = new Wallet(daemonCredentials.username, daemonCredentials.password);
     	// await this.stopDaemon();
     }
     if (!daemonCredentials || daemonCredentials.username == 'yourusername' || daemonCredentials.password == 'yourpassword') {
@@ -79,7 +77,7 @@ class DaemonManager {
         password: Tools.generateId(5)
       };
       const result = await Tools.updateOrCreateConfig(daemonCredentials.username, daemonCredentials.password);
-      this.wallet = new Wallet(daemonCredentials.username, daemonCredentials.password);
+      // this.wallet = new Wallet(daemonCredentials.username, daemonCredentials.password);
     }
 
     console.log('going to check daemon version');
@@ -130,24 +128,25 @@ class DaemonManager {
         } else if (list && list.length == 0) {
           console.log('daemon not running');
           self.running = false;
-          if (!self.downloading) { self.startDaemon(); }
+          // if (!self.downloading) { self.startDaemon(); }
+          if (!self.downloading) { event.emit('start'); }
         }
       });
     }
   }
 
- 	startDaemon(cb) {
-   console.log('starting daemon...');
-	    this.wallet.walletstart((result) => {
-	      if (result) {
-	      	cb(result);
-	      }
-	    }).catch(err => {
-      console.log('Error starting daemon');
-	      console.log(err);
-      event.emit('loading-error', { message: err.message });
-    });
- }
+ // 	startDaemon(cb) {
+ //   console.log('starting daemon...');
+	//     this.wallet.walletstart((result) => {
+	//       if (result) {
+	//       	cb(result);
+	//       }
+	//     }).catch(err => {
+ //      console.log('Error starting daemon');
+	//       console.log(err);
+ //      event.emit('loading-error', { message: err.message });
+ //    });
+ // }
 
   async stopDaemon() {
     const self = this;
@@ -188,7 +187,8 @@ class DaemonManager {
         this.downloading = false;
         if (downloaded !== false) {
           event.emit('updatedDaemon');
-          if (!this.shouldRestart) { this.startDaemon(); }
+          // if (!this.shouldRestart) { this.startDaemon(); }
+          if (!this.shouldRestart) { event.emit('start'); }
           this.toldUserAboutUpdate = false;
         }
       }, 7000);

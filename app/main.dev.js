@@ -12,7 +12,7 @@
  */
 
 import MenuBuilder from './menu';
-import DaemonManager from './Managers/DaemonManager';
+// import DaemonManager from './Managers/DaemonManager';
 import GUIManager from './Managers/GUIManager';
 import {getDebugUri, grabEccoinDir, grabWalletDir} from "./utils/platform.service";
 import { traduction } from './lang/lang';
@@ -32,7 +32,7 @@ let autoECCLauncher = new AutoLaunch({
 });
 let walletPath;
 let tray = null;
-let daemonManager = null;
+// let daemonManager = null;
 let guiManager = null;
 let maximized = false;
 let ds = null;
@@ -234,11 +234,13 @@ async function closeApplication(){
     }
     sendMessage("closing_daemon");
     let closedDaemon = false;
-    console.log(daemonManager)
-    do{
-      closedDaemon = await daemonManager.stopDaemon();
+    // console.log(daemonManager)
+    // do{
+      // TODO : close daemon
+      // closedDaemon = await daemonManager.stopDaemon();
       //console.log("closedDaemon: ", closedDaemon);
-    }while(!closedDaemon);
+    // }while(!closedDaemon);
+    // }while(true);
     console.log("shutdown");
     app.exit();
   }
@@ -297,7 +299,7 @@ function setupEventHandlers() {
   ipcMain.on('app:ready', (e, args) => {
     console.log("ELECTRON GOT READY MESSAGE");
     guiManager = new GUIManager();
-    daemonManager = new DaemonManager();
+    // daemonManager = new DaemonManager();
     mainWindow.once('ready-to-show', () => {
       mainWindow.show()
     });
@@ -356,10 +358,10 @@ function setupEventHandlers() {
   });
 
   //done with initial setup tell DaemonManager to start
-  ipcMain.on('initialSetup', (e, args) => {
-    // settings.set('settings.initialSetup', true);
-    daemonManager.startDaemonChecker();
-  });
+  // ipcMain.on('initialSetup', (e, args) => {
+  //   // settings.set('settings.initialSetup', true);
+  //   daemonManager.startDaemonChecker();
+  // });
 
   event.on('wallet', (exists, daemonCredentials) => {
     // exists: does wallet.dat exist
