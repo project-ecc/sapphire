@@ -10,7 +10,7 @@ import ConnectorCoin from './Coin';
 import Tools from '../../utils/tools';
 
 const arch = require('arch');
-
+const find = require('find-process');
 const request = require('request-promise-native');
 const fs = require('fs');
 const event = require('../../utils/eventhandler');
@@ -236,7 +236,7 @@ class Connector extends Component {
    */
   startDaemon(withResult) {
     console.log('starting daemon...');
-    this.state.wallet.walletstart((result) => {
+    this.props.wallet.walletstart((result) => {
       if (withResult) {
         if (result) {
           event.emit('daemonStarted');
