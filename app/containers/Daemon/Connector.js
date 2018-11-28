@@ -12,9 +12,9 @@ import {
   getLatestTransaction, getAllAddresses, updatePendingTransaction, updateTransactionsConfirmations,
   getAllMyAddresses, clearDB
 } from '../../Managers/SQLManager';
-import { CHAIN_INFO, ECC_POST, NEWS_NOTIFICATION, SET_DAEMON_VERSION, WALLET_INFO } from '../../actions/types';
 import * as tools from '../../utils/tools';
 import hash from '../../router/hash';
+import ConnectorNews from './News';
 
 const event = require('../../utils/eventhandler');
 const settings = require('electron-settings');
@@ -33,7 +33,6 @@ class Connector extends Component {
     this.blockCycle = this.blockCycle.bind(this);
     this.transactionCycle = this.transactionCycle.bind(this);
     this.addressCycle = this.addressCycle.bind(this);
-    this.newsFeedCycle = this.newsFeedCycle.bind(this);
     this.marketCapCycle = this.marketCapCycle.bind(this);
 
 
@@ -52,7 +51,6 @@ class Connector extends Component {
       queuedNotifications: [],
       walletRunningInterval: null,
       blockProcessorInterval: null,
-      eccNewsInterval: null,
       coinMarketCapInterval: null
     };
 
@@ -63,7 +61,6 @@ class Connector extends Component {
   componentWillUnmount() {
     clearInterval(this.state.walletRunningInterval);
     clearInterval(this.state.blockProcessorInterval);
-    clearInterval(this.state.eccNewsInterval);
     clearInterval(this.state.coinMarketCapInterval);
   }
 
@@ -181,7 +178,7 @@ class Connector extends Component {
    * @param event
    * @param arg
    */
-  createWallet(event, { credentials }) {
+  createWallet(e, { credentials }) {
     this.props.setWalletCredentials(credentials);
 
     // alert('credentials');
@@ -194,11 +191,12 @@ class Connector extends Component {
       this.props.setStepInitialSetup('start');
     }
 
+    event.emit('startConnectorChildren')
+
     // we can starting syncing the block data with redux now
     this.setState({
       walletRunningInterval: setInterval(async () => { await this.walletCycle(); }, this.state.interval),
-      coinMarketCapInterval: setInterval(async () => { await this.marketCapCycle(); }, this.state.interval),
-      eccNewsInterval: setInterval(async () => { await this.newsFeedCycle(); }, this.state.interval)
+      coinMarketCapInterval: setInterval(async () => { await this.marketCapCycle(); }, this.state.interval)
     });
   }
 
@@ -342,83 +340,10 @@ class Connector extends Component {
 
   }
 
-  /**
-   * This function should pull the news articles down from medium and notify the user if there is a new news article.
-   */
-  newsFeedCycle() {
-    const posts = this.props.application.eccPosts;
-    const lastCheckedNews = this.props.notifications.lastCheckedNews;
-    https.get('https://medium.com/feed/@project_ecc', (res) => {
-      if (res.statusCode !== 200) {
-        console.error(new Error(`status code ${res.statusCode}`));
-        return;
-      }
-      const today = new Date();
-      const parser = new FeedMe();
-      let totalNews = 0;
-      const title = this.props.startup.lang.eccNews;
-      parser.on('end', () => {
-        if (totalNews === 0 || !this.props.notifications.newsNotificationsEnabled) return;
-        const body = totalNews === 1 ? title : `${totalNews} ${title}`;
-        const callback = () => {
-          hash.push('/news');
-        };
-
-        this.queueOrSendNotification(callback, body);
-      });
-
-      parser.on('item', (item) => {
-        const url = item.guid.text;
-        const hasVideo = item['content:encoded'].indexOf('iframe');
-        let text = $(this.fixNewsText(item['content:encoded'])).text();
-        const index = text.indexOf('Team');
-        if (index === 13) {
-          text = text.slice(index + 4);
-        }
-        const date = item.pubdate;
-        const iTime = new Date(date);
-        const time = tools.calculateTimeSince(this.props.startup.lang, today, iTime);
-
-        // push post (fetch existing posts)
-        let post;
-        if (posts.length === 0 || posts[posts.length - 1].date > iTime.getTime()) {
-          post = {
-            title: item.title,
-            timeSince: time,
-            hasVideo: hasVideo !== -1, // probably going to remove this video flag
-            url,
-            body: text,
-            date: iTime.getTime()
-          };
-          posts.push(post);
-          this.store.dispatch({ type: ECC_POST, payload: posts });
-        }
-        // put post in the first position of the array (new post)
-        else if (posts[0].date < iTime.getTime()) {
-          post = {
-            title: item.title,
-            timeSince: time,
-            hasVideo: hasVideo !== -1,
-            url,
-            body: text,
-            date: iTime.getTime()
-          };
-          posts.unshift(post);
-          this.props.setEccPosts(posts);
-
-        }
-        if (post && post.date > lastCheckedNews && this.props.notifications.newsNotificationsEnabled) {
-          totalNews++;
-          this.props.setNewsNotification(post.date)
-        }
-      });
-      res.pipe(parser);
-    });
-  }
-
-
   render() {
-    return null;
+    return (
+      <ConnectorNews />
+    );
   }
 }
 
