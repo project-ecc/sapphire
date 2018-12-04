@@ -275,16 +275,16 @@ async function getAllRewardTransactions(){
  * Address functions
  */
 
-async function addAddress(address, withAns = false, belongsToMe = false){
+async function addAddress(address, belongsToMe = false){
   return new Promise(async (resolve, reject) => {
     await Address
       .findOrCreate({
         where: {
-          address: address.normalAddress
+          address: address.address
         },
         defaults: {
           current_balance: address.amount,
-          address: address.normalAddress,
+          address: address.address,
           is_mine: belongsToMe
         }
       })
@@ -294,39 +294,41 @@ async function addAddress(address, withAns = false, belongsToMe = false){
           newAddress.is_mine = belongsToMe
           await newAddress.save()
         }
-
-        if (withAns){
-          await AnsRecord
-          .findOrCreate({
-            where: {
-              name: address.address,
-              code: address.code,
-            },
-            defaults: {
-              code: address.code,
-              expire_time: address.expiryTime,
-              creation_block: address.currentBlock
-            }
-          }).spread(async (ansRecord, createdAns) => {
-            if(createdAns){
-              newAddress.status = 'ready';
-              await newAddress.save()
-            }
-
-            await ansRecord.setAddress(newAddress).then(result =>{
-              resolve([ansRecord, createdAns]);
-            });
-          }).catch(err => {
-            console.log(err);
-            reject(err);
-          });
-        }
         resolve(newAddress);
         return newAddress;
       }).catch(err => {
         console.log(err);
         reject(err);
     });
+  });
+}
+
+async function addAnsRecord(address, ansRecord){
+  return new Promise(async (resolve, reject) => {
+    await AnsRecord
+      .findOrCreate({
+        where: {
+          name: ansRecord.Name,
+          code: ansRecord.Code,
+        },
+        defaults: {
+          name: ansRecord.Name,
+          code: ansRecord.Code,
+          expire_time: ansRecord.ExpireTime,
+          // creation_block: ansRecord.currentBlock
+        }
+      }).spread(async (ansRecord, createdAns) => {
+        if(createdAns){
+          address.status = 'ready';
+          await address.save()
+        }
+        await ansRecord.setAddress(address).then(result =>{
+          resolve([ansRecord, createdAns]);
+        });
+      }).catch(err => {
+        console.log(err);
+        reject(err);
+      });
   });
 }
 
@@ -400,13 +402,6 @@ async function deleteAddressByName(addressString){
 }
 
 
-/**
- * AnsRecord functions
- */
-
-async function addAnsRecord(ansRecord, addressString){
-
-}
 
 async function deleteAnsRecordById(id){
   AnsRecord.destroy({

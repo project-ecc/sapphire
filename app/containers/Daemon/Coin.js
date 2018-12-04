@@ -10,7 +10,7 @@ import {
   addTransaction, addAddress, truncateTransactions,
   getAllTransactions, getAllRewardTransactions, getAllPendingTransactions,
   getLatestTransaction, getAllAddresses, updatePendingTransaction, updateTransactionsConfirmations,
-  getAllMyAddresses, clearDB
+  getAllMyAddresses, clearDB, addAnsRecord
 } from '../../Managers/SQLManager';
 import * as tools from '../../utils/tools';
 import hash from '../../router/hash';
@@ -20,7 +20,7 @@ import {
   LOADING,
   PENDING_TRANSACTION,
   STAKING_NOTIFICATION,
-  STAKING_REWARD
+  STAKING_REWARD, USER_ADDRESSES
 } from '../../actions/types';
 
 const event = require('../../utils/eventhandler');
@@ -496,8 +496,51 @@ class Coin extends Component {
    * addresses, at the same time this should check if the address has a registered ans name not in the database
    * if so, store it and tell the user with a notifications.
    */
-  addressCycle() {
+  async addressCycle() {
     this.props.wallet.listReceivedByAddress().then(async (data) => {
+
+      let addresses = data;
+
+      // if my current database addresses are not all in the addresses returned from the daemon,
+      let myAddresses = await getAllMyAddresses();
+
+      for (const [i, add] of myAddresses.entries()) {
+        const found = addresses.filter((daemonAddress) => {
+          return daemonAddress.address === add.address;
+        });
+        if (!found || found.length === 0) {
+          await clearDB();
+          console.log('in here');
+          //this.transactionsIndexed = false;
+          break;
+        }
+      }
+      // if(normalAddresses.length > this.currentAddresses.length) {
+      for (const [index, address] of addresses.entries()) {
+        // handle the response
+        const addressObj = await addAddress(address, true);
+        const ansRecord = await this.props.wallet.getANSRecord(address.address);
+
+        if(ansRecord.Name.length > 0){
+          console.log(ansRecord)
+          let dbAnsAddress = await addAnsRecord(addressObj, ansRecord)
+          if (dbAnsAddress[1] !== null && dbAnsAddress[1] === true) {
+            this.queueOrSendNotification(() => {}, `${this.props.lang.ansReady}.\n\n${this.translator.username}: ${ansRecord.Name}#${ansRecord.Code}`);
+          }
+        }
+      }
+
+      addresses = await getAllMyAddresses();
+      this.props.setUserAddresses(addresses)
+      // }
+      // We need to have the addresses loaded to be able to index transactions
+      // this.currentAddresses = normalAddresses;
+      if (!this.transactionsIndexed && this.firstRun && this.currentAddresses.length > 0 && !this.isIndexingTransactions) {
+        await this.loadTransactionsForProcessing();
+        this.props.setIndexingTransactions(true)
+      }
+
+
       console.log(data)
     })
     this.props.wallet.listAddressGroupings().then(async (data) => {
