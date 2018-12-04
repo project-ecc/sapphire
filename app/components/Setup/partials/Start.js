@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import hash from './../../../router/hash';
 import { Button } from 'reactstrap';
 import {connect} from "react-redux";
+import { ArrowRightIcon } from 'mdi-react';
+import hash from './../../../router/hash';
 import * as actions from "../../../actions";
 
 class Start extends Component {
@@ -19,8 +20,16 @@ class Start extends Component {
   render() {
     return (
       <div>
-        Welcome to Sapphire. Get started.
-        <Button onClick={this.nextStep}>Select Theme</Button>
+        <p id="welcome">
+          { this.props.lang.welcome }
+        </p>
+        <p>
+          { this.props.lang.welcomeExplanation1 }
+        </p>
+        <Button onClick={this.nextStep} className="mt-5" color="primary">
+          Select Theme
+          <ArrowRightIcon className="ml-2" />
+        </Button>
       </div>
     );
   }

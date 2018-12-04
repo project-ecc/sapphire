@@ -33,10 +33,7 @@ class Index extends Component {
           <div id="logo">
             <img src={logo} />
           </div>
-          <div className="content">
-            <p style={{ fontWeight: '200' }} id="welcome">
-              { this.props.lang.welcome }
-            </p>
+          <div>
             {this.redirectIfIncomplete()}
             {renderRoutes(route.routes)}
           </div>

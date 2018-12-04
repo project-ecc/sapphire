@@ -612,9 +612,7 @@ class Coin extends Component {
   }
 
   render() {
-    return (
-      <ConnectorNews />
-    );
+    return null;
   }
 
 }

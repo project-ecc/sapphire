@@ -3,14 +3,12 @@
 #mainPanel{
   width: 100%;
   text-align: center;
-}
-
-.content{
-  height: 330px;
+  margin: auto;
 }
 
 #welcome{
   font-size: 30px;
+  font-weight: 200;
 }
 
 #buttons{
@@ -19,10 +17,6 @@
 	justify-content: center;
 	align-items: center;
 	top: 50px;
-}
-
-.button{
-  cursor: pointer;
 }
 
 .arrowRight{

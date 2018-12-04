@@ -15,6 +15,11 @@ class Loader extends Component {
     this.showPercentage = this.showPercentage.bind(this);
     this.handleDismissUpdateFailed = this.handleDismissUpdateFailed.bind(this);
     this.showdownloadFailed = this.showdownloadFailed.bind(this);
+
+    this.state = {
+      show: false,
+      message: null
+    }
   }
 
   shouldComponentUpdate(nextProps) {

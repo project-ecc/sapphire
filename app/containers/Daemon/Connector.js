@@ -104,10 +104,9 @@ class Connector extends Component {
       } while (this.installedVersion == -1 || version < REQUIRED_DAEMON_VERSION);
       console.log('telling electron about wallet.dat');
     }
+    console.log(this.walletDat, daemonCredentials)
     this.createWallet(this.walletDat, daemonCredentials);
-
-    // if there is a wallet then start the daemon
-    if (this.walletDat) { this.startDaemonChecker(); }
+    this.startDaemonChecker();
   }
 
 
@@ -117,7 +116,6 @@ class Connector extends Component {
    * @param arg
    */
   createWallet(dataFileExists, credentials) {
-    alert('CREATE WALLET CALLED');
     this.props.setWalletCredentials(credentials);
 
     // alert('credentials');
@@ -126,10 +124,10 @@ class Connector extends Component {
       const val = settings.get(key);
       this.props.setStepInitialSetup(val);
     } else {
-      this.startDaemonChecker();
       this.props.setStepInitialSetup('start');
     }
 
+    this.startDaemonChecker();
     event.emit('startConnectorChildren');
   }
 

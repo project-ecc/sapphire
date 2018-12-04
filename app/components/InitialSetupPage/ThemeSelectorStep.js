@@ -11,14 +11,9 @@ class ThemeSelectorStep extends React.Component {
   }
 
   render() {
-    const style = {margin: "0 auto", width: "max-content", left: "0px"};
+    const style = {margin: "40px auto 0px auto", width: "max-content", left: "0px"};
      return (
-      <div>
-         <p style={{fontWeight:"300"}} className="subTitle">
-           { this.props.lang.selectTheme }
-         </p>
-         <ThemeSelector style={style}/>
-      </div>
+       <ThemeSelector style={style}/>
       );
     }
 

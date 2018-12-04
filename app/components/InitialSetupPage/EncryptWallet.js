@@ -53,13 +53,13 @@ class EncryptWallet extends React.Component {
   }
 
   componentWillMount(){
-    if(!this.props.notInitialSetup){
-      this.props.wallet.walletstart((result) => {
-        if (result) {
-          console.log("started daemon")
-        }
-      });
-    }
+    // if(!this.props.notInitialSetup){
+    //   this.props.wallet.walletstart((result) => {
+    //     if (result) {
+    //       console.log("started daemon")
+    //     }
+    //   });
+    // }
 
     if(this.props.checkEncrypted){
       var self = this;

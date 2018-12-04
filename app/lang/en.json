@@ -245,8 +245,10 @@
     "unlockWalletExplanation1": "This process unlocks your wallet for staking.",
     "unlockWalletExplanation2": "You will still be required to enter a password to send",
 
-    "welcome": "Welcome to your ECC wallet",
+    "welcome": "Welcome to Sapphire!",
+    "welcomeExplanation1": "It's time to set up your new ECC wallet. Let's get started.",
     "nowSelectTheme": "Now select a theme",
+    "changeLater": "You may change this later in Settings",
     "selectTheme": "Select a theme",
 
     "selectAFileNamed": "Select a file named wallet.dat",

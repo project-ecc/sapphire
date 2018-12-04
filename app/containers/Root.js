@@ -88,9 +88,10 @@ class Root extends Component {
   render() {
     const { store } = this.props;
 
+    // TODO : ONLY TRIGGER THIS IF ROUTE !== MATCH /setup
     if (this.props.setupStep !== 'complete') {
       //TODO NICK UNCOMMENT THIS TO FINISH SETUP
-      // hash.push('/setup');
+      hash.push('/setup');
     }
 
     /* Add the theme class to body */
@@ -103,7 +104,8 @@ class Root extends Component {
             <DaemonConnector />
             <Redirect from="/" to="/coin" />
             <TopBar />
-            {!this.props.importingWalletWithSetupDone && (this.props.loader || this.props.updatingApplication) && (<Loading />)}
+            {/*{!this.props.importingWalletWithSetupDone && (this.props.loader || this.props.updatingApplication) && (<Loading />)}*/}
+            {/*<Loading />*/}
             <div>{renderRoutes(routes)}</div>
           </div>
         </Router>

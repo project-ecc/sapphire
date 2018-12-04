@@ -10,9 +10,15 @@ class ImportWallet extends Component {
     super(props);
 
     this.nextStep = this.nextStep.bind(this);
+    this.importPrivateKeysStep = this.importPrivateKeysStep.bind(this);
   }
 
   nextStep() {
+    this.props.setStepInitialSetup('encrypt');
+    hash.push('/setup/encrypt');
+  }
+
+  importPrivateKeysStep() {
     this.props.setStepInitialSetup('importprivatekeys');
     hash.push('/setup/keys');
   }
@@ -22,6 +28,7 @@ class ImportWallet extends Component {
       <div>
         Import the wallet mate
         <ImportWalletPartial />
+        <Button onClick={this.importPrivateKeysStep}>Import Private Keys</Button>
         <Button onClick={this.nextStep}>Continue</Button>
       </div>
     );

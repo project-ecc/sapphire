@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ThemeSelectorStep from '../../InitialSetupPage/ThemeSelectorStep';
+import { ArrowRightIcon } from 'mdi-react';
 import { Button } from 'reactstrap';
 import hash from '../../../router/hash';
 import {connect} from "react-redux";
@@ -20,9 +21,17 @@ class Theme extends Component {
   render() {
     return (
       <div>
-        Select ur theme mate
+        <p id="welcome">
+          { this.props.lang.selectTheme }
+        </p>
+        <p>
+          { this.props.lang.changeLater }
+        </p>
         <ThemeSelectorStep />
-        <Button onClick={this.nextStep}>Import Wallet</Button>
+        <Button onClick={this.nextStep} color="primary" className="mt-3">
+          Import Wallet
+          <ArrowRightIcon className="ml-2" />
+        </Button>
       </div>
     );
   }

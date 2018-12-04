@@ -22,7 +22,7 @@ class Encrypt extends Component {
       <div>
         Encrypt the wallet bruh
         <EncryptWallet />
-        <Button onClick={this.nextStep}>Select Theme</Button>
+        <Button onClick={this.nextStep}>Complete Setup</Button>
       </div>
     );
   }
