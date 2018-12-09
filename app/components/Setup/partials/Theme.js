@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ThemeSelectorStep from '../../InitialSetupPage/ThemeSelectorStep';
 import { ArrowRightIcon } from 'mdi-react';
 import { Button } from 'reactstrap';
-import hash from '../../../router/hash';
 import {connect} from "react-redux";
 import * as actions from "../../../actions";
 
@@ -15,7 +14,6 @@ class Theme extends Component {
 
   nextStep() {
     this.props.setStepInitialSetup('importwallet');
-    hash.push('/setup/import');
   }
 
   render() {
@@ -28,7 +26,7 @@ class Theme extends Component {
           { this.props.lang.changeLater }
         </p>
         <ThemeSelectorStep />
-        <Button onClick={this.nextStep} color="primary" className="mt-3">
+        <Button onClick={this.nextStep} color="primary" className="mt-5">
           Import Wallet
           <ArrowRightIcon className="ml-2" />
         </Button>

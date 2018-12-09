@@ -14,7 +14,7 @@ class Encrypt extends Component {
 
   nextStep() {
     this.props.setStepInitialSetup('complete');
-    hash.push('/setup/complete');
+    // hash.push('/setup/complete');
   }
 
   render() {

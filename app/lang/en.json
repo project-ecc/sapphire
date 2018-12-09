@@ -1,4 +1,5 @@
 {
+    "close": "Close",
     "error": "Error",
     "success": "Success",
     "services": "Services",
@@ -60,6 +61,7 @@
     "mainMessage": "Hello, we are getting a few things ready...",
     "updateAvailableNotif": "Application update available",
 
+    "errorImportingWallet": "An error occurred while importing your wallet. Please try again...",
     "importPrivateKey": "Import Private Key",
     "writeDownAPrivateKeyToImport": "Enter a private key to import an address",
     "writeDownAPrivateKeyToImportInitialSetup": "Optionally, enter a private key to import an address",
@@ -67,15 +69,17 @@
     "enterYourPassword": "Enter your password",
     "wrongPassword": "Wrong password",
     "import": "Import",
+    "importing": "Importing",
+    "selectFile": "Select File",
     "importingAddressPopup": "Importing your address",
     "pleaseWait": "This process may take a few minutes to finish. Please do not close the application.",
     "importedAddress": "Imported the address successfully",
     "importAnotherAddress": "Import another address",
     "invalidFailedAddress": "Not a valid address or ANS username",
 
-    "importExistingWallet": "Import an existing wallet if you have one",
-    "importingYourWallet": "Importing your wallet",
-    "imported": "Imported your wallet successfully",
+    "importExistingWallet": "If you have an existing wallet, please import it now, otherwise continue.",
+    "importingYourWallet": "Please wait while we import your wallet",
+    "imported": "Your wallet imported successfully",
 
     "selectLanguage": "Please select your language",
 
@@ -247,6 +251,7 @@
 
     "welcome": "Welcome to Sapphire!",
     "welcomeExplanation1": "It's time to set up your new ECC wallet. Let's get started.",
+    "importWallet": "Import Wallet",
     "nowSelectTheme": "Now select a theme",
     "changeLater": "You may change this later in Settings",
     "selectTheme": "Select a theme",

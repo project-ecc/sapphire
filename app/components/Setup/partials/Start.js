@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import {connect} from "react-redux";
 import { ArrowRightIcon } from 'mdi-react';
-import hash from './../../../router/hash';
 import * as actions from "../../../actions";
 
 class Start extends Component {
@@ -14,7 +13,6 @@ class Start extends Component {
 
   nextStep() {
     this.props.setStepInitialSetup('theme');
-    hash.push('/setup/theme');
   }
 
   render() {

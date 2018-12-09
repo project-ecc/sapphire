@@ -4,6 +4,7 @@ import { traduction, language } from '../../lang/lang';
 import * as actions from '../../actions';
 import { TweenMax } from 'gsap';
 import { ipcRenderer } from 'electron';
+import { Button } from 'reactstrap';
 
 class ImportWallet extends React.Component {
   constructor() {
@@ -58,13 +59,10 @@ class ImportWallet extends React.Component {
   toRender() {
     return (
       <div>
-        <p style={{ fontWeight: '300' }} className="subTitle">
-          { this.props.lang.importExistingWallet }
-        </p>
         <div id="import">
-          <div onClick={this.openFile} id="importButton">
+          <Button onClick={this.openFile}>
             { this.props.lang.import }
-          </div>
+          </Button>
         </div>
         <div style={{ fontWeight: '300' }} id="importing">
           { this.props.lang.importingYourWallet }

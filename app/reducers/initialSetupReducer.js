@@ -14,7 +14,7 @@ import {
 import settings from 'electron-settings';
 
 
-const INITIAL_STATE = {step: 'uninitialised',  importing: false, imported: false, importStarted: false, privateKey: "", password: "", confirmationPassword: "", stepOver: true, encrypting: false};
+const INITIAL_STATE = {step: 'complete',  importing: false, imported: false, importStarted: false, privateKey: "", password: "", confirmationPassword: "", stepOver: true, encrypting: false};
 
 export default(state = INITIAL_STATE, action) => {
 	if(action.type == STEP_OVER){

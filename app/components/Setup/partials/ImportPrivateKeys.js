@@ -14,13 +14,15 @@ class ImportPrivateKeys extends Component {
 
   nextStep() {
     this.props.setStepInitialSetup('encrypt');
-    hash.push('/setup/encrypt');
+    // hash.push('/setup/encrypt');
   }
 
   render() {
     return (
       <div>
-        Import private keys bruh
+        <p id="welcome">
+          Import private keys bruh
+        </p>
         <ImportPrivateKey notInitialSetup={false} />
         <Button onClick={this.nextStep}>Next Step</Button>
       </div>

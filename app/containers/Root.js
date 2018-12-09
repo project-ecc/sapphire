@@ -1,8 +1,7 @@
 // @flow
 import React, { Component } from 'react';
-import { connect, Provider } from 'react-redux';
-import { withRouter } from 'react-router';
-import { HashRouter as Router, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Redirect, withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ipcRenderer } from 'electron';
 import $ from 'jquery';
@@ -75,7 +74,11 @@ class Root extends Component {
     this.props.setStakingNotifications(stakingNotifications);
   }
 
-  checkThemeClass(theme) {
+  /*
+    Append the selected theme class to the body
+   */
+  checkThemeClass() {
+    const theme = this.props.theme;
     const availablethemes = ['theme-darkEcc', 'theme-defaultEcc'];
     for (const ele in availablethemes) {
       if (document.body.classList.contains(availablethemes[ele])) {
@@ -86,37 +89,25 @@ class Root extends Component {
   }
 
   render() {
-    const { store } = this.props;
-
-    // TODO : ONLY TRIGGER THIS IF ROUTE !== MATCH /setup
-    if (this.props.setupStep !== 'complete') {
-      //TODO NICK UNCOMMENT THIS TO FINISH SETUP
-      hash.push('/setup');
-    }
-
     /* Add the theme class to body */
-    this.checkThemeClass(this.props.theme);
+    this.checkThemeClass();
 
     return (
-      <Provider store={store}>
-        <Router>
-          <div>
-            <DaemonConnector />
-            <Redirect from="/" to="/coin" />
-            <TopBar />
-            {/*{!this.props.importingWalletWithSetupDone && (this.props.loader || this.props.updatingApplication) && (<Loading />)}*/}
-            {/*<Loading />*/}
-            <div>{renderRoutes(routes)}</div>
-          </div>
-        </Router>
-      </Provider>
+      <div>
+        <DaemonConnector />
+        {this.props.setupStep !== 'complete' && (<Redirect to="/setup" />)}
+        <TopBar />
+        {/* {!this.props.importingWalletWithSetupDone && (this.props.loader || this.props.updatingApplication) && (<Loading />)} */}
+        {/* <Loading /> */}
+        <div>{renderRoutes(routes)}</div>
+      </div>
     );
   }
 }
 
 const mapStateToProps = state => {
   return {
-    setupStep: state.startup.step,
+    setupStep: state.setup.step,
     initialSetup: state.startup.initialSetup,
     partialInitialSetup: state.startup.partialInitialSetup,
     setupDone: state.startup.setupDone,
@@ -142,4 +133,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, actions)(Root);
+export default withRouter(connect(mapStateToProps, actions)(Root));
