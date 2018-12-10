@@ -28,11 +28,11 @@
     "nextPayments": "Upcoming Payments",
     "noUpcomingPayments": "No upcoming payments",
     "checkingWallet": "Checking if your wallet is encrypted...",
-    "walletEncrypted1": "Your wallet is encrypted. Well done!",
+    "walletEncrypted1": "Your wallet has been encrypted. Well done!",
     "walletEncrypted2": "Please write your password down now.",
     "walletEncrypted3": "There is NO way to recover it.",
     "encrypting": "Encrypting your wallet...",
-    "encryptWallet": "Encrypt your wallet",
+    "encryptWallet": "Encrypt Wallet",
     "enterPassword": "Enter Password",
     "repeatPassword": "Repeat New Password",
     "passwordsDoNotMatch": "Passwords do not match...",
@@ -82,7 +82,7 @@
 
     "selectLanguage": "Please select your language",
 
-    "setupDone": "Setup done!",
+    "setupDone": "Setup Complete!",
     "setupDone1": "Your wallet is now going to sync to the blockchain.",
     "setupDone2": "This process can take some time, so please be patient.",
     "setupDone3": "Thank you for choosing",

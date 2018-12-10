@@ -1,216 +1,224 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { traduction, language } from '../../lang/lang';
+import { Button, Input, Modal, ModalFooter, ModalHeader, ModalBody } from 'reactstrap';
 import * as actions from '../../actions';
-import {TweenMax} from "gsap";
-import Input from '../Others/Input';
+import { TweenMax } from 'gsap';
+import Toast from '../../globals/Toast/Toast';
 
-class EncryptWallet extends React.Component {
- constructor() {
-    super();
-    this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.handleConfirmationPassword = this.handleConfirmationPassword.bind(this);
+class EncryptWallet extends Component {
+  constructor(props) {
+    super(props);
+
     this.checkIfEncrypted = this.checkIfEncrypted.bind(this);
     this.showEncryptWallet = this.showEncryptWallet.bind(this);
     this.showWalletEncrypted = this.showWalletEncrypted.bind(this);
     this.encryptWallet = this.encryptWallet.bind(this);
     this.startWallet = this.startWallet.bind(this);
+
+    this.state = {
+      password: '',
+      password_confirm: '',
+      /*
+        -1 = All Done
+        0 = Not encrypting
+        1 = Encrypting
+        2 = Checking wallet
+        3 = Encrypted
+       */
+      encrypting: 0
+    };
   }
 
-  checkIfEncrypted(){
+  checkIfEncrypted() {
     this.props.wallet.help().then((data) => {
       if (data.indexOf('walletlock') > -1) {
         this.showWalletEncrypted();
-        } else {
+      } else {
         this.showEncryptWallet();
-        }
-      }).catch((err) => {
-      console.log("error checking if encrypted: ", err);
-      var self = this;
-      setTimeout(function(){
+      }
+    }).catch((err) => {
+      console.log('error checking if encrypted: ', err);
+      const self = this;
+      setTimeout(() => {
         self.checkIfEncrypted();
       }, 1000);
     });
   }
 
-  showEncryptWallet(){
-    this.props.isEncrypting(true);
-    TweenMax.to('#checkingWallet', 0.2, {autoAlpha: 0, scale: 0.5});
-    TweenMax.to('#encryptWallet', 0.2, {autoAlpha: 1, scale: 1});
+  showEncryptWallet() {
+    this.setState({
+      encrypting: 0
+    });
   }
 
-  showWalletEncrypted(){
-    this.props.isEncrypting(false);
-    TweenMax.to('#checkingWallet', 0.2, {autoAlpha: 0, scale: 0.5});
-    TweenMax.to('#encrypting', 0.2, {autoAlpha: 0, scale: 0.5});
-    TweenMax.to('#walletEncrypted', 0.2, {autoAlpha: 1, scale: 1});
+  showWalletEncrypted() {
+    this.setState({
+      encrypting: 3
+    });
   }
 
-  showEncryptingWallet(){
-    this.props.isEncrypting(true);
-    TweenMax.to('#encryptWallet', 0.2, {autoAlpha: 0, scale: 0.5});
-    TweenMax.to('#encrypting', 0.2, {autoAlpha: 1, scale: 1});
+  showEncryptingWallet() {
+    this.setState({
+      encrypting: 1
+    });
   }
 
-  componentWillMount(){
-    // if(!this.props.notInitialSetup){
-    //   this.props.wallet.walletstart((result) => {
-    //     if (result) {
-    //       console.log("started daemon")
-    //     }
-    //   });
-    // }
-
-    if(this.props.checkEncrypted){
-      var self = this;
+  componentWillMount() {
+    if (this.props.checkEncrypted) {
+      const self = this;
       setTimeout(() => {
         self.checkIfEncrypted();
       }, 2000);
     }
   }
 
-  componentDidMount(){
-    console.log("Check if encrypted: ", this.props.checkEncrypted);
-    if(this.props.checkEncrypted){
-      TweenMax.set(this.refs.encryptWallet, {autoAlpha: 0});
-      TweenMax.set(this.refs.checkingWallet, {autoAlpha: 1});
+  componentDidMount() {
+    console.log('Check if encrypted: ', this.props.checkEncrypted);
+    if (this.props.checkEncrypted) {
+      this.setState({
+        encrypting: 2
+      });
     }
-    this.props.isEncrypting(true);
   }
 
-  handlePasswordChange(input){
-   let pw = input;
-    if(pw.length === 0){
-      TweenMax.set('#enterPassword', {autoAlpha: 1});
-    }
-    else
-      TweenMax.set('#enterPassword', {autoAlpha: 0});
-
-    this.props.password(pw);
+  onTextFieldChange(key, e) {
+    const value = e.target.value;
+    const payload = {};
+    payload[key] = value;
+    this.setState(payload);
   }
 
-  handleConfirmationPassword(input){
-    let pw = input;
-    if(pw.length === 0){
-      TweenMax.set('#enterPasswordRepeat', {autoAlpha: 1});
-    }
-    else
-      TweenMax.set('#enterPasswordRepeat', {autoAlpha: 0});
-
-    this.props.passwordConfirmation(pw);
-  }
-
-  encryptWallet(){
-    if(this.props.passwordValue !== this.props.passwordConfirmationValue || (this.props.passwordValue.length === 0)){
-      TweenMax.fromTo('#passwordError', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1.2});
-      TweenMax.to('#passwordError', 0.3, {scale: 1, delay: 0.2});
-      TweenMax.to('#passwordError', 0.3, {autoAlpha: 0, scale: 0.5, delay: 3.5});
+  encryptWallet() {
+    if (this.state.password.length < 1) {
+      Toast({
+        title: this.props.lang.error,
+        message: this.props.lang.passwordCantBeEmpty,
+        color: 'red'
+      });
+      return;
+    } else if (this.state.password !== this.state.password_confirm) {
+      Toast({
+        title: this.props.lang.error,
+        message: this.props.lang.passwordsDoNotMatch,
+        color: 'red'
+      });
       return;
     }
+
     this.showEncryptingWallet();
-    this.props.wallet.encryptWallet(this.props.passwordValue).then((data) =>{
-      var self = this;
+    this.props.wallet.encryptWallet(this.props.passwordValue).then((data) => {
+      const self = this;
       if (data.code === -1 || data.code === -28) {
-        console.log("failed to encrypt: ", data);
-        setTimeout(function(){
+        console.log('failed to encrypt: ', data);
+        setTimeout(() => {
           self.encryptWallet();
         }, 1000);
-      }
-      else {
-        this.props.password("");
-        this.props.passwordConfirmation("");
+      } else {
+        this.props.password('');
+        this.props.passwordConfirmation('');
         this.showWalletEncrypted();
         this.props.setUnencryptedWallet(false);
-        setTimeout(function(){
+        setTimeout(() => {
+          self.startWallet();
+            // making sure >_>
+          setTimeout(() => {
             self.startWallet();
-            //making sure >_>
-            setTimeout(function(){
-              self.startWallet();
-            }, 7000)
+          }, 7000);
         }, 5000);
-        console.log("encrypted! ", data)
+        console.log('encrypted! ', data);
       }
-      }).catch((err) => {
-        console.log("error encrypting wallet: ", err)
+    }).catch((err) => {
+      console.log('error encrypting wallet: ', err);
     });
   }
 
-  startWallet(){
+  startWallet() {
     this.props.wallet.walletstart((result) => {
       if (result) {
-        console.log("started daemon")
-      }
-      else console.log("ERROR ", result)
+        console.log('started daemon');
+      } else console.log('ERROR ', result);
     });
   }
 
-  toRender(){
+  closeModal() {
+    this.setState({
+      encrypting: 2
+    });
+  }
+
+  toRender() {
     return (
       <div>
-        <div ref="checkingWallet" id="checkingWallet">
-          <p style={{fontWeight:"300"}} className="centerText">
-            { this.props.lang.checkingWallet }
-           </p>
+        <div>
+          <Input
+            style={{ width: '400px' }}
+            placeholder={this.props.lang.enterPassword}
+            value={this.state.password}
+            onChange={(e) => { this.onTextFieldChange('password', e); }}
+            type="password"
+            className="ml-auto mr-auto mb-2"
+          />
+          <Input
+            placeholder={this.props.lang.repeatPassword}
+            value={this.state.password_confirm}
+            onChange={(e) => { this.onTextFieldChange('password_confirm', e); }}
+            type="password"
+            style={{ width: '400px' }}
+            className="ml-auto mr-auto"
+          />
+
+          <Button size="lg" color="white" onClick={this.encryptWallet}>
+            { this.props.lang.encrypt }
+          </Button>
         </div>
-        <div id="walletEncrypted">
-          <p className="centerText" style={{width: "500px", left: "50%", marginLeft: "-250px", fontWeight:"300", paddingTop: "25px"}}>
-            { this.props.lang.walletEncrypted1 }<br></br><br></br>{ this.props.lang.walletEncrypted2 }<br></br>{ this.props.lang.walletEncrypted3 }
-           </p>
-        </div>
-        <div id="encrypting">
-          <p style={{fontWeight:"300"}}  className="centerText">
-            { this.props.lang.encrypting }
-           </p>
-        </div>
-        <div ref="encryptWallet" id="encryptWallet">
-          <p style={{fontWeight:"300"}}  className="subTitle">
+
+        <Modal isOpen={this.state.encrypting > 0}>
+          <ModalHeader>
             { this.props.lang.encryptWallet }
-          </p>
-          <div className="inputDivPassword">
-            <Input
-              divStyle={{width: "200px"}}
-              placeholder= { this.props.lang.enterPassword }
-              placeholderId="enterPassword"
-              placeHolderClassName="inputPlaceholder changePasswordInput"
-              value={this.props.passwordValue}
-              handleChange={(e) => { this.handlePasswordChange(e) }}
-              type="password"
-              inputStyle={{width: "200px"}}
-            />
-          </div>
-          <div style={{marginTop: '30px'}} className="inputDivPassword">
-            <Input
-              divStyle={{marginTop: "40px", paddingBottom: "8px", width: "200px"}}
-              placeholder= { this.props.lang.repeatPassword }
-              placeholderId="enterPasswordRepeat"
-              placeHolderClassName="inputPlaceholder changePasswordInput"
-              value={this.props.passwordConfirmationValue}
-              handleChange={(e) => { this.handleConfirmationPassword(e) }}
-              type="password"
-              inputStyle={{width: "200px"}}
-            />
-          </div>
-          <p id="passwordError" style={{fontSize: "15px", fontWeight: "bold", visibility: "hidden"}}>{this.props.passwordValue !== this.props.passwordConfirmationValue ? this.props.lang.passwordsDoNotMatch : this.props.lang.passwordCantBeEmpty }</p>
-           <div style={{marginTop: "8px"}} onClick={this.encryptWallet} id="importButton">
-           { this.props.lang.encrypt }
-           </div>
-        </div>
+          </ModalHeader>
+          <ModalBody>
+            { this.state.encrypting === 1 && (
+              <div>
+                <p>{ this.props.lang.encrypting }</p>
+              </div>
+            )}
+            { this.state.encrypting === 2 && (
+              <div>
+                <p>{ this.props.lang.checkingWallet }</p>
+              </div>
+            )}
+            { this.state.encrypting === 3 && (
+              <div>
+                <p>{ this.props.lang.walletEncrypted1 }</p>
+                <p>{ this.props.lang.walletEncrypted2 }</p>
+                <p>{ this.props.lang.walletEncrypted3 }</p>
+              </div>
+            )}
+          </ModalBody>
+          { this.state.encrypting === 3 && (
+            <ModalFooter>
+              <Button color="primary" onClick={this.closeModal}>
+                { this.props.lang.close }
+              </Button>
+            </ModalFooter>
+          )}
+        </Modal>
       </div>
-    )
+    );
   }
 
   render() {
-     return (
-      <div ref="second" style={{height: "330px"}}>
+    return (
+      <div>
         {this.toRender()}
       </div>
-      );
-    }
+    );
+  }
 
 }
 
 const mapStateToProps = state => {
-  return{
+  return {
     lang: state.startup.lang,
     passwordValue: state.setup.password,
     passwordConfirmationValue: state.setup.confirmationPassword,

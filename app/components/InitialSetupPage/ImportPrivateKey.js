@@ -10,6 +10,8 @@
    constructor(props) {
      super(props);
 
+     this.closeModal = this.closeModal.bind(this);
+
      this.importPrivateKey = this.importPrivateKey.bind(this);
      this.addressImported = this.addressImported.bind(this);
      this.goBackToFirstStep = this.goBackToFirstStep.bind(this);
@@ -41,7 +43,6 @@
        console.log('data: ', data);
        data = data[0];
        if (data !== null && data.code === -14) {
-         self.props.setCheckingDaemonStatusPrivKey(false);
          self.showWrongPassword();
        } else if (data !== null && data.code === 'ECONNREFUSED') {
          console.log("daemong ain't working mate :(");
@@ -49,7 +50,6 @@
          callback();
        } else {
          setTimeout(() => {
-           self.props.setCheckingDaemonStatusPrivKey(true);
            self.importPrivateKey();
          }, 500);
        }
@@ -65,14 +65,12 @@
      }
      this.unlockWallet(false, 5, () => {
        this.importingAddress();
-       this.props.setCheckingDaemonStatusPrivKey(true);
        const method = 'importprivkey';
        const parameters = [this.state.privateKey];
        this.props.wallet.command([{ method, parameters }]).then((result) => {
          console.log(result);
          if (result[0] === null) {
            console.log('imported address');
-           this.props.setCheckingDaemonStatusPrivKey(false);
            this.addressImported();
          }
         // loading wallet
@@ -83,13 +81,11 @@
          } else {
            console.log('failed to import address');
            this.failedToImportAddress();
-           this.props.setCheckingDaemonStatusPrivKey(false);
          }
        }).catch((result) => {
          console.log('ERROR IMPORTING ADDRESS: ', result);
          if (result.code === 'ECONNREFUSED') {
            this.failedToImportAddress();
-           this.props.setCheckingDaemonStatusPrivKey(false);
          }
         // imported but rescaning
          else if (result.code === 'ESOCKETTIMEDOUT') {
@@ -104,7 +100,6 @@
      const self = this;
      this.props.wallet.getInfo().then((data) => {
       // TODO tell the daemon connector to reindex transactions
-       self.props.setCheckingDaemonStatusPrivKey(false);
        self.addressImported();
      })
     .catch((err) => {
@@ -161,11 +156,11 @@
 
    closeModal() {
      this.setState({
-       importing: (this.state.importing === 3 ? -1 : 0)
+       importing: 0
      });
    }
 
-   toRender() {
+   render() {
      let infomessage = null;
      if (this.state.currentLogLine != null && this.state.currentLogLine.indexOf('Still rescanning.') !== -1) {
        infomessage = this.state.currentLogLine;
@@ -173,7 +168,7 @@
 
      return (
        <div>
-         <div id="importAddress" className="text-center mt-4">
+         <div>
            <Input
              placeholder={this.props.lang.enterPrivKey}
              value={this.state.privateKey}
@@ -235,14 +230,6 @@
              </ModalFooter>
            )}
          </Modal>
-       </div>
-     );
-   }
-
-   render() {
-     return (
-       <div>
-         {this.toRender()}
        </div>
      );
    }
