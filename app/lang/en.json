@@ -63,8 +63,7 @@
 
     "errorImportingWallet": "An error occurred while importing your wallet. Please try again...",
     "importPrivateKey": "Import Private Key",
-    "writeDownAPrivateKeyToImport": "Enter a private key to import an address",
-    "writeDownAPrivateKeyToImportInitialSetup": "Optionally, enter a private key to import an address",
+    "writeDownAPrivateKeyToImport": "To import an address, enter a private key and the key's password.",
     "enterPrivKey": "Private Key",
     "enterYourPassword": "Enter your password",
     "wrongPassword": "Wrong password",
@@ -73,7 +72,7 @@
     "selectFile": "Select File",
     "importingAddressPopup": "Importing your address",
     "pleaseWait": "This process may take a few minutes to finish. Please do not close the application.",
-    "importedAddress": "Imported the address successfully",
+    "importedAddress": "This address imported successfully.",
     "importAnotherAddress": "Import another address",
     "invalidFailedAddress": "Not a valid address or ANS username",
 

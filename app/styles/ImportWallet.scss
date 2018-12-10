@@ -1,19 +1,5 @@
 @import "./themes.scss";
 
-#importButton{
-    @include themify($themes) {
-        border: themed('settingsItemBorderBottom');
-    }
-    width: max-content;
-    padding: 6px 55px;
-    font-size: 17px;
-    font-weight: 400;
-    text-align: center;
-    margin: 0 auto;
-    cursor: pointer;
-    border-radius: 25px;
-}
-
 #importing{
 	visibility: hidden;
 	width: 100%;

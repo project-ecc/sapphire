@@ -102,7 +102,7 @@ class ImportWallet extends Component {
         </div>
         <div className="mt-5">
           <Button onClick={this.importPrivateKeysStep} color="primary" active>
-            Import Private Keys
+            Import Private Key
             <KeyIcon className="ml-2" />
           </Button>
           <Button onClick={this.nextStep} className="ml-3" color="primary">
