@@ -97,9 +97,7 @@ class App extends Component<Props> {
     const animateIn = Tools.animatePopupIn;
     const animateOut = Tools.animatePopupOut;
     let classVal = '';
-    if (this.props.importingPrivateKey) {
-      component = <ImportPrivateKey notInitialSetup />;
-    } else if (this.props.updateApplication) {
+    if (this.props.updateApplication) {
       component = <UpdateApplication />;
     } else if (this.props.sending) {
       component = <SendConfirmation />;

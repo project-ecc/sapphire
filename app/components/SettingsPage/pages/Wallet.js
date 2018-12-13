@@ -5,6 +5,8 @@ import { SettingsIcon } from 'mdi-react';
 
 import ExportPrivateKeysModal from './../partials/ExportPrivateKeysModal';
 import ChangePasswordModal from './../partials/ChangePasswordModal';
+import ImportPrivateKeysModal from './../partials/ImportPrivateKeysModal';
+
 import Header from './../../Others/Header';
 import Body from './../../Others/Body';
 
@@ -47,7 +49,7 @@ class Wallet extends Component {
   }
 
   handleImportPrivateKey(){
-    this.props.setImportingPrivateKey(true);
+    this.importKeysModal.getWrappedInstance().toggle();
   }
 
   render() {
@@ -99,6 +101,7 @@ class Wallet extends Component {
         </Body>
         <ExportPrivateKeysModal ref={(e) => { this.modal = e; }} />
         <ChangePasswordModal ref={(e) => { this.passwordModal = e; }} />
+        <ImportPrivateKeysModal ref={(e) => { this.importKeysModal = e; }} />
       </div>
     );
   }

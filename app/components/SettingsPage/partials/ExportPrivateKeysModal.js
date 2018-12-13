@@ -20,8 +20,8 @@ const fs = require('fs');
 const jsPDF = require('jspdf');
 
 class ExportPrivateKeysModal extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.toggle = this.toggle.bind(this);
     this.handleConfirm = this.handleConfirm.bind(this);
     this.showWrongPassword = this.showWrongPassword.bind(this);

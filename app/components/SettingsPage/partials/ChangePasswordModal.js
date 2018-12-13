@@ -18,14 +18,19 @@ class ChangePasswordModal extends React.Component {
     this.toggle = this.toggle.bind(this);
 
     this.state = {
-      open: false
+      open: false,
+      password_current: '',
+      password: '',
+      password_confirm: ''
     };
   }
 
-  componentWillUnmount(){
-    this.props.setPassword("");
-    this.props.passwordConfirmation("");
-    this.props.setNewPassword("");
+  componentWillUnmount() {
+   this.setState({
+     password_current: '',
+     password: '',
+     password_confirm: ''
+   });
   }
 
   toggle() {
@@ -91,7 +96,7 @@ class ChangePasswordModal extends React.Component {
           <ModalHeader toggle={this.toggle}>{ this.props.lang.changePassword }</ModalHeader>
           <ModalBody>
             <Input
-              placeholder= { this.props.lang.currentPassword }
+              placeholder={ this.props.lang.currentPassword }
               placeholderId="enterPassword"
               value={this.props.passwordVal}
               handleChange={this.props.setPassword}
