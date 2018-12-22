@@ -159,7 +159,7 @@ class AddressBook extends Component {
                       {friend.ansrecord != null ? renderHTML(`${friend.ansrecord.name}<span className="Receive__ans-code">#${friend.ansrecord.code} </span> `) : friend.name}
                     </div>
                     <div className={this.props.sendPanel ? 'col-sm-7 tableColumn' : 'col-sm-7 tableColumn selectableText'}>
-                      {friend.address.address}
+                      {friend.address !== null ? friend.address.address : 'Unknown Address'}
                     </div>
 
                   </div>

@@ -26,11 +26,13 @@ class Donations extends Component {
 
   // the key element is required, otherwise we get a weird behavior (caused by react optimizations) switching between panels that have toggles, feel free to remove the key element and give it a go
   render() {
+    const goals = this.props.donationGoals || {}
+
     return (
       <div>
         <p id="walletBackup">{ this.props.lang.donate }</p>
         <div className="row" style={{ overflowY: 'scroll' }}>
-          {this.props.donationGoals.map((goal, index) => {
+          {goals.map((goal, index) => {
             return (
               <Goal key={index} goal={goal} handleClick={this.handleClick} />
             );
