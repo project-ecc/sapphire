@@ -47,7 +47,7 @@ class Notifications extends Component {
 
   render() {
     return (
-      <div className="wrapper padding-titlebar">
+      <div className="padding-titlebar">
         <Header>
           <SettingsIcon />
           { this.props.lang.notifications }

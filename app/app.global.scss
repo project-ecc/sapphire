@@ -78,6 +78,10 @@ input::-webkit-inner-spin-button {
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 
+.flex-auto {
+  flex: 1 1 auto;
+}
+
 .ecc{
   @include themify($themes) {
     color: themed('eccTicker');
@@ -357,14 +361,23 @@ input::-webkit-inner-spin-button {
   }
 }
 
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: auto;
+#mainPageWrapper {
+  position: relative;
 
-  & > .body.scrollable {
+  & > div:first-child {
+	position:absolute;
+	top:0;
+	left:0;
+	bottom:0;
+	right:0;
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
 	overflow: auto;
+
+	& > .body.scrollable {
+	  overflow: auto;
+	}
   }
 }
 

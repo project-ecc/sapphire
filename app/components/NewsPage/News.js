@@ -91,7 +91,7 @@ class News extends Component {
     console.log(this.props.eccPosts);
     return (
       <div className="d-flex w-100">
-        <div className="padding-titlebar wrapper">
+        <div className="padding-titlebar wrapper flex-auto">
           <Header className="no-margin-bottom">
             {this.props.lang.eccNews}
           </Header>
