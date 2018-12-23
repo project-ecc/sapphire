@@ -26,39 +26,9 @@
     }
 }
 
-#transactionAddresses{
-  @include themify($themes) {
-    background-color: themed('homePanelsBackgroundColor');
-    box-shadow: themed('mainElementBoxShadow');
-  }
-}
-
 .transactions {
   padding-top: 5px;
   position: relative;
-}
-
-.buttonTransaction{
-  @include themify($themes) {
-    border: themed('buttonBorder');
-  }
-  position: relative;
-  bottom: -36px;
-  display: inline-block;
-  padding: 6px 0px;
-  min-width: 110px;
-  border-radius: 30px;
-  text-align: center;
-  cursor: pointer;
-  margin: 0 auto;
-  font-weight: 600;
-}
-
-.buttonTransaction:hover{
-  @include themify($themes) {
-    background-color: themed('buttonBorderedHoverColor');
-    color: themed('buttonBorderedFontColor');
-  }
 }
 
 .columnPaddingFixAns{
@@ -235,9 +205,9 @@ i.fa.fa-chevron-down{
 .container-1 input#search:hover, .container-1 input#search:focus, .container-1 input#search:active{
   outline:none;
  /* background: #ffffff;*/
-  
+
    @include themify($themes) {
       color: themed('dropdownFilterSelector');
     }
-    
+
 }

@@ -2,14 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { TweenMax, TimelineMax } from 'gsap';
 import { ipcRenderer } from 'electron';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Input } from 'reactstrap';
+import { ArrowRightIcon, ContentSaveOutlineIcon } from 'mdi-react';
 
 import * as actions from '../../../actions/index';
 
-import ConfirmButtonPopup from '../../Others/ConfirmButtonPopup';
-import Input from '../../Others/Input';
-
-import $ from 'jquery';
 import Toast from '../../../globals/Toast/Toast';
 
 const Tools = require('../../../utils/tools');
@@ -19,107 +16,67 @@ const { clipboard } = require('electron');
 const fs = require('fs');
 const jsPDF = require('jspdf');
 
-class ExportPrivateKeysModal extends React.Component {
+class ExportPrivateKeysModal extends Component {
   constructor(props) {
     super(props);
     this.toggle = this.toggle.bind(this);
     this.handleConfirm = this.handleConfirm.bind(this);
     this.showWrongPassword = this.showWrongPassword.bind(this);
-    this.handlePanels = this.handlePanels.bind(this);
-    this.handleExportClick = this.handleExportClick.bind(this);
     this.generatePDF = this.generatePDF.bind(this);
     this.handleDisplayKeys = this.handleDisplayKeys.bind(this);
+    this.onPasswordFieldChange = this.onPasswordFieldChange.bind(this);
 
-    this.tween = undefined;
     this.toPrint = [];
-    this.displayConfirm = true;
-
     this.state = {
       toDisplay: {},
       open: false,
-      panel: 1
+      /**
+       * Panel:
+       * 0 = Enter Password
+       * 1 = Export Options
+       * 2 = View onscreen
+       * 3 = Export to PDF
+       */
+      panel: 0,
+      password: ''
     };
     this.addressesToCopy = '';
   }
 
-  showWrongPassword() {
+  showWrongPassword () {
     Toast({
       title: this.props.lang.error,
       message: this.props.lang.wrongPassword,
       color: 'red'
     });
-    this.props.setPopupLoading(false);
   }
 
-  componentWillUnmount() {
-    this.toPrint = null;
-    this.addressesToCopy = '';
-    this.tween = undefined;
-    this.props.setPassword('');
-  }
-
-  componentWillMount() {
-    this.setState({ toDisplay: {} });
-  }
-
-  async handlePanels() {
-    if (this.state.panel === 1) {
-      this.displayConfirm = false;
-      this.props.setPopupLoading(true);
-      this.handleConfirm();
-    } else if (this.state.panel === 2) {
-      this.handleExportOptions();
-      this.displayConfirm = true;
-
-      /* $('#selectedlocation').text("No location selected");
-      $('#selectedlocation').css("visibility", "visible");
-      $('#selectedlocation').css("color", "#d09128");
-      TweenMax.fromTo('#selectedlocation', 0.2, {autoAlpha: 0, scale: 0.5}, {autoAlpha: 1, scale: 1});
-      this.tween = TweenMax.to('#selectedlocation', 0.2, {scale: 0.5, autoAlpha: 0, delay: 3})
-      TweenMax.set('#selectedlocation',{scale: 1, delay: 3.2}) */
-    } else if (this.state.panel === 3) {
-      // this.displayConfirm = true;
-      this.export();
-    } else if (this.state.panel === 4) {
-      clipboard.writeText(this.addressesToCopy);
-    }
-    /* else if(this.state.panel == 2){
-      TweenMax.to('#setLocationPanel', 0.3, {x: "-200%"})
-      TweenMax.to('#exportingPanel', 0.3, {x: "-200%"})
-      this.props.setPanelExportingPrivateKeys(this.state.panel+1);
-      this.animateDots();
-      this.export();
-    } */
-  }
-
-  animateDots() {
-    const t = new TimelineMax({ repeat: -1 });
-    // t.staggerTo('.ecc', 0.2, {autoAlpha: 1}, 0.2)
-    // .staggerTo('.ecc', 0.4, {autoAlpha: 0.2}, 0.1)
-    t.to('#firstDot', 0.25, { autoAlpha: 1 })
-      .to('#secondDot', 0.25, { autoAlpha: 1 })
-      .to('#thirdDot', 0.25, { autoAlpha: 1 })
-      .to('#firstDot', 0.4, { autoAlpha: 0.2 })
-      .to('#secondDot', 0.4, { autoAlpha: 0.2, delay: -0.2 })
-      .to('#thirdDot', 0.4, { autoAlpha: 0.2, delay: -0.2 });
+  onPasswordFieldChange (e) {
+    const value = e.target.value
+    this.setState({
+      password: value
+    });
   }
 
   getPasswordPanel() {
+    if (this.state.panel !== 0) { return; }
     return (
-      <div id="passwordPanel" style={{ position: 'absolute', width: '100%', top: '70px' }}>
-        <p style={{ fontSize: '16px', width: '450px', margin: '0 auto', textAlign: 'justify' }}>{ this.props.lang.exportWarning }</p>
+      <div id="passwordPanel">
+        <p>{ this.props.lang.exportWarning }</p>
         <div>
           <Input
-            style={{ width: '80%', marginTop: '34px' }}
+            className="mt-3"
             placeholder={this.props.lang.password}
-            placeholderId="password"
-            value={this.props.passwordVal}
-            handleChange={this.props.setPassword}
+            value={this.state.password}
+            onChange={this.onPasswordFieldChange}
             type="password"
-            inputId="exportPrivKeyId"
-            autoFocus
-            onSubmit={this.handlePanels}
           />
+          <div className="d-flex justify-content-end mt-2">
+            <Button color="primary" onClick={this.handleConfirm}>
+              { this.props.lang.next }
+              <ArrowRightIcon className="ml-2" />
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -128,47 +85,20 @@ class ExportPrivateKeysModal extends React.Component {
   toggle() {
     this.setState({
       open: !this.state.open,
-      panel: 1
+      panel: 0,
+      password: ''
     });
   }
 
-  // getExportingPanel(){
-  //   return(
-  //     <div id="exportingPanel" style={{position: "absolute", left: "200%", width: "100%", top: "70px"}}>
-  //       <p style={{marginTop:"30px"}}>{ this.props.lang.generatingFile }</p>
-  //       <span style={{visibility: "visible", fontSize: "40px", opacity:"0.2"}} className="ecc" id="firstDot">.</span><span style={{visibility: "visible", fontSize: "40px", opacity:"0.2"}} className="ecc" id="secondDot">.</span><span style={{visibility: "visible", fontSize: "40px", opacity:"0.2"}} className="ecc" id="thirdDot">.</span>
-  //     </div>
-  //   )
-  // }
-
-  handleExportOptions() {
-    $('#exportPrivKeyButton').text(this.props.lang.export);
-    TweenMax.to('#exportOptions', 0.3, { css: { left: '-100%' } });
-    TweenMax.to('#setLocationPanel', 0.3, { css: { left: '0%' } });
-    $('#confirmButtonPopup').text(this.props.lang.export);
-    TweenMax.to('#confirmButtonPopup', 0.3, { autoAlpha: 1, delay: 0.3 });
-
-    this.setState({
-      panel: this.state.panel + 1
-    })
-  }
-
   handleDisplayKeys() {
-    const height = Object.keys(this.state.toDisplay).length === 1 ? 300 : 400;
-    TweenMax.to('#exportOptions', 0.3, { css: { left: '-100%' } });
-    TweenMax.to('#displayKeys', 0.3, { css: { left: '0%', width: '570px' } });
-    TweenMax.to('#unlockPanel', 0.2, { css: { height: `${height}px`, top: '19%', minWidth: '570px', marginLeft: '-274px' } });
-    $('#confirmButtonPopup').text(this.props.lang.copyAll);
-    // TweenMax.set('#confirmButtonPopup', {css:{left: "218px"}});
-    TweenMax.to('#confirmButtonPopup', 0.3, { autoAlpha: 1, delay: 0.8 });
-    TweenMax.set('#displayKeys p', { width: '450px' });
     this.setState({
-      panel: this.state.panel + 2
-    })
+      panel: 2
+    });
   }
 
+  /** Handle user submit password */
   handleConfirm() {
-    if (this.props.passwordVal === '') {
+    if (this.state.password.length < 1) {
       this.showWrongPassword();
       return;
     }
@@ -225,7 +155,7 @@ class ExportPrivateKeysModal extends React.Component {
       TweenMax.set('#confirmButtonPopup', { x: '-50%' });
     }, 300);
     this.setState({
-      panel: this.state.panel + 1
+      panel: 2
     })
     this.props.setPassword('');
   }
@@ -233,7 +163,7 @@ class ExportPrivateKeysModal extends React.Component {
   unlockWallet(flag, time, callback) {
     const batch = [];
     const obj = {
-      method: 'walletpassphrase', parameters: [this.props.passwordVal, time, flag]
+      method: 'walletpassphrase', parameters: [this.state.password, time, flag]
     };
     batch.push(obj);
 
@@ -244,15 +174,15 @@ class ExportPrivateKeysModal extends React.Component {
       } else if (data !== null && data.code === 'ECONNREFUSED') {
         console.log("daemong ain't working mate :(");
       } else if (data === null) {
-        this.props.setPopupLoading(false);
+        // this.props.setPopupLoading(false);
         callback();
       } else {
         console.log('error unlocking wallet: ', data);
       }
-      this.props.setPopupLoading(false);
+      // this.props.setPopupLoading(false);
     }).catch((err) => {
       console.log('err unlocking wallet: ', err);
-      this.props.setPopupLoading(false);
+      // this.props.setPopupLoading(false);
     });
   }
 
@@ -285,43 +215,37 @@ class ExportPrivateKeysModal extends React.Component {
     });
   }
 
-  handleExportClick() {
-    ipcRenderer.send('exportPrivateKeys');
-    ipcRenderer.on('locationSelected', (event, arg) => {
-      if (arg !== undefined) {
-        $('#exportPrivKeyButton').text(this.props.lang.export);
-        $('#selectedlocation').text(arg);
-        if (this.tween !== undefined) { this.tween.kill(); }
-        $('#selectedlocation').css('opacity', '1');
-        $('#selectedlocation').css('color', '#555d77');
-        $('#selectedlocation').css('visibility', 'visible');
-        this.props.setLocationToExport(arg);
-      }
-    });
-  }
-
   getLocationToExportPanel() {
+    if (this.state.panel !== 3) { return; }
     return (
-      <div id="setLocationPanel" style={{ position: 'absolute', left: '100%', width: '100%', top: '52px' }}>
-        <p style={{ fontSize: '16px', width: '400px', margin: '0 auto', paddingTop: '25px', marginBottom: '25px', textAlign: 'left' }}>
-          { this.props.lang.exportFormat }:
-        </p>
+      <div id="setLocationPanel">
+        <p className="mb-3">{ this.props.lang.exportFormat }:</p>
         <p className="pdfExample">{`<${this.props.lang.publicAddress}>`}</p>
         <p className="pdfExample">{`<${this.props.lang.privateKey}>`}</p>
         <p className="pdfExample">{`<${this.props.lang.lineBreak}>`}</p>
+
+        <div className="mt-4 d-flex justify-content-center">
+          <Button color="primary" onClick={this.generatePDF}>
+            { this.props.lang.savePDF }
+            <ContentSaveOutlineIcon className="ml-2" />
+          </Button>
+        </div>
       </div>
     );
   }
 
   renderExportOptions() {
+    if (this.state.panel !== 1) { return; }
     return (
-      <div id="exportOptions" style={{ position: 'absolute', left: '100%', width: '100%', top: '52px' }}>
-        <p style={{ fontSize: '16px', width: '440px', textAlign: 'center', margin: '0 auto', paddingTop: '25px', marginBottom: '25px', textAlign: 'left' }}>
-          {this.props.lang.exportPrivKeyDesc}
-        </p>
-        <div style={{ display: 'flex', width: '80%', margin: '0 auto', marginTop: '35px' }}>
-          <div onClick={this.handleDisplayKeys} className="buttonPrimary" style={{ top: '130px', left: '115px' }}>{this.props.lang.viewOnScreen}</div>
-          <div onClick={this.handlePanels} className="buttonPrimary" style={{ top: '130px', left: '293px' }}>{this.props.lang.exportToPdf}</div>
+      <div id="exportOptions">
+        <p>{ this.props.lang.exportPrivKeyDesc }</p>
+        <div className="d-flex justify-content-center mt-4">
+          <Button color="dark" onClick={this.handleDisplayKeys}>
+            { this.props.lang.viewOnScreen }
+          </Button>
+          <Button color="dark" className="ml-2" onClick={this.handlePanels}>
+            { this.props.lang.exportToPdf }
+          </Button>
         </div>
       </div>
     );
@@ -343,7 +267,7 @@ class ExportPrivateKeysModal extends React.Component {
   }
 
   renderdisplayKeys() {
-    if (this.state.toDisplay === null) {
+    if (this.state.panel !== 2 || this.state.toDisplay === null) {
       return;
     }
     let counter = 0;
@@ -365,11 +289,11 @@ class ExportPrivateKeysModal extends React.Component {
     }
     );
     return (
-      <div id="displayKeys" style={{ position: 'relative', left: '100%', width: '535px' }}>
-        <p style={{ fontSize: '16px', width: '400px', textAlign: 'center', margin: '0 auto', paddingTop: '25px', marginBottom: '20px', textAlign: 'left' }}>
+      <div id="displayKeys">
+        <p className="mb-3">
           {`${this.props.lang.listing} ${keys.length}  ${keys.length === 1 ? this.props.lang.addressInFormat : this.props.lang.addressesInFormat}:`}
         </p>
-        <p style={{ paddingTop: '15px' }} className="pdfExample">{`<${this.props.lang.publicAddress}>`}</p>
+        <p className="pdfExample">{`<${this.props.lang.publicAddress}>`}</p>
         <p className="pdfExample">{`<${this.props.lang.privateKey}>`}</p>
         <div className="keysHolder">
           {keys}
@@ -388,8 +312,6 @@ class ExportPrivateKeysModal extends React.Component {
             {this.renderExportOptions()}
             {this.getLocationToExportPanel()}
             {this.renderdisplayKeys()}
-
-            <ConfirmButtonPopup inputId="#exportPrivKeyId" handleConfirm={this.handlePanels} textLoading={this.props.lang.next} text={this.props.lang.next} />
           </ModalBody>
         </Modal>
       </div>

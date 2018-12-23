@@ -5,6 +5,9 @@ import { getAllTransactions, searchAllTransactions } from '../../Managers/SQLMan
 import { traduction } from '../../lang/lang';
 import * as actions from '../../actions';
 
+import Header from './../../components/Others/Header';
+import Body from './../../components/Others/Body';
+
 import $ from 'jquery';
 
 const moment = require('moment');
@@ -216,14 +219,14 @@ class Transaction extends Component {
     const spinClass = this.state.isRefreshing ? 'fa-spin' : '';
 
     return (
-      <div id="transactionAddresses">
-        <div className="tableHeaderNormal" style={{ display: 'flex', alignItems: 'center' }}>
+      <div id="transactionAddresses" className="padding-titlebar">
+        <Header>
+          { this.props.lang.transactions }
+        </Header>
+        <Body noPadding>
+          <div className="tableHeaderNormal" style={{ display: 'flex', alignItems: 'center' }}>
 
-          <div className="row" style={{ justifyContent: 'space-between', width: '100%', margin: '0' }}>
-            <div className="col-sm-3">
-              <p className="tableHeaderTitle tableHeaderTitleSmall">{ this.props.lang.transactions }            </p>
-            </div>
-            <div className="col-sm-8" style={{ display: 'flex', justifyContent: 'flex-end', padding: '0' }}>
+            <div className="d-flex justify-content-end w-100">
               <button style={{ cursor: 'pointer', borderStyle: 'none', background: 'none' }} onClick={(e) => this.getAllTransactions(this.props.page, this.props.type)}><span className="icon" style={{ marginTop: '5px', top: '0' }}><i style={{ color: '#b9b9b9' }} className={`fa fa-refresh ${spinClass}`} /></span></button>
               <div className="col-sm-6" style={{ display: 'flex', alignItems: 'center', maxWidth: '300px' }}>
                 <div className="box" style={{ width: '100%' }}>
@@ -253,99 +256,98 @@ class Transaction extends Component {
                   </div>
                   }
               </div>
-
             </div>
+
           </div>
+          <div style={{ width: '100%', /* marginTop: "15px" */alignItems: 'center', padding: '0 0' }}>
+            <div className="row rowDynamic" style={{ alignItems: 'center' }}>
+              <div className="col-sm-3 headerAddresses tableRowHeader text-left" style={{/* paddingLeft: "4%" */}}>{ this.props.lang.date }</div>
+              <div id="addressHeader" className="col-sm-6 headerAddresses tableRowHeader text-left">{ this.props.lang.info }</div>
+              <div id="addressHeader" className="col-sm-3 headerAddresses tableRowHeader" style={{ textAlign: 'right' }}>{ this.props.lang.amount } & {this.props.lang.status}</div>
+            </div>
+            <div id="rows" style={{ height: '500px', width: '100%', padding: '0', overflowY: 'scroll' }}>
+              {data.map((t, index) => {
+             // console.log(t, index)
+             // console.log(t)
 
-        </div>
-        <div style={{ width: '100%', /* marginTop: "15px" */alignItems: 'center', padding: '0 0' }}>
-          <div className="row rowDynamic" style={{ alignItems: 'center' }}>
-            <div className="col-sm-3 headerAddresses tableRowHeader text-left" style={{/* paddingLeft: "4%" */}}>{ this.props.lang.date }</div>
-            <div id="addressHeader" className="col-sm-6 headerAddresses tableRowHeader text-left">{ this.props.lang.info }</div>
-            <div id="addressHeader" className="col-sm-3 headerAddresses tableRowHeader" style={{ textAlign: 'right' }}>{ this.props.lang.amount } & {this.props.lang.status}</div>
-          </div>
-          <div id="rows" style={{ height: '500px', width: '100%', padding: '0', overflowY: 'scroll' }}>
-            {data.map((t, index) => {
-           // console.log(t, index)
-           // console.log(t)
+                if (this.props.type === 'all'
+              || this.props.type === t.category
+              || this.props.type === t.status) {
+                  counter++;
+                  const iTime = new Date(t.time * 1000);
+                  const time = Tools.calculateTimeSince(this.props.lang, today, iTime);
 
-              if (this.props.type === 'all'
-            || this.props.type === t.category
-            || this.props.type === t.status) {
-                counter++;
-                const iTime = new Date(t.time * 1000);
-                const time = Tools.calculateTimeSince(this.props.lang, today, iTime);
+                  let category_label;
+                  let category = t.category;
+                  if (category === 'generate') {
+                    category = <span className="icon" style={{ float: 'left', paddingRight: '14px', fontSize: '24px' /* ,color:"#8e8e8e" */}}><i className="fa fa-trophy" /></span>;
+                    category_label = lang.stakedMin;
+                  }
+                  if (category === 'staked') {
+                    category = <span className="icon" style={{ float: 'left', paddingRight: '14px', fontSize: '24px' /* ,color:"#8e8e8e" */}}><i className="fa fa-shopping-basket" /> </span>;
+                    category_label = lang.staked;
+                  } else if (category === 'send') {
+                    category = <span className="icon" style={{ float: 'left', paddingRight: '14px', fontSize: '24px' /* ,color:"#8e8e8e" */}}><i className="fa fa-upload" /> </span>;
+                    category_label = lang.sent;
+                  } else if (category === 'receive') {
+                    category = <span className="icon" style={{ float: 'left', paddingRight: '14px', fontSize: '24px'/* , color:"#8e8e8e" */ }}><i className="fa fa-download" /></span>;
+                    category_label = lang.received;
+                  } else if (category === 'immature') {
+                    category = lang.immature;
+                  }
 
-                let category_label;
-                let category = t.category;
-                if (category === 'generate') {
-                  category = <span className="icon" style={{ float: 'left', paddingRight: '14px', fontSize: '24px' /* ,color:"#8e8e8e" */}}><i className="fa fa-trophy" /></span>;
-                  category_label = lang.stakedMin;
-                }
-                if (category === 'staked') {
-                  category = <span className="icon" style={{ float: 'left', paddingRight: '14px', fontSize: '24px' /* ,color:"#8e8e8e" */}}><i className="fa fa-shopping-basket" /> </span>;
-                  category_label = lang.staked;
-                } else if (category === 'send') {
-                  category = <span className="icon" style={{ float: 'left', paddingRight: '14px', fontSize: '24px' /* ,color:"#8e8e8e" */}}><i className="fa fa-upload" /> </span>;
-                  category_label = lang.sent;
-                } else if (category === 'receive') {
-                  category = <span className="icon" style={{ float: 'left', paddingRight: '14px', fontSize: '24px'/* , color:"#8e8e8e" */ }}><i className="fa fa-download" /></span>;
-                  category_label = lang.received;
-                } else if (category === 'immature') {
-                  category = lang.immature;
-                }
-
-                return (
-                  <div key={index}>
-                    <div className={counter % 2 !== 0 ? rowClassName : `${rowClassName} tableRowEven`} style={{ padding: '0', cursor: 'pointer', fontSize: '15px', justifyContent: 'space-around', minHeight: '40px' }} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
-                      <div className="col-sm-3" style={{}}>
-                        <p style={{ margin: '0px' }}><span>{moment(t.time * 1000).format('MMMM Do')}</span></p>
-                      </div>
-                      <div className="col-sm-6 text-center" style={{ paddingTop: '4px', paddingBottom: '4px' }}>
-                        {category}
-                        <div className="transactionAddress text-left" >
-                          <p style={{ margin: '0px', display: 'inline' }}><span className="desc2 transactionAddress"> {t['address.ansrecords.name'] != null ? t['address.ansrecords.name'] + t['address.ansrecords.code'] : t['address.address']}</span></p><p className="transactionInfoTitle" style={{ fontSize: '12px' }}> {category_label} {time}</p>
+                  return (
+                    <div key={index}>
+                      <div className={counter % 2 !== 0 ? rowClassName : `${rowClassName} tableRowEven`} style={{ padding: '0', cursor: 'pointer', fontSize: '15px', justifyContent: 'space-around', minHeight: '40px' }} key={`transaction_${index}_${t.txid}`} onClick={this.rowClicked.bind(this, index)}>
+                        <div className="col-sm-3" style={{}}>
+                          <p style={{ margin: '0px' }}><span>{moment(t.time * 1000).format('MMMM Do')}</span></p>
+                        </div>
+                        <div className="col-sm-6 text-center" style={{ paddingTop: '4px', paddingBottom: '4px' }}>
+                          {category}
+                          <div className="transactionAddress text-left" >
+                            <p style={{ margin: '0px', display: 'inline' }}><span className="desc2 transactionAddress"> {t['address.ansrecords.name'] != null ? t['address.ansrecords.name'] + t['address.ansrecords.code'] : t['address.address']}</span></p><p className="transactionInfoTitle" style={{ fontSize: '12px' }}> {category_label} {time}</p>
+                          </div>
+                        </div>
+                        <div className="col-sm-3 text-right" style={{ textAlign: 'right' }}>
+                          <p style={{ margin: '0px' }}>{t.amount} ECC</p>
+                          <p style={{ margin: '0px', fontSize: '12px' }}>{this.renderStatus(t.confirmations, t.category)}</p>
                         </div>
                       </div>
-                      <div className="col-sm-3 text-right" style={{ textAlign: 'right' }}>
-                        <p style={{ margin: '0px' }}>{t.amount} ECC</p>
-                        <p style={{ margin: '0px', fontSize: '12px' }}>{this.renderStatus(t.confirmations, t.category)}</p>
-                      </div>
-                    </div>
-                    <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{ paddingLeft: '2%', width: '100%', paddingTop: '6px', paddingBottom: '6px', cursor: 'default', zIndex: '2', display: 'none', margin: '0', }}>
-                      <div style={{ padding: '0 15px' }}>
-                        <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.dateString}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{(new Date(t.time * 1000).toDateString()).toString()}</span></p>
-                      </div>
-                      <div style={{ padding: '0 15px' }}>
-                        <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.confirmations}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{t.confirmations}</span></p>
-                      </div>
-                      <div style={{ padding: '0 15px' }}>
-                        <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionFee}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{t.fee}</span></p>
-                      </div>
+                      <div id={`trans_bottom_${index}`} onClick={this.rowClickedFixMisSlideUp} className="row extraInfoTransaction" style={{ paddingLeft: '2%', width: '100%', paddingTop: '6px', paddingBottom: '6px', cursor: 'default', zIndex: '2', display: 'none', margin: '0', }}>
+                        <div style={{ padding: '0 15px' }}>
+                          <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.dateString}</span></p>
+                          <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{(new Date(t.time * 1000).toDateString()).toString()}</span></p>
+                        </div>
+                        <div style={{ padding: '0 15px' }}>
+                          <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.confirmations}</span></p>
+                          <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{t.confirmations}</span></p>
+                        </div>
+                        <div style={{ padding: '0 15px' }}>
+                          <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionFee}</span></p>
+                          <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{t.fee}</span></p>
+                        </div>
 
-                      <div style={{ padding: '0 15px' }}>
-                        <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionId}</span></p>
-                        <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">{t.transaction_id}</span></p>
+                        <div style={{ padding: '0 15px' }}>
+                          <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionId}</span></p>
+                          <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">{t.transaction_id}</span></p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              }
-              return null;
-            })}
+                  );
+                }
+                return null;
+              })}
+            </div>
           </div>
-        </div>
-        <div className="row">
-          <div className="col-sm-6 text-right">
-            <p className="buttonTransaction" onClick={this.handlePreviousClicked} style={{ marginRight: '50px', opacity: this.props.page === 0 ? '0.2' : '1', cursor: this.props.page === 0 ? 'default' : 'pointer' }}>{ this.props.lang.previous }</p>
+          <div className="row">
+            <div className="col-sm-6 text-right">
+              <p className="buttonTransaction" onClick={this.handlePreviousClicked} style={{ marginRight: '50px', opacity: this.props.page === 0 ? '0.2' : '1', cursor: this.props.page === 0 ? 'default' : 'pointer' }}>{ this.props.lang.previous }</p>
+            </div>
+            <div className="col-sm-6 text-left">
+              <p className="buttonTransaction" onClick={this.handleNextClicked} style={{ marginLeft: '50px', opacity: this.props.data.length < 100 ? '0.2' : '1', cursor: this.props.data.length < 100 ? 'default' : 'pointer' }}>{ this.props.lang.next }</p>
+            </div>
           </div>
-          <div className="col-sm-6 text-left">
-            <p className="buttonTransaction" onClick={this.handleNextClicked} style={{ marginLeft: '50px', opacity: this.props.data.length < 100 ? '0.2' : '1', cursor: this.props.data.length < 100 ? 'default' : 'pointer' }}>{ this.props.lang.next }</p>
-          </div>
-        </div>
+        </Body>
       </div>
     );
   }

@@ -169,7 +169,7 @@ class Home extends Component {
         <Header>
           { this.props.lang.overview }
         </Header>
-        <Body>
+        <Body noPadding>
           <div className="homeSection text-center" id="balanceInfo">
             <div className="row" style={{ margin: '0px 0px' }}>
               <div className="col-sm-4" style={{ padding: '0 0' }}>

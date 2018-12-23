@@ -1,18 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {TweenMax, TimelineMax} from "gsap";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Input } from 'reactstrap';
+import Toast from '../../../globals/Toast/Toast';
 import * as actions from '../../../actions/index';
-import CloseButtonPopup from '../../Others/CloseButtonPopup';
-import ConfirmButtonPopup from '../../Others/ConfirmButtonPopup';
-import Input from '../../Others/Input';
-import $ from 'jquery';
-import Toast from "../../../globals/Toast/Toast";
-const Tools = require('../../../utils/tools');
 
-class ChangePasswordModal extends React.Component {
- constructor() {
-    super();
+class ChangePasswordModal extends Component {
+  constructor(props) {
+    super(props);
+
     this.handleConfirm = this.handleConfirm.bind(this);
     this.changePassword = this.changePassword.bind(this);
     this.toggle = this.toggle.bind(this);
@@ -25,118 +20,111 @@ class ChangePasswordModal extends React.Component {
     };
   }
 
-  componentWillUnmount() {
-   this.setState({
-     password_current: '',
-     password: '',
-     password_confirm: ''
-   });
-  }
-
   toggle() {
     this.setState({
-      open: !this.state.open
+      open: !this.state.open,
+      password_current: '',
+      password: '',
+      password_confirm: ''
     });
   }
 
-  changePassword(){
-    let wasStaking = this.props.isStaking;
-    this.props.wallet.walletChangePassphrase(this.props.passwordVal, this.props.newPassword).then((data)=>{
-      if(data === null){
-        if(wasStaking){
+  changePassword() {
+    const wasStaking = this.props.isStaking;
+    this.props.wallet.walletChangePassphrase(this.state.password, this.state.password_confirm).then((data) => {
+      if (data === null) {
+        if (wasStaking) {
 
         }
         Toast({
           message: this.props.lang.operationSuccessful
         });
-        setTimeout(()=>{
+        setTimeout(() => {
           this.toggle();
-        }, 2000)
-      }
-      else if(data.code && data.code === -14){
+        }, 2000);
+      } else if (data.code && data.code === -14) {
         Toast({
           title: this.props.lang.error,
           message: this.props.lang.wrongPasswordProper,
           color: 'red'
         });
       }
-      this.props.setPopupLoading(false)
+      this.props.setPopupLoading(false);
     })
     .catch((err) => {
       console.error(err);
-      this.props.setPopupLoading(false)
+      this.props.setPopupLoading(false);
     });
   }
 
-  handleConfirm(){
-    if(this.props.passwordVal === "" || this.props.passwordValConfirmation === "" || this.props.newPassword === ""){
+  handleConfirm() {
+    if (this.state.password_current.length < 1 || this.state.password.length < 1 || this.state.password_confirm.length < 1) {
       Toast({
         title: this.props.lang.error,
         message: this.props.lang.fillAllFields,
         color: 'red'
       });
-    }
-    else if(this.props.newPassword !== this.props.passwordValConfirmation){
+    } else if (this.props.newPassword !== this.props.passwordValConfirmation) {
       Toast({
         title: this.props.lang.error,
         message: this.props.lang.passwordsDontMatch,
         color: 'red'
       });
-    }
-    else{
+    } else {
       this.props.setPopupLoading(true);
       this.changePassword();
     }
   }
 
+  onTextFieldChange(key, e) {
+    const value = e.target.value;
+    const payload = {};
+    payload[key] = value;
+    this.setState(payload);
+  }
+
   render() {
-     return (
+    return (
       <div>
         <Modal isOpen={this.state.open} toggle={this.toggle}>
           <ModalHeader toggle={this.toggle}>{ this.props.lang.changePassword }</ModalHeader>
           <ModalBody>
             <Input
-              placeholder={ this.props.lang.currentPassword }
-              placeholderId="enterPassword"
-              value={this.props.passwordVal}
-              handleChange={this.props.setPassword}
+              placeholder={this.props.lang.currentPassword}
+              value={this.state.password_current}
+              onChange={e => this.onTextFieldChange('password_current', e)}
               type="password"
-              inputId="enterPasswordId"
-              onSubmit={this.handleConfirm}
-              style={{marginTop: "30px", marginBottom: "25px", width: "60%"}}
               autoFocus
             />
             <Input
-              placeholder= {  this.props.lang.newPassword}
-              placeholderId="enterPasswordRepeat"
-              value={this.props.passwordValConfirmation}
-              handleChange={this.props.passwordConfirmation}
+              placeholder={this.props.lang.newPassword}
+              value={this.state.password}
+              onChange={e => this.onTextFieldChange('password', e)}
               type="password"
-              inputId="newPasswordId"
-              onSubmit={this.handleConfirm}
-              style={{marginBottom: "25px", width: "60%"}}
+              className="mt-4"
             />
             <Input
-              placeholder= { this.props.lang.repeatPassword }
-              placeholderId="enterPasswordConfirmation"
-              value={this.props.newPassword}
-              handleChange={this.props.setNewPassword}
+              placeholder={this.props.lang.repeatPassword}
+              value={this.state.password_confirm}
+              onChange={e => this.onTextFieldChange('password_confirm', e)}
               type="password"
-              inputId="repeatNewPasswordId"
-              onSubmit={this.handleConfirm}
-              style={{width: "60%"}}
+              className="mt-2"
             />
-            <ConfirmButtonPopup inputId={"#enterPasswordId, #enterPasswordId, #repeatNewPasswordId"} handleConfirm={this.handleConfirm} textLoading={this.props.lang.confirming} text={ this.props.lang.confirm }/>
+            <div className="d-flex justify-content-end mt-4">
+              <Button onClick={this.handleConfirm} color="primary">
+                { this.props.lang.confirm }
+              </Button>
+            </div>
           </ModalBody>
         </Modal>
       </div>
-      );
-    }
+    );
+  }
 
 }
 
 const mapStateToProps = state => {
-  return{
+  return {
     lang: state.startup.lang,
     passwordVal: state.application.password,
     passwordValConfirmation: state.setup.confirmationPassword,

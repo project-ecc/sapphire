@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { SettingsIcon } from 'mdi-react';
+import { Button } from 'reactstrap';
+import { CloudUploadIcon, FileExportIcon } from 'mdi-react';
 
 import ExportPrivateKeysModal from './../partials/ExportPrivateKeysModal';
 import ChangePasswordModal from './../partials/ChangePasswordModal';
@@ -61,22 +63,25 @@ class Wallet extends Component {
         </Header>
         <Body>
           <p id="walletBackup">{ this.props.lang.backup }</p>
-          <p id="walletBackupExplanation">{ this.props.lang.backupExplanation }</p>
-          <div className="row" style={{ marginTop: '30px', marginBottom: '30px' }}>
-            <div className="col-sm-6 text-center">
-              <p className="buttonTransaction settingsButtonBackup" onClick={this.onClickBackupLocation}>{ this.props.lang.backup } wallet.dat</p>
-            </div>
-            <div className="col-sm-6 text-center">
-              <p className="buttonTransaction settingsButtonBackup" onClick={this.handleExportPrivateKeys}>{ this.props.lang.exportPrivateKeys }</p>
-            </div>
+          <p id="walletBackupExplanation" className="mt-3">{ this.props.lang.backupExplanation }</p>
+          <div className="d-flex justify-content-center mt-3">
+            <Button onClick={this.onClickBackupLocation} color="warning">
+              { this.props.lang.backup } wallet.dat
+              <CloudUploadIcon className="ml-2" />
+            </Button>
+            <Button onClick={this.handleExportPrivateKeys} color="warning" className="ml-3">
+              { this.props.lang.exportPrivateKeys }
+              <FileExportIcon className="ml-2" />
+            </Button>
           </div>
-          <div className="container">
+
+          <div className="mt-3">
             <div className="row settingsToggle">
               <div className="col-sm-10 text-left removePadding">
                 <p className="walletBackupOptions">{ this.props.lang.password }</p>
               </div>
               <div className="col-sm-2 text-right removePadding">
-                <p onClick={this.handleChangePasswordClicked} style={{ cursor: 'pointer' }}>{ this.props.lang.change }</p>
+                <Button color="link" onClick={this.handleChangePasswordClicked}>{ this.props.lang.change }</Button>
               </div>
             </div>
             <div className="row settingsToggle" >
@@ -84,21 +89,12 @@ class Wallet extends Component {
                 <p className="walletBackupOptions">{ this.props.lang.privateKey }</p>
               </div>
               <div className="col-sm-2 text-right removePadding">
-                <p onClick={this.handleImportPrivateKey} style={{ cursor: 'pointer' }}>{ this.props.lang.import }</p>
+                <Button color="link" onClick={this.handleImportPrivateKey}>{ this.props.lang.import }</Button>
               </div>
             </div>
-
-            {/* <div className="row settingsToggle"> */}
-            {/* <div className="col-sm-6 text-left removePadding"> */}
-            {/* <p>{ this.props.lang.wallet }</p> */}
-            {/* <p id="applicationVersion">{this.props.lang.walletImportInfo}</p> */}
-            {/* </div> */}
-            {/* <div className="col-sm-6 text-right removePadding"> */}
-            {/* <p onClick={this.handleImportWalletFile} style={{cursor: "pointer"}}>{ this.props.lang.import }</p> */}
-            {/* </div> */}
-            {/* </div> */}
           </div>
         </Body>
+
         <ExportPrivateKeysModal ref={(e) => { this.modal = e; }} />
         <ChangePasswordModal ref={(e) => { this.passwordModal = e; }} />
         <ImportPrivateKeysModal ref={(e) => { this.importKeysModal = e; }} />
