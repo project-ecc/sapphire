@@ -1,22 +1,22 @@
 // Pages
-import MessagingPage from './../containers/Pages/MessagingPage';
-import HomePage from './../containers/Pages/HomePage';
-import ReceivePage from './../containers/Pages/ReceivePage';
-import TransactionPage from './../containers/Pages/TransactionPage';
-import SendPage from './../containers/Pages/SendPage';
-import ContactsPage from './../containers/Pages/ContactsPage';
-import NetworkStatsPage from './../containers/Pages/NetworkStatsPage';
-import NewsPage from './../containers/Pages/NewsPage';
-import FileStoragePage from './../containers/Pages/FileStoragePage';
+import MessagingPage from './../components/Messaging/Index';
+import HomePage from './../components/Dashboard/Index';
+import ReceivePage from './../components/ReceiveTransaction/Index';
+import TransactionPage from './../components/Transactions/Index';
+import SendPage from './../components/SendTransactions/Index';
+import ContactsPage from './../components/Contacts/Index';
+import NetworkStatsPage from './../components/NetworkStats/Index';
+import NewsPage from '../components/News/Index';
+import FileStoragePage from './../components/FileStorage/Index';
 
 // Settings
-import SettingsAdvanced from '../components/SettingsPage/pages/Advanced';
-import SettingsDonate from '../components/SettingsPage/pages/Donate';
-import SettingsLanguage from '../components/SettingsPage/pages/Language';
-import SettingsNotifications from '../components/SettingsPage/pages/Notifications';
-import SettingsAppearance from '../components/SettingsPage/pages/Appearance';
-import SettingsWallet from '../components/SettingsPage/pages/Wallet';
-import SettingsGeneral from '../components/SettingsPage/pages/General';
+import SettingsAdvanced from '../components/Settings/pages/Advanced';
+import SettingsDonate from '../components/Settings/pages/Donate';
+import SettingsLanguage from '../components/Settings/pages/Language';
+import SettingsNotifications from '../components/Settings/pages/Notifications';
+import SettingsAppearance from '../components/Settings/pages/Appearance';
+import SettingsWallet from '../components/Settings/pages/Wallet';
+import SettingsGeneral from '../components/Settings/pages/General';
 
 // Layouts
 import MainLayout from './../Layouts/Main';
@@ -24,8 +24,8 @@ import Setup from '../components/Setup/Index';
 import BasicLayout from './../Layouts/Basic';
 
 // Sidebars
-import MainSidebar from '../containers/MainSidebar';
-import SettingSidebar from '../containers/SettingSidebar';
+import MainSidebar from '../Layouts/partials/MainSidebar';
+import SettingSidebar from '../Layouts/partials/SettingSidebar';
 
 // Setup
 import SetupStart from './../components/Setup/partials/Start';

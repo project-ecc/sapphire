@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-import Root from './containers/Root';
+import Root from './App';
 import { configureStore } from './store/configureStore';
 import './app.global.scss';
 import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
@@ -25,7 +25,7 @@ render(
 
 if (module.hot) {
   module.hot.accept('./containers/Root', () => {
-    const NextRoot = require('./containers/Root'); // eslint-disable-line global-require
+    const NextRoot = require('./App'); // eslint-disable-line global-require
     render(
       <AppContainer>
         <Provider store={store}>
