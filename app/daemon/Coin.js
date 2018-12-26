@@ -49,8 +49,6 @@ class Coin extends Component {
     this.queueOrSendNotification = this.queueOrSendNotification.bind(this);
     this.checkQueuedNotifications = this.checkQueuedNotifications.bind(this);
 
-    this.listenToEvents();
-
     this.state = {
       interval: 5000,
       latestBlockTime: 0,
@@ -62,12 +60,15 @@ class Coin extends Component {
       blockProcessorInterval: null,
       coinMarketCapInterval: null,
       transactionProcessorInterval: null,
-      addressProcessorInterval:null,
+      addressProcessorInterval: null,
       transactionsIndexed: false,
       lastTransactionTime: 0,
       transactionsToRequest: 4000,
       shouldRequestMoreTransactions: false
     };
+
+
+    this.listenToEvents();
 
     // TODO Fix handling promise returned from this function IMPORTANT!
     db.sequelize.sync();

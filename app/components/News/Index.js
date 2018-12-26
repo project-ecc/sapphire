@@ -90,7 +90,7 @@ class Index extends Component {
     const spinClass = this.state.isLoading ? 'fa-spin' : '';
     console.log(this.props.eccPosts);
     return (
-      <div className="d-flex w-100">
+      <div className="d-flex w-100 h-100">
         <div className="padding-titlebar wrapper flex-auto">
           <Header className="no-margin-bottom">
             {this.props.lang.eccNews}

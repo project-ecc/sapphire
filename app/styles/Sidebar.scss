@@ -2,12 +2,13 @@
 
 #page {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
 
   & > div:nth-child(2) {
 	flex: 1 1 auto;
 	display: flex;
 	flex-direction: row;
+	height: 100vh;
   }
 
   /* Sections */

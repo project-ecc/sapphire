@@ -1,22 +1,31 @@
 import React, { Component } from 'react';
-import { ipcRenderer } from 'electron';
 import hash from '../router/hash';
 import * as tools from '../utils/tools';
 import { ECC_POST } from '../actions/types';
+import {connect} from "react-redux";
+import * as actions from "../actions";
+
+import $ from 'jquery';
+
+const event = require('../utils/eventhandler');
+const https = require('https');
+const FeedMe = require('feedme');
 
 class News extends Component {
   constructor(props) {
     super(props);
 
     this.newsFeedCycle = this.newsFeedCycle.bind(this);
-
-    this.listenToEvents();
+    this.startCycle = this.startCycle.bind(this);
+    this.queueOrSendNotification = this.queueOrSendNotification.bind(this);
 
     this.state = {
       // Check for news every 2 hours (user can refresh manually too)
       eccNewsInterval: 7200000,
       eccNewsTimer: null
     };
+
+    this.listenToEvents();
   }
 
   componentWillUnmount() {
@@ -24,10 +33,12 @@ class News extends Component {
   }
 
   listenToEvents() {
-    ipcRenderer.on('startConnectorChildren', this.startCycle);
+    event.on('startConnectorChildren', this.startCycle);
   }
 
-  startCycle() {
+  async startCycle() {
+    // Fetch the news first.. then start the interval for checking every x milliseconds
+    await this.newsFeedCycle();
     this.setState({
       eccNewsTimer: setInterval(async () => {
         await this.newsFeedCycle();
@@ -39,9 +50,11 @@ class News extends Component {
    * This function should pull the news articles down from medium and notify the user if there is a new news article.
    */
   newsFeedCycle() {
-    const posts = this.props.application.eccPosts;
+    const posts = this.props.eccPosts;
     const lastCheckedNews = this.props.notifications.lastCheckedNews;
-    https.get('https://medium.com/feed/@project_ecc', (res) => {
+
+    https.get('https://medium.com/feed/@project_ecc', res => {
+      console.log('NEWS RESPONSE', res)
       if (res.statusCode !== 200) {
         console.error(new Error(`status code ${res.statusCode}`));
         return;
@@ -49,7 +62,7 @@ class News extends Component {
       const today = new Date();
       const parser = new FeedMe();
       let totalNews = 0;
-      const title = this.props.startup.lang.eccNews;
+      const title = this.props.lang.eccNews;
       parser.on('end', () => {
         if (totalNews === 0 || !this.props.notifications.newsNotificationsEnabled) return;
         const body = totalNews === 1 ? title : `${totalNews} ${title}`;
@@ -70,35 +83,25 @@ class News extends Component {
         }
         const date = item.pubdate;
         const iTime = new Date(date);
-        const time = tools.calculateTimeSince(this.props.startup.lang, today, iTime);
+        const time = tools.calculateTimeSince(this.props.lang, today, iTime);
 
         // push post (fetch existing posts)
-        let post;
+        const post = {
+          title: item.title,
+          timeSince: time,
+          hasVideo: hasVideo !== -1,
+          url,
+          body: text,
+          date: iTime.getTime()
+        };
         if (posts.length === 0 || posts[posts.length - 1].date > iTime.getTime()) {
-          post = {
-            title: item.title,
-            timeSince: time,
-            hasVideo: hasVideo !== -1, // probably going to remove this video flag
-            url,
-            body: text,
-            date: iTime.getTime()
-          };
           posts.push(post);
-          this.store.dispatch({ type: ECC_POST, payload: posts });
         }
         // put post in the first position of the array (new post)
         else if (posts[0].date < iTime.getTime()) {
-          post = {
-            title: item.title,
-            timeSince: time,
-            hasVideo: hasVideo !== -1,
-            url,
-            body: text,
-            date: iTime.getTime()
-          };
           posts.unshift(post);
-          this.props.setEccPosts(posts);
         }
+        this.props.setEccPosts(posts);
         if (post && post.date > lastCheckedNews && this.props.notifications.newsNotificationsEnabled) {
           totalNews++;
           this.props.setNewsNotification(post.date);
@@ -108,10 +111,37 @@ class News extends Component {
     });
   }
 
+  fixNewsText(text) {
+    let result = text.replace(new RegExp('</p><p>', 'g'), ' ');
+    result = result.replace(new RegExp('</blockquote><p>', 'g'), '. ');
+    return result;
+  }
+
+  queueOrSendNotification(callback, body) {
+    // TODO
+    if (this.props.loading || this.props.loader || !this.props.setupDone) {
+      // this.queuedNotifications.push({ callback, body });
+    } else {
+      // Tools.sendOSNotification(body, callback);
+    }
+  }
+
 
   render() {
     return null;
   }
 }
 
-export default News;
+const mapStateToProps = state => {
+  return {
+    loading: state.startup.loading,
+    loader: state.startup.loader,
+    setupDone: state.startup.setupDone,
+    lang: state.startup.lang,
+    wallet: state.application.wallet,
+    eccPosts: state.application.eccPosts,
+    notifications: state.notifications
+  };
+};
+
+export default connect(mapStateToProps, actions)(News);

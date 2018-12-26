@@ -1,14 +1,14 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
+import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import Root from './App';
 import { configureStore } from './store/configureStore';
 import './app.global.scss';
-import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
-import { Provider } from 'react-redux';
-
 
 const store = configureStore({});
+
 render(
   <AppContainer>
     <Provider store={store}>
@@ -24,7 +24,7 @@ render(
 );
 
 if (module.hot) {
-  module.hot.accept('./containers/Root', () => {
+  module.hot.accept('./App', () => {
     const NextRoot = require('./App'); // eslint-disable-line global-require
     render(
       <AppContainer>

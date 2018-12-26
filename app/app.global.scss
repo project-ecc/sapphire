@@ -355,9 +355,14 @@ input::-webkit-inner-spin-button {
   position: relative;
   z-index: 2;
   padding: 20px 40px 40px 40px;
+  flex: 1 1 auto;
 
   &.no-padding {
 	padding: 0;
+  }
+
+  &.scrollable {
+	overflow: auto;
   }
 }
 
@@ -374,13 +379,14 @@ input::-webkit-inner-spin-button {
 	flex-direction: column;
 	height: 100vh;
 	overflow: auto;
-
-	& > .body.scrollable {
-	  overflow: auto;
-	}
   }
 }
 
 .padding-titlebar {
   padding-top: 40px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
 }
