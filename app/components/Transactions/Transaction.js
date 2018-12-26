@@ -147,7 +147,6 @@ class Transaction extends Component {
   }
 
   updateTable() {
-    $('#rows').css('height', $('#transactionAddresses').height() - 204);
     const numberOfChildren = this.props.data.length;
     const totalSize = numberOfChildren * 40; // 40px height of each row
     const sizeOfContainer = $('#transactionAddresses').height() - 204;
@@ -265,7 +264,7 @@ class Transaction extends Component {
               <div id="addressHeader" className="col-sm-6 headerAddresses tableRowHeader text-left">{ this.props.lang.info }</div>
               <div id="addressHeader" className="col-sm-3 headerAddresses tableRowHeader" style={{ textAlign: 'right' }}>{ this.props.lang.amount } & {this.props.lang.status}</div>
             </div>
-            <div id="rows" style={{ height: '500px', width: '100%', padding: '0', overflowY: 'scroll' }}>
+            <div id="rows">
               {data.map((t, index) => {
              // console.log(t, index)
              // console.log(t)

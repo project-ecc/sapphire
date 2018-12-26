@@ -30,15 +30,16 @@ class Donations extends Component {
 
     return (
       <div>
-        <p id="walletBackup">{ this.props.lang.donate }</p>
-        <div className="row" style={{ overflowY: 'scroll' }}>
-          {goals.map((goal, index) => {
-            return (
-              <Goal key={index} goal={goal} handleClick={this.handleClick} />
-            );
-          })
-        }
-        </div>
+        { Object.keys(goals).length > 0 && (
+          <div className="row">
+            {goals.map((goal, index) => {
+              return (
+                <Goal key={index} goal={goal} handleClick={this.handleClick} />
+              );
+            })
+          }
+          </div>
+        )}
         <ReactTooltip />
         <DonateModal ref={(e) => {this.modal = e}} goal={this.state.selectedGoal} />
       </div>

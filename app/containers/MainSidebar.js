@@ -70,17 +70,17 @@ class MainSidebar extends Component {
               </ul>
             </div>
           </div>
-          <div className="connections sidebar-section-container">
-            <NavLink to="/coin/network" data-tip="View network stats" data-id="network">
+          <div className="pl-4 pr-4 pt-5 pb-5 text-center" data-tip="View network stats" data-id="network">
+            <NavLink to="/coin/network" className="text-white-50">
               <p style={{ fontSize: '13px' }}>{`${this.props.lang.syncing} ${progressBar}%`}</p>
               <div className="progress">
                 <div className="bar" style={{ width: `${progressBar}%` }} />
               </div>
               <p style={{ fontSize: '13px' }}>{`${this.props.lang.activeConnections}: ${this.props.connections}`}</p>
             </NavLink>
-            <ReactTooltip />
           </div>
         </div>
+        <ReactTooltip />
       </div>
     );
   }
