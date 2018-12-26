@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import TransitionGroup from 'react-transition-group/TransitionGroup';
+import Header from './../Others/Header';
+import Body from './../Others/Body';
 
 import * as actions from '../../actions';
 
@@ -79,25 +80,29 @@ class NetworkStats extends Component {
     let connectionsOrange = require('../../../resources/images/connections-orange.png');
 
     return (
-      <div style={{height: "100%", width: "100%", paddingLeft: "40px", paddingRight: "40px"}}>
-        <div id="headerNetwork">
-          <p id="headerNetworkText" style={{fontSize: "70px", fontWeight: "800", display: "inline-block", marginTop:"15px"}}>{ this.props.lang.networkStats }</p>
-          <div style={{display: "inline-block", position: "relative", left: "0px", top:"-8px"}}>
-            <img className="networkStatsImage" style={{height: "30px",position: "relative", top: "-14px", left: "35px"}} src={messaging}></img>
-            <div style={{display: "inline-block", position: "relative", left: "45px", top:"18px"}}>
-              <p className="networkStatsCounter" style={{fontSize: "24px", fontWeight: "200", display: "inline-block"}}>0</p>
-              <p style={{fontSize: "18px", fontWeight: "200", position: "relative", top:"-5px", left:"1px"}}>0GB</p>
+      <div className="padding-titlebar">
+        <Header>
+          <div className="d-flex justify-content-between">
+            <div>{ this.props.lang.networkStats }</div>
+            <div id="headerNetwork" className="d-flex justify-content-end">
+              <div>
+                <img className="networkStatsImage" style={{height: "30px",position: "relative", top: "-14px", left: "-15px"}} src={messaging}></img>
+                <div style={{display: "inline-block"}}>
+                  <p className="networkStatsCounter" style={{fontSize: "24px", fontWeight: "200", display: "inline-block"}}>0</p>
+                  <p style={{fontSize: "18px", fontWeight: "200", position: "relative", top:"-5px", left:"1px"}}>0GB</p>
+                </div>
+              </div>
+              <div className="pl-5">
+                <img className="networkStatsImage" style={{height: "30px",position: "relative", top: "-14px", left: "-15px"}} src={fileStorage}></img>
+                <div style={{display: "inline-block"}}>
+                  <p className="networkStatsCounter" style={{fontSize: "24px", fontWeight: "200", display: "inline-block"}}>0</p>
+                  <p style={{fontSize: "18px", fontWeight: "200", position: "relative", top:"-5px", left:"1px"}}>0GB</p>
+                </div>
+              </div>
             </div>
           </div>
-          <div style={{display: "inline-block", position: "relative", left: "40px", top:"-8px"}}>
-            <img className="networkStatsImage" style={{height: "30px",position: "relative", top: "-14px", left: "35px"}} src={fileStorage}></img>
-            <div style={{display: "inline-block", position: "relative", left: "45px", top:"18px"}}>
-              <p className="networkStatsCounter" style={{fontSize: "24px", fontWeight: "200", display: "inline-block"}}>0</p>
-              <p style={{fontSize: "18px", fontWeight: "200", position: "relative", top:"-5px", left:"1px"}}>0GB</p>
-            </div>
-          </div>
-        </div>
-        <div className="container" style={{margin: "0 auto", padding:"0px 0px", marginTop: "50px", width:"100%", maxWidth: "1140px"}}>
+        </Header>
+        <Body>
           <div className="row">
             {/*<div className="col-sm-4 text-center">*/}
               {/*<p className="networkStatsChainTitle">{ this.props.lang.messagingChain }</p>*/}
@@ -112,7 +117,7 @@ class NetworkStats extends Component {
               {/*{this.getHtmlChainInfo(false, 0, 0, 0, 0, "rgb(32,114, 156)", this.props.fileStorage ? require('../../../resources/images/connections-blue.png') : require('../../../resources/images/connections-default.png'), "fileStorageChainCircle", "fileStorage")}*/}
             {/*</div>*/}
           </div>
-        </div>
+        </Body>
       </div>
     );
   }

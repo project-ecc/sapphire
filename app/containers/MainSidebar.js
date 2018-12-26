@@ -70,7 +70,7 @@ class MainSidebar extends Component {
               </ul>
             </div>
           </div>
-          <div className="pl-4 pr-4 pt-5 pb-5 text-center" data-tip="View network stats" data-id="network">
+          <div className="pl-4 pr-4 pt-5 pb-5 text-center" data-tip="View network stats">
             <NavLink to="/coin/network" className="text-white-50">
               <p style={{ fontSize: '13px' }}>{`${this.props.lang.syncing} ${progressBar}%`}</p>
               <div className="progress">
