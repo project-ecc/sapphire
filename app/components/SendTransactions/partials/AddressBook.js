@@ -19,8 +19,7 @@ moment.locale('en');
 class AddressBook extends Component {
   constructor(props) {
     super(props);
-    this._handleInput = this._handleInput.bind(this);
-    this.rowClicked = this.rowClicked.bind(this);
+
     this.loadContacts = this.loadContacts.bind(this);
   }
 
@@ -30,43 +29,8 @@ class AddressBook extends Component {
     event.on('reloadContacts', this.loadContacts);
   }
 
-  getAddressDiplay(address) {
-    if (address.ans) {
-      return (
-        <div>
-          <img src={ansAddresImage} />
-        </div>
-      );
-    }
-    return null;
-  }
-
-  componentDidUpdate() {
-  }
-
   componentWillUnmount() {
     event.removeListener('reloadContacts', this.loadContacts);
-  }
-
-  _handleInput(event) {
-    const target = event.target;
-    const name = target.name;
-    const value = target.value;
-    this.setState({ [name]: value });
-  }
-
-
-  rowClicked = (friend, index) => (e) => {
-    clipboard.writeText(friend.address.address);
-    // $('#message').text(this.props.lang.addressCopiedBelow);
-    TweenMax.fromTo('#message', 0.2, { autoAlpha: 0, scale: 0.5 }, { autoAlpha: 1, scale: 1 });
-    TweenMax.to('#message', 0.2, { autoAlpha: 0, scale: 0.5, delay: 3 });
-    TweenMax.set('#addressSend', { autoAlpha: 0 });
-    this.props.setAddressSend(friend.address.address);
-    if (friend.name === '') {
-      this.props.setAddressOrUsernameSend(undefined);
-    } else this.props.setAddressOrUsernameSend(friend.name);
-    this.forceUpdate();
   }
 
   async loadContacts() {
@@ -81,35 +45,38 @@ class AddressBook extends Component {
     const clickContact = this.props.onContactClick || this.clickContact;
 
     return (
-      <Table responsive hover borderless className="tableCustom">
-        <tbody>
-          { this.props.friends.length > 0 ?
-            this.props.friends.map((friend, index) => {
-              const selected = this.props.selected === friend.id;
-              return (
-                <tr key={index} className={`${selected ? 'selected' : ''} cursor-pointer`} onClick={() => clickContact(friend)}>
-                  <td style={{width: 50}}>
-                    {friend.ansrecord != null ? <img src={ansAddresImage} style={{ padding: '0 5px 3px 0' }} /> : null}
-                  </td>
-                  <td>
-                    {friend.ansrecord != null ? renderHTML(`${friend.ansrecord.name}<span className="Receive__ans-code">#${friend.ansrecord.code} </span> `) : friend.name}
-                    <br/>
-                    <small className="transactionInfoTitle">
-                      {friend.address !== null ? friend.address.address : 'Unknown Address'}
-                    </small>
-                  </td>
-                </tr>
-              );
-            })
-          : (
-            <tr>
-              <td className="text-center" colSpan="3">
-                No contacts to display.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </Table>
+      <div className="tableCustom">
+        { this.props.children }
+        <Table responsive hover borderless>
+          <tbody>
+            { this.props.friends.length > 0 ?
+              this.props.friends.map((friend, index) => {
+                const selected = this.props.selected === friend.id;
+                return (
+                  <tr key={index} className={`${selected ? 'selected' : ''} cursor-pointer`} onClick={() => clickContact(friend)}>
+                    <td style={{width: 50}}>
+                      {friend.ansrecord != null ? <img src={ansAddresImage} style={{ padding: '0 5px 3px 0' }} /> : null}
+                    </td>
+                    <td>
+                      {friend.ansrecord != null ? renderHTML(`${friend.ansrecord.name}<span className="Receive__ans-code">#${friend.ansrecord.code} </span> `) : friend.name}
+                      <br/>
+                      <small className="transactionInfoTitle">
+                        {friend.address !== null ? friend.address.address : 'Unknown Address'}
+                      </small>
+                    </td>
+                  </tr>
+                );
+              })
+            : (
+              <tr>
+                <td className="text-center" colSpan="3">
+                  No contacts to display.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+      </div>
     );
   }
 }

@@ -1,8 +1,8 @@
 #sapphire-toasts {
   pointer-events: none;
   position: fixed;
-  bottom: 10px;
-  left: 10px;
+  top: 40px;
+  right: 10px;
   z-index: 1051;
 
   /* Individual toasts */
@@ -13,6 +13,7 @@
 	margin-top: 0px;
 	padding: 0px 14px;
 	max-width: 300px;
+	width: auto;
 	font-size: 0.9em;
 	line-height: 1.2em;
 	pointer-events: all;
@@ -29,7 +30,7 @@
 	&.show {
 	  max-height: 300px;
 	  padding: 7px 14px;
-	  margin-top: 10px;
+	  margin-bottom: 10px;
 
 	  h5 {
 		opacity: 1;

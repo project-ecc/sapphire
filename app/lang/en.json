@@ -153,7 +153,8 @@
     "upgradeToANS": "Upgrade to ANS Address",
     "addressNotEnoughFunds": "Not enough funds in the address. You need to have a little over 50 ECC to account for the transfer fees.",
 
-    "addressCopiedBelow": "Address copied below",
+    "addressCopiedBelow": "Address copied",
+    "contactInvalidAddress": "This contact has an invalid address",
     "selectAContactToSend1": "Select a contact to send",
     "selectAContactToSend2": "to",
     "contacts": "Contacts",
@@ -167,6 +168,8 @@
     "notEnoughBalance": "Balance too low",
     "ansNameOrAddress": "ANS Name / Address",
     "amount": "Amount",
+    "enterValidAmount": "Please enter a valid amount to send.",
+    "enterValidAddress": "Please enter a valid ANS name / address",
 
     "sentSuccessfully": "Sent successfully!",
     "failedToSend": "Failed to send transaction",

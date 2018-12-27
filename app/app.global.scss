@@ -82,6 +82,10 @@ input::-webkit-inner-spin-button {
   flex: 1 1 auto;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .ecc{
   @include themify($themes) {
     color: themed('eccTicker');

@@ -81,23 +81,21 @@ class Index extends Component {
 
     return (
       <div className="padding-titlebar">
-        <Header>
-          <div className="d-flex justify-content-between">
-            <div>{ this.props.lang.networkStats }</div>
-            <div id="headerNetwork" className="d-flex justify-content-end">
-              <div>
-                <img className="networkStatsImage" style={{height: "30px",position: "relative", top: "-14px", left: "-15px"}} src={messaging}></img>
-                <div style={{display: "inline-block"}}>
-                  <p className="networkStatsCounter" style={{fontSize: "24px", fontWeight: "200", display: "inline-block"}}>0</p>
-                  <p style={{fontSize: "18px", fontWeight: "200", position: "relative", top:"-5px", left:"1px"}}>0GB</p>
-                </div>
+        <Header titleClassName="d-flex justify-content-between">
+          <div>{ this.props.lang.networkStats }</div>
+          <div id="headerNetwork" className="d-flex justify-content-end">
+            <div>
+              <img className="networkStatsImage" style={{height: "30px",position: "relative", top: "-14px", left: "-15px"}} src={messaging}></img>
+              <div style={{display: "inline-block"}}>
+                <p className="networkStatsCounter" style={{fontSize: "24px", fontWeight: "200", display: "inline-block"}}>0</p>
+                <p style={{fontSize: "18px", fontWeight: "200", position: "relative", top:"-5px", left:"1px"}}>0GB</p>
               </div>
-              <div className="pl-5">
-                <img className="networkStatsImage" style={{height: "30px",position: "relative", top: "-14px", left: "-15px"}} src={fileStorage}></img>
-                <div style={{display: "inline-block"}}>
-                  <p className="networkStatsCounter" style={{fontSize: "24px", fontWeight: "200", display: "inline-block"}}>0</p>
-                  <p style={{fontSize: "18px", fontWeight: "200", position: "relative", top:"-5px", left:"1px"}}>0GB</p>
-                </div>
+            </div>
+            <div className="pl-5">
+              <img className="networkStatsImage" style={{height: "30px",position: "relative", top: "-14px", left: "-15px"}} src={fileStorage}></img>
+              <div style={{display: "inline-block"}}>
+                <p className="networkStatsCounter" style={{fontSize: "24px", fontWeight: "200", display: "inline-block"}}>0</p>
+                <p style={{fontSize: "18px", fontWeight: "200", position: "relative", top:"-5px", left:"1px"}}>0GB</p>
               </div>
             </div>
           </div>

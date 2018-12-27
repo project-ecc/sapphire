@@ -55,7 +55,7 @@ class Index extends Component {
             { this.props.lang.contacts }
           </Header>
           <Body noPadding className="scrollable">
-            <AddressBook sendPanel={false} onContactClick={this.openContact} selected={friend !== null ? friend.id : null} />
+            <AddressBook onContactClick={this.openContact} selected={friend !== null ? friend.id : null} />
 
             <div className="d-flex justify-content-center mt-5">
               <Button color="primary" onClick={this.addContact}>

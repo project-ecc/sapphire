@@ -93,8 +93,6 @@
 }
 
 .headerDescription{
-  padding-top: 1px;
-  padding-left: 5%;
   @include themify($themes) {
     color: themed('tableHeaderDescription');
   }
