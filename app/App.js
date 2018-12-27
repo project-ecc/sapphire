@@ -12,6 +12,7 @@ import * as actions from './actions/index';
 import hash from './router/hash';
 import Loading from './Layouts/Loading';
 import DaemonConnector from './daemon/Connector';
+import Toast from 'globals/Toast/Toast';
 
 const event = require('utils/eventhandler');
 const lang = traduction();

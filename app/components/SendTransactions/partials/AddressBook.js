@@ -109,7 +109,7 @@ class AddressBook extends Component {
             })
           : (
             <tr>
-              <td className="text-center" colspan="3">
+              <td className="text-center" colSpan="3">
                 No contacts to display.
               </td>
             </tr>

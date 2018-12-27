@@ -5,17 +5,40 @@
   left: 10px;
   z-index: 1051;
 
+  /* Individual toasts */
   & > div {
-	background-color: #34924c;
+	background-color: #368b46;
+	border: 1px solid #369e59;
 	color: white;
-	padding: 7px 14px;
-	margin-top: 10px;
+	margin-top: 0px;
+	padding: 0px 14px;
 	max-width: 300px;
-	font-size: 1em;
+	font-size: 0.9em;
+	line-height: 1.2em;
 	pointer-events: all;
+	max-height: 0px;
+	transition: max-height 0.75s ease, padding 0.75s ease, margin-top 0.25s ease;
+	overflow: hidden;
+	box-shadow: 0px 5px 20px rgba(0,0,0,0.4);
+
+	h5 {
+	  opacity: 0;
+	  transition: opacity 0.5s ease;
+	}
+
+	&.show {
+	  max-height: 300px;
+	  padding: 7px 14px;
+	  margin-top: 10px;
+
+	  h5 {
+		opacity: 1;
+	  }
+	}
 
 	&.bg-red {
-	  background-color: #92000e;
+	  background-color: #b0000f;
+	  border-color: #c4000f;
 	}
 
 	& > .buttons {

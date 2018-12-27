@@ -26,7 +26,7 @@ export default function (options) {
   }
 
   if (title !== null) {
-    const titleDom = document.createElement('h4');
+    const titleDom = document.createElement('h5');
     titleDom.innerText = title;
     alert.appendChild(titleDom);
   }
@@ -55,6 +55,17 @@ export default function (options) {
   container.appendChild(alert);
 
   setTimeout(() => {
-    alert.remove();
+    requestAnimationFrame(() => {
+      alert.classList.add('show');
+    });
+  }, 100);
+
+  setTimeout(() => {
+    requestAnimationFrame(() => {
+      alert.classList.remove('show');
+      setTimeout(() => {
+        alert.remove();
+      }, 750);
+    });
   }, timeout);
 }

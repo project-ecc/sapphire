@@ -32,7 +32,6 @@ class Index extends Component {
   }
 
   openContact(contact) {
-    console.log('CLICKED CONTACT', contact);
     this.setState({
       viewingContact: contact
     });
@@ -81,7 +80,7 @@ class Index extends Component {
               { friend.ansrecord !== null ? (
                 <div>
                   <img src={ansAddressImage} style={{ padding: '0 5px 3px 0' }} />
-                  renderHTML(`${friend.ansrecord.name}<span className="Receive__ans-code">#${friend.ansrecord.code} </span> `)
+                  { renderHTML(`${friend.ansrecord.name}<span className="Receive__ans-code">#${friend.ansrecord.code} </span> `) }
                 </div>
               ) : (
                 <div>
