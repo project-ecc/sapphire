@@ -8,10 +8,10 @@ import Header from './../Others/Header';
 
 import AddressBook from './partials/AddressBook';
 import * as actions from '../../actions';
-import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
 
 import Toast from '../../globals/Toast/Toast';
 
+const { clipboard } = require('electron');
 const Tools = require('../../utils/tools');
 
 class Index extends Component {
@@ -97,7 +97,7 @@ class Index extends Component {
     this.setState({
       address: sendTo
     });
-
+    clipboard.writeText(sendTo);
     Toast({
       message: this.props.lang.addressCopiedBelow
     });
