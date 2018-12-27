@@ -41,6 +41,9 @@ class Index extends Component {
   async deleteAddress(friend) {
     await deleteContact(friend);
     event.emit('reloadContacts');
+    this.setState({
+      viewingContact: null
+    })
   }
 
   render() {
