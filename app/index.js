@@ -24,17 +24,5 @@ render(
 );
 
 if (module.hot) {
-  module.hot.accept('./App', () => {
-    const NextRoot = require('./App'); // eslint-disable-line global-require
-    render(
-      <AppContainer>
-        <Provider store={store}>
-          <Router>
-            <NextRoot store={store} history={history} />
-          </Router>
-        </Provider>
-      </AppContainer>,
-      document.getElementById('root')
-    );
-  });
+ module.hot.accept();
 }

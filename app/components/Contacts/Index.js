@@ -68,14 +68,14 @@ class Index extends Component {
           <ContactModal ref={(e) => { this.modal = e; }} />
         </div>
 
-        { friend && (
-          <RightSidebar id="contactRightSidebar">
-            <div className="d-flex">
-              <Button color="link" onClick={() => this.openContact(null)}>
-                Close
-                <CloseCircleOutlineIcon className="ml-2" />
-              </Button>
-            </div>
+        <RightSidebar id="contactRightSidebar" className={friend === null ? 'hide' : ''}>
+          <div className="d-flex">
+            <Button color="link" onClick={() => this.openContact(null)}>
+              Close
+              <CloseCircleOutlineIcon className="ml-2" />
+            </Button>
+          </div>
+          { friend && (
             <div className="p-3">
               { friend.ansrecord !== null ? (
                 <div>
@@ -108,8 +108,8 @@ class Index extends Component {
                 </Button>
               </div>
             </div>
-          </RightSidebar>
-        )}
+          )}
+        </RightSidebar>
       </div>
     );
   }

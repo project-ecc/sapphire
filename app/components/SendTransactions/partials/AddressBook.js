@@ -82,27 +82,21 @@ class AddressBook extends Component {
 
     return (
       <Table responsive hover borderless className="tableCustom">
-        <thead>
-          <tr>
-            <th style={{ width: '50px' }} />
-            <th>Name</th>
-            <th>Address</th>
-          </tr>
-        </thead>
         <tbody>
           { this.props.friends.length > 0 ?
             this.props.friends.map((friend, index) => {
               const selected = this.props.selected === friend.id;
               return (
                 <tr key={index} className={`${selected ? 'selected' : ''} cursor-pointer`} onClick={() => clickContact(friend)}>
-                  <td>
+                  <td style={{width: 50}}>
                     {friend.ansrecord != null ? <img src={ansAddresImage} style={{ padding: '0 5px 3px 0' }} /> : null}
                   </td>
                   <td>
                     {friend.ansrecord != null ? renderHTML(`${friend.ansrecord.name}<span className="Receive__ans-code">#${friend.ansrecord.code} </span> `) : friend.name}
-                  </td>
-                  <td className="transactionInfoTitle">
-                    {friend.address !== null ? friend.address.address : 'Unknown Address'}
+                    <br/>
+                    <small className="transactionInfoTitle">
+                      {friend.address !== null ? friend.address.address : 'Unknown Address'}
+                    </small>
                   </td>
                 </tr>
               );
