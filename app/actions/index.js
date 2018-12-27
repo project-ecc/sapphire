@@ -102,7 +102,7 @@ import {
   SELECTED_CURRENCY,
   DONATION_GOALS,
   DAEMON_ERROR_POPUP,
-  DAEMON_ERROR, WALLET_INFO, WALLET_INFO_SEC, CHAIN_INFO, ECC_POST, NEWS_NOTIFICATION
+  DAEMON_ERROR, WALLET_INFO, WALLET_INFO_SEC, CHAIN_INFO, ECC_POST, NEWS_NOTIFICATION, COIN_MARKET_CAP
 } from "./types";
 import {validateChecksum} from "../utils/downloader";
 
@@ -828,6 +828,13 @@ export const setEccPosts = (val) => {
 export const setNewsNotification = (val) => {
   return {
     type: NEWS_NOTIFICATION,
+    payload: val
+  };
+}
+
+export const setCoinMarketCapStats = (val) => {
+  return {
+    type: COIN_MARKET_CAP,
     payload: val
   };
 }

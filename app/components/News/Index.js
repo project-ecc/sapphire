@@ -89,6 +89,7 @@ class Index extends Component {
     const lastUpdated = Tools.calculateTimeSince(this.props.lang, new Date(), iTime);
     const spinClass = this.state.isLoading ? 'fa-spin' : '';
     console.log(this.props.eccPosts);
+    console.log(this.props.cmcStats);
     return (
       <div className="d-flex w-100 h-100">
         <div className="padding-titlebar wrapper flex-auto">

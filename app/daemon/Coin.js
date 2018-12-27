@@ -16,6 +16,7 @@ import * as tools from '../utils/tools';
 import hash from '../router/hash';
 import ConnectorNews from './News';
 import {
+  COIN_MARKET_CAP,
   INDEXING_TRANSACTIONS,
   LOADING,
   PENDING_TRANSACTION,
@@ -40,7 +41,6 @@ class Coin extends Component {
     this.blockCycle = this.blockCycle.bind(this);
     this.transactionCycle = this.transactionCycle.bind(this);
     this.addressCycle = this.addressCycle.bind(this);
-    this.marketCapCycle = this.marketCapCycle.bind(this);
     this.transactionCycle = this.transactionCycle.bind(this);
     this.addressCycle = this.addressCycle.bind(this);
 
@@ -113,11 +113,6 @@ class Coin extends Component {
       }
     });
 
-    ipcRenderer.on('selected-currency', async (event, arg) => {
-      console.log('in here ', arg);
-      await this.getCoinMarketCapStats(arg);
-      ipcRenderer.send('refresh-complete');
-    });
     this.listenForDownloadEvents();
     event.on('runMainCycle', () => {
       console.log('run main cycle');
@@ -191,8 +186,7 @@ class Coin extends Component {
   startCycles() {
     // we can starting syncing the block data with redux now
     this.setState({
-      walletRunningInterval: setInterval(async () => { await this.walletCycle(); }, this.state.interval),
-      coinMarketCapInterval: setInterval(async () => { await this.marketCapCycle(); }, this.state.interval)
+      walletRunningInterval: setInterval(async () => { await this.walletCycle(); }, this.state.interval)
     });
   }
 
@@ -604,13 +598,6 @@ class Coin extends Component {
       });
   }
 
-
-  /**
-   * This cycle should pull down the market cap information and tell the user if the price has changed since last pulled
-   */
-  marketCapCycle() {
-
-  }
 
   render() {
     return null;

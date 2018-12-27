@@ -7,6 +7,7 @@ import * as actions from '../actions/index';
 
 import ConnectorNews from './News';
 import ConnectorCoin from './Coin';
+import ConnectorMarket from './Market';
 import Tools from '../utils/tools';
 
 const arch = require('arch');
@@ -254,6 +255,7 @@ class Connector extends Component {
       <div>
         <ConnectorCoin />
         <ConnectorNews />
+        <ConnectorMarket />
       </div>
     );
   }
