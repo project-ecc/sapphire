@@ -87,6 +87,8 @@ class News extends Component {
             },
             lastUpdated: moment().unix()
           });
+
+          self.props.setSelectedCurrency(currency);
           resolve(true);
         } else {
           resolve(undefined);
