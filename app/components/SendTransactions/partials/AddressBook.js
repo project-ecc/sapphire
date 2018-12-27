@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { TweenMax } from 'gsap';
 import { connect } from 'react-redux';
 import renderHTML from 'react-render-html';
+import { Table } from 'reactstrap';
 import * as actions from '../../../actions/index';
 
-import $ from 'jquery';
 import { getContacts, deleteContact } from '../../../Managers/SQLManager';
 
 const ansAddresImage = require('../../../../resources/images/ans_address.png');
@@ -12,6 +12,7 @@ const Tools = require('../../../utils/tools');
 const { clipboard } = require('electron');
 
 const moment = require('moment');
+const event = require('./../../../utils/eventhandler');
 
 moment.locale('en');
 
@@ -20,19 +21,13 @@ class AddressBook extends Component {
     super(props);
     this._handleInput = this._handleInput.bind(this);
     this.rowClicked = this.rowClicked.bind(this);
-    this.updateTable = this.updateTable.bind(this);
-    this.getHeaderText = this.getHeaderText.bind(this);
-    this.handleMouseEnter = this.handleMouseEnter.bind(this);
-    this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.loadContacts = this.loadContacts.bind(this);
   }
 
   componentDidMount() {
     this.loadContacts();
 
-    $(window).on('resize', () => {
-      this.updateTable(this.props.friends);
-    });
+    event.on('reloadContacts', this.loadContacts);
   }
 
   getAddressDiplay(address) {
@@ -46,26 +41,11 @@ class AddressBook extends Component {
     return null;
   }
 
-  updateTable(friendList) {
-    $('#rows').css('height', $('#tableAddresses').height() - 128);
-    const numberOfChildren = friendList.length;
-    const totalSize = numberOfChildren * 40; // 40px height of each row
-    const sizeOfContainer = $('#tableAddresses').height() - 128;
-    if (sizeOfContainer < totalSize) {
-     // $('#rows').css("overflow-y", "scroll");
-      $('.headerAddresses').css('left', '-3px');
-    } else {
-     // $(rows).css("overflow-y", "scroll");
-      $('.headerAddresses').css('left', '0px');
-    }
-  }
-
   componentDidUpdate() {
-    this.updateTable(this.props.friends);
   }
 
   componentWillUnmount() {
-    $(window).off('resize');
+    event.removeListener('reloadContacts', this.loadContacts);
   }
 
   _handleInput(event) {
@@ -77,20 +57,8 @@ class AddressBook extends Component {
 
 
   rowClicked = (friend, index) => (e) => {
-    if (!this.props.sendPanel) {
-      const friendBottom = $(`#friend_bottom_${index}`);
-      if (friendBottom.attr('sd') === 'false' || friendBottom.attr('sd') === undefined) {
-        $(friendBottom).slideDown();
-        $(friendBottom).attr('sd', 'true');
-      } else {
-        friendBottom.slideUp();
-        friendBottom.attr('sd', 'false');
-      }
-    }
-
-    if (!this.props.sendPanel) return;
     clipboard.writeText(friend.address.address);
-    $('#message').text(this.props.lang.addressCopiedBelow);
+    // $('#message').text(this.props.lang.addressCopiedBelow);
     TweenMax.fromTo('#message', 0.2, { autoAlpha: 0, scale: 0.5 }, { autoAlpha: 1, scale: 1 });
     TweenMax.to('#message', 0.2, { autoAlpha: 0, scale: 0.5, delay: 3 });
     TweenMax.set('#addressSend', { autoAlpha: 0 });
@@ -104,94 +72,50 @@ class AddressBook extends Component {
   async loadContacts() {
     const friendList = await getContacts();
     this.props.setContacts(friendList);
-
-    this.updateTable(friendList);
   }
 
-  getHeaderText() {
-    if (this.props.sendPanel) {
-      return (
-        <p className="headerDescription">{ this.props.lang.selectAContactToSend1 } <span className="ecc">ecc</span> { this.props.lang.selectAContactToSend2 }</p>
-      );
-    }
-
-    return null;
-  }
-  handleMouseEnter(friend) {
-    if (this.props.sendPanel) return;
-    this.props.setHoveredAddress(friend);
-  }
-
-  handleMouseLeave() {
-    if (this.props.sendPanel) return;
-    this.props.setHoveredAddress(undefined);
-  }
-
-  async deleteAddress(friend) {
-    const contactDeleted = await deleteContact(friend);
-    await this.loadContacts();
-  }
-
-  editContact(friend) {}
+  // Temporary function in case prop doesn't contain a clicker
+  clickContact() {}
 
   render() {
-    const rowClassName = 'row normalWeight tableRowCustom';
+    const clickContact = this.props.onContactClick || this.clickContact;
 
     return (
-      <div className="tableCustom" id="tableAddresses" style={{ height: this.props.sendPanel ? '55%' : '60%' }}>
-        <div className={this.props.sendPanel ? 'tableHeaderNormal tableHeaderBig' : 'tableHeaderNormal'}>
-          <p className={this.props.sendPanel ? 'tableHeaderTitle' : 'tableHeaderTitle tableHeaderTitleSmall'}>{ this.props.lang.contacts }</p>
-          {this.getHeaderText()}
-        </div>
-        <div className="tableContainer">
-          <div className="row rowDynamic">
-            <div className="col-sm-4 headerAddresses tableColumContactFix tableRowHeader">{ this.props.lang.name }</div>
-            <div id="addressHeader" className="col-sm-7 headerAddresses tableRowHeader">{ this.props.lang.address }</div>
-            <div className="col-sm-1 headerAddresses" />
-          </div>
-          <div id="rows" style={{ width: '100%', padding: '0', overflowY: 'scroll' }}>
-            {this.props.friends.map((friend, index) => {
+      <Table responsive hover borderless className="tableCustom">
+        <thead>
+          <tr>
+            <th style={{ width: '50px' }} />
+            <th>Name</th>
+            <th>Address</th>
+          </tr>
+        </thead>
+        <tbody>
+          { this.props.friends.length > 0 ?
+            this.props.friends.map((friend, index) => {
+              const selected = this.props.selected === friend.id;
               return (
-                <div key={`friend_${index}`}>
-                  <div className={index % 2 !== 0 ? rowClassName : `${rowClassName} tableRowEven`} onClick={this.rowClicked(friend, index)} onMouseLeave={this.handleMouseLeave} onMouseEnter={this.handleMouseEnter.bind(this, friend)} style={{ cursor: this.props.sendPanel ? 'pointer' : 'default' }} >
-                    <div className={this.props.sendPanel ? 'col-sm-4 tableColumn tableColumContactFix' : 'col-sm-4 tableColumn tableColumContactFix selectableText'}>
-                      {friend.ansrecord != null ? <img src={ansAddresImage} style={{ padding: '0 5px 3px 0' }} /> : null}
-                      {friend.ansrecord != null ? renderHTML(`${friend.ansrecord.name}<span className="Receive__ans-code">#${friend.ansrecord.code} </span> `) : friend.name}
-                    </div>
-                    <div className={this.props.sendPanel ? 'col-sm-7 tableColumn' : 'col-sm-7 tableColumn selectableText'}>
-                      {friend.address !== null ? friend.address.address : 'Unknown Address'}
-                    </div>
-
-                  </div>
-                  <div
-                    id={`friend_bottom_${index}`}
-                    onClick={this.rowClickedFixMisSlideUp}
-                    className="row extraInfoTransaction"
-                    style={{ paddingLeft: '10%', width: '100%', paddingTop: '6px', paddingBottom: '6px', cursor: 'default', zIndex: '2', display: 'none', justifyContent: 'flex-start' }}
-                  >
-
-                    <div style={{ padding: '0 25px' }}>
-                      <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px', paddingLeft: '0' }}><span className="desc2 small-header">Friend since</span></p>
-                      <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">{moment(friend.createdAt).format('dddd, MMMM Do YYYY')}</span></p>
-                    </div>
-                    <div style={{ padding: '0 25px' }}>
-                      <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">Sent</span></p>
-                      <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">115.00923 ECC</span></p>
-                    </div>
-                    <div style={{ padding: '0 25px' }}>
-                      <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">Received</span></p>
-                      <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">500.355 ECC</span></p>
-                    </div>
-                    <div className="col-sm-1 tableColumn" style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', padding: '0 20px', justifyContent: 'flex-end' }}>
-                      <span className="icon-action" style={{ float: 'right', fontSize: '18px' /* ,color:"#8e8e8e" */}} onClick={this.deleteAddress.bind(this, friend)} ><i className="fa fa-remove" /> </span>
-                    </div>
-                  </div>
-                </div>
+                <tr key={index} className={`${selected ? 'selected' : ''} cursor-pointer`} onClick={() => clickContact(friend)}>
+                  <td>
+                    {friend.ansrecord != null ? <img src={ansAddresImage} style={{ padding: '0 5px 3px 0' }} /> : null}
+                  </td>
+                  <td>
+                    {friend.ansrecord != null ? renderHTML(`${friend.ansrecord.name}<span className="Receive__ans-code">#${friend.ansrecord.code} </span> `) : friend.name}
+                  </td>
+                  <td className="transactionInfoTitle">
+                    {friend.address !== null ? friend.address.address : 'Unknown Address'}
+                  </td>
+                </tr>
               );
-            })}
-          </div>
-        </div>
-      </div>
+            })
+          : (
+            <tr>
+              <td className="text-center" colspan="3">
+                No contacts to display.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
     );
   }
 }
@@ -199,7 +123,6 @@ class AddressBook extends Component {
 const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
-    hoveredAddress: state.application.hoveredAddress,
     friends: state.application.friends
   };
 };

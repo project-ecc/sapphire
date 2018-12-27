@@ -135,6 +135,7 @@ class Index extends Component {
               />
             </div>
           </div>
+        <p className="headerDescription">{ this.props.lang.selectAContactToSend1 } <span className="ecc">ecc</span> { this.props.lang.selectAContactToSend2 }</p>
         <AddressBook sendPanel={true}/>
       </div>
     );

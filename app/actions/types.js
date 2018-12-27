@@ -35,7 +35,6 @@ export const SELECTED_ADDRESS = "selected_address";
 export const CREATING_ADDRESS = "creating_address";
 export const UPGRADING_ADDRESS = "upgrading_address";
 export const NEW_ADDRESS_ACCOUNT = "new_address_account";
-export const HOVERED_ADDRESS = "hovered_address";
 export const CONTACTS = "contacts";
 export const TRAY = "tray";
 export const START_AT_LOGIN = "start_at_login";

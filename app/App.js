@@ -13,6 +13,7 @@ import hash from './router/hash';
 import Loading from './Layouts/Loading';
 import DaemonConnector from './daemon/Connector';
 
+const event = require('utils/eventhandler');
 const lang = traduction();
 const Tools = require('./utils/tools');
 const settings = require('electron').remote.require('electron-settings');
@@ -33,6 +34,10 @@ class App extends Component {
       }
       this.props.setClosingApplication();
     });
+  }
+
+  componentWillUnmount() {
+    event.emit('stop');
   }
 
   /**

@@ -36,7 +36,6 @@ import {
   SELECTED_ADDRESS,
   CREATING_ADDRESS,
   NEW_ADDRESS_ACCOUNT,
-  HOVERED_ADDRESS,
   USER_ADDRESSES,
   CONTACTS,
   TRAY,
@@ -335,13 +334,6 @@ export const setCreatingAddress = (val) =>{
 export const setUpgradingAddress = (val) =>{
 	return{
 		type: UPGRADING_ADDRESS,
-		payload: val
-	}
-};
-
-export const setHoveredAddress = (val) => {
-	return{
-		type: HOVERED_ADDRESS,
 		payload: val
 	}
 };
