@@ -19,7 +19,7 @@ class Donate extends Component {
           <SettingsIcon />
           { this.props.lang.donate  }
         </Header>
-        <Body>
+        <Body noPadding>
           <Donations />
         </Body>
       </div>

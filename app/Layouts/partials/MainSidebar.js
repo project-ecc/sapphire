@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
-import { BellOutlineIcon, CurrencyUsdIcon, SendIcon, FormatListBulletedIcon, ContactsIcon, ForumIcon, SettingsOutlineIcon, NewspaperIcon } from 'mdi-react';
+import { BellOutlineIcon, CurrencyUsdIcon, SendIcon, FormatListBulletedIcon, ContactsIcon, ForumIcon, SettingsOutlineIcon, NewspaperIcon, GiftIcon } from 'mdi-react';
 
 import * as actions from '../../actions/index';
 
@@ -70,14 +70,24 @@ class MainSidebar extends Component {
               </ul>
             </div>
           </div>
-          <div className="pl-4 pr-4 pt-5 pb-5 text-center" data-tip="View network stats">
-            <NavLink to="/coin/network" className="text-white-50">
+          <div className="pt-5 pb-2">
+            <NavLink to="/coin/network" className="text-white-50 text-center pl-4 pr-4" data-tip="View network stats">
               <p style={{ fontSize: '13px' }}>{`${this.props.lang.syncing} ${progressBar}%`}</p>
               <div className="progress">
                 <div className="bar" style={{ width: `${progressBar}%` }} />
               </div>
               <p style={{ fontSize: '13px' }}>{`${this.props.lang.activeConnections}: ${this.props.connections}`}</p>
             </NavLink>
+            <div className="menu mt-0">
+              <ul>
+                <li>
+                  <NavLink to="/settings/donate" className="bg-dark">
+                    <GiftIcon size={20} />
+                    { this.props.lang.donate }
+                  </NavLink>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
         <ReactTooltip />

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { GiftIcon } from 'mdi-react';
 
 import hash from './../../../router/hash';
 import * as actions from '../../../actions/index';
@@ -46,8 +47,12 @@ class DonateModal extends Component {
           <p className="popupTitle" style={{ fontWeight: 700, color: 'white', paddingTop: '0px', textTransform: 'uppercase' }}>{t.ticker}</p>
           <p className="selectableText" style={{ fontSize: '0.75em' }}>{t.address}</p>
           <p className="">{Tools.formatNumber(t.balance)}</p>
-          {t.ticker == 'ecc' && <Button color="warning mt-1" size="sm" onClick={this.handleECCDonation.bind(this, t)}>
-            <span className="fa fa-gift" /> Donate Now!</Button>}
+          {t.ticker == 'ecc' && (
+            <Button color="warning mt-1" size="sm" onClick={this.handleECCDonation.bind(this, t)}>
+              { this.props.lang.donateNow }
+              <GiftIcon className="ml-2" />
+            </Button>
+          )}
         </div>
       );
     });

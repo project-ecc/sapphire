@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import hash from '../router/hash';
 import * as tools from '../utils/tools';
-import { ECC_POST } from '../actions/types';
+import {DONATION_GOALS, ECC_POST} from '../actions/types';
 import {connect} from "react-redux";
 import * as actions from "../actions";
 
@@ -10,19 +11,24 @@ import $ from 'jquery';
 const event = require('../utils/eventhandler');
 const https = require('https');
 const FeedMe = require('feedme');
+const request = require('request');
 
 class News extends Component {
   constructor(props) {
     super(props);
 
     this.newsFeedCycle = this.newsFeedCycle.bind(this);
+    this.donationGoalsCycle = this.donationGoalsCycle.bind(this);
     this.startCycle = this.startCycle.bind(this);
     this.queueOrSendNotification = this.queueOrSendNotification.bind(this);
 
     this.state = {
       // Check for news every 2 hours (user can refresh manually too)
       eccNewsInterval: 7200000,
-      eccNewsTimer: null
+      eccNewsTimer: null,
+
+      goalInterval: 120000,
+      goalTimer: null
     };
 
     this.listenToEvents();
@@ -39,10 +45,16 @@ class News extends Component {
   async startCycle() {
     // Fetch the news first.. then start the interval for checking every x milliseconds
     await this.newsFeedCycle();
+    await this.donationGoalsCycle();
+
     this.setState({
       eccNewsTimer: setInterval(async () => {
         await this.newsFeedCycle();
-      }, this.state.eccNewsInterval)
+      }, this.state.eccNewsInterval),
+
+      goalTimer: setInterval(async () => {
+        await this.donationGoalsCycle();
+      }, this.state.goalInterval)
     });
   }
 
@@ -108,6 +120,30 @@ class News extends Component {
         }
       });
       res.pipe(parser);
+    });
+  }
+
+  donationGoalsCycle() {
+    return new Promise((resolve, reject) => {
+      const options = {
+        url: 'https://ecc.network/api/v1/donation_goals',
+      };
+
+      request(options, (error, response, body) => {
+        if (!error && response.statusCode == 200) {
+          const json = JSON.parse(body);
+          console.log(json);
+
+          this.props.setDonationGoals({
+            goals: json.goals,
+            lastUpdated: moment().unix()
+          });
+          resolve(true);
+        }
+        else {
+          reject();
+        }
+      });
     });
   }
 
