@@ -85,7 +85,6 @@ import {
   SET_DAEMON_VERSION,
   UPGRADING_ADDRESS,
   SET_TEMPORARY_BALANCE,
-  ACTION_POPUP_RESULT,
   IMPORT_WALLET_TEMPORARY,
   FILE_DOWNLOAD_STATUS,
   TELL_USER_UPDATE_FAILED,
@@ -673,13 +672,6 @@ export const setTemporaryBalance = (val) => {
   return {
     type: SET_TEMPORARY_BALANCE,
     payload: val
-  };
-}
-
-export const setActionPopupResult = (val) => {
-  return {
-    type: ACTION_POPUP_RESULT,
-    payload: {flag: val.flag, message: val.message, successful: val.successful}
   };
 }
 

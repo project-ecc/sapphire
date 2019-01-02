@@ -11,6 +11,7 @@ const app = remote.app;
 
 import Header from './../../Others/Header';
 import Body from './../../Others/Body';
+import ActionModal from './../../Others/ActionModal';
 
 class Advanced extends Component {
   constructor(props) {
@@ -42,7 +43,7 @@ class Advanced extends Component {
     const data = await this.props.wallet.clearBanned();
     if (data === null) {
       console.log('banlist cleared');
-      this.props.setActionPopupResult({ flag: true, successful: true, message: '<p style="margin-bottom: 20px" className="backupFailed">Banlist Cleared!</p>' });
+      this.clearedBanlist.getWrappedInstance().toggle();
     }
   }
 
@@ -79,6 +80,8 @@ class Advanced extends Component {
             </div>
           </div>
         </Body>
+
+        <ActionModal ref={(e) => { this.clearedBanlist = e; }} body={this.props.lang.banlistCleared} />
       </div>
     );
   }

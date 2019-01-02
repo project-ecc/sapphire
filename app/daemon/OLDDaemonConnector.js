@@ -31,7 +31,6 @@ import {
   TOLD_USER_UPDATE_FAILED,
   RESET_STAKING_EARNINGS,
   TRANSACTIONS_TYPE,
-  ACTION_POPUP_RESULT,
   ADD_TO_DEBUG_LOG,
   LOADER_MESSAGE_FROM_LOG,DONATION_GOALS,
   DAEMON_ERROR_POPUP, DAEMON_ERROR
@@ -417,7 +416,6 @@ class OLDDaemonConnector {
   }
 
   forceUpdateDaemon() {
-    this.store.dispatch({ type: ACTION_POPUP_RESULT, payload: { flag: false, successful: false, message: '' } });
     event.emit('updateDaemon', false);
   }
 

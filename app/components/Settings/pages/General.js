@@ -9,13 +9,15 @@ import { version } from './../../../../package.json';
 import SettingsToggle from './../SettingsToggle';
 import Header from './../../Others/Header';
 import Body from './../../Others/Body';
+import ActionModal from './../../Others/ActionModal';
 
 const settings = require('electron').remote.require('electron-settings');
 const remote = require('electron').remote;
+
 const app = remote.app;
 
 const guiVersion = version;
-var jsonFormat = require('json-format');
+const jsonFormat = require('json-format');
 
 class General extends Component {
   constructor(props) {
@@ -28,8 +30,8 @@ class General extends Component {
     this.handleHelpFile = this.handleHelpFile.bind(this);
   }
 
-  handleUpdateApplication(){
-    if(!this.props.updateAvailable){
+  handleUpdateApplication() {
+    if (!this.props.updateAvailable) {
       return;
     }
     this.props.setUpdateApplication(true);
@@ -90,26 +92,26 @@ class General extends Component {
 
       fs.writeFile(`${app.getPath('desktop')}/Sapphire-info.json`, jsonFormat(toPrint), (err) => {
         if (!err) {
-          this.props.setActionPopupResult({ flag: true, successful: true, message: `<p className="exportedSapphireInfo">${this.props.lang.exportedSapphireInfo}.</p>` });
+          this.exportSuccessModal.getWrappedInstance().toggle();
         } else {
-          this.props.setActionPopupResult({ flag: true, successful: true, message: `<p className="exportedSapphireInfo">${this.props.lang.failedSapphireInfo}.</p>` });
+          this.exportErrorModal.getWrappedInstance().toggle();
         }
       });
       console.log(toPrint);
     }).catch((err) => {
       console.log('exception handleHelpFile: ', err);
-      this.props.setActionPopupResult({ flag: true, successful: false, message: `<p className="exportedSapphireInfo">${this.props.lang.failedSapphireInfo}.</p>` });
+      this.exportErrorModal.getWrappedInstance().toggle();
     });
   }
 
-  getTypeOfQuery(id){
-    switch(id){
-      case 0: return "getinfo";
-      case 1: return "getwalletinfo";
-      case 2: return "getblockchaininfo";
-      case 3: return "getnetworkinfo";
-      case 4: return "getpeerinfo";
-      case 5: return "listtransactions (25)"
+  getTypeOfQuery(id) {
+    switch (id) {
+      case 0: return 'getinfo';
+      case 1: return 'getwalletinfo';
+      case 2: return 'getblockchaininfo';
+      case 3: return 'getnetworkinfo';
+      case 4: return 'getpeerinfo';
+      case 5: return 'listtransactions (25)';
     }
   }
 
@@ -163,6 +165,14 @@ class General extends Component {
             </div>
           </div>
         </Body>
+
+        <ActionModal ref={(e) => { this.exportErrorModal = e; }} body={this.props.lang.failedSapphireInfo} />
+        <ActionModal
+          ref={(e) => { this.exportSuccessModal = e; }}
+          body={(
+            <span>{ this.props.lang.exportedSapphireInfo1 } <b>Sapphire-info.json</b> { this.props.lang.exportedSapphireInfo2 }</span>
+          )}
+        />
       </div>
     );
   }

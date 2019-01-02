@@ -110,8 +110,6 @@ class OLDApp extends Component<Props> {
     } else if (this.props.closingApplication) {
       component = <ClosingApplication />;
       classVal = 'closingApplication';
-    } else if (this.props.actionPopupResult) {
-      component = <ActionResultPopup message={this.props.actionPopupMessage} successful={this.props.actionPopupStatus} />;
     }
 
     return (
@@ -296,9 +294,6 @@ const mapStateToProps = state => {
     theme: state.application.theme,
     shouldImportWallet: state.startup.importWallet,
     importingWalletWithSetupDone: state.startup.importingWalletWithSetupDone,
-    actionPopupResult: state.application.actionPopupResult,
-    actionPopupMessage: state.application.actionPopupMessage,
-    actionPopupStatus: state.application.actionPopupStatus,
     daemonErrorPopup: state.application.daemonErrorPopup
   };
 };

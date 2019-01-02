@@ -15,6 +15,7 @@ import DaemonConnector from './daemon/Connector';
 import Toast from 'globals/Toast/Toast';
 
 const event = require('utils/eventhandler');
+
 const lang = traduction();
 const Tools = require('./utils/tools');
 const settings = require('electron').remote.require('electron-settings');
@@ -101,10 +102,9 @@ class App extends Component {
     return (
       <div>
         <DaemonConnector />
+        {/*{this.props.loading && (<Loading />)}*/}
         {this.props.setupStep !== 'complete' && (<Redirect to="/setup" />)}
         <TopBar />
-        {/* {!this.props.importingWalletWithSetupDone && (this.props.loader || this.props.updatingApplication) && (<Loading />)} */}
-        {/* <Loading /> */}
         <div>{renderRoutes(routes)}</div>
       </div>
     );
@@ -132,9 +132,6 @@ const mapStateToProps = state => {
     theme: state.application.theme,
     shouldImportWallet: state.startup.importWallet,
     importingWalletWithSetupDone: state.startup.importingWalletWithSetupDone,
-    actionPopupResult: state.application.actionPopupResult,
-    actionPopupMessage: state.application.actionPopupMessage,
-    actionPopupStatus: state.application.actionPopupStatus,
     daemonErrorPopup: state.application.daemonErrorPopup
   };
 };

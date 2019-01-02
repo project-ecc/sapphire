@@ -20,7 +20,7 @@ import {
 } from '../actions/types';
 
 
-const INITIAL_STATE = {lang: lang, loader: true, initialSetup: false, partialInitialSetup: false, setupDone: false, importWallet: false, loading: false, loadingMessage: '', updatingApp: false, guiUpdate: false, daemonUpdate:false, unencryptedWallet: false, setupDoneInternal: false, toldUserAboutUpdate: false, importingWalletWithSetupDone: false, importWalletTemp: false};
+const INITIAL_STATE = {lang: lang, loader: true, initialSetup: false, partialInitialSetup: false, setupDone: false, importWallet: false, loading: true, loadingMessage: '', updatingApp: false, guiUpdate: false, daemonUpdate:false, unencryptedWallet: false, setupDoneInternal: false, toldUserAboutUpdate: false, importingWalletWithSetupDone: false, importWalletTemp: false};
 
 export default(state = INITIAL_STATE, action) => {
 	if(action.type == SET_LANGUAGE){

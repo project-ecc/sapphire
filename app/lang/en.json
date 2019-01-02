@@ -43,7 +43,8 @@
     "exportedWallet": "Exported your wallet to",
     "exportFailed": "Something went wrong backing up your wallet.",
     "exportFailedTryAdmin": "Something went wrong backing up your wallet. Cannot write to the selected folder. Please try to run Sapphire as an Administrator.",
-    "exportedSapphireInfo": "Exported <b>Sapphire-info.json</b> to your desktop",
+    "exportedSapphireInfo1": "Exported",
+    "exportedSapphireInfo2": "to your desktop",
     "failedSapphireInfo": "Something went wrong exporting the file",
     "sapphireInfoDesc": "Click on Generate to make a log file that can help Sapphire developers track down the issues you are experiencing. Use only if requested to",
     "dismiss": "Dismiss",
@@ -337,5 +338,8 @@
     "donateNow": "Donate Now",
     "back": "Back",
     "marketStats": "Market Stats",
-    "learnMore": "Learn More"
+    "learnMore": "Learn More",
+    "cancel": "Cancel",
+    "message": "Message",
+    "banlistCleared": "Banlist cleared successfully"
 }

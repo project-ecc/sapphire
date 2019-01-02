@@ -99,7 +99,6 @@ export const HOVERED_SETTINGS_SOCIAL_ICON = "hovered_settings_social_icon";
 export const SET_DAEMON_VERSION = "SET_DAEMON_VERSION";
 export const SET_TEMPORARY_BALANCE = "set_temporary_balace";
 export const WALLET_INFO_SEC = "wallet_info_sec";
-export const ACTION_POPUP_RESULT = "action_popup_result";
 export const IMPORT_WALLET_TEMPORARY = "import_wallet_temporary";
 export const FILE_DOWNLOAD_STATUS = "file_download_status";
 export const TOLD_USER_UPDATE_FAILED = 'tell_user_update_failed';
