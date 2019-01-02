@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getSapphireDirectory } from '../../../utils/platform.service';
 import * as actions from '../../../actions';
-import Console from './../Console';
+import Console from '../partials/Console';
 import fs from 'fs';
 import { SettingsIcon } from 'mdi-react';
 
@@ -19,6 +19,7 @@ class Advanced extends Component {
 
     this.deleteAndReIndex = this.deleteAndReIndex.bind(this);
     this.clearBanlist = this.clearBanlist.bind(this);
+    this.openConsole = this.openConsole.bind(this);
   }
 
   async deleteAndReIndex() {
@@ -47,6 +48,10 @@ class Advanced extends Component {
     }
   }
 
+  openConsole () {
+    this.consoleModal.getWrappedInstance().toggle();
+  }
+
   render() {
     return (
       <div className="padding-titlebar">
@@ -73,15 +78,18 @@ class Advanced extends Component {
               <p onClick={this.clearBanlist.bind(this)} style={{ cursor: 'pointer' }}>Clear Banlist</p>
             </div>
           </div>
-          <div className="row settingsToggle text-left">
-            <div className="col-xs-12" style={{ width: '100%' }}>
-              <p>Console</p>
-              <Console />
+          <div className="row settingsToggle">
+            <div className="col-sm-6 text-left removePadding">
+              <p>{ this.props.lang.console }</p>
+            </div>
+            <div className="col-sm-6 text-right removePadding">
+              <p onClick={this.openConsole} style={{ cursor: 'pointer' }}>{ this.props.lang.accessConsole }</p>
             </div>
           </div>
         </Body>
 
         <ActionModal ref={(e) => { this.clearedBanlist = e; }} body={this.props.lang.banlistCleared} />
+        <Console ref={(e) => { this.consoleModal = e; }} />
       </div>
     );
   }

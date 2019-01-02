@@ -341,5 +341,7 @@
     "learnMore": "Learn More",
     "cancel": "Cancel",
     "message": "Message",
-    "banlistCleared": "Banlist cleared successfully"
+    "banlistCleared": "Banlist cleared successfully",
+    "console": "Console",
+    "accessConsole": "Access Console"
 }
