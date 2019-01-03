@@ -9,7 +9,7 @@ import Body from './../Others/Body';
 import Header from './../Others/Header';
 import RightSidebar from './../Others/RightSidebar';
 import * as actions from '../../actions';
-import AddressBook from '../SendTransactions/partials/AddressBook';
+import AddressBook from '../Send/partials/AddressBook';
 import ContactModal from './partials/ContactModal';
 import { deleteContact } from '../../Managers/SQLManager';
 

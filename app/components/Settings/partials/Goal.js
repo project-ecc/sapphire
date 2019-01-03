@@ -74,7 +74,7 @@ class Goal extends Component {
         </div>
       </div>
     );
-  }
+  }w
 }
 
 const mapStateToProps = state => {

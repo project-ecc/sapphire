@@ -39,11 +39,11 @@ export default function (options) {
 
   if (buttons.length > 0) {
     const buttonContainerDom = document.createElement('div');
-    buttonContainerDom.className = 'buttons';
+    buttonContainerDom.className = 'buttons mt-2';
 
     for (const ele in buttons) {
       const buttonDom = document.createElement('a');
-      buttonDom.className = 'btn btn-light btn-sm';
+      buttonDom.className = 'btn btn-dark btn-outline btn-sm';
       buttonDom.innerText = buttons[ele].title;
       buttonDom.onclick = buttons[ele].method;
       buttonContainerDom.appendChild(buttonDom);

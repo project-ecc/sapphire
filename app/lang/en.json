@@ -125,16 +125,14 @@
 
     "closingSapphireWait": "Closing Sapphire, please wait",
 
-    "ansCreateConfirm1": "Click confirm to create an",
-    "ansCreateConfirm2": "ANS address",
-    "ansCreateConfirm3": "named",
-    "normalCreateConfirm1": "Click confirm to create a",
+    "normalCreateConfirm1": "Click 'create' to create a",
     "normalCreateConfirm2": "normal address",
     "normalCreateConfirm3": "under an unnamed account",
     "normalCreateConfirm4": "under an account named",
     "normalCreateConfirm5": "Note that this address is not recognized by name in the network. Create an",
     "normalCreateConfirm6": "for that functionality",
     "confirmNewAddress": "Confirm New Address",
+    "newAddress": "New Address",
     "ansCreateAddress" : "Create ANS Address",
 
     "normalAddress": "Normal Address",
@@ -168,6 +166,7 @@
     "usernamInvalid": "Username contains invalid characters. You can use all alphanumeric characters, except for zero, capital i, capital o, and lowercase L",
     "notEnoughBalance": "Balance too low",
     "ansNameOrAddress": "ANS Name / Address",
+    "ansName": "ANS Name",
     "amount": "Amount",
     "enterValidAmount": "Please enter a valid amount to send.",
     "enterValidAddress": "Please enter a valid ANS name / address",
@@ -219,7 +218,7 @@
     "language": "Language",
     "theme": "Theme",
     "settings": "Settings",
-    "appSettings": "APP SETTINGS",
+    "appSettings": "App Settings",
     "general": "General",
     "wallet": "Wallet",
     "walletImportInfo": "Use this function to import a wallet.dat file, note: using this function will delete your current contacts",
@@ -343,5 +342,8 @@
     "message": "Message",
     "banlistCleared": "Banlist cleared successfully",
     "console": "Console",
-    "accessConsole": "Access Console"
+    "accessConsole": "Access Console",
+    "create": "Create",
+    "ansSuccess1": "Successfully created. We will notify you when your ANS address is ready.",
+    "ansSuccess2": "It can take anywhere from 5 minutes to 10 minutes."
 }

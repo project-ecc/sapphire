@@ -1,9 +1,9 @@
 // Pages
 import MessagingPage from './../components/Messaging/Index';
 import HomePage from './../components/Dashboard/Index';
-import ReceivePage from './../components/ReceiveTransaction/Index';
+import ReceivePage from '../components/Addresses/Index';
 import TransactionPage from './../components/Transactions/Index';
-import SendPage from './../components/SendTransactions/Index';
+import SendPage from '../components/Send/Index';
 import ContactsPage from './../components/Contacts/Index';
 import NetworkStatsPage from './../components/NetworkStats/Index';
 import NewsPage from '../components/News/Index';
