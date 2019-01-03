@@ -11,7 +11,7 @@ import $ from 'jquery';
 
 const tools = require('../../utils/tools');
 
-class UpdateApplication extends React.Component {
+class UpdateApplication extends Component {
  constructor() {
     super();
     this.handleConfirm = this.handleConfirm.bind(this);

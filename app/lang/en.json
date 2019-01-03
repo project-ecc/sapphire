@@ -252,7 +252,7 @@
 
     "unlockWallet": "Unlock Your Wallet",
     "unlockWalletExplanation1": "This process unlocks your wallet for staking.",
-    "unlockWalletExplanation2": "You will still be required to enter a password to send",
+    "unlockWalletExplanation2": "You will still be required to enter your password to send",
 
     "welcome": "Welcome to Sapphire!",
     "welcomeExplanation1": "It's time to set up your new ECC wallet. Let's get started.",

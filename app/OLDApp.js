@@ -1,32 +1,24 @@
 import React, { Component } from 'react';
 import { ipcRenderer } from 'electron';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
-import Sidebar from './Layouts/partials/MainSidebar';
 import InitialSetup from '../components/Setup/OldIndex';
 import Settings from '../components/Settings/Settings';
 import Loading from './Layouts/Loading';
 import * as actions from './actions/index';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
-import ImportPrivateKey from './components/InitialSetupPage/ImportPrivateKey';
 import UpdateApplication from './components/Settings/UpdateApplication';
 import SendConfirmation from './components/SendTransactions/partials/SendConfirmation';
 import ConfirmNewAddress from './components/ReceiveTransaction/ConfirmNewAddress';
 import ClosingApplication from './components/Others/ClosingApplication';
 import TopBar from './Layouts/partials/TopBar';
 import NotificationPopup from './components/NotificationPopup';
-import UnlockWallet from './components/UnlockWallet';
 import GenericPanel from './GenericPanel';
 import TransitionComponent from './components/Others/TransitionComponent';
-import ActionResultPopup from './components/Settings/ActionResultPopup';
 import DaemonErrorModal from './components/Others/DaemonErrorModal';
-
-import $ from 'jquery';
 
 const settings = require('electron').remote.require('electron-settings');
 const Tools = require('./utils/tools');
-const notifier = require('node-notifier');
 
 class OLDApp extends Component<Props> {
   constructor(props) {
@@ -103,8 +95,6 @@ class OLDApp extends Component<Props> {
       component = <SendConfirmation />;
     } else if (this.props.creatingAddress) {
       component = <ConfirmNewAddress />;
-    } else if (this.props.unlocking) {
-      component = <UnlockWallet />;
     } else if (this.props.daemonErrorPopup) {
       component = <DaemonErrorModal />;
     } else if (this.props.closingApplication) {
@@ -284,7 +274,6 @@ const mapStateToProps = state => {
     news: state.application.selectedPanel === 'news',
     updateApplication: state.application.updateApplication,
     updatingApplication: state.startup.updatingApp,
-    unlocking: state.application.unlocking,
     sending: state.application.sendingEcc,
     creatingAddress: state.application.creatingAddress,
     unencryptedWallet: state.startup.unencryptedWallet,

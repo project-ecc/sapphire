@@ -18,7 +18,6 @@ export const PAYMENT_CHAIN_SYNC = "payment_chain_sync";
 export const ENCRYPTING = "encrypting";
 export const BLOCK_INDEX_PAYMENT = "block_index_payment";
 export const STAKING = "staking";
-export const UNLOCKING = "unlocking";
 export const PASSWORD_UNLOCK = "password_unlock";
 export const WALLET_INFO = "wallet_info";
 export const CHAIN_INFO = "chain_info";

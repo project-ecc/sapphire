@@ -11,7 +11,7 @@ const remote = require('electron').remote;
 
 const dialog = remote.require('electron').dialog;
 
-class DaemonErrorModal extends React.Component {
+class DaemonErrorModal extends Component {
   constructor() {
     super();
     this.handleCancel = this.handleCancel.bind(this);

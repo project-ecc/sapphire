@@ -1,20 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ToggleButton from 'react-toggle';
-import TransitionGroup from 'react-transition-group/TransitionGroup';
-import glob from 'glob';
 
-import { exchanges } from '../../utils/exchange';
-import { traduction } from '../../lang/lang';
 import * as actions from '../../actions/index';
 import Header from '../Others/Header';
 import Body from '../Others/Body';
+import UnlockModal from './partials/UnlockModal';
 
 const Tools = require('../../utils/tools');
-const event = require('../../utils/eventhandler');
-const homedir = require('os').homedir();
-
-const lang = traduction();
 
 class Index extends Component {
   constructor(props) {
@@ -33,7 +26,7 @@ class Index extends Component {
 
   processStakingClicked() {
     if (!this.props.staking) {
-      this.props.setUnlocking(true);
+      this.unlockModal.getWrappedInstance().toggle();
     } else {
       this.lockWallet().then(() => {
         this.props.wallet.setGenerate().then(() => {
@@ -244,6 +237,7 @@ class Index extends Component {
             </div>
           </div>
         </Body>
+        <UnlockModal ref={(e) => { this.unlockModal = e; }} />
       </div>
     );
   }

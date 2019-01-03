@@ -8,7 +8,7 @@ import * as actions from '../../actions';
 
 const settings = require('electron').remote.require('electron-settings');
 
-class LanguageSelector extends React.Component {
+class LanguageSelector extends Component {
   constructor() {
     super();
     this.onItemClick = this.onItemClick.bind(this);

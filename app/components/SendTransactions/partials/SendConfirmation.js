@@ -12,7 +12,7 @@ import Toast from "../../../globals/Toast/Toast";
 
 const Tools = require('../../../utils/tools');
 
-class SendConfirmation extends React.Component {
+class SendConfirmation extends Component {
  constructor() {
     super();
     this.handleConfirm = this.handleConfirm.bind(this);

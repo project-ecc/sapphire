@@ -4,7 +4,7 @@ import { traduction, language } from '../../lang/lang';
 import * as actions from '../../actions';
 import {TweenMax} from "gsap";
 
-class SetupDone extends React.Component {
+class SetupDone extends Component {
  constructor() {
     super();
   }

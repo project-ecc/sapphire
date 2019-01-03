@@ -6,7 +6,7 @@ import { TweenMax } from 'gsap';
 import { ipcRenderer } from 'electron';
 import { Button } from 'reactstrap';
 
-class ImportWallet extends React.Component {
+class ImportWallet extends Component {
   constructor() {
     super();
     this.openFile = this.openFile.bind(this);

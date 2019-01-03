@@ -5,7 +5,7 @@ import * as actions from '../../actions';
 import {TweenMax} from "gsap";
 import ThemeSelector from '../Others/ThemeSelector';
 
-class ThemeSelectorStep extends React.Component {
+class ThemeSelectorStep extends Component {
  constructor() {
     super();
   }

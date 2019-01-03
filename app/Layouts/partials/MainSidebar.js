@@ -99,7 +99,6 @@ class MainSidebar extends Component {
 const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
-    unlocking: state.application.unlocking,
     sendingEcc: state.application.sendingEcc,
     creatingAddress: state.application.creatingAddress,
     connections: state.chains.connections,

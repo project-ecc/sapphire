@@ -20,7 +20,7 @@ const os = require('os');
 * File storage running out of space (can be deleted, let user decide when to warn again or something)
 */
 
-class NotificationPopup extends React.Component {
+class NotificationPopup extends Component {
   constructor() {
     super();
     this.getNotificationsBody = this.getNotificationsBody.bind(this);
@@ -59,10 +59,6 @@ class NotificationPopup extends React.Component {
   componentWillUnmount() {
     $(window).off();
     $('#notificationContainer').off();
-  }
-
-  handleCancel() {
-    this.props.setUnlocking(false);
   }
 
   getNotificationsBody() {

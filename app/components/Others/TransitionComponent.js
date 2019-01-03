@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {TweenMax} from "gsap";
 
-class TransitionComponent extends React.Component {
+class TransitionComponent extends Component {
  constructor() {
     super();
   }

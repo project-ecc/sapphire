@@ -122,7 +122,6 @@ const mapStateToProps = state => {
     checkingDaemonStatusPrivateKey: state.application.checkingDaemonStatusPrivateKey,
     updateApplication: state.application.updateApplication,
     updatingApplication: state.startup.updatingApp,
-    unlocking: state.application.unlocking,
     sending: state.application.sendingEcc,
     creatingAddress: state.application.creatingAddress,
     unencryptedWallet: state.startup.unencryptedWallet,

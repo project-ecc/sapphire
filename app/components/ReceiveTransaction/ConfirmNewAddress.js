@@ -19,7 +19,7 @@ const Tools = require('../../utils/tools');
 // This is temporary until ANS is enabled
 const ansEnabled = false;
 
-class ConfirmNewAddress extends React.Component {
+class ConfirmNewAddress extends Component {
  constructor() {
     super();
     this.handleConfirm = this.handleConfirm.bind(this);

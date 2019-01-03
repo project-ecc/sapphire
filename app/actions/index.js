@@ -232,13 +232,6 @@ export const setStaking = (val) => {
 	}
 };
 
-export const setUnlocking = (val) => {
-	return{
-		type: UNLOCKING,
-		payload: val
-	}
-};
-
 export const setPassword = (val) => {
 	return{
 		type: PASSWORD_UNLOCK,
