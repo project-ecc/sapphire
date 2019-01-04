@@ -310,6 +310,32 @@ input::-webkit-inner-spin-button {
   opacity: 0;
 }
 
+/* Gradients */
+.bg-gradient-blue {
+  background: linear-gradient(90deg, #1d6de8, #0e33ce);
+}
+
+.bg-gradient-light-blue {
+  background: linear-gradient(90deg, #008fe6, #0082e6);
+}
+
+.bg-gradient-purple {
+  background: linear-gradient(90deg, #9d0093, #840084);
+}
+
+.bg-gradient-deep-purple {
+  background: linear-gradient(90deg, #690069, #5c005c);
+}
+
+.bg-gradient-orange {
+  background: linear-gradient(90deg, #ff904b, #ff702a);
+}
+
+.bg-gradient-green {
+  background: linear-gradient(90deg, #298052, #2b6e37);
+}
+
+
 /* Style fixes */
 .btn.disabled, .btn:disabled {
 	opacity: 0.2;

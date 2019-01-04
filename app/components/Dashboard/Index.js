@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ToggleButton from 'react-toggle';
+import { Card, Button, CardImg, CardTitle, CardText, CardColumns, CardSubtitle, CardBody } from 'reactstrap';
 
 import * as actions from '../../actions/index';
 import Header from '../Others/Header';
@@ -163,7 +164,79 @@ class Index extends Component {
           { this.props.lang.overview }
         </Header>
         <Body noPadding>
-          <div className="homeSection text-center" id="balanceInfo">
+          <div>
+            <Card className="bg-gradient-blue">
+              <CardBody>
+                <CardTitle>lorem ipsum!</CardTitle>
+                <CardText>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus consectetur doloremque doloribus, eius eos error, fuga itaque nisi odit officiis placeat possimus quo, totam! Iure nam officiis quam ut. Quisquam.
+                </CardText>
+              </CardBody>
+            </Card>
+          </div>
+
+          <CardColumns className="mt-5">
+            <Card>
+              <CardImg top width="100%" src="https://placeholdit.imgix.net/~text?txtsize=33&txt=256%C3%97180&w=256&h=180" alt="Card image cap" />
+              <CardBody>
+                <CardTitle>Card title</CardTitle>
+                <CardSubtitle>Card subtitle</CardSubtitle>
+                <CardText>This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</CardText>
+                <Button>Button</Button>
+              </CardBody>
+            </Card>
+            <Card>
+              <CardImg top width="100%" src="https://placeholdit.imgix.net/~text?txtsize=33&txt=256%C3%97180&w=256&h=180" alt="Card image cap" />
+            </Card>
+            <Card>
+              <CardBody>
+                <CardTitle>Card title</CardTitle>
+                <CardSubtitle>Card subtitle</CardSubtitle>
+                <CardText>This card has supporting text below as a natural lead-in to additional content.</CardText>
+                <Button>Button</Button>
+              </CardBody>
+            </Card>
+            <Card body inverse style={{ backgroundColor: '#333', borderColor: '#333' }}>
+              <CardTitle>Special Title Treatment</CardTitle>
+              <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
+              <Button>Button</Button>
+            </Card>
+            <Card>
+              <CardImg top width="100%" src="https://placeholdit.imgix.net/~text?txtsize=33&txt=256%C3%97180&w=256&h=180" alt="Card image cap" />
+              <CardBody>
+                <CardTitle>Card title</CardTitle>
+                <CardSubtitle>Card subtitle</CardSubtitle>
+                <CardText>This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</CardText>
+                <Button>Button</Button>
+              </CardBody>
+            </Card>
+            <Card body inverse className="bg-gradient-light-blue">
+              <CardTitle>Special Title Treatment</CardTitle>
+              <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
+            </Card>
+            <Card body inverse className="bg-gradient-blue">
+              <CardTitle>Special Title Treatment</CardTitle>
+              <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
+            </Card>
+            <Card body inverse className="bg-gradient-purple">
+              <CardTitle>Special Title Treatment</CardTitle>
+              <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
+            </Card>
+            <Card body inverse className="bg-gradient-deep-purple">
+              <CardTitle>Special Title Treatment</CardTitle>
+              <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
+            </Card>
+            <Card body inverse className="bg-gradient-orange">
+              <CardTitle>Special Title Treatment</CardTitle>
+              <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
+            </Card>
+            <Card body inverse className="bg-gradient-green">
+              <CardTitle>Special Title Treatment</CardTitle>
+              <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
+            </Card>
+          </CardColumns>
+
+          <div className="mt-5 homeSection text-center" id="balanceInfo">
             <div className="row" style={{ margin: '0px 0px' }}>
               <div className="col-sm-4" style={{ padding: '0 0' }}>
                 <p className="homePanelTitleTwo stakingBalance">{ this.props.lang.staking }</p>
