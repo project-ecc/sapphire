@@ -541,6 +541,11 @@ function copyFile(source, target, cb) {
 }
 
 tail.on("line", (data) => {
-  console.log('in here')
-  sendMessage('message-from-log', data);
+  console.log(data)
+  const castedArg = String(data);
+  console.log(castedArg);
+  if (castedArg != null && (castedArg.indexOf('Updated Tip') === -1)) {
+    sendMessage('message-from-log', data);
+  }
+
 });
