@@ -31,68 +31,74 @@
      };
    }
 
-   unlockWallet(flag, time, callback) {
-     const self = this;
-     const batch = [];
-     const obj = {
-       method: 'walletpassphrase', parameters: [this.state.privatePassword, time, flag]
-     };
-     batch.push(obj);
+   unlockWallet(flag, time) {
+     return new Promise((resolve, reject) => {
+       const self = this;
+       const batch = [];
+       const obj = {
+         method: 'walletpassphrase', parameters: [this.state.privatePassword, time, flag]
+       };
+       batch.push(obj);
 
-     this.props.wallet.command(batch).then((data) => {
-       console.log('data: ', data);
-       data = data[0];
-       if (data !== null && data.code === -14) {
-         self.showWrongPassword();
-       } else if (data !== null && data.code === 'ECONNREFUSED') {
-         console.log("daemong ain't working mate :(");
-       } else if (data === null) {
-         callback();
-       } else {
-         setTimeout(() => {
-           self.importPrivateKey();
-         }, 500);
-       }
-     }).catch((err) => {
-       console.log('err unlocking wallet: ', err);
+       this.props.wallet.command(batch).then((data) => {
+         console.log('data: ', data);
+         data = data[0];
+         if (data !== null && data.code === -14 ) {
+           self.showWrongPassword();
+         } else if(data != null && data.code === -15){
+           self.showWalletNoPassword();
+         } else if (data !== null && data.code === 'ECONNREFUSED') {
+           console.log("daemong ain't working mate :(");
+         } else if (data === null) {
+           resolve()
+         } else {
+           console.log("in here")
+           resolve(data)
+           // setTimeout(() => {
+           //   self.importPrivateKey();
+           // }, 500);
+         }
+       }).catch((err) => {
+         console.log('err unlocking wallet: ', err);
+         reject(err)
+       });
      });
    }
 
-   importPrivateKey() {
+   async importPrivateKey() {
      if (this.state.privatePassword.length < 1) {
        this.showWrongPassword();
        return;
      }
-     this.unlockWallet(false, 5, () => {
-       this.importingAddress();
-       const method = 'importprivkey';
-       const parameters = [this.state.privateKey];
-       this.props.wallet.command([{ method, parameters }]).then((result) => {
-         console.log(result);
-         if (result[0] === null) {
-           console.log('imported address');
-           this.addressImported();
-         }
-        // loading wallet
-         else if (result[0].code === '-28') {
-           setTimeout(() => {
-             this.importPrivateKey();
-           }, 500);
-         } else {
-           console.log('failed to import address');
-           this.failedToImportAddress();
-         }
-       }).catch((result) => {
-         console.log('ERROR IMPORTING ADDRESS: ', result);
-         if (result.code === 'ECONNREFUSED') {
-           this.failedToImportAddress();
-         }
-        // imported but rescaning
-         else if (result.code === 'ESOCKETTIMEDOUT') {
-           this.checkDaemonStatus();
-           TweenMax.to('#importingPrivKey p', 0.5, { autoAlpha: 1 });
-         }
-       });
+     await this.unlockWallet(false, 5);
+     this.importingAddress();
+     const method = 'importprivkey';
+     const parameters = [this.state.privateKey];
+     this.props.wallet.command([{ method, parameters }]).then((result) => {
+       console.log(result);
+       if (result[0] === null) {
+         console.log('imported address');
+         this.addressImported();
+       }
+      // loading wallet
+       else if (result[0].code === '-28') {
+         setTimeout(() => {
+           this.importPrivateKey();
+         }, 500);
+       } else {
+         console.log('failed to import address');
+         this.failedToImportAddress();
+       }
+     }).catch((result) => {
+       console.log('ERROR IMPORTING ADDRESS: ', result);
+       if (result.code === 'ECONNREFUSED') {
+         this.failedToImportAddress();
+       }
+      // imported but rescaning
+       else if (result.code === 'ESOCKETTIMEDOUT') {
+         this.checkDaemonStatus();
+         TweenMax.to('#importingPrivKey p', 0.5, { autoAlpha: 1 });
+       }
      });
    }
 
@@ -140,6 +146,14 @@
    }
 
    showWrongPassword() {
+     Toast({
+       title: this.props.lang.error,
+       message: this.props.lang.wrongPassword,
+       color: 'red'
+     });
+   }
+
+   showWalletNoPassword(){
      Toast({
        title: this.props.lang.error,
        message: this.props.lang.wrongPassword,

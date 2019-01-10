@@ -68,7 +68,7 @@ class ContactModal extends Component {
         results: [],
         ans: false
       });
-      console.log('Error searching for ANS Name / Address');
+      console.log('Error searching for ANS Name / Address', err);
     }
   }
 
