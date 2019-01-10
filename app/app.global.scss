@@ -312,27 +312,66 @@ input::-webkit-inner-spin-button {
 
 /* Gradients */
 .bg-gradient-blue {
-  background: linear-gradient(90deg, #1d6de8, #0e33ce);
+  background: linear-gradient(75deg, #0488E9, #0BA5EE);
 }
 
 .bg-gradient-light-blue {
-  background: linear-gradient(90deg, #008fe6, #0082e6);
+  background: linear-gradient(75deg, #08C9EA, #16CCC8);
 }
 
 .bg-gradient-purple {
-  background: linear-gradient(90deg, #9d0093, #840084);
+  background: linear-gradient(75deg, #8e069d, #5E0BED);
 }
 
 .bg-gradient-deep-purple {
-  background: linear-gradient(90deg, #690069, #5c005c);
+  background: linear-gradient(75deg, #570069, #5E00ED);
 }
 
 .bg-gradient-orange {
-  background: linear-gradient(90deg, #ff904b, #ff702a);
+  background: linear-gradient(75deg, #FD6F55, #FDA73A);
 }
 
 .bg-gradient-green {
-  background: linear-gradient(90deg, #298052, #2b6e37);
+  background: linear-gradient(75deg, #9ECD5D, #6AB422);
+}
+
+.bg-gradient-red {
+  background: linear-gradient(75deg, #FF5055, #FF776D);
+}
+
+/* Standout cards */
+.standout {
+  &.bg-gradient-blue {
+	box-shadow: 0px 25px 40px -15px transparentize(#0488E9, 0.5);
+  }
+
+  &.bg-gradient-light-blue {
+	box-shadow: 0px 25px 40px -15px transparentize(#08C9EA, 0.5);
+  }
+
+  &.bg-gradient-purple {
+	box-shadow: 0px 25px 40px -15px transparentize(#5E0BED, 0.5);
+  }
+
+  &.bg-gradient-deep-purple {
+	box-shadow: 0px 25px 40px -15px transparentize(#5E00ED, 0.5);
+  }
+
+  &.bg-gradient-orange {
+	box-shadow: 0px 25px 40px -15px transparentize(#FDA73A, 0.5);
+  }
+
+  &.bg-gradient-green {
+	box-shadow: 0px 25px 40px -15px transparentize(#6AB422, 0.5);
+  }
+
+  &.bg-gradient-red {
+	box-shadow: 0px 25px 40px -15px transparentize(#FF5055, 0.5);
+  }
+}
+
+.card-columns .standout {
+  margin-bottom: 1.25rem;
 }
 
 

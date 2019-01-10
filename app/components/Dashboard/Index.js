@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ToggleButton from 'react-toggle';
 import { Card, Button, CardImg, CardTitle, CardText, CardColumns, CardSubtitle, CardBody } from 'reactstrap';
+import { WalletIcon } from 'mdi-react';
 
 import * as actions from '../../actions/index';
 import Header from '../Others/Header';
@@ -164,83 +165,12 @@ class Index extends Component {
           { this.props.lang.overview }
         </Header>
         <Body noPadding>
-          <div>
-            <Card className="bg-gradient-blue">
-              <CardBody>
-                <CardTitle>lorem ipsum!</CardTitle>
-                <CardText>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus consectetur doloremque doloribus, eius eos error, fuga itaque nisi odit officiis placeat possimus quo, totam! Iure nam officiis quam ut. Quisquam.
-                </CardText>
-              </CardBody>
-            </Card>
-          </div>
-
-          <CardColumns className="mt-5">
-            <Card>
-              <CardImg top width="100%" src="https://placeholdit.imgix.net/~text?txtsize=33&txt=256%C3%97180&w=256&h=180" alt="Card image cap" />
-              <CardBody>
-                <CardTitle>Card title</CardTitle>
-                <CardSubtitle>Card subtitle</CardSubtitle>
-                <CardText>This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</CardText>
-                <Button>Button</Button>
-              </CardBody>
-            </Card>
-            <Card>
-              <CardImg top width="100%" src="https://placeholdit.imgix.net/~text?txtsize=33&txt=256%C3%97180&w=256&h=180" alt="Card image cap" />
-            </Card>
-            <Card>
-              <CardBody>
-                <CardTitle>Card title</CardTitle>
-                <CardSubtitle>Card subtitle</CardSubtitle>
-                <CardText>This card has supporting text below as a natural lead-in to additional content.</CardText>
-                <Button>Button</Button>
-              </CardBody>
-            </Card>
-            <Card body inverse style={{ backgroundColor: '#333', borderColor: '#333' }}>
-              <CardTitle>Special Title Treatment</CardTitle>
-              <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-              <Button>Button</Button>
-            </Card>
-            <Card>
-              <CardImg top width="100%" src="https://placeholdit.imgix.net/~text?txtsize=33&txt=256%C3%97180&w=256&h=180" alt="Card image cap" />
-              <CardBody>
-                <CardTitle>Card title</CardTitle>
-                <CardSubtitle>Card subtitle</CardSubtitle>
-                <CardText>This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</CardText>
-                <Button>Button</Button>
-              </CardBody>
-            </Card>
-            <Card body inverse className="bg-gradient-light-blue">
-              <CardTitle>Special Title Treatment</CardTitle>
-              <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-            </Card>
-            <Card body inverse className="bg-gradient-blue">
-              <CardTitle>Special Title Treatment</CardTitle>
-              <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-            </Card>
-            <Card body inverse className="bg-gradient-purple">
-              <CardTitle>Special Title Treatment</CardTitle>
-              <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-            </Card>
-            <Card body inverse className="bg-gradient-deep-purple">
-              <CardTitle>Special Title Treatment</CardTitle>
-              <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-            </Card>
-            <Card body inverse className="bg-gradient-orange">
-              <CardTitle>Special Title Treatment</CardTitle>
-              <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-            </Card>
-            <Card body inverse className="bg-gradient-green">
-              <CardTitle>Special Title Treatment</CardTitle>
-              <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-            </Card>
-          </CardColumns>
-
-          <div className="mt-5 homeSection text-center" id="balanceInfo">
-            <div className="row" style={{ margin: '0px 0px' }}>
+          <Card body inverse className="homeSection text-center bg-gradient-blue standout" id="balanceInfo">
+            <CardTitle id="balance" style={{ fontSize: '25px' }}>{ this.props.lang.balance }</CardTitle>
+            <div className="row">
               <div className="col-sm-4" style={{ padding: '0 0' }}>
-                <p className="homePanelTitleTwo stakingBalance">{ this.props.lang.staking }</p>
-                <p className="normalWeight">{this.props.stakingVal} <span className="ecc">ecc</span></p>
+                <CardTitle className="text-white-50 mb-0"><small>{ this.props.lang.staking }</small></CardTitle>
+                <p className="normalWeight">{this.props.stakingVal} <span className="ecc text-white">ecc</span></p>
                 <div style={{ width: '52px', margin: '0 auto', marginTop: '10px' }}>
                   <ToggleButton
                     checked={this.props.staking}
@@ -251,17 +181,17 @@ class Index extends Component {
                 </div>
               </div>
               <div className="col-sm-4" style={{ padding: '0 0' }}>
-                <p className="normalWeight homePanelTitleOne" id="balance" style={{ fontSize: '20px' }}>{ this.props.lang.balance }</p>
-                <p className="normalWeight" style={{ fontSize: '20px' }}>{this.props.balance} <span className="ecc">ecc</span></p>
-                <p className="totalBalance homePanelTitleTwo">{ this.props.lang.total }</p>
-                <p className="normalWeight">{this.props.total} <span className="ecc">ecc</span></p>
+                <p className="normalWeight" style={{ fontSize: '20px' }}>{this.props.balance} <span className="ecc text-white">ecc</span></p>
+                <CardTitle className="text-white-50 mt-4 mb-0"><small>{ this.props.lang.total }</small></CardTitle>
+                <p className="normalWeight">{this.props.total} <span className="ecc text-white">ecc</span></p>
               </div>
               <div className="col-sm-4" style={{ padding: '0 0' }}>
-                <p className="unconfirmedBalance homePanelTitleTwo">{ this.props.lang.unconfirmed }</p>
-                <p className="normalWeight">{this.props.unconfirmed} <span className="ecc">ecc</span></p>
+                <CardTitle className="text-white-50 mb-0"><small>{ this.props.lang.unconfirmed }</small></CardTitle>
+                <p className="normalWeight">{this.props.unconfirmed} <span className="ecc text-white">ecc</span></p>
               </div>
             </div>
-          </div>
+          </Card>
+
           <div className="homeSection" id="earnings">
             <div className="row">
               <div className="col-sm-4 align-self-left" style={{ padding: '0 0' }}>

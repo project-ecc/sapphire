@@ -18,12 +18,22 @@ export default function (options) {
   const message = options.message || null;
   const title = options.title || null;
   const buttons = options.buttons || [];
-  const color = options.color || null;
+  const color = options.color || 'gradient-green';
+
+  let gradColor = color;
+  switch (color) {
+    default:
+    case 'green': gradColor = 'gradient-green'; break
+    case 'red': gradColor = 'gradient-red'; break
+    case 'blue': gradColor = 'gradient-blue'; break
+    case 'light-blue': gradColor = 'gradient-light-blue'; break
+    case 'purple': gradColor = 'gradient-purple'; break
+    case 'deep-purple': gradColor = 'gradient-deep-purple'; break
+    case 'orange': gradColor = 'gradient-orange'; break
+  }
 
   const alert = document.createElement('div');
-  if (color !== null) {
-    alert.className = `bg-${color}`;
-  }
+  alert.className = `bg-${gradColor} standout`;
 
   if (title !== null) {
     const titleDom = document.createElement('h5');

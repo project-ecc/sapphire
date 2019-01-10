@@ -345,5 +345,6 @@
     "accessConsole": "Access Console",
     "create": "Create",
     "ansSuccess1": "Successfully created. We will notify you when your ANS address is ready.",
-    "ansSuccess2": "It can take anywhere from 5 minutes to 10 minutes."
+    "ansSuccess2": "It can take anywhere from 5 minutes to 10 minutes.",
+    "totalValue": "Total Value"
 }

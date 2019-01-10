@@ -1,15 +1,5 @@
 @import "./themes.scss";
 
-.homePanelTitleTwo{
-  @include themify($themes) {
-    color: themed('homePanelTitleTwo');
-  }
-}
-
-#balance{
-  margin-top: 10px;
-}
-
 .homeSection{
   @include themify($themes) {
     background-color: themed('homePanelsBackgroundColor');
@@ -73,18 +63,6 @@
     transparent;
   transform: rotate(135deg);
   top: 1px;
-}
-
-.unconfirmedBalance{
-  padding-top: 58px;
-}
-
-.stakingBalance{
-  padding-top: 40px;
-}
-
-.totalBalance{
-  padding-top: 25px;
 }
 
 .react-toggle {
