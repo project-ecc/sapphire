@@ -165,6 +165,14 @@ class Index extends Component {
           { this.props.lang.overview }
         </Header>
         <Body noPadding>
+          <Card body inverse className="bg-gradient-red standout mb-5">
+            <CardTitle>Wallet Unencrypted</CardTitle>
+            <CardText>
+              Your wallet is currently unencrypted. Most functionality of Sapphire will be locked until you encrypt your wallet.
+            </CardText>
+            <Button color="danger" className="mt-2">Fix</Button>
+          </Card>
+
           <Card body inverse className="homeSection text-center bg-gradient-blue standout" id="balanceInfo">
             <CardTitle id="balance" style={{ fontSize: '25px' }}>{ this.props.lang.balance }</CardTitle>
             <div className="row">
@@ -261,6 +269,7 @@ const mapStateToProps = state => {
     total: Tools.formatNumber(parseFloat(balance) + parseFloat(staking) + parseFloat(newMint) + parseFloat(unconfirmedBalance) + parseFloat(immatureBalance)),
     unconfirmed: Tools.formatNumber(unconfirmedBalance),
     stakingVal: Tools.formatNumber(staking),
+    unencryptedWallet: state.startup.unencryptedWallet,
 
     // Earnings stuff
     allEarningsSelected: state.earningsExpenses.allEarningsSelected,

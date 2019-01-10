@@ -145,7 +145,7 @@ app.on('ready', async () => {
   app.setAppUserModelId("com.github.csmartinsfct.sapphire");
 
   mainWindow = new BrowserWindow({
-    show: false,
+    show: true,
     width: 1367,
     height: 768,
     minWidth: 1024,
@@ -153,7 +153,10 @@ app.on('ready', async () => {
     title: "Sapphire",
     backgroundColor: getBackgroundColor(),
     frame: false,
-    webPreferences: {backgroundThrottling: false}
+    webPreferences: {
+      backgroundThrottling: false,
+      experimentalFeatures: true
+    }
   });
 
   mainWindow.loadURL(`file://${__dirname}/version.html#v${app.getVersion()}`);
