@@ -17,8 +17,9 @@
 	display: flex;
 	-webkit-app-region: no-drag;
 	-webkit-user-select: none;
+	backdrop-filter: blur(20px);
 	@include themify($themes) {
-	  background-color: themed('bodyBackgroundColor');
+	  background-color: transparentize(themed('bodyBackgroundColor'), 0.4);
 	}
 
 	& > a {

@@ -1,5 +1,4 @@
 // Pages
-import MessagingPage from './../components/Messaging/Index';
 import HomePage from './../components/Dashboard/Index';
 import ReceivePage from '../components/Addresses/Index';
 import TransactionPage from './../components/Transactions/Index';
@@ -7,7 +6,6 @@ import SendPage from '../components/Send/Index';
 import ContactsPage from './../components/Contacts/Index';
 import NetworkStatsPage from './../components/NetworkStats/Index';
 import NewsPage from '../components/News/Index';
-import FileStoragePage from './../components/FileStorage/Index';
 
 // Settings
 import SettingsAdvanced from '../components/Settings/pages/Advanced';
@@ -136,14 +134,6 @@ export default [
           {
             path: '/coin/contacts',
             component: ContactsPage
-          },
-          {
-            path: '/coin/messages',
-            component: MessagingPage
-          },
-          {
-            path: '/coin/files',
-            component: FileStoragePage
           }
         ]
       },

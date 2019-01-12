@@ -1,6 +1,5 @@
 @import "~font-awesome/css/font-awesome.css";
 @import "~bootstrap/dist/css/bootstrap.css";
-@import "~twemoji-awesome/dist/twemoji-awesome.min.css";
 @import "./styles/Sidebar.scss";
 @import "./styles/Modal.scss";
 @import "./styles/Home.scss";
@@ -20,8 +19,6 @@
 @import "./styles/TopBar.scss";
 @import "./styles/Table.scss";
 @import "./styles/ExportPrivateKeys.scss";
-@import "./styles/Messaging.scss";
-@import "./styles/FileStorage.scss";
 @import "./styles/themes.scss";
 @import "./globals/Toast/Toast.scss";
 @import "./styles/Radio.scss";
@@ -56,6 +53,7 @@ body {
   cursor: default;
   font-family: Muli, sans-serif;
   font-weight: 600;
+  background-color: #000;
 }
 
 #root {
@@ -380,10 +378,8 @@ input::-webkit-inner-spin-button {
 	opacity: 0.2;
 }
 
-@import "./styles/Send.scss";
 @import "./styles/UnlockWallet.scss";
 @import "./styles/Receive.scss";
-@import "./styles/CreateAddressPopup.scss";
 
 
 /* Main page components */

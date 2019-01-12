@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
 import { renderRoutes } from 'react-router-config';
 import { Redirect } from 'react-router-dom';
+import * as actions from '../../actions';
 
 class Index extends Component {
   redirectIfIncomplete () {

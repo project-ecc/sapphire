@@ -42,7 +42,7 @@ class Index extends Component {
       )
     }
     else return(
-      <text style={{cursor: "pointer"}} onClick={this.processChainClick.bind(this, operation)} className="enableNetwork" fill="#b4b7c8" x="50%" y="50%" dy="-15" dx="-20" textAnchor="middle">{ this.props.lang.comingSoon }</text>
+      <text style={{cursor: "pointer"}} className="enableNetwork" fill="#b4b7c8" x="50%" y="50%" dy="-15" dx="-20" textAnchor="middle">{ this.props.lang.comingSoon }</text>
     )
   }
 
@@ -65,55 +65,18 @@ class Index extends Component {
     )
   }
 
-  processChainClick(operation){
-    if(operation === "messaging"){
-
-
-    }else if(operation === "fileStorage"){
-
-    }
-  }
-
   render() {
-    let messaging = require('../../../resources/images/messaging-green.png');
-    let fileStorage = require('../../../resources/images/file-storage-blue.png');
-    let connectionsOrange = require('../../../resources/images/connections-orange.png');
-
     return (
       <div className="padding-titlebar">
-        <Header titleClassName="d-flex justify-content-between">
-          <div>{ this.props.lang.networkStats }</div>
-          <div id="headerNetwork" className="d-flex justify-content-end">
-            <div>
-              <img className="networkStatsImage" style={{height: "30px",position: "relative", top: "-14px", left: "-15px"}} src={messaging}></img>
-              <div style={{display: "inline-block"}}>
-                <p className="networkStatsCounter" style={{fontSize: "24px", fontWeight: "200", display: "inline-block"}}>0</p>
-                <p style={{fontSize: "18px", fontWeight: "200", position: "relative", top:"-5px", left:"1px"}}>0GB</p>
-              </div>
-            </div>
-            <div className="pl-5">
-              <img className="networkStatsImage" style={{height: "30px",position: "relative", top: "-14px", left: "-15px"}} src={fileStorage}></img>
-              <div style={{display: "inline-block"}}>
-                <p className="networkStatsCounter" style={{fontSize: "24px", fontWeight: "200", display: "inline-block"}}>0</p>
-                <p style={{fontSize: "18px", fontWeight: "200", position: "relative", top:"-5px", left:"1px"}}>0GB</p>
-              </div>
-            </div>
-          </div>
+        <Header>
+          { this.props.lang.networkStats }
         </Header>
         <Body>
-          <div className="row">
-            {/*<div className="col-sm-4 text-center">*/}
-              {/*<p className="networkStatsChainTitle">{ this.props.lang.messagingChain }</p>*/}
-              {/*{this.getHtmlChainInfo(false, 0, 0, 0, 0, "rgb(41,213, 90)", this.props.messagingChain ? require('../../../resources/images/connections-green.png') : require('../../../resources/images/connections-default.png'), "messagingChainCircle", "messaging")}*/}
-            {/*</div>*/}
+          <div className="row justify-content-center">
             <div className="col-lg-6 col-xl-4 text-center">
               <p className="networkStatsChainTitle">{ this.props.lang.paymentChain }</p>
                 {this.getHtmlChainInfo(true, this.props.percentagePaymentChain, this.props.connectionsPayment, this.props.headersPaymentChain, this.props.blockPaymentChain, "rgb(213,149, 41)", Tools.getIconForTheme("connectionsPaymentChain", false), "paymentChainCircle")}
             </div>
-            {/*<div className="col-sm-4 text-center">*/}
-              {/*<p className="networkStatsChainTitle">{ this.props.lang.fileStorageChain }</p>*/}
-              {/*{this.getHtmlChainInfo(false, 0, 0, 0, 0, "rgb(32,114, 156)", this.props.fileStorage ? require('../../../resources/images/connections-blue.png') : require('../../../resources/images/connections-default.png'), "fileStorageChainCircle", "fileStorage")}*/}
-            {/*</div>*/}
           </div>
         </Body>
       </div>

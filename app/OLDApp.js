@@ -93,8 +93,6 @@ class OLDApp extends Component<Props> {
       component = <UpdateApplication />;
     } else if (this.props.sending) {
       component = <SendConfirmation />;
-    } else if (this.props.creatingAddress) {
-      component = <ConfirmNewAddress />;
     } else if (this.props.daemonErrorPopup) {
       component = <DaemonErrorModal />;
     } else if (this.props.closingApplication) {

@@ -514,15 +514,6 @@ class Coin extends Component {
       for (const [index, address] of addresses.entries()) {
         // handle the response
         const addressObj = await addAddress(address, true);
-        const ansRecord = await this.props.wallet.getANSRecord(address.address);
-
-        if(ansRecord.Name.length > 0){
-          console.log(ansRecord)
-          let dbAnsAddress = await addAnsRecord(addressObj, ansRecord)
-          if (dbAnsAddress[1] !== null && dbAnsAddress[1] === true) {
-            this.queueOrSendNotification(() => {}, `${this.props.lang.ansReady}.\n\n${this.translator.username}: ${ansRecord.Name}#${ansRecord.Code}`);
-          }
-        }
       }
 
       addresses = await getAllMyAddresses();

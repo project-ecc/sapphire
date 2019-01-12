@@ -21,7 +21,7 @@ class ContactModal extends Component {
       results: [],
       ans: false,
       newContact: {
-        ansOrName: '',
+        searchVal: '',
         name: null,
         code: null,
         address: null
@@ -55,7 +55,7 @@ class ContactModal extends Component {
     try {
       const response = await Tools.searchForUsernameOrAddress(
         this.props.wallet,
-        this.state.newContact.ansOrName
+        this.state.newContact.searchVal
       );
       const payload = {};
       this.setState({
@@ -84,7 +84,7 @@ class ContactModal extends Component {
     this.setState({
       newContact: {
         ...this.state.newContact,
-        ansOrName: val,
+        searchVal: val,
         address: null
       }
     });
@@ -149,7 +149,7 @@ class ContactModal extends Component {
     this.toggle(false);
     this.setState({
       newContact: {
-        ansOrName: '',
+        searchVal: '',
         name: null,
         code: null,
         address: null
@@ -160,8 +160,8 @@ class ContactModal extends Component {
   renderSearchBox() {
     return (
       <Input
-        placeholder={this.props.lang.ansNameOrAddress}
-        value={this.state.newContact.ansOrName}
+        placeholder={this.props.lang.address}
+        value={this.state.newContact.searchVal}
         handleChange={(val) => this.onSearchChanged(val)}
         type="text"
         autoFocus
@@ -174,7 +174,7 @@ class ContactModal extends Component {
   renderResults() {
     let title = <div>{ this.props.lang.noResults }</div>;
     if (this.state.ans && this.state.results.length > 0) {
-      title = <div>{ this.props.lang.ansRecords } ({ this.state.results.length }):</div>;
+      title = <div>{ this.props.lang.results } ({ this.state.results.length }):</div>;
     } else if (!this.state.ans && this.state.results.length > 0) {
       title = <div>{ this.props.lang.results }</div>;
     }

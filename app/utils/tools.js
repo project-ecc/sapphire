@@ -10,15 +10,6 @@ const fsPath = require('fs-path');
 const settings = require('electron-settings');
 
 module.exports = {
-
-  // MESSAGING PREVIEW
-
-  sendMessage(context, message, id, address, delay = 0, emoji = false) {
-    setTimeout(() => {
-      context.props.addNewMessage({ id, message: { body: message, mine: false, date: new Date(), emoji }, activeContactName: address });
-    }, delay);
-  },
-
   searchForUsernameOrAddress(wallet, addressOrUsername) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -140,41 +131,6 @@ module.exports = {
       time += `${minutes} ${lang.transactionsMinute}`;
     } else {
       time += `${minutes} ${lang.transactionsMinutes}`;
-    }
-    return time;
-  },
-
-  calculateTimeTo(lang, today, iTime) {
-    let delta = Math.abs(iTime.getTime() - today.getTime()) / 1000;
-    const days = Math.floor(delta / 86400);
-    delta -= days * 86400;
-    const hours = Math.floor(delta / 3600) % 24;
-    delta -= hours * 3600;
-    const minutes = Math.floor(delta / 60) % 60;
-
-
-    let time = `${lang.in} `;
-    if (settings.get('settings.lang') === 'fr') {
-      time = `${lang.translationExclusiveForFrench} `;
-    }
-    if (days > 0) {
-      time += `${days} `;
-      if (days === 1) {
-        time += lang.paymentsDay;
-      } else {
-        time += lang.paymentsDays;
-      }
-    } else if (hours > 0) {
-      time += `${hours} `;
-      if (hours === 1) {
-        time += lang.paymentsHour;
-      } else {
-        time += lang.paymentsHours;
-      }
-    } else if (minutes === 1) {
-      time += `${minutes} ${lang.paymentsMinute}`;
-    } else {
-      time += `${minutes} ${lang.paymentsMinutes}`;
     }
     return time;
   },
@@ -391,39 +347,6 @@ module.exports = {
     $(id).css('opacity', '1');
   },
 
-  animateMessagingFunctionIconsIn() {
-    TweenMax.set('#messagingOptions', { autoAlpha: 1 });
-    TweenMax.staggerFromTo('.messagingOption', 0.1, { y: -60, autoAlpha: 0 }, { y: 0, autoAlpha: 1 }, -0.05);
-  },
-
-  animateMessagingFunctionIconsOut() {
-    TweenMax.staggerFromTo('.messagingOption', 0.1, { y: 0, autoAlpha: 1 }, { y: -60, autoAlpha: 0 }, 0.05);
-    setTimeout(() => {
-      TweenMax.set('#messagingOptions', { autoAlpha: 0 });
-    }, 400);
-  },
-
-  animateMessagingSmallFunctionIconsIn() {
-    $('#messagingTopBar').css('height', '82px');
-    TweenMax.set('#messagingOptionsSmall', { autoAlpha: 1 });
-    TweenMax.staggerFromTo('.messagingOption', 0.1, { y: -60, autoAlpha: 0 }, { y: 0, autoAlpha: 1 }, -0.05);
-  },
-
-  animateMessagingSmallFunctionIconsOut() {
-    TweenMax.staggerFromTo('.messagingOption', 0.1, { y: 0, autoAlpha: 1 }, { y: -60, autoAlpha: 0 }, 0.05);
-    setTimeout(() => {
-      TweenMax.set('#messagingOptionsSmall', { autoAlpha: 0 });
-      $('#messagingTopBar').css('height', '');
-    }, 400);
-  },
-
-  highlightInput(element, duration) {
-    $(element).addClass('inputCustomHighlight');
-    setTimeout(() => {
-      $(element).removeClass('inputCustomHighlight');
-    }, duration);
-  },
-
   animateGeneralPanelIn(element, callback, f, scaleStart) {
     TweenMax.set(element, { willChange: 'transform' });
     requestAnimationFrame(() => {
@@ -467,14 +390,6 @@ module.exports = {
   animatePopupOut(element, callback) {
     TweenMax.fromTo(('.mancha'), 0.3, { autoAlpha: 1 }, { autoAlpha: 0, ease: Linear.easeNone });
     TweenMax.to(element, 0.3, { css: { top: '-50%', opacity: 0 }, ease: Linear.easeIn, onComplete: callback });
-  },
-
-  animateStepIn(element, callback) {
-    TweenMax.fromTo(element, 0.3, { x: 600, opacity: 0 }, { x: 0, opacity: 1, ease: Linear.easeNone, onComplete: callback });
-  },
-
-  animateStepOut(element, callback) {
-    TweenMax.fromTo(element, 0.2, { x: 0, opacity: 1 }, { x: -600, opacity: 0, ease: Linear.easeNone, onComplete: callback });
   },
 
   // Animations end

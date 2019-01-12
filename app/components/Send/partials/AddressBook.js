@@ -5,11 +5,7 @@ import renderHTML from 'react-render-html';
 import { Table } from 'reactstrap';
 import * as actions from '../../../actions/index';
 
-import { getContacts, deleteContact } from '../../../Managers/SQLManager';
-
-const ansAddresImage = require('../../../../resources/images/ans_address.png');
-const Tools = require('../../../utils/tools');
-const { clipboard } = require('electron');
+import { getContacts } from '../../../Managers/SQLManager';
 
 const moment = require('moment');
 const event = require('./../../../utils/eventhandler');
@@ -54,11 +50,8 @@ class AddressBook extends Component {
                 const selected = this.props.selected === friend.id;
                 return (
                   <tr key={index} className={`${selected ? 'selected' : ''} cursor-pointer`} onClick={() => clickContact(friend)}>
-                    <td style={{width: 50}}>
-                      {friend.ansrecord != null ? <img src={ansAddresImage} style={{ padding: '0 5px 3px 0' }} /> : null}
-                    </td>
                     <td>
-                      {friend.ansrecord != null ? renderHTML(`${friend.ansrecord.name}<span className="Receive__ans-code">#${friend.ansrecord.code} </span> `) : friend.name}
+                      Coming Soon - personal contact name
                       <br/>
                       <small className="transactionInfoTitle">
                         {friend.address !== null ? friend.address.address : 'Unknown Address'}

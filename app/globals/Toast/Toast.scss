@@ -4,9 +4,13 @@
   top: 40px;
   right: 10px;
   z-index: 1051;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 
   /* Individual toasts */
   & > div {
+	display: inline-block;
 	color: white;
 	margin-top: 0px;
 	padding: 0px 14px;

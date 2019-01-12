@@ -81,15 +81,14 @@ class Index extends Component {
 
   onContactClick(contact) {
     let sendTo = null;
-    if (contact.name !== null) {
-      sendTo = contact.name;
-    } else if (contact.address !== null) {
+    if (contact.address !== null) {
       sendTo = contact.address.address;
     }
 
     if (sendTo === null) {
       Toast({
-        message: this.props.lang.contactInvalidAddress
+        message: this.props.lang.contactInvalidAddress,
+        color: 'red'
       });
       return;
     }
@@ -125,7 +124,7 @@ class Index extends Component {
             <div className="col-md-5">
               <div>
                 <Input
-                  placeholder={this.props.lang.ansNameOrAddress}
+                  placeholder={this.props.lang.address}
                   value={this.state.address}
                   type="text"
                   onChange={e => this.onTextFieldChange('address', e)}
@@ -174,8 +173,6 @@ const mapStateToProps = state => {
     unconfirmed: Tools.formatNumber(unconfirmedBalance),
     stakingVal: Tools.formatNumber(staking),
     lang: state.startup.lang,
-    addressOrUsername: state.application.addressOrUsernameSend,
-    amount: state.application.amountSend,
     wallet: state.application.wallet
   };
 };

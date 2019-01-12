@@ -14,7 +14,6 @@ import ContactModal from './partials/ContactModal';
 import { deleteContact } from '../../Managers/SQLManager';
 
 const event = require('./../../utils/eventhandler');
-const ansAddressImage = require('../../../resources/images/ans_address.png');
 
 class Index extends Component {
   constructor(props) {
@@ -77,16 +76,7 @@ class Index extends Component {
           </div>
           { friend && (
             <div className="p-3">
-              { friend.ansrecord !== null ? (
-                <div>
-                  <img src={ansAddressImage} style={{ padding: '0 5px 3px 0' }} />
-                  { renderHTML(`${friend.ansrecord.name}<span className="Receive__ans-code">#${friend.ansrecord.code} </span> `) }
-                </div>
-              ) : (
-                <div>
-                  { friend.name }
-                </div>
-              )}
+              { friend.name } Coming  Soon - personal contact name
               <div className="small-text transactionInfoTitle">
                 {friend.address !== null ? friend.address.address : 'Unknown Address'}
               </div>
@@ -94,14 +84,6 @@ class Index extends Component {
                 <p className="transactionInfoTitle"><span className="desc2 small-header">Friend since</span></p>
                 <p><span className="desc3 small-text selectableText">{moment(friend.createdAt).format('dddd, MMMM Do YYYY')}</span></p>
               </div>
-              {/* <div> */}
-              {/* <p className="transactionInfoTitle"><span className="desc2 small-header">Sent</span></p> */}
-              {/* <p><span className="desc3 small-text selectableText">115.00923 ECC</span></p> */}
-              {/* </div> */}
-              {/* <div> */}
-              {/* <p className="transactionInfoTitle"><span className="desc2 small-header">Received</span></p> */}
-              {/* <p><span className="desc3 small-text selectableText">500.355 ECC</span></p> */}
-              {/* </div> */}
               <div className="d-flex justify-content-end mt-5">
                 <Button color="danger" size="sm" onClick={this.deleteAddress.bind(this, friend)}>
                   Delete Contact
