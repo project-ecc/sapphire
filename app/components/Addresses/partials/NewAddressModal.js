@@ -20,7 +20,6 @@ class NewAddressModal extends Component {
     this.handleConfirm = this.handleConfirm.bind(this);
     this.createNormalAddress = this.createNormalAddress.bind(this);
     this.getConfirmationText = this.getConfirmationText.bind(this);
-    this.setAddressPendingUpgrade = this.setAddressPendingUpgrade.bind(this);
     this.toggle = this.toggle.bind(this);
     this.selectType = this.selectType.bind(this);
 
@@ -71,13 +70,6 @@ class NewAddressModal extends Component {
     }).catch((err) => {
       console.log('error creating address: ', err);
     });
-  }
-
-  async setAddressPendingUpgrade(add) {
-   // save to DB here
-    const address = await getAddress(add);
-    address.status = 'upgrading';
-    await address.save();
   }
 
 

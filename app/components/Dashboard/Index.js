@@ -6,7 +6,7 @@ import { Card, Button, CardTitle, CardText } from 'reactstrap';
 import * as actions from '../../actions/index';
 import Header from '../Others/Header';
 import Body from '../Others/Body';
-import UnlockModal from './partials/UnlockModal';
+import UnlockModal from '../Others/UnlockModal';
 
 const Tools = require('../../utils/tools');
 
@@ -16,6 +16,7 @@ class Index extends Component {
     this.processStakingClicked = this.processStakingClicked.bind(this);
     this.lockWallet = this.lockWallet.bind(this);
     this.getEarnings = this.getEarnings.bind(this);
+    this.startStaking = this.startStaking.bind(this);
   }
 
   processStakingClicked() {
@@ -87,6 +88,12 @@ class Index extends Component {
                   .reduce((accumulator, val) => accumulator + parseFloat(this.props[val]), 0);
   }
 
+  startStaking () {
+    this.props.wallet.setGenerate().then(() => {
+      setTimeout(() => this.props.setStaking(true), 1000);
+    });
+  }
+
 
   render() {
     return (
@@ -151,7 +158,9 @@ class Index extends Component {
             </div>
           </div>
         </Body>
-        <UnlockModal ref={(e) => { this.unlockModal = e; }} />
+        <UnlockModal ref={(e) => { this.unlockModal = e; }} onUnlock={this.startStaking}>
+          <p>{`${this.props.lang.unlockWalletExplanation1} ${this.props.lang.unlockWalletExplanation2}`} <span className="ecc">ECC</span>.</p>
+        </UnlockModal>
       </div>
     );
   }

@@ -9,9 +9,6 @@ import {
   BLOCK_INDEX_PAYMENT,
   BLOCK_INDEX_PAYMENT_PERCENTAGE,
   STAKING,
-  AMOUNT_SEND,
-  ADDRESS_SEND,
-  NAME_SEND,
   TRANSACTIONS_DATA,
   TRANSACTIONS_PAGE,
   CREATING_ADDRESS,
@@ -109,27 +106,6 @@ export const updateBlockIndexPayment = (value) => {
 export const setStaking = (val) => {
 	return{
 		type: STAKING,
-		payload: val
-	}
-};
-
-export const setAddressSend = (val) => {
-	return{
-		type: ADDRESS_SEND,
-		payload: val
-	}
-};
-
-export const setUsernameSend = (username, code = "") => {
-	return{
-		type: NAME_SEND,
-		payload: {username, code}
-	}
-};
-
-export const setAmountSend = (val) => {
-	return{
-		type: AMOUNT_SEND,
 		payload: val
 	}
 };

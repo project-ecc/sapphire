@@ -1,7 +1,4 @@
 import {
-  ADDRESS_SEND,
-  AMOUNT_SEND,
-  NAME_SEND,
   TRANSACTIONS_PAGE,
   USER_ADDRESSES,
   CREATING_ADDRESS,
@@ -46,7 +43,7 @@ const Queue = require('../utils/queue');
 
 let moment = require('moment');
 
-const INITIAL_STATE = {wallet: null, userNameToSend: "", codeToSend:"", amountSend: "", addressSend: "", transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, friends: [], userAddresses: [], creatingAddress: false, newContactAddress:"", settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, locationToExport: "", backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, pendingTransactions: [], wasStaking: false, daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], coinMarketCapStats: {}, coinMarketLastUpdated: 0, updateApplication:false, closingApplication: false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false, downloadMessage: undefined, downloadPercentage: undefined, downloadRemainingTime: undefined, updateFailed:false, popupLoading: false, contactToAdd: undefined, showZeroBalance: true, filteringTransactions: false, debugLog: new Queue(), selectedCurrency: "usd", donationGoals: {}, donationGoalsLastUpdated: 0, daemonErrorPopup:false, daemonError: ''};
+const INITIAL_STATE = {wallet: null, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, friends: [], userAddresses: [], creatingAddress: false, newContactAddress:"", settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, locationToExport: "", backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, pendingTransactions: [], wasStaking: false, daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], coinMarketCapStats: {}, coinMarketLastUpdated: 0, updateApplication:false, closingApplication: false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false, downloadMessage: undefined, downloadPercentage: undefined, downloadRemainingTime: undefined, updateFailed:false, popupLoading: false, contactToAdd: undefined, showZeroBalance: true, filteringTransactions: false, debugLog: new Queue(), selectedCurrency: "usd", donationGoals: {}, donationGoalsLastUpdated: 0, daemonErrorPopup:false, daemonError: ''};
 
 
 export default(state = INITIAL_STATE, action) => {
@@ -187,15 +184,6 @@ export default(state = INITIAL_STATE, action) => {
 	}
 	else if(action.type == USER_ADDRESSES){
 		return{...state, userAddresses: action.payload}
-	}
-	else if(action.type == ADDRESS_SEND){
-		return {...state, addressSend: action.payload}
-	}
-	else if(action.type == NAME_SEND){
-		return {...state, userNameToSend: action.payload.username, codeToSend: action.payload.code}
-	}
-	else if(action.type == AMOUNT_SEND){
-		return {...state, amountSend: action.payload}
 	}
 	else if(action.type == TRANSACTIONS_PAGE){
 		return {...state, transactionsPage: action.payload}

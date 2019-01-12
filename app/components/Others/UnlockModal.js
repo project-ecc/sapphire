@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Modal, ModalBody, ModalHeader, Button, Input } from 'reactstrap';
 
-import * as actions from '../../../actions';
-import ConfirmButtonPopup from './../../Others/ConfirmButtonPopup';
-import Toast from '../../../globals/Toast/Toast';
+import * as actions from '../../actions/index';
+import Toast from '../../globals/Toast/Toast';
 
 class UnlockModal extends Component {
   constructor() {
@@ -88,9 +87,7 @@ class UnlockModal extends Component {
 
     this.unlockWallet().then((result) => {
       if (!result) return;
-      return this.props.wallet.setGenerate().then(() => {
-        setTimeout(() => this.props.setStaking(true), 1000);
-      });
+      this.props.onUnlock();
     });
   }
 
@@ -108,9 +105,7 @@ class UnlockModal extends Component {
           { this.props.lang.unlockWallet }
         </ModalHeader>
         <ModalBody>
-          <p>
-            {`${this.props.lang.unlockWalletExplanation1} ${this.props.lang.unlockWalletExplanation2}`} <span className="ecc">ECC</span>.
-          </p>
+          <div>{ this.props.children }</div>
           <Input
             placeholder={this.props.lang.password}
             value={this.state.password}

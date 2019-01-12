@@ -28,7 +28,7 @@ class DonateModal extends Component {
 
   handleECCDonation(eccObject) {
     this.toggle()
-    this.props.setAddressSend(eccObject.address);
+    // this.props.setAddressSend(eccObject.address);
     hash.push('/coin/send');
   }
 

@@ -5,6 +5,7 @@ import { ArrowRightIcon } from 'mdi-react';
 
 import Body from './../Others/Body';
 import Header from './../Others/Header';
+import UnlockModal from './../Others/UnlockModal';
 
 import AddressBook from './partials/AddressBook';
 import * as actions from '../../actions';
@@ -20,6 +21,7 @@ class Index extends Component {
 
     this.confirmSend = this.confirmSend.bind(this);
     this.onContactClick = this.onContactClick.bind(this);
+    this.sendECC = this.sendECC.bind(this);
 
     this.state = {
       address: '',
@@ -56,11 +58,10 @@ class Index extends Component {
     let result;
     try {
       result = await Tools.searchForUsernameOrAddress(this.props.wallet, this.state.address);
-      if (result.ans && result.addresses.length === 1) {
-        this.props.setUsernameSend(result.addresses[0].Name, `#${result.addresses[0].Code}`);
-        this.props.setAddressSend(result.addresses[0].Address);
-      } else if (result) {
-        this.props.setAddressSend(result.addresses[0].address);
+      if (result) {
+        this.setState({
+          address: result.addresses[0].address
+        });
       }
     } catch (err) {
       console.log('err: ', err);
@@ -73,8 +74,49 @@ class Index extends Component {
         color: 'red'
       });
     } else {
-      // this.props.setSendingECC(true);
+      this.unlockModal.getWrappedInstance().toggle();
     }
+  }
+
+  sendECC() {
+    const wasStaking = this.props.staking;
+    const batch = [];
+    const obj = {
+      method: 'sendToAddress', parameters: [this.state.address, this.state.amount]
+    };
+    batch.push(obj);
+    this.props.wallet.command(batch).then((data) => {
+      if (data && data[0] && typeof data[0] === 'string') {
+        if (wasStaking) {
+          this.unlockWallet(true, 31556926, () => {
+          });
+        } else {
+          this.props.setStaking(false);
+        }
+        this.resetForm();
+        this.props.setTemporaryBalance(this.props.balance - this.state.amount);
+        Toast({
+          title: this.props.lang.success,
+          message: this.props.lang.sentSuccessfully
+        });
+      } else {
+        throw ('Failed to send');
+      }
+    }).catch((err) => {
+      Toast({
+        title: this.props.lang.error,
+        message: this.props.lang.failedToSend,
+        color: 'red'
+      });
+      this.resetForm();
+    });
+  }
+
+  resetForm () {
+    this.setState({
+      address: '',
+      amount: 0
+    });
   }
 
   onContactClick(contact) {
@@ -152,6 +194,23 @@ class Index extends Component {
             </div>
           </div>
         </Body>
+
+        <UnlockModal ref={(e) => { this.unlockModal = e; }} onUnlock={this.sendECC}>
+          <p>
+            { this.props.lang.unlockWalletForSend }
+          </p>
+          <p className="mt-4">
+            <b>{ this.props.lang.amount }:</b> {Tools.formatNumber(Number(this.state.amount))}
+            <span className="ecc ml-1">ecc</span>
+            <span className="ml-2">({`${Tools.formatNumber(Number(this.state.amount * this.props.selectedCurrencyValue))} ${this.props.selectedCurrency.toUpperCase()}`})</span>
+          </p>
+          <p className="labelSend">
+            <b>{ this.props.lang.address }:</b>
+            <span className="ml-1">
+              {this.state.address}
+            </span>
+          </p>
+        </UnlockModal>
       </div>
     );
   }
@@ -171,7 +230,9 @@ const mapStateToProps = state => {
     unconfirmed: Tools.formatNumber(unconfirmedBalance),
     stakingVal: Tools.formatNumber(staking),
     lang: state.startup.lang,
-    wallet: state.application.wallet
+    wallet: state.application.wallet,
+    selectedCurrency: state.application.selectedCurrency,
+    selectedCurrencyValue: state.application.coinMarketCapStats.price
   };
 };
 

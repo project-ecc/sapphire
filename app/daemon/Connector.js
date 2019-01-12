@@ -193,7 +193,7 @@ class Connector extends Component {
     console.log('daemon manager got update call');
     this.setState({
       downloading: true
-    })
+    });
     const r = await this.stopDaemon();
     if (r) {
       setTimeout(async () => {
@@ -204,12 +204,12 @@ class Connector extends Component {
           event.emit('download-error', { message: e.message });
           this.setState({
             downloading: false
-          })
+          });
           return;
         }
         this.setState({
           downloading: false
-        })
+        });
 
         if (downloaded !== false) {
           event.emit('updatedDaemon');
@@ -240,12 +240,12 @@ class Connector extends Component {
           currentVersion: parsed.versions[0].name.substring(1)
         });
         if (this.state.currentVersion === -1) {
-          if(failCounter < 3){
+          if (failCounter < 3) {
             await self.getLatestVersion();
           } else {
-            event.emit('loading-error', { message: "Error Checking for latest version" });
+            event.emit('loading-error', { message: 'Error Checking for latest version' });
           }
-          failCounter +=1 ;
+          failCounter += 1;
         } else {
           self.checkForUpdates();
         }
@@ -264,7 +264,7 @@ class Connector extends Component {
       if (Tools.compareVersion(this.installedVersion, this.currentVersion) === -1 && this.currentVersion.replace(/\D/g, '') > REQUIRED_DAEMON_VERSION) {
         this.setState({
           toldUserAboutUpdate: true
-        })
+        });
         event.emit('daemonUpdate');
       }
     }
@@ -302,7 +302,7 @@ class Connector extends Component {
           self.setState({
             installedVersion: latestVersion,
             downloading: false
-          })
+          });
           resolve(true);
         } else {
           console.log(downloaded);

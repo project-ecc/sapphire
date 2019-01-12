@@ -91,8 +91,6 @@ class OLDApp extends Component<Props> {
     let classVal = '';
     if (this.props.updateApplication) {
       component = <UpdateApplication />;
-    } else if (this.props.sending) {
-      component = <SendConfirmation />;
     } else if (this.props.daemonErrorPopup) {
       component = <DaemonErrorModal />;
     } else if (this.props.closingApplication) {
