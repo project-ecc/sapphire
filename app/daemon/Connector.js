@@ -100,8 +100,8 @@ class Connector extends Component {
       } while (this.state.installedVersion === -1 || version < REQUIRED_DAEMON_VERSION);
       console.log('telling electron about wallet.dat');
     }
-    console.log(this.walletDat, daemonCredentials);
-    this.createWallet(this.walletDat, daemonCredentials);
+    console.log(this.state.walletDat, daemonCredentials);
+    this.createWallet(this.state.walletDat, daemonCredentials);
     this.startDaemonChecker();
   }
 
