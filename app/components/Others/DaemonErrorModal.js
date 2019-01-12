@@ -49,13 +49,13 @@ class DaemonErrorModal extends Component {
 
 
   render() {
-    const discordIcon = Tools.getIconForTheme('discord', false);
+    // const discordIcon = Tools.getIconForTheme('discord', false);
     return (
       <div style={{ height: '100%', display: 'block', overflow: 'auto', width: '535px', margin: 'auto 0', padding: '10px', minHeight: '400px' }}>
         <CloseButtonPopup handleClose={this.handleCancel} />
         <div>
           <h3>Oops!</h3>
-          <img height="75px" width="75px" src={discordIcon} />
+          {/*<img height="75px" width="75px" src={discordIcon} />*/}
           <p className="backupSuccessful">It looks like Sapphire is unable to load ECC's blockchain:</p>
           <p className="backupSuccessful">{this.props.daemonError}</p>
           <span style={{ padding: '5px' }} onClick={this.exportDebugLogFile} className="buttonPrimary caps">Export Debug file</span>

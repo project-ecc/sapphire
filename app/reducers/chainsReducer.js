@@ -12,7 +12,7 @@ import {
 } from '../actions/types';
 
 
-const INITIAL_STATE = {paymentChainSync: 0, loadingBlockIndexPayment: false, blockPayment: 0, headersPayment:0, connectionsPayment: 0, isStaking: false, stakingConfig: false, staking: 0, balance: 0, transactionsData: [], connections: 0, transactionsType: "all", messagingChain: false, fileStorageChain:false, unconfirmedBalance: 0, daemonVersion: '', newMint: 0, immatureBalance: 0 };
+const INITIAL_STATE = {paymentChainSync: 0, loadingBlockIndexPayment: false, blockPayment: 0, headersPayment:0, connectionsPayment: 0, isStaking: false, stakingConfig: false, staking: 0, balance: 0, transactionsData: [], connections: 0, transactionsType: "all", unconfirmedBalance: 0, daemonVersion: '', newMint: 0, immatureBalance: 0 };
 
 export default(state = INITIAL_STATE, action) => {
    if(action.type == BLOCK_INDEX_PAYMENT){

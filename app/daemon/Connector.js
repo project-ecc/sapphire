@@ -9,6 +9,7 @@ import ConnectorNews from './News';
 import ConnectorCoin from './Coin';
 import ConnectorMarket from './Market';
 import Tools from '../utils/tools';
+import { downloadFile } from '../utils/downloader';
 
 const arch = require('arch');
 const find = require('find-process');
@@ -105,7 +106,7 @@ class Connector extends Component {
       } while (this.installedVersion == -1 || version < REQUIRED_DAEMON_VERSION);
       console.log('telling electron about wallet.dat');
     }
-    console.log(this.walletDat, daemonCredentials)
+    console.log(this.walletDat, daemonCredentials);
     this.createWallet(this.walletDat, daemonCredentials);
     this.startDaemonChecker();
   }
@@ -228,6 +229,56 @@ class Connector extends Component {
     }
   }
 
+  async downloadDaemon() {
+    const walletDirectory = grabWalletDir();
+    const daemonDownloadURL = getDaemonDownloadUrl();
+    console.log(daemonDownloadURL);
+
+    this.downloading = true;
+    const self = this;
+
+    return new Promise((resolve, reject) => {
+      console.log('downloading latest daemon');
+
+      // download latest daemon info from server
+      const opts = {
+        url: daemonDownloadURL
+      };
+      console.log(opts);
+
+      request(opts).then(async (data) => {
+        console.log(data);
+        const parsed = JSON.parse(data);
+        const latestDaemon = parsed.versions[0];
+        const latestVersion = latestDaemon.name.substring(1);
+        const zipChecksum = latestDaemon.checksum;
+        const downloadUrl = latestDaemon.download_url;
+
+        const downloaded = await downloadFile(downloadUrl, walletDirectory, 'Eccoind.zip', zipChecksum, true);
+
+        if (downloaded) {
+          self.installedVersion = latestVersion;
+          await self.saveVersion(self.installedVersion);
+          self.downloading = false;
+          resolve(true);
+        } else {
+          console.log(downloaded);
+          reject(downloaded);
+        }
+      }).catch(error => {
+        console.log(`Error downloadDaemon(): ${error}`);
+        reject(error);
+      });
+    });
+  }
+
+
+  async saveVersion(version) {
+    console.log(this.versionPath);
+    console.log(`version${version}`);
+    const writter = fs.createWriteStream(this.versionPath);
+    writter.write(version.toString());
+  }
 
   /**
    * Start the daemon instance

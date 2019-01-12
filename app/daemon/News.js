@@ -155,7 +155,7 @@ class News extends Component {
 
   queueOrSendNotification(callback, body) {
     // TODO
-    if (this.props.loading || this.props.loader || !this.props.setupDone) {
+    if (this.props.loading || this.props.loader) {
       // this.queuedNotifications.push({ callback, body });
     } else {
       // Tools.sendOSNotification(body, callback);
@@ -172,7 +172,6 @@ const mapStateToProps = state => {
   return {
     loading: state.startup.loading,
     loader: state.startup.loader,
-    setupDone: state.startup.setupDone,
     lang: state.startup.lang,
     wallet: state.application.wallet,
     eccPosts: state.application.eccPosts,

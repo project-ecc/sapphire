@@ -70,7 +70,6 @@ class ImportWallet extends Component {
 
   openFile() {
     if (this.state.importing) { return; }
-    // this.props.importingWallet();
     ipcRenderer.send('importWallet');
     this.setState({
       importing: 1

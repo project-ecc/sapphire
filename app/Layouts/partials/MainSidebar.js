@@ -16,9 +16,6 @@ class MainSidebar extends Component {
   render() {
     const progressBar = this.props.paymentChainSync;
 
-    const addresses = Tools.getIconForTheme('addresses', false);
-    const fileStorage = Tools.getIconForTheme('fileStorage', false);
-
     const usericon = require('../../../resources/images/logo_setup.png');
     return (
       <div className="sidebar">
@@ -46,7 +43,7 @@ class MainSidebar extends Component {
                 </li>
                 <li>
                   <NavLink to="/coin/addresses" activeClassName="active">
-                    <img src={addresses} />
+                    {/*<img src={addresses} />*/}
                     { this.props.lang.addresses }
                   </NavLink>
                 </li>

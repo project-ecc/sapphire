@@ -114,7 +114,7 @@ class App extends Component {
 const mapStateToProps = state => {
   return {
     setupStep: state.setup.step,
-    loader: state.startup.loader || (state.chains.loadingBlockIndexPayment && !state.startup.initialSetup),
+    loader: state.startup.loader || (state.chains.loadingBlockIndexPayment),
     loading: state.startup.loading,
     minimizeOnClose: state.application.minimizeOnClose,
     closingApplication: state.application.closingApplication,

@@ -410,7 +410,7 @@ class Coin extends Component {
 
 
   queueOrSendNotification(callback, body) {
-    if (this.props.startup.loading || this.props.startup.loader || !this.props.startup.setupDone) {
+    if (this.props.startup.loading || this.props.startup.loader) {
       this.state.queuedNotifications.push({ callback, body });
     } else {
       tools.sendOSNotification(body, callback);
@@ -418,7 +418,7 @@ class Coin extends Component {
   }
 
   checkQueuedNotifications() {
-    if (!this.props.startup.loading && !this.props.startup.loader && this.props.startup.setupDone && this.state.queuedNotifications.length >= 0) {
+    if (!this.props.startup.loading && !this.props.startup.loader && this.state.queuedNotifications.length >= 0) {
       if (this.state.queuedNotifications.length === 0) {
         clearInterval(this.checkQueuedNotificationsInterval);
       } else {

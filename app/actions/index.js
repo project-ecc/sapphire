@@ -3,15 +3,8 @@ import {
   LOADING,
   DAEMON_CREDENTIALS,
   APP_READY,
-  INITIAL_SETUP,
-  PARTIAL_INITIAL_SETUP,
-  SETUP_DONE,
-  IMPORT_WALLET,
   STEP_INITIAL_SETUP,
   SET_LANGUAGE,
-  IMPORTING_WALLET,
-  IMPORTED_WALLET,
-  IMPORT_CANCELLED,
   PAYMENT_CHAIN_SYNC,
   BLOCK_INDEX_PAYMENT,
   BLOCK_INDEX_PAYMENT_PERCENTAGE,
@@ -49,21 +42,9 @@ import {
   SELECTED_THEME,
   SELECTED_THEME_BACKUP,
   CHANGED_THEME,
-  MESSAGING_SHOW_TITLE_TOPBAR,
-  MESSAGING_INPUT_VAL,
-  IMPORTING_WALLET_SETUP_DONE,
-  NEW_MESSAGE,
-  SHOWING_CHAT_LIST_ONLY,
-  MESSAGE_ID,
-  IN_MESSAGING,
-  MESSAGING_ENABLED,
-  USER_CHECKED_GRIFFITH_CHAT,
-  USER_HAS_HOVERED_OPTIONS_ICON,
-  USER_HAS_CLICKED_BUTTON,
   HOVERED_SETTINGS_SOCIAL_ICON,
   SET_DAEMON_VERSION,
   SET_TEMPORARY_BALANCE,
-  IMPORT_WALLET_TEMPORARY,
   FILE_DOWNLOAD_STATUS,
   TELL_USER_UPDATE_FAILED,
   TOLD_USER_UPDATE_FAILED,
@@ -89,10 +70,6 @@ export const setWalletCredentials = (args) => {
 
 export const getSetup = () => dispatch => {
 	ipcRenderer.send('app:ready');
-    //
-	// ipcRenderer.on('import_wallet', (e) => {
-	// 	dispatch({ type: IMPORT_WALLET });
-	// });
 };
 
 export const setStepInitialSetup = (step) => {
@@ -102,35 +79,10 @@ export const setStepInitialSetup = (step) => {
 	};
 };
 
-export const setSetupDone = (val) => {
-	return{
-		type: SETUP_DONE,
-		payload: val
-	};
-};
-
 export const setLang = () => {
 	return{
 		type: SET_LANGUAGE
 	};
-};
-
-export const importingWallet = () => {
-	return {
-		type: IMPORTING_WALLET
-	}
-};
-
-export const importedWallet = () => {
-	return {
-		type: IMPORTED_WALLET
-	}
-};
-
-export const importCancelled = () => {
-	return {
-		type: IMPORT_CANCELLED
-	}
 };
 
 export const updatePaymentChainSync = (percentage) => {
@@ -408,83 +360,6 @@ export const setChangedTheme = (val) => {
 	}
 };
 
-export const setShowingMessageTopBar = (val) => {
-	return{
-		type: MESSAGING_SHOW_TITLE_TOPBAR,
-		payload: val
-	}
-};
-
-export const setMessagingInputVal = (val) => {
-	return{
-		type: MESSAGING_INPUT_VAL,
-		payload: val
-	}
-};
-
-export const setImportingWalletWithSetupDone = (val) => {
-	return{
-		type: IMPORTING_WALLET_SETUP_DONE,
-		payload: val
-	}
-};
-
-export const addNewMessage = (val) => {
-	return{
-		type: NEW_MESSAGE,
-		payload: val
-	}
-};
-
-export const setShowingChatListOnly = (val) => {
-	return{
-		type: SHOWING_CHAT_LIST_ONLY,
-		payload: val
-	}
-};
-
-export const setMessageId = (id, address) => {
-	return{
-		type: MESSAGE_ID,
-		payload: {id: id, address:address}
-	}
-};
-
-export const setInMessaging = (val) => {
-	return{
-		type: IN_MESSAGING,
-		payload: val
-	}
-}
-
-export const setMessagingEnabled = (val) => {
-	return{
-		type: MESSAGING_ENABLED,
-		payload: val
-	}
-}
-
-export const setUserCheckedGriffithChat = (val) => {
-	return{
-		type: USER_CHECKED_GRIFFITH_CHAT,
-		payload: val
-	}
-}
-
-export const setUserHoveredOptionsButton = (val) => {
-	return{
-		type: USER_HAS_HOVERED_OPTIONS_ICON,
-		payload: val
-	}
-}
-
-export const setUserClickedButton = (val) => {
-	return{
-		type: USER_HAS_CLICKED_BUTTON,
-		payload: {clickType: val}
-	}
-}
-
 export const setDaemonVersion = (val) => {
   return {
     type: SET_DAEMON_VERSION,
@@ -495,13 +370,6 @@ export const setDaemonVersion = (val) => {
 export const setTemporaryBalance = (val) => {
   return {
     type: SET_TEMPORARY_BALANCE,
-    payload: val
-  };
-}
-
-export const setImportWalletTemporary = (val) => {
-  return {
-    type: IMPORT_WALLET_TEMPORARY,
     payload: val
   };
 }

@@ -22,7 +22,7 @@ const find = require('find-process');
 /*
 *	Handles daemon updates and the daemon'state
 */
-class DaemonManager {
+class OLDDaemonManager {
 
   constructor() {
     this.path = `${grabWalletDir()}`;
@@ -315,4 +315,4 @@ class DaemonManager {
 
 }
 
-module.exports = DaemonManager;
+module.exports = OLDDaemonManager;

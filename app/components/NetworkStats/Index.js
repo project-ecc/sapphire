@@ -91,8 +91,6 @@ const mapStateToProps = state => {
     connectionsPayment: state.chains.connectionsPayment,
     blockPaymentChain: state.chains.blockPayment,
     headersPaymentChain: state.chains.headersPayment,
-    messagingChain: state.chains.messagingChain,
-    fileStorageChain: state.chains.fileStorageChain,
     theme: state.application.theme
   };
 };
