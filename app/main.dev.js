@@ -544,10 +544,16 @@ function copyFile(source, target, cb) {
 }
 
 tail.on("line", (data) => {
-  console.log(data)
+
+  const ignoreStrings = [
+    'UpdateTip:',
+    'sending getdata',
+    'sending getheaders'
+  ];
   const castedArg = String(data);
-  console.log(castedArg);
-  if (castedArg != null && (castedArg.indexOf('Updated Tip') === -1)) {
+  if (castedArg != null && (!ignoreStrings.some(function(v) { return castedArg.indexOf(v) >= 0; }))) {
+    console.log(castedArg);
+
     sendMessage('message-from-log', data);
   }
 

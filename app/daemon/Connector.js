@@ -26,76 +26,70 @@ class Connector extends Component {
 
     this.path = `${grabWalletDir()}`;
     this.versionPath = `${grabWalletDir()}wallet-version.txt`;
-    this.installedVersion = -1;
-    this.currentVersion = -1;
-    this.walletDat = false;
-    this.downloading = false;
     this.arch = arch();
     this.os = process.platform;
     this.arch = process.arch;
     this.running = false;
-    this.toldUserAboutUpdate = false;
-    this.shouldRestart = undefined;
 
     this.state = {
-      interval: 5000
+      interval: 5000,
+      downloadingDaemon: false,
+      shouldRestart: false,
+      installedVersion: -1,
+      currentVersion: -1,
+      walletDat: false,
+      toldUserAboutUpdate: false,
+      running: false
     };
 
     this.initialSetup();
   }
 
   async initialSetup() {
-    // event.on('start', () => {
-    //   this.startDaemon((started) => {
-    //     if (started) {
-    //       event.emit('daemonStarted');
-    //     } else event.emit('daemonFailed');
-    //   });
-    // });
     event.on('start', this.startDaemon.bind(this));
 
-    event.on('stop', () => {
-      this.stopDaemon((err) => {
+    event.on('stop', async () => {
+      await this.stopDaemon((err) => {
         if (err) console.log('error stopping daemon: ', err);
         console.log('stopped daemon');
       });
     });
-    event.on('updateDaemon', (shouldRestart) => {
-      this.shouldRestart = shouldRestart;
-      this.updateDaemon();
+    event.on('updateDaemon', async (restart) => {
+      this.setState({
+        shouldRestart: restart
+      });
+      await this.updateDaemon();
     });
 
     let daemonCredentials = await Tools.readRpcCredentials();
-    this.installedVersion = await this.checkIfDaemonExists();
-    if (daemonCredentials) {
-      // this.wallet = new Wallet(daemonCredentials.username, daemonCredentials.password);
-      // await this.stopDaemon();
-    }
-    if (!daemonCredentials || daemonCredentials.username == 'yourusername' || daemonCredentials.password == 'yourpassword') {
+    const iVersion = await this.checkIfDaemonExists();
+    this.setState({
+      installedVersion: iVersion
+    });
+
+    if (!daemonCredentials || daemonCredentials.username === 'yourusername' || daemonCredentials.password === 'yourpassword') {
       daemonCredentials = {
         username: Tools.generateId(5),
         password: Tools.generateId(5)
       };
-      const result = await Tools.updateOrCreateConfig(daemonCredentials.username, daemonCredentials.password);
-      // this.wallet = new Wallet(daemonCredentials.username, daemonCredentials.password);
+      await Tools.updateOrCreateConfig(daemonCredentials.username, daemonCredentials.password);
     }
 
     console.log('going to check daemon version');
-    console.log(this.installedVersion);
-    let version = this.installedVersion == -1 ? this.installedVersion : parseInt(this.installedVersion.replace(/\D/g, ''));
+    console.log(this.state.installedVersion);
+    let version = this.state.installedVersion === -1 ? this.state.installedVersion : parseInt(this.state.installedVersion.replace(/\D/g, ''));
     console.log('VERSION INT: ', version);
-    // on startup daemon should not be running unless it was to update the application
-    // if(this.installedVersion != -1 ){
-    //	await this.stopDaemon();
-    // }
-    this.walletDat = await this.checkIfWalletExists();
-    do {
-      console.log('getting latest version');
-      await this.getLatestVersion();
-    } while (this.currentVersion !== -1);
-    console.log(this.currentVersion);
+    const walletFile = await this.checkIfWalletExists();
+    this.setState({
+      walletDat: walletFile
+    });
+
+    console.log('getting latest version');
+    await this.getLatestVersion();
+
+    console.log(this.state.currentVersion);
     console.log('got latest version');
-    if (this.installedVersion == -1 || version < REQUIRED_DAEMON_VERSION) {
+    if (this.state.installedVersion === -1 || version < REQUIRED_DAEMON_VERSION) {
       do {
         try {
           await this.downloadDaemon();
@@ -103,7 +97,7 @@ class Connector extends Component {
         } catch (e) {
           event.emit('download-error', { message: e.message });
         }
-      } while (this.installedVersion == -1 || version < REQUIRED_DAEMON_VERSION);
+      } while (this.state.installedVersion === -1 || version < REQUIRED_DAEMON_VERSION);
       console.log('telling electron about wallet.dat');
     }
     console.log(this.walletDat, daemonCredentials);
@@ -129,7 +123,7 @@ class Connector extends Component {
       this.props.setStepInitialSetup('start');
     }
 
-    this.startDaemonChecker();
+    // this.startDaemonChecker();
     event.emit('startConnectorChildren');
   }
 
@@ -195,10 +189,43 @@ class Connector extends Component {
     return -1;
   }
 
+  async updateDaemon() {
+    console.log('daemon manager got update call');
+    this.setState({
+      downloading: true
+    })
+    const r = await this.stopDaemon();
+    if (r) {
+      setTimeout(async () => {
+        let downloaded = false;
+        try {
+          downloaded = await this.downloadDaemon();
+        } catch (e) {
+          event.emit('download-error', { message: e.message });
+          this.setState({
+            downloading: false
+          })
+          return;
+        }
+        this.setState({
+          downloading: false
+        })
+
+        if (downloaded !== false) {
+          event.emit('updatedDaemon');
+          if (!this.state.shouldRestart) { event.emit('start'); }
+          this.setState({
+            toldUserAboutUpdate: false
+          });
+        }
+      }, 7000);
+    }
+  }
+
 
   async getLatestVersion() {
     console.log('checking for latest daemon version');
-
+    let failCounter = 0;
     const daemonDownloadURL = getDaemonDownloadUrl();
     const self = this;
     // download latest daemon info from server
@@ -206,14 +233,26 @@ class Connector extends Component {
       url: daemonDownloadURL
     };
 
-    request(opts).then((data) => {
+    request(opts).then(async (data) => {
       if (data) {
         const parsed = JSON.parse(data);
-        this.currentVersion = parsed.versions[0].name.substring(1);
-        self.checkForUpdates();
+        this.setState({
+          currentVersion: parsed.versions[0].name.substring(1)
+        });
+        if (this.state.currentVersion === -1) {
+          if(failCounter < 3){
+            await self.getLatestVersion();
+          } else {
+            event.emit('loading-error', { message: "Error Checking for latest version" });
+          }
+          failCounter +=1 ;
+        } else {
+          self.checkForUpdates();
+        }
       }
     }).catch(error => {
       console.log(error.message);
+      failCounter += 1;
     });
   }
 
@@ -223,7 +262,9 @@ class Connector extends Component {
     // the user has not yet been told about an update
     if (this.installedVersion !== -1 && !this.toldUserAboutUpdate) {
       if (Tools.compareVersion(this.installedVersion, this.currentVersion) === -1 && this.currentVersion.replace(/\D/g, '') > REQUIRED_DAEMON_VERSION) {
-        this.toldUserAboutUpdate = true;
+        this.setState({
+          toldUserAboutUpdate: true
+        })
         event.emit('daemonUpdate');
       }
     }
@@ -257,9 +298,11 @@ class Connector extends Component {
         const downloaded = await downloadFile(downloadUrl, walletDirectory, 'Eccoind.zip', zipChecksum, true);
 
         if (downloaded) {
-          self.installedVersion = latestVersion;
-          await self.saveVersion(self.installedVersion);
-          self.downloading = false;
+          await self.saveVersion(self.state.installedVersion);
+          self.setState({
+            installedVersion: latestVersion,
+            downloading: false
+          })
           resolve(true);
         } else {
           console.log(downloaded);
@@ -276,8 +319,8 @@ class Connector extends Component {
   async saveVersion(version) {
     console.log(this.versionPath);
     console.log(`version${version}`);
-    const writter = fs.createWriteStream(this.versionPath);
-    writter.write(version.toString());
+    const writer = fs.createWriteStream(this.versionPath);
+    writer.write(version.toString());
   }
 
   /**
@@ -298,6 +341,33 @@ class Connector extends Component {
       console.log('Error starting daemon');
       console.log(err);
       event.emit('loading-error', { message: err.message });
+    });
+  }
+
+  /**
+   * Stop the daemon
+   * @returns {*}
+   */
+
+  async stopDaemon() {
+    const self = this;
+    return new Promise((resolve, reject) => {
+      self.props.wallet.walletstop()
+        .then((data) => {
+          console.log(data);
+          if (data && data === 'ECC server stopping') {
+            console.log('stopping daemon');
+            resolve(true);
+          }	else if (data && data.code === 'ECONNREFUSED') {
+            resolve(true);
+          } else {
+            resolve(false);
+          }
+        })
+        .catch(err => {
+          console.log('failed to stop daemon:', err);
+          resolve(false);
+        });
     });
   }
 
