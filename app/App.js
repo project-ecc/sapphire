@@ -114,24 +114,11 @@ class App extends Component {
 const mapStateToProps = state => {
   return {
     setupStep: state.setup.step,
-    initialSetup: state.startup.initialSetup,
-    partialInitialSetup: state.startup.partialInitialSetup,
-    setupDone: state.startup.setupDone,
     loader: state.startup.loader || (state.chains.loadingBlockIndexPayment && !state.startup.initialSetup),
-    importingPrivateKey: state.application.importingPrivateKey,
-    checkingDaemonStatusPrivateKey: state.application.checkingDaemonStatusPrivateKey,
-    updateApplication: state.application.updateApplication,
-    updatingApplication: state.startup.updatingApp,
-    sending: state.application.sendingEcc,
-    creatingAddress: state.application.creatingAddress,
-    unencryptedWallet: state.startup.unencryptedWallet,
     loading: state.startup.loading,
     minimizeOnClose: state.application.minimizeOnClose,
     closingApplication: state.application.closingApplication,
     theme: state.application.theme,
-    shouldImportWallet: state.startup.importWallet,
-    importingWalletWithSetupDone: state.startup.importingWalletWithSetupDone,
-    daemonErrorPopup: state.application.daemonErrorPopup
   };
 };
 

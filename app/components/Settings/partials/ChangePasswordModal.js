@@ -64,7 +64,7 @@ class ChangePasswordModal extends Component {
         message: this.props.lang.fillAllFields,
         color: 'red'
       });
-    } else if (this.props.newPassword !== this.props.passwordValConfirmation) {
+    } else if (this.state.password !== this.state.password_confirm) {
       Toast({
         title: this.props.lang.error,
         message: this.props.lang.passwordsDontMatch,
@@ -126,9 +126,6 @@ class ChangePasswordModal extends Component {
 const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
-    passwordVal: state.application.password,
-    passwordValConfirmation: state.setup.confirmationPassword,
-    newPassword: state.application.newPassword,
     isStaking: state.chains.isStaking,
     wallet: state.application.wallet
   };

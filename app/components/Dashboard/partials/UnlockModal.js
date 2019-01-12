@@ -132,7 +132,6 @@ class UnlockModal extends Component {
 const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
-    passwordVal: state.application.password,
     wallet: state.application.wallet
   };
 };

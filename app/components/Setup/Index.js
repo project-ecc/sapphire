@@ -46,19 +46,7 @@ class Index extends Component {
 const mapStateToProps = state => {
   return {
     step: state.setup.step,
-    totalSteps: state.startup.totalSteps,
-    lang: state.startup.lang,
-    importing: state.setup.importing,
-    importedWalletVal: state.setup.imported,
-    stepOverVal: state.setup.stepOver,
-    encrypting: state.setup.encrypting,
-    initialSetup: state.startup.initialSetup,
-    partialInitialSetup: state.startup.partialInitialSetup,
-    unencryptedWallet: state.startup.unencryptedWallet,
-    setupDoneInternal: state.startup.setupDoneInternal,
-    importingPrivKey: state.application.checkingDaemonStatusPrivateKey,
-    shouldImportWallet: state.startup.importWallet,
-    importingWalletWithSetupDone: state.startup.importingWalletWithSetupDone
+    lang: state.startup.lang
   };
 };
 

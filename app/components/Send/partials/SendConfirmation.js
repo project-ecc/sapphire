@@ -33,7 +33,6 @@ class SendConfirmation extends Component {
   }
 
   componentWillUnmount() {
-    this.props.setMultipleAnsAddresses([]);
     this.props.setUsernameSend('');
   }
 
@@ -77,12 +76,9 @@ class SendConfirmation extends Component {
 
   reset() {
     this.props.setPopupLoading(false);
-    this.props.setPassword('');
-    this.props.setSendingECC(false);
     this.props.setUsernameSend('');
     this.props.setAmountSend('');
     this.props.setAddressSend('');
-    this.props.setAddressOrUsernameSend('');
   }
 
   unlockWallet(flag, time, callback) {
@@ -121,7 +117,7 @@ class SendConfirmation extends Component {
   }
 
   handleCancel() {
-    this.props.setSendingECC(false);
+    // this.props.setSendingECC(false);
   }
 
   handleClick(val) {

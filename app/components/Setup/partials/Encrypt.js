@@ -107,7 +107,7 @@ class Encrypt extends Component {
     }
 
     this.showEncryptingWallet();
-    this.props.wallet.encryptWallet(this.props.passwordValue).then((data) => {
+    this.props.wallet.encryptWallet(this.state.password).then((data) => {
       const self = this;
       if (data.code === -1 || data.code === -28) {
         console.log('failed to encrypt: ', data);
@@ -115,8 +115,6 @@ class Encrypt extends Component {
           self.encryptWallet();
         }, 1000);
       } else {
-        this.props.password('');
-        this.props.passwordConfirmation('');
         this.showWalletEncrypted();
         this.props.setUnencryptedWallet(false);
         setTimeout(() => {

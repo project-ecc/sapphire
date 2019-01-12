@@ -166,7 +166,6 @@ const mapStateToProps = state => {
     lang: state.startup.lang,
     eccPosts: state.application.eccPosts,
     cmcStats: state.application.coinMarketCapStats,
-    switchingPage: state.application.eccNewsSwitchingPage,
     selectedCurrency: state.application.selectedCurrency,
     lastUpdated: state.application.coinMarketLastUpdated
   };

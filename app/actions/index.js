@@ -9,33 +9,19 @@ import {
   IMPORT_WALLET,
   STEP_INITIAL_SETUP,
   SET_LANGUAGE,
-  STEP_FORWARD,
   IMPORTING_WALLET,
   IMPORTED_WALLET,
   IMPORT_CANCELLED,
-  IMPORT_STARTED,
-  PRIVATE_KEY,
-  PASSWORD,
-  PASSWORD_CONFIRMATION,
-  STEP_OVER,
   PAYMENT_CHAIN_SYNC,
-  ENCRYPTING,
   BLOCK_INDEX_PAYMENT,
   BLOCK_INDEX_PAYMENT_PERCENTAGE,
   STAKING,
-  UNLOCKING,
-  PASSWORD_UNLOCK,
   AMOUNT_SEND,
   ADDRESS_SEND,
   NAME_SEND,
-  SENDING_ECC,
   TRANSACTIONS_DATA,
   TRANSACTIONS_PAGE,
-  NEW_ADDRESS_NAME,
-  ADDRESS_CREATE_ANS,
-  SELECTED_ADDRESS,
   CREATING_ADDRESS,
-  NEW_ADDRESS_ACCOUNT,
   USER_ADDRESSES,
   CONTACTS,
   TRAY,
@@ -43,19 +29,13 @@ import {
   MINIMIZE_TO_TRAY,
   MINIMIZE_ON_CLOSE,
   LOCATION_TO_EXPORT,
-  FILTER_OWN_ADDRESSES,
   BACKUP_OPERATION_IN_PROGRESS,
   INDEXING_TRANSACTIONS,
   STAKING_REWARD,
   FILTER_EARNINGS_TIME,
   FILTER_EARNINGS_TYPE,
-  FILTER_EXPENSES_TYPE,
-  FILTER_EXPENSES_TIME,
-  IMPORTING_PRIVATE_KEY,
   WAS_STAKING,
-  NEW_PASSWORD,
   CHECKING_DAEMON_STATUS_PRIVKEY,
-  NEWS_SWITCHING_PAGE,
   UPDATE_APPLICATION,
   UPDATING_APP,
   UPDATE_AVAILABLE,
@@ -65,7 +45,6 @@ import {
   OPERATIVE_SYSTEM_NOTIFICATIONS,
   NEWS_NOTIFICATIONS,
   STAKING_NOTIFICATIONS,
-  SETUP_DONE_INTERNAL,
   CLOSING_APPLICATION,
   SELECTED_THEME,
   SELECTED_THEME_BACKUP,
@@ -83,16 +62,12 @@ import {
   USER_HAS_CLICKED_BUTTON,
   HOVERED_SETTINGS_SOCIAL_ICON,
   SET_DAEMON_VERSION,
-  UPGRADING_ADDRESS,
   SET_TEMPORARY_BALANCE,
   IMPORT_WALLET_TEMPORARY,
   FILE_DOWNLOAD_STATUS,
   TELL_USER_UPDATE_FAILED,
   TOLD_USER_UPDATE_FAILED,
   POPUP_LOADING,
-  NEW_ADDRESS_NAME_POPUP,
-  ADDRESS_OR_USERNAME_SEND,
-  MULTIPLE_ANS_ADDRESSES,
   ADDING_CONTACT,
   SHOW_ZERO_BALANCE,
   IS_FILTERING_TRANSACTIIONS,
@@ -140,12 +115,6 @@ export const setLang = () => {
 	};
 };
 
-export const stepForward = () => {
-	return {
-		type: STEP_FORWARD
-	}
-};
-
 export const importingWallet = () => {
 	return {
 		type: IMPORTING_WALLET
@@ -161,39 +130,6 @@ export const importedWallet = () => {
 export const importCancelled = () => {
 	return {
 		type: IMPORT_CANCELLED
-	}
-};
-
-export const importStarted = () => {
-	return {
-		type: IMPORT_STARTED
-	}
-};
-
-export const stepOver = () => {
-	return {
-		type: STEP_OVER
-	}
-};
-
-export const privateKey = (key) => {
-	return {
-		type: PRIVATE_KEY,
-		payload: {key: key}
-	}
-};
-
-export const password = (password) => {
-	return {
-		type: PASSWORD,
-		payload: {password: password}
-	}
-};
-
-export const passwordConfirmation = (passwordConfirmation) => {
-	return {
-		type: PASSWORD_CONFIRMATION,
-		payload: {passwordConfirmation: passwordConfirmation}
 	}
 };
 
@@ -218,23 +154,9 @@ export const updateBlockIndexPayment = (value) => {
 	}
 };
 
-export const isEncrypting = (val) => {
-	return {
-		type: ENCRYPTING,
-		payload: val
-	}
-};
-
 export const setStaking = (val) => {
 	return{
 		type: STAKING,
-		payload: val
-	}
-};
-
-export const setPassword = (val) => {
-	return{
-		type: PASSWORD_UNLOCK,
 		payload: val
 	}
 };
@@ -260,13 +182,6 @@ export const setAmountSend = (val) => {
 	}
 };
 
-export const setSendingECC = (val) => {
-	return{
-		type: SENDING_ECC,
-		payload: val
-	}
-};
-
 export const setTransactionsPage = (val) => {
 	return{
 		type: TRANSACTIONS_PAGE,
@@ -281,20 +196,6 @@ export const setTransactionsData = (data, type) => {
 	}
 };
 
-export const setNewAddressName = (val) => {
-	return{
-		type: NEW_ADDRESS_NAME,
-		payload: val
-	}
-};
-
-export const setNewAddressAccount = (val) => {
-	return{
-		type: NEW_ADDRESS_ACCOUNT,
-		payload: val
-	}
-};
-
 export const setUserAddresses = (val) => {
 	return{
 		type: USER_ADDRESSES,
@@ -302,30 +203,9 @@ export const setUserAddresses = (val) => {
 	}
 };
 
-export const setCreateAddressAns = (val) => {
-	return{
-		type: ADDRESS_CREATE_ANS,
-		payload: val
-	}
-};
-
-export const setSelectedAddress = (val) => {
-	return{
-		type: SELECTED_ADDRESS,
-		payload: val
-	}
-};
-
 export const setCreatingAddress = (val) =>{
 	return{
 		type: CREATING_ADDRESS,
-		payload: val
-	}
-};
-
-export const setUpgradingAddress = (val) =>{
-	return{
-		type: UPGRADING_ADDRESS,
 		payload: val
 	}
 };
@@ -368,13 +248,6 @@ export const setMinimizeOnClose = (val) => {
 export const setLocationToExport = (val) => {
 	return{
 		type: LOCATION_TO_EXPORT,
-		payload: val
-	}
-};
-
-export const setFilterOwnAddresses = (val) => {
-	return{
-		type: FILTER_OWN_ADDRESSES,
 		payload: val
 	}
 };
@@ -432,50 +305,15 @@ export const setFilterEarningsType = (val) => {
 	}
 };
 
-export const setFilterExpensesTime = (val) => {
-	return{
-		type: FILTER_EXPENSES_TIME,
-		payload: val
-	}
-};
-
-export const setFilterExpensesType = (val) => {
-	return{
-		type: FILTER_EXPENSES_TYPE,
-		payload: val
-	}
-};
-
-export const setImportingPrivateKey = (val) => {
-	return{
-		type: IMPORTING_PRIVATE_KEY,
-		payload: val
-	}
-};
-
 export const setWasStaking = () => {
 	return{
 		type: WAS_STAKING
 	}
 };
 
-export const setNewPassword = (val) => {
-	return{
-		type: NEW_PASSWORD,
-		payload: val
-	}
-};
-
 export const setCheckingDaemonStatusPrivKey = (val) => {
 	return{
 		type: CHECKING_DAEMON_STATUS_PRIVKEY,
-		payload: val
-	}
-};
-
-export const setNewsSwitchingPage = (val) => {
-	return{
-		type: NEWS_SWITCHING_PAGE,
 		payload: val
 	}
 };
@@ -539,13 +377,6 @@ export const setNewsNotifications = (val) => {
 export const setStakingNotifications = (val) => {
 	return{
 		type: STAKING_NOTIFICATIONS,
-		payload: val
-	}
-};
-
-export const setSetupDoneInternal = (val) => {
-	return{
-		type: SETUP_DONE_INTERNAL,
 		payload: val
 	}
 };
@@ -699,27 +530,6 @@ export const setLoading = val => {
 export const setPopupLoading = (val) => {
   return {
     type: POPUP_LOADING,
-    payload: val
-  }
-}
-
-export const setNewAddressNamePopup = (val) => {
-  return {
-    type: NEW_ADDRESS_NAME_POPUP,
-    payload: val
-  }
-}
-
-export const setAddressOrUsernameSend = (val) => {
-  return {
-    type: ADDRESS_OR_USERNAME_SEND,
-    payload: val
-  }
-}
-
-export const setMultipleAnsAddresses = (val) => {
-  return {
-    type: MULTIPLE_ANS_ADDRESSES,
     payload: val
   }
 }

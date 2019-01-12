@@ -59,8 +59,6 @@ class Index extends Component {
       if (result.ans && result.addresses.length === 1) {
         this.props.setUsernameSend(result.addresses[0].Name, `#${result.addresses[0].Code}`);
         this.props.setAddressSend(result.addresses[0].Address);
-      } else if (result && result.ans && result.addresses.length > 1) {
-        this.props.setMultipleAnsAddresses(result.addresses);
       } else if (result) {
         this.props.setAddressSend(result.addresses[0].address);
       }
@@ -75,7 +73,7 @@ class Index extends Component {
         color: 'red'
       });
     } else {
-      this.props.setSendingECC(true);
+      // this.props.setSendingECC(true);
     }
   }
 

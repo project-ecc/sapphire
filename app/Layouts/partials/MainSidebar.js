@@ -99,12 +99,8 @@ class MainSidebar extends Component {
 const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
-    sendingEcc: state.application.sendingEcc,
-    creatingAddress: state.application.creatingAddress,
     connections: state.chains.connections,
-    paymentChainSync: state.chains.paymentChainSync,
-    importingPrivateKey: state.application.importingPrivateKey,
-    closingApplication: state.application.closingApplication
+    paymentChainSync: state.chains.paymentChainSync
   };
 };
 

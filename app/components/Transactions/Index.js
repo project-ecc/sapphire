@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getAllTransactions, searchAllTransactions } from '../../Managers/SQLManager';
+import { getAllTransactions } from '../../Managers/SQLManager';
 
 import { traduction } from '../../lang/lang';
 import * as actions from '../../actions';
@@ -13,8 +13,6 @@ import $ from 'jquery';
 const moment = require('moment');
 
 moment.locale('en');
-
-const homedir = require('os').homedir();
 
 const lang = traduction();
 const Tools = require('../../utils/tools');
@@ -349,10 +347,6 @@ class Index extends Component {
         </Body>
       </div>
     );
-  }
-
-  renderOtherTransactions() {
-
   }
 }
 

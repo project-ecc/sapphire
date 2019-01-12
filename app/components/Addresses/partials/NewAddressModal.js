@@ -31,11 +31,6 @@ class NewAddressModal extends Component {
     };
   }
 
-  componentWillUnmount() {
-    this.props.setNewAddressNamePopup('');
-    this.props.setPassword('');
-  }
-
   toggle() {
     this.setState({
       open: !this.state.open
@@ -61,7 +56,7 @@ class NewAddressModal extends Component {
 
   createNormalAddress() {
     const vm = this;
-    this.props.wallet.createNewAddress(this.props.account).then((newAddress) => {
+    this.props.wallet.createNewAddress().then((newAddress) => {
       event.emit('newAddress');
       Toast({
         title: this.props.lang.addressCreatedSuccessfullyTitle,
@@ -87,8 +82,6 @@ class NewAddressModal extends Component {
 
 
   async handleConfirm() {
-    console.log('is address selected', this.props.selectedAddress);
-    console.log('is upgrading address', this.props.upgradingAddress);
     console.log('created address', this.state.createdAddress);
 
     this.createNormalAddress();
@@ -131,15 +124,9 @@ class NewAddressModal extends Component {
   }
 
   getConfirmationText() {
-    if (this.props.account === '') {
-  		return (
-    <p className="confirmationText">{ this.props.lang.normalCreateConfirm1 } <span className="ecc">{ this.props.lang.normalCreateConfirm2 }</span>.</p>
-  		);
-  	} else if (this.state.type === 'normal' && this.props.account !== '') {
-  		return (
-    <p className="confirmationText">{ this.props.lang.normalCreateConfirm1 } <span className="ecc">{ this.props.lang.normalCreateConfirm2 }</span> { this.props.lang.normalCreateConfirm4 } "{this.props.account}". { this.props.lang.normalCreateConfirm5 }                                { this.props.lang.normalCreateConfirm6 }.</p>
-  		);
-  	}
+    return (
+      <p className="confirmationText">{ this.props.lang.normalCreateConfirm1 } <span className="ecc">{ this.props.lang.normalCreateConfirm2 }</span>.</p>
+    );
   }
 
   render() {
@@ -168,13 +155,7 @@ class NewAddressModal extends Component {
 const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
-    username: state.application.newAddressName,
-    usernamePopup: state.application.newAddressNamePopup,
-    upgradingAddress: state.application.upgradingAddress,
-    selectedAddress: state.application.selectedAddress,
-    account: state.application.newAddressAccount,
     wallet: state.application.wallet,
-    passwordVal: state.application.password,
     blockPayment: state.chains.blockPayment
   };
 };

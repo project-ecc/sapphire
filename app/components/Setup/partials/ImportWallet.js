@@ -141,11 +141,7 @@ class ImportWallet extends Component {
 
 const mapStateToProps = state => {
   return {
-    lang: state.startup.lang,
-    importing: state.setup.importing,
-    importHasStarted: state.setup.importStarted,
-    setupDone: state.startup.setupDone,
-    shouldImportWallet: state.startup.importWallet
+    lang: state.startup.lang
   };
 };
 

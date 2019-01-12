@@ -91,15 +91,7 @@ class SettingSidebar extends Component {
 
 const mapStateToProps = state => {
   return {
-    lang: state.startup.lang,
-    sendingEcc: state.application.sendingEcc,
-    creatingAddress: state.application.creatingAddress,
-    connections: state.chains.connections,
-    paymentChainSync: state.chains.paymentChainSync,
-    importingPrivateKey: state.application.importingPrivateKey,
-    closingApplication: state.application.closingApplication,
-    notifications: state.notifications.entries,
-    updateAvailable: state.startup.guiUpdate || state.startup.daemonUpdate
+    lang: state.startup.lang
   };
 };
 

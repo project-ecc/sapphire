@@ -252,13 +252,8 @@
 
  const mapStateToProps = state => {
    return {
-     direction: state.setup.direction,
      lang: state.startup.lang,
-     privateKeyValue: state.setup.privateKey,
      wallet: state.application.wallet,
-     passwordVal: state.setup.password,
-     checkingDaemonStatusPrivateKey: state.application.checkingDaemonStatusPrivateKey,
-     setupDoneInternal: state.startup.setupDoneInternal,
      rescanningLogInfo: state.application.debugLog
    };
  };

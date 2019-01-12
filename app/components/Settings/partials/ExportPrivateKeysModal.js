@@ -157,7 +157,6 @@ class ExportPrivateKeysModal extends Component {
     this.setState({
       panel: 2
     })
-    this.props.setPassword('');
   }
 
   unlockWallet(flag, time, callback) {
@@ -323,8 +322,6 @@ class ExportPrivateKeysModal extends Component {
 const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
-    passwordVal: state.application.password,
-    locationToExport: state.application.locationToExport,
     wallet: state.application.wallet,
     staking: state.chains.isStaking,
     addresses: state.application.userAddresses
