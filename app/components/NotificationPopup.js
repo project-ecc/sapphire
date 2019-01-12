@@ -118,7 +118,7 @@ class NotificationPopup extends Component {
     if (this.props.notifications.news.total === 0) {
       return null;
     }
-    const news = Tools.getIconForTheme('eccNewsNotif', false);
+    const news = Tools.getIconForTheme('eccNewsNotif', false); // white ECC logo
     const totalNews = this.props.notifications.news.total;
     const date = this.props.notifications.news.date;
     let newsBody = <p id="mediumPosts">{ this.props.lang.newMediumPost }</p>;
