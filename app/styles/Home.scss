@@ -3,7 +3,7 @@
 .homeSection{
   @include themify($themes) {
     background-color: themed('cardBackgroundColor');
-    -webkit-box-shadow: themed('cardBoxShadow');
+    box-shadow: themed('cardBoxShadow');
   }
   min-height: 170px;
   margin-bottom: 45px;

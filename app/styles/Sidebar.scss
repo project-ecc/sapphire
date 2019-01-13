@@ -72,11 +72,15 @@
 	  }
 
 	  &.active {
-		color: #fff !important;
+		@include themify($themes) {
+		  color: themed('sectionsActiveColor') !important;
+		}
 
 		&:before {
 		  width: 3px;
-		  background-color:#fff;
+		  @include themify($themes) {
+			background-color: themed('sectionsActiveColor');
+		  }
 		}
 	  }
 	}

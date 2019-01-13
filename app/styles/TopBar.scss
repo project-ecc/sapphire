@@ -17,9 +17,8 @@
 	display: flex;
 	-webkit-app-region: no-drag;
 	-webkit-user-select: none;
-	backdrop-filter: blur(20px);
 	@include themify($themes) {
-	  background-color: transparentize(themed('bodyBackgroundColor'), 0.4);
+	  background-color: themed('bodyBackgroundColor');
 	}
 
 	& > a {
@@ -84,6 +83,9 @@
 
 	  & > a {
 		height: 35px;
+		@include themify($themes) {
+		  filter: themed('titlebarButtonFilter');
+		}
 
 		&.fullscreen {
 		  display: none;
@@ -95,10 +97,12 @@
 
 		&.close:hover {
 		  background-color: #e20000;
+		  filter: invert(0%);
 		}
 
 		&.close:active {
 		  background-color: #910000;
+		  filter: invert(0%);
 		}
 
 		&.minimize {

@@ -293,6 +293,12 @@ input::-webkit-inner-spin-button {
 	opacity: 0.2;
 }
 
+.bg-dark {
+  @include themify($themes) {
+	background-color: themed('bodyBackgroundColor') !important;
+  }
+}
+
 
 /* Main page components */
 .header {
@@ -324,7 +330,9 @@ input::-webkit-inner-spin-button {
 	right:0;
 	left:0;
 	pointer-events: none;
-	background: radial-gradient(ellipse at 50% -3%, rgba(0, 0, 0, 0.3), rgba(97, 97, 97, 0) 70%);
+	@include themify($themes) {
+	  background: themed('headerRadialBackground');
+	}
   }
 }
 

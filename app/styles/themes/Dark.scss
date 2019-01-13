@@ -8,7 +8,10 @@ $darkTheme: (
   cardBackgroundColor: #22252d,
   cardDarkBackgroundColor: #171717,
   cardItemSelectedBackgroundColor: #1a1d23,
-  cardBoxShadow: 0px 2px 5px black,
+  cardBoxShadow: 0px 2px 5px rgba(0,0,0,0.2),
+
+  // CONTENT
+  headerRadialBackground: radial-gradient(ellipse at 50% -3%, rgba(0, 0, 0, 0.3), rgba(97, 97, 97, 0) 70%),
 
   // TOGGLES
   toggleTrueBackgroundColor: #c39c59,
@@ -29,6 +32,7 @@ $darkTheme: (
   sectionsBackground: #0f0f13,
   sectionsHrefColor: #4a4a54,
   sectionsHrefHoverColor: #6e6e79,
+  sectionsActiveColor: #fff,
 
   // RIGHT SIDEBAR
   rightSidebarBackgroundColor: #0f0f13,
@@ -48,5 +52,8 @@ $darkTheme: (
   //SCROLLBAR
   scrollbarTrackBoxShadow: inset 0 0 0px rgba(0,0,0,0),
   scrollbarTrackBackgroundColor: rgba(0,0,0,0),
-  scrollbarThumbBackgroundColor: #14161b
+  scrollbarThumbBackgroundColor: #14161b,
+
+  // TITLEBAR
+  titlebarButtonFilter: invert(0%)
 );

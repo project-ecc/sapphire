@@ -34,7 +34,9 @@
 	  }
 
 	  .close {
-		color: #fff;
+		@include themify($themes) {
+		  color: themed('bodyParagraphColor');
+		}
 		text-shadow: none;
 		font-size: 1.75rem;
 	  }

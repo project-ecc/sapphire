@@ -100,7 +100,7 @@ i.fa.fa-chevron-down{
 
 ::-webkit-scrollbar-track {
   @include themify($themes) {
-    -webkit-box-shadow: themed('scrollbarTrackBoxShadow');
+    box-shadow: themed('scrollbarTrackBoxShadow');
     background-color: themed('scrollbarTrackBackgroundColor');
   }
   border-radius: 8px;
