@@ -1,4 +1,4 @@
-@import "./styles/themes.scss";
+@import "./themes/themes.scss";
 
 .transactionInfoTitle{
   @include themify($themes) {
@@ -20,12 +20,6 @@
   }
 }
 
-.icon-action:active{
-      @include themify($themes) {
-       color: themed('buttonBorderedFontColor');
-    }
-}
-
 .transactions {
   padding-top: 5px;
   position: relative;
@@ -38,7 +32,6 @@
 .dropdownFilterSelector {
   @include themify($themes) {
     color: themed('bodyParagraphColor');
-    background-color: themed('transactionsFilterBackgroundColor');
   }
   width: 300px;
   display: inline-block;
@@ -76,10 +69,6 @@
 }
 
 .dropdownFilterSelector .dropdown-menuFilterSelector {
-    @include themify($themes) {
-      background-color: themed('transactionsFilterBackgroundColor');
-      border: themed('transactionsFilterBorder');
-    }
     position: absolute;
     width: 100%;
     left: 0;
@@ -106,13 +95,13 @@
 
 .dropdownFilterSelector .dropdown-menuFilterSelector li:hover {
     @include themify($themes) {
-      background-color: themed('homePanelsBackgroundColor');
+      background-color: themed('cardBackgroundColor');
     }
 }
 
 .dropdownFilterSelector .dropdown-menuFilterSelector li:active {
     @include themify($themes) {
-      background-color: themed('homePanelsBackgroundColor');
+      background-color: themed('cardBackgroundColor');
     }
 }
 
@@ -165,7 +154,6 @@ i.fa.fa-chevron-down{
   /*margin-top:6px;*/
 
    @include themify($themes) {
-      background-color: themed('tableExtraBackgroundColor');
       color: themed('bodyParagraphColor');
     }
 

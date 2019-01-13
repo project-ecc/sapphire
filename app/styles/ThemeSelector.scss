@@ -2,9 +2,10 @@
   .themeSelector {
     text-align: center;
     opacity: 0.6;
-    padding: 25px 40px;
+    padding: 25px 10px;
     cursor: pointer;
     display: inline-block;
+    width: 125px;
 
     &.selectedTheme, &:hover {
       opacity: 1;

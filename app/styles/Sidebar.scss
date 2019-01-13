@@ -1,4 +1,4 @@
-@import "./themes.scss";
+@import "themes/themes.scss";
 
 #page {
   display: flex;
@@ -86,8 +86,8 @@
   .sidebar {
 	@include themify($themes) {
 	  background-color: themed('sidebarBackgroundColor');
-	  box-shadow: themed('sidebarBoxShadow');
 	}
+	box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.2);
 	height: 100vh;
 	overflow-y: auto;
 	overflow-x: hidden;
@@ -155,7 +155,7 @@
 
 		a:not(.subheading):hover, a.active {
 		  @include themify($themes) {
-			background-color: themed('sidebarSubOptionRectangleBackgroundColor');
+			background-color: themed('sidebarHoverBackgroundColor');
 			color: themed('sidebarSelectedItemColor') !important;
 		  }
 		}
@@ -234,9 +234,6 @@
 }
 
 .progress {
-    @include themify($themes) {
-      background-color: themed('sidebarProgressBarFirstBackgroundColor');
-    }
     margin: 10px;
     height: 6px;
     border-radius: 5px;
@@ -249,8 +246,8 @@
 
 .bar {
     @include themify($themes) {
-      background-color: themed('sidebarProgressBarBackgroundColor');
-      box-shadow: themed('sidebarProgressBarBoxShadow');
+      background-color: themed('progressBarBackgroundColor');
+      box-shadow: themed('progressBarBoxShadow');
     }
     height: 6px;
     border-radius: 5px;

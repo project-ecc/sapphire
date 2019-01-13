@@ -1,4 +1,4 @@
-@import "./themes.scss";
+@import "themes/themes.scss";
 
 .modal-backdrop.show {
   opacity: 0.8 !important;
@@ -17,8 +17,8 @@
 
   & > .modal-content {
 	@include themify($themes) {
-	  background-color: themed('popupBackgroundColor');
-	  box-shadow: themed('popupBoxShadow');
+	  background-color: themed('modalBackgroundColor');
+	  box-shadow: themed('modalBoxShadow');
 	  color: themed('bodyParagraphColor');
 	}
 	border-radius: 0px;

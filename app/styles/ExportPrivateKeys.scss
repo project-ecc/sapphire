@@ -1,4 +1,4 @@
-@import "./styles/themes.scss";
+@import "./themes/themes.scss";
 
 .pdfExample{
 	@include themify($themes) {
@@ -43,6 +43,6 @@
     margin: 0 auto;
     border-radius: 14px;
     @include themify($themes) {
-        background-color: themed('homePanelsBackgroundColor');
+        background-color: themed('cardBackgroundColor');
     }
 }

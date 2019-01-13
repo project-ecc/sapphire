@@ -1,15 +1,8 @@
-@import "./styles/themes.scss";
+@import "./themes/themes.scss";
 
 .networkStatsChainTitle{
 	font-size: 26px;
 	font-weight: 300;
-	transition: font-size 0.3s;
-}
-
-#headerNetworkText{
-	@include themify($themes) {
-		color: themed('bigPanelTimeColor');
-	}
 	transition: font-size 0.3s;
 }
 .percentageSyncedNetworkVal{
@@ -59,10 +52,6 @@
 	.networkStatsChainTitle{
 		font-size: 23px;
 		font-weight: 300;
-	}
-
-	#headerNetworkText{
-		font-size: 60px !important;
 	}
 
 	.networkStatsImage{

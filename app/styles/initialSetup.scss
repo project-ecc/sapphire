@@ -1,4 +1,4 @@
-@import "./themes.scss";
+@import "themes/themes.scss";
 
 #mainPanel{
   width: 100%;
@@ -42,26 +42,4 @@
 
 #logo{
   margin-bottom: 20px;
-}
-
-polyline, circle{
-  transition: all 0.3s;
-}
-
-#buttons polyline, #buttons circle{
-    @include themify($themes) {
-      stroke: themed('initialSetupButtonActiveStrokeColor');
-    }
-}
-
-.intialSetupButtonInactive{
-   @include themify($themes) {
-      stroke: themed('initialSetupButtonStrokeColor') !important;
-    }
-}
-
-@media screen and (max-height: 628px) {
-    #mainPanel {
-        top: 10%;
-    }
 }

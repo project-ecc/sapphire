@@ -1,4 +1,4 @@
-@import "./themes.scss";
+@import "themes/themes.scss";
 
 .updateApplicationMessage{
 	padding-top: 45px;
@@ -6,9 +6,6 @@
 }
 
 .settingsToggle{
-	@include themify($themes) {
-		border-bottom: themed('settingsItemBorderBottom');
-	}
 	padding-bottom: 20px;
 	padding-top: 20px;
 }
@@ -24,9 +21,6 @@
 }
 
 #applicationVersion{
-	@include themify($themes) {
-		color: themed('settingsTitleColor');
-	}
 	font-size: 14px;
 	font-weight: 700;
 	padding-top: 15px;
@@ -42,9 +36,6 @@
 }
 
 #updateUnavailable{
-	@include themify($themes) {
-		color: themed('settingsTitleColor');
-	}
 	font-size: 16px;
 	font-weight: 600;
 }
@@ -73,7 +64,7 @@
 
 #languageRectangle{
 	@include themify($themes) {
-		background-color: themed('settingsHelTranslateBackgroundColor');
+		background-color: themed('cardDarkBackgroundColor');
 	}
 	padding-left: 15px;
     padding-right: 15px;
@@ -81,9 +72,6 @@
 }
 
 #languageHelp{
-	@include themify($themes) {
-		color: themed('settingsHelpTranslateTitleColor');
-	}
 	font-size: 15px;
 	font-weight: 700;
 	padding-bottom: 10px;
@@ -124,9 +112,6 @@
 }
 
 .settingsToggleSubText{
-	@include themify($themes) {
-		color: themed('settingsToggleDescriptionColor') !important;
-	}
 	font-size: 14px;
     padding-top: 13px;
     font-weight: 700;

@@ -1,4 +1,4 @@
-@import "./themes.scss";
+@import "themes/themes.scss";
 
 .newsPost{
   margin: 20px 0;
@@ -51,9 +51,6 @@
 }
 
 .statsItem p:nth-child(2){
-	@include themify($themes) {
-		color: themed('newsMarketDetailsValueColor');
-	}
-	font-weight: 600;
+  font-weight: 600;
   padding-bottom: 12px;
 }
