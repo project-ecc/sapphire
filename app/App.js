@@ -86,7 +86,7 @@ class App extends Component {
    */
   checkThemeClass() {
     const theme = this.props.theme;
-    const availablethemes = ['theme-darkEcc', 'theme-defaultEcc'];
+    const availablethemes = ['theme-darkEcc', 'theme-defaultEcc', 'theme-lightEcc'];
     for (const ele in availablethemes) {
       if (document.body.classList.contains(availablethemes[ele])) {
         document.body.classList.remove(availablethemes[ele]);

@@ -8,13 +8,13 @@ import NetworkStatsPage from './../components/NetworkStats/Index';
 import NewsPage from '../components/News/Index';
 
 // Settings
-import SettingsAdvanced from '../components/Settings/pages/Advanced';
-import SettingsDonate from '../components/Settings/pages/Donate';
-import SettingsLanguage from '../components/Settings/pages/Language';
-import SettingsNotifications from '../components/Settings/pages/Notifications';
-import SettingsAppearance from '../components/Settings/pages/Appearance';
-import SettingsWallet from '../components/Settings/pages/Wallet';
-import SettingsGeneral from '../components/Settings/pages/General';
+import SettingsAdvanced from '../components/Settings/Advanced';
+import SettingsDonate from '../components/Settings/Donate';
+import SettingsLanguage from '../components/Settings/Language';
+import SettingsNotifications from '../components/Settings/Notifications';
+import SettingsAppearance from '../components/Settings/Appearance';
+import SettingsWallet from '../components/Settings/Wallet';
+import SettingsGeneral from '../components/Settings/General';
 
 // Layouts
 import MainLayout from './../Layouts/Main';

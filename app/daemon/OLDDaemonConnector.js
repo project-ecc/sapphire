@@ -820,7 +820,6 @@ class OLDDaemonConnector {
   }
 
   goToEarningsPanel() {
-    // this.store.dispatch({type: IS_FILTERING_TRANSACTIIONS, payload: true})
     this.store.dispatch({ type: TRANSACTIONS_TYPE, payload: 'generate' });
     hash.push('/coin/transactions');
   }

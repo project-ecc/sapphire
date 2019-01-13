@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import ThemeSelectorStep from '../../InitialSetupPage/ThemeSelectorStep';
 import { ArrowRightIcon } from 'mdi-react';
 import { Button } from 'reactstrap';
-import {connect} from "react-redux";
-import * as actions from "../../../actions";
+import { connect } from 'react-redux';
+
+import ThemeSelector from '../../Others/ThemeSelector';
+import * as actions from '../../../actions';
 
 class Theme extends Component {
   constructor(props) {
@@ -25,7 +26,7 @@ class Theme extends Component {
         <p>
           { this.props.lang.changeLater }
         </p>
-        <ThemeSelectorStep />
+        <ThemeSelector />
         <Button onClick={this.nextStep} color="primary" className="mt-5">
           Import Wallet
           <ArrowRightIcon className="ml-2" />

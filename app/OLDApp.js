@@ -7,7 +7,7 @@ import Settings from '../components/Settings/Settings';
 import Loading from './Layouts/Loading';
 import * as actions from './actions/index';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
-import UpdateApplication from './components/Settings/UpdateApplication';
+import UpdateApplication from './components/Settings/partials/UpdateApplicationModal';
 import SendConfirmation from './components/Send/partials/SendConfirmation';
 import ConfirmNewAddress from './components/Addresses/partials/NewAddressModal';
 import ClosingApplication from './components/Others/ClosingApplication';

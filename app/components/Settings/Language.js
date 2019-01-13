@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { SettingsIcon } from 'mdi-react';
 
-import * as actions from '../../../actions';
-import LanguageSelector from '../../Others/LanguageSelector';
-import Header from './../../Others/Header';
-import Body from './../../Others/Body';
+import * as actions from '../../actions/index';
+import LanguageSelector from '../Others/LanguageSelector';
+import Header from '../Others/Header';
+import Body from '../Others/Body';
 
 class Language extends Component {
   constructor(props) {

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import { connect } from 'react-redux';
-import { ArrowRightIcon } from 'mdi-react';
-import ImportPrivateKey from '../../InitialSetupPage/ImportPrivateKey';
+import ImportPrivateKeysPartial from '../../Settings/partials/ImportPrivateKeysPartial';
 import * as actions from '../../../actions';
 
 class ImportPrivateKeys extends Component {
@@ -25,11 +24,11 @@ class ImportPrivateKeys extends Component {
         <p>
           { this.props.lang.writeDownAPrivateKeyToImport }
         </p>
-        <ImportPrivateKey>
+        <ImportPrivateKeysPartial>
           <Button onClick={this.nextStep} color="link">
             Later
           </Button>
-        </ImportPrivateKey>
+        </ImportPrivateKeysPartial>
       </div>
     );
   }

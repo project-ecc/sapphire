@@ -3,10 +3,10 @@
  import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
  import { TweenMax } from 'gsap';
  import { KeyIcon } from 'mdi-react';
- import * as actions from '../../actions';
- import Toast from '../../globals/Toast/Toast';
+ import * as actions from '../../../actions/index';
+ import Toast from '../../../globals/Toast/Toast';
 
- class ImportPrivateKey extends Component {
+ class ImportPrivateKeysPartial extends Component {
    constructor(props) {
      super(props);
 
@@ -259,4 +259,4 @@
  };
 
 
- export default connect(mapStateToProps, actions, null, { withRef: true })(ImportPrivateKey);
+ export default connect(mapStateToProps, actions, null, { withRef: true })(ImportPrivateKeysPartial);

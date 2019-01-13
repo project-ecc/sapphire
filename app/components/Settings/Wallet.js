@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
+import * as actions from '../../actions/index';
 import { SettingsIcon } from 'mdi-react';
 import { Button } from 'reactstrap';
 import { CloudUploadIcon, FileExportIcon } from 'mdi-react';
 
-import ExportPrivateKeysModal from './../partials/ExportPrivateKeysModal';
-import ChangePasswordModal from './../partials/ChangePasswordModal';
-import ImportPrivateKeysModal from './../partials/ImportPrivateKeysModal';
+import ExportPrivateKeysModal from './partials/ExportPrivateKeysModal';
+import ChangePasswordModal from './partials/ChangePasswordModal';
+import ImportPrivateKeysModal from './partials/ImportPrivateKeysModal';
 
-import Header from './../../Others/Header';
-import Body from './../../Others/Body';
+import Header from '../Others/Header';
+import Body from '../Others/Body';
 
 const remote = require('electron').remote;
 const dialog = remote.require('electron').dialog;

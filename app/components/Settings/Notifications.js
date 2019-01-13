@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
 import { SettingsIcon } from 'mdi-react';
 
-import * as actions from '../../../actions';
-import SettingsToggle from './../SettingsToggle';
-import Header from './../../Others/Header';
-import Body from './../../Others/Body';
+import * as actions from '../../actions/index';
+import SettingsToggle from './partials/SettingsToggle';
+import Header from '../Others/Header';
+import Body from '../Others/Body';
 
 const settings = require('electron').remote.require('electron-settings');
 

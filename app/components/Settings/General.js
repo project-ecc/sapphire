@@ -4,12 +4,12 @@ import { ipcRenderer } from 'electron';
 import fs from 'fs';
 import { SettingsIcon } from 'mdi-react';
 
-import * as actions from '../../../actions';
-import { version } from './../../../../package.json';
-import SettingsToggle from './../SettingsToggle';
-import Header from './../../Others/Header';
-import Body from './../../Others/Body';
-import ActionModal from './../../Others/ActionModal';
+import * as actions from '../../actions/index';
+import { version } from '../../../package.json';
+import SettingsToggle from './partials/SettingsToggle';
+import Header from '../Others/Header';
+import Body from '../Others/Body';
+import ActionModal from '../Others/ActionModal';
 
 const settings = require('electron').remote.require('electron-settings');
 const remote = require('electron').remote;

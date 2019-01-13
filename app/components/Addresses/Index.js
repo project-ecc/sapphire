@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Button } from 'reactstrap';
 
 import * as actions from '../../actions';
-import TableToggle from '../Settings/TableToggle';
+import TableToggle from '../Settings/partials/TableToggle';
 import NewAddressModal from './partials/NewAddressModal';
 
 import Header from './../Others/Header';

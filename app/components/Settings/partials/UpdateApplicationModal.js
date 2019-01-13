@@ -3,15 +3,15 @@ import { connect } from 'react-redux';
 import {TweenMax} from "gsap";
 import { ipcRenderer } from 'electron';
 
-import * as actions from '../../actions';
-import CloseButtonPopup from '../Others/CloseButtonPopup';
-import ConfirmButtonPopup from '../Others/ConfirmButtonPopup';
+import * as actions from '../../../actions/index';
+import CloseButtonPopup from '../../Others/CloseButtonPopup';
+import ConfirmButtonPopup from '../../Others/ConfirmButtonPopup';
 
 import $ from 'jquery';
 
-const tools = require('../../utils/tools');
+const tools = require('../../../utils/tools');
 
-class UpdateApplication extends Component {
+class UpdateApplicationModal extends Component {
  constructor() {
     super();
     this.handleConfirm = this.handleConfirm.bind(this);
@@ -65,4 +65,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connect(mapStateToProps, actions)(UpdateApplication);
+export default connect(mapStateToProps, actions)(UpdateApplicationModal);
