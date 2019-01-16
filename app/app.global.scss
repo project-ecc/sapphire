@@ -7,7 +7,7 @@
 @import "./styles/Home.scss";
 @import "./styles/Transactions.scss";
 @import "./styles/Settings.scss";
-@import "./styles/Loading.scss";
+@import "styles/FullscreenModal";
 @import "./styles/initialSetup.scss";
 @import "./styles/LanguageSelector.scss";
 @import "./styles/ThemeSelector.scss";
@@ -54,6 +54,12 @@ body {
   cursor: default;
   font-family: Muli, sans-serif;
   font-weight: 600;
+}
+
+a, .btn-link {
+  @include themify($themes) {
+	color: themed('hrefColor');
+  }
 }
 
 #root {

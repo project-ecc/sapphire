@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { TweenMax } from 'gsap';
 import * as actions from '../../actions';
-import NewsItem from './partials/NewsItem';
+import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
-import $ from 'jquery';
-import ReactTooltip from 'react-tooltip';
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Button } from 'reactstrap';
+import { RefreshIcon } from 'mdi-react';
 
+import NewsItem from './partials/NewsItem';
 import Header from './../Others/Header';
 import Body from './../Others/Body';
 import RightSidebar from './../Others/RightSidebar';
@@ -18,9 +17,23 @@ class Index extends Component {
     super(props);
     this.onItemClick = this.onItemClick.bind(this);
     this.refreshCoinData = this.refreshCoinData.bind(this);
+    this.toggle = this.toggle.bind(this);
+
     this.state = {
-      isRefreshing: false
+      currencyDropdownOpen: false,
+      isLoading: false
     };
+
+    this.availableCurrencies = [
+      {key: 'usd', value: this.props.lang.usd},
+      {key: 'gbp', value: this.props.lang.gbp},
+      {key: 'eur', value: this.props.lang.eur},
+      {key: 'aud', value: this.props.lang.aud},
+      {key: 'btc', value: this.props.lang.btc},
+      {key: 'eth', value: this.props.lang.eth},
+      {key: 'ltc', value: this.props.lang.ltc},
+      {key: 'bch', value: this.props.lang.bch}
+    ];
 
     ipcRenderer.on('refresh-complete', (event, arg) => {
       console.log('in here');
@@ -34,15 +47,10 @@ class Index extends Component {
     this.props.setNewsChecked(new Date().getTime());
   }
 
-  handleDropDownClicked() {
-    $('.dropdownFilterSelector').attr('tabindex', 1).focus();
-    $('.dropdownFilterSelector').toggleClass('active');
-    $('.dropdownFilterSelector').find('.dropdown-menuFilterSelector').slideToggle(300);
-  }
-
-  handleDrowDownUnfocus() {
-    $('.dropdownFilterSelector').removeClass('active');
-    $('.dropdownFilterSelector').find('.dropdown-menuFilterSelector').slideUp(300);
+  toggle() {
+    this.setState(prevState => ({
+      currencyDropdownOpen: !prevState.currencyDropdownOpen
+    }));
   }
 
   getSpliceValue(str) {
@@ -69,27 +77,12 @@ class Index extends Component {
     ipcRenderer.send('selected-currency', this.props.selectedCurrency);
   }
 
-  getValue(val) {
-    switch (val) {
-      default:
-      case 'usd' : return this.props.lang.usd;
-      case 'eur' : return this.props.lang.eur;
-      case 'aud' : return this.props.lang.aud;
-      case 'btc': return this.props.lang.btc;
-      case 'eth' : return this.props.lang.eth;
-      case 'ltc':return this.props.lang.ltc;
-      case 'bch': return this.props.lang.bch;
-      case 'gbp': return this.props.lang.gbp;
-    }
-  }
-
   render() {
     const selectedCurrency = this.props.selectedCurrency.toUpperCase();
     const iTime = new Date(this.props.lastUpdated * 1000);
     const lastUpdated = Tools.calculateTimeSince(this.props.lang, new Date(), iTime);
     const spinClass = this.state.isLoading ? 'fa-spin' : '';
-    console.log(this.props.eccPosts);
-    console.log(this.props.cmcStats);
+
     return (
       <div className="d-flex w-100 h-100">
         <div className="padding-titlebar wrapper flex-auto">
@@ -112,50 +105,49 @@ class Index extends Component {
             })}
           </Body>
         </div>
-        <RightSidebar>
+        <RightSidebar className="position-relative">
           <div className="p-4">
-            <div className="dropdownFilterSelector" style={{/* width: "100px", marginLeft: "100px", top: "6px", */ height: '35px', padding: '0 0 20px 0', textAlign: 'center' }} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
-              <div className="selectFilterSelector" style={{ border: 'none', position: 'relative', top: '-1px', height: '30px' }}>
-                <p className="normalWeight">{this.getValue(this.props.selectedCurrency)}</p>
-                <i className="fa fa-chevron-down" />
-              </div>
-              <input type="hidden" name="gender" />
-              <ul className="dropdown-menuFilterSelector normalWeight " style={{ margin: '0 0' }}>
-                <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="usd">{ this.props.lang.usd }</li>
-                <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="gbp">{ this.props.lang.gbp }</li>
-                <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="eur">{ this.props.lang.eur }</li>
-                <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="aud">{ this.props.lang.aud }</li>
-                <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="btc">{ this.props.lang.btc }</li>
-                <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="eth">{ this.props.lang.eth }</li>
-                <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="ltc">{ this.props.lang.ltc }</li>
-                <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="bch">{ this.props.lang.bch }</li>
-              </ul>
+            <div className="d-flex justify-content-between">
+              <Dropdown isOpen={this.state.currencyDropdownOpen} toggle={this.toggle} className="mt-1">
+                <DropdownToggle caret>
+                  <small>Currency:</small> { this.props.selectedCurrency }
+                </DropdownToggle>
+                <DropdownMenu>
+                  { this.availableCurrencies.map(obj => (
+                    <DropdownItem onClick={this.onItemClick} key={obj.key} data-id={obj.key} active={this.props.selectedCurrency === obj.value}>{ obj.value }</DropdownItem>
+                  ))}
+                </DropdownMenu>
+              </Dropdown>
+
+              <Button color="link" onClick={this.refreshCoinData}>
+                <RefreshIcon />
+              </Button>
             </div>
 
-            <button data-tip={`Last Updated ${lastUpdated}`} style={{ cursor: 'pointer', borderStyle: 'none', background: 'none' }} onClick={this.refreshCoinData}><span className="icon" style={{ marginTop: '5px' }}><i style={{ color: '#b9b9b9' }} className={`fa fa-refresh ${spinClass}`} /></span></button>
-
-            <div className="subheading">
+            <div className="subheading mt-3 mb-2">
               { this.props.lang.marketStats }
             </div>
             <div className="statsItem">
-              <p>{ this.props.lang.rank }</p>
+              <p className="small-header">{ this.props.lang.rank }</p>
               <p>{this.props.cmcStats.rank}</p>
             </div>
             <div className="statsItem">
-              <p>{ this.props.lang.marketCap }</p>
+              <p className="small-header">{ this.props.lang.marketCap }</p>
               <p>{`${this.props.cmcStats.marketCap} ${selectedCurrency}`}</p>
             </div>
             <div className="statsItem">
-              <p>{ this.props.lang.price }</p>
+              <p className="small-header">{ this.props.lang.price }</p>
               <p>{`${this.props.cmcStats.price} ${selectedCurrency}` }</p>
             </div>
             <div className="statsItem">
-              <p>{ this.props.lang.volume }</p>
+              <p className="small-header">{ this.props.lang.volume }</p>
               <p>{ `${this.props.cmcStats.volume} ${selectedCurrency}` }</p>
+            </div>
+            <div className="position-absolute" style={{bottom: 10, right: 10}}>
+              <small>Last Updated: { lastUpdated }</small>
             </div>
           </div>
         </RightSidebar>
-        <ReactTooltip />
       </div>
     );
   }

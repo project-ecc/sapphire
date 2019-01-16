@@ -2,34 +2,25 @@ import React, { Component } from 'react';
 import { ipcRenderer } from 'electron';
 import { connect } from 'react-redux';
 
-// TODO : this needs to be removed its being used for parsing some news crap.
-import $ from 'jquery';
-
 import * as actions from '../actions/index';
 import {
-  addTransaction, addAddress, truncateTransactions,
-  getAllTransactions, getAllRewardTransactions, getAllPendingTransactions,
-  getLatestTransaction, getAllAddresses, updatePendingTransaction, updateTransactionsConfirmations,
-  getAllMyAddresses, clearDB, addAnsRecord
+  addTransaction, addAddress,
+  getAllTransactions, getAllRewardTransactions,
+  getLatestTransaction, updateTransactionsConfirmations,
+  getAllMyAddresses, clearDB
 } from '../Managers/SQLManager';
 import * as tools from '../utils/tools';
-import hash from '../router/hash';
-import ConnectorNews from './News';
 import {
-  COIN_MARKET_CAP,
   INDEXING_TRANSACTIONS,
   LOADING,
   PENDING_TRANSACTION,
   STAKING_NOTIFICATION,
-  STAKING_REWARD, USER_ADDRESSES
+  STAKING_REWARD
 } from '../actions/types';
 
+import FullscreenModal from './../components/Others/FullscreenModal'
+
 const event = require('../utils/eventhandler');
-const settings = require('electron-settings');
-const FeedMe = require('feedme');
-const https = require('https');
-const request = require('request');
-const moment = require('moment');
 const db = require('../utils/database/db');
 
 class Coin extends Component {
@@ -591,7 +582,11 @@ class Coin extends Component {
 
 
   render() {
-    return null;
+    return (
+      <div>
+        {/*<FullscreenModal ref={(e) => this.}/>*/}
+      </div>
+    );
   }
 
 }

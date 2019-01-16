@@ -2,7 +2,7 @@
 
 .newsPost{
   margin: 20px 0;
-  padding: 10px 25px;
+  padding: 20px 25px;
   cursor: pointer;
   transition: background-color 0.25s ease;
 
@@ -38,19 +38,10 @@
   }
 }
 
-.statsItem{
-	position:relative;
-	font-size: 16px;
-}
+.statsItem {
+  padding-bottom: 15px;
 
-.statsItem p:first-child{
-	@include themify($themes) {
-		color: themed('bodySecondaryParagraphColor');
-	}
-	font-weight: 700;
-}
-
-.statsItem p:nth-child(2){
-  font-weight: 600;
-  padding-bottom: 12px;
+  & > *:first-child {
+	opacity: 0.6;
+  }
 }

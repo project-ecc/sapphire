@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { CircleLoader } from 'react-spinners';
 import { TweenMax } from 'gsap';
-import * as actions from '../actions/index';
-import ConfirmButtonPopup from '../components/Others/ConfirmButtonPopup';
+import * as actions from '../../actions/index';
+import ConfirmButtonPopup from './ConfirmButtonPopup';
 import $ from 'jquery';
-const event = require('../utils/eventhandler');
+const event = require('../../utils/eventhandler');
+import { Modal, ModalBody, ModalFooter, ModalHeader, Button } from 'reactstrap';
 
-class Loader extends Component {
+class FullscreenModal extends Component {
 
   constructor(props) {
     super(props);
@@ -17,9 +18,24 @@ class Loader extends Component {
     this.showdownloadFailed = this.showdownloadFailed.bind(this);
 
     this.state = {
-      show: false,
-      message: null
+      open: false,
+      title: '',
+      message: ''
     }
+  }
+
+  show ({title, message}) {
+    this.setState({
+      open: true,
+      title: title,
+      message: message
+    });
+  }
+
+  close () {
+    this.setState({
+      open: false
+    });
   }
 
   shouldComponentUpdate(nextProps) {
@@ -81,23 +97,34 @@ class Loader extends Component {
 
   render() {
     return (
-      <div id="loader">
-        <CircleLoader size={150} color="#ffffff" />
-        <div className="text">
-          <div id="blockIndexLoad" ref="blockIndexLoad">
-            <p style={{ fontSize: '45px', fontWeight: 'bold' }}>{ this.props.lang.loading }</p>
-            <p style={{ fontSize: '15px', fontWeight: 'bold' }}>{this.props.loadingMessage }</p>
-          </div>
-          <p style={{ marginTop: '-50px', fontWeight: '300', visibility: 'hidden' }} id="gettingReady">{ this.props.lang.mainMessage }</p>
-          <p />
-          <p className="loadingDownloadMessage">{this.props.downloadMessage}</p>
-          <p className="loadingDownloadPercentage">{this.props.percentage != null ? `${this.props.percentage}%` : null}</p>
-          <div style={{ display: 'none', margin: 'auto', textAlign: 'center' }} className="showDismissButton">
-            <p style={{ fontSize: '18px', fontWeight: '400', paddingTop: '13px' }}>{this.props.lang.updateFailed}</p>
-            <ConfirmButtonPopup style={{ margin: '0 auto', position: 'relative', top: '21px' }} handleConfirm={this.handleDismissUpdateFailed} text={this.props.lang.dismiss} />
-          </div>
-        </div>
-      </div>
+      <Modal isOpen={this.state.open} id="fullscreenModal">
+        <ModalHeader>
+          { this.props.header }
+        </ModalHeader>
+        <ModalBody>
+          { this.props.body }
+        </ModalBody>
+        <ModalFooter>
+          { this.props.footer }
+        </ModalFooter>
+      </Modal>
+      // <div id="loader">
+      //   <CircleLoader size={150} color="#d09128" />
+      //   <div className="text">
+      //     <div id="blockIndexLoad" ref="blockIndexLoad">
+      //       <p style={{ fontSize: '45px', fontWeight: 'bold' }}>{ this.props.lang.loading }</p>
+      //       <p style={{ fontSize: '15px', fontWeight: 'bold' }}>{this.props.loadingMessage }</p>
+      //     </div>
+      //     <p style={{ marginTop: '-50px', fontWeight: '300', visibility: 'hidden' }} id="gettingReady">{ this.props.lang.mainMessage }</p>
+      //     <p />
+      //     <p className="loadingDownloadMessage">{this.props.downloadMessage}</p>
+      //     <p className="loadingDownloadPercentage">{this.props.percentage != null ? `${this.props.percentage}%` : null}</p>
+      //     <div className="showDismissButton">
+      //       <p style={{ fontSize: '18px', fontWeight: '400', paddingTop: '13px' }}>{this.props.lang.updateFailed}</p>
+      //       <ConfirmButtonPopup style={{ margin: '0 auto', position: 'relative', top: '21px' }} handleConfirm={this.handleDismissUpdateFailed} text={this.props.lang.dismiss} />
+      //     </div>
+      //   </div>
+      // </div>
     );
   }
 }
@@ -117,4 +144,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connect(mapStateToProps, actions, null)(Loader);
+export default connect(mapStateToProps, actions, null, { withRef: true })(FullscreenModal);

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ChevronRightIcon } from 'mdi-react';
-import { Button } from 'reactstrap';
+import { Button, Card, CardTitle, CardText } from 'reactstrap';
 var open = require("open");
 
 class NewsItem extends Component {
@@ -14,12 +14,12 @@ class NewsItem extends Component {
 
   render() {
     return (
-      <div className="newsPost" onClick={this.handleOnClick.bind(this, this.props.url)}>
-        <p className="newsItemTitle">{this.props.title}</p>
-        <p className="newsItemBody">{this.props.body}</p>
+      <div className="newsPost standout" onClick={this.handleOnClick.bind(this, this.props.url)}>
+        <CardTitle className="newsItemTitle">{this.props.title}</CardTitle>
+        <CardText className="newsItemBody">{this.props.body}</CardText>
         <div className="d-flex justify-content-between">
           <p className="newsItemTime">{this.props.time}</p>
-          <Button size="sm" color="link" style={{color: '#fff'}}>
+          <Button size="sm" color="link">
             <ChevronRightIcon size={20} />
           </Button>
         </div>

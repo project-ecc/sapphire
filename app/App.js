@@ -10,7 +10,7 @@ import routes from './router/routes';
 import { traduction } from './lang/lang';
 import * as actions from './actions/index';
 import hash from './router/hash';
-import Loading from './Layouts/Loading';
+import Loading from './components/Others/FullscreenModal';
 import DaemonConnector from './daemon/Connector';
 import Toast from 'globals/Toast/Toast';
 
@@ -102,7 +102,7 @@ class App extends Component {
     return (
       <div>
         <DaemonConnector />
-        {/*{this.props.loading && (<Loading />)}*/}
+        {this.props.loading && (<Loading />)}
         {this.props.setupStep !== 'complete' && (<Redirect to="/setup" />)}
         <TopBar />
         <div>{renderRoutes(routes)}</div>
