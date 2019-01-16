@@ -11,11 +11,12 @@ import {
 } from '../Managers/SQLManager';
 import * as tools from '../utils/tools';
 import {
-  INDEXING_TRANSACTIONS,
+  BLOCK_INDEX_PAYMENT,
+  INDEXING_TRANSACTIONS, LOADER_MESSAGE_FROM_LOG,
   LOADING,
   PENDING_TRANSACTION,
   STAKING_NOTIFICATION,
-  STAKING_REWARD
+  STAKING_REWARD, UPDATING_APP
 } from '../actions/types';
 
 import FullscreenModal from './../components/Others/FullscreenModal'
@@ -34,6 +35,7 @@ class Coin extends Component {
     this.addressCycle = this.addressCycle.bind(this);
     this.transactionCycle = this.transactionCycle.bind(this);
     this.addressCycle = this.addressCycle.bind(this);
+    this.stateCheckerInitialStartupCycle = this.stateCheckerInitialStartupCycle.bind(this)
 
 
     // Misc functions
@@ -48,6 +50,7 @@ class Coin extends Component {
       transactionMap: {},
       queuedNotifications: [],
       walletRunningInterval: null,
+      checkStartupStatusInterval: null,
       blockProcessorInterval: null,
       coinMarketCapInterval: null,
       transactionProcessorInterval: null,
@@ -55,7 +58,9 @@ class Coin extends Component {
       transactionsIndexed: false,
       lastTransactionTime: 0,
       transactionsToRequest: 4000,
-      shouldRequestMoreTransactions: false
+      shouldRequestMoreTransactions: false,
+      running: false,
+      firstRun: false
     };
 
 
@@ -69,8 +74,60 @@ class Coin extends Component {
     clearInterval(this.state.walletRunningInterval);
     clearInterval(this.state.blockProcessorInterval);
     clearInterval(this.state.coinMarketCapInterval);
+    clearInterval(this.state.checkStartupStatusInterval);
   }
 
+  async stateCheckerInitialStartupCycle() {
+    this.props.wallet.getInfo().then(async (data) => {
+      if (!data.encrypted) {
+        this.props.setUnencryptedWallet(true);
+      }
+      if (this.props.updatingApp) {
+        this.props.setUpdatingApplication(true);
+      }
+      if (!this.state.running) {
+        await db.sequelize.sync();
+        this.setState({
+          running: true
+        })
+        clearInterval(this.state.checkStartupStatusInterval);
+        await this.startCycles();
+      }
+    })
+      .catch((err) => {
+        console.log(err.message);
+        if (err.message === 'Loading block index...' || err.message === 'Activating best chain...' ||
+          err.message === 'Loading wallet...' || err.message === 'Rescanning...' ||
+          err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT') {
+
+          if (err.message === 'Loading block index...') {
+            if (!this.props.initialSetup) {
+              this.props.setLoading({
+                isLoading: true,
+                loadingMessage: 'Loading block index...'
+              })
+            }
+          } else if (err.message === 'Rescanning...') {
+            this.props.setLoading({
+              isLoading: true,
+              loadingMessage: 'Rescanning...'
+            })
+          }
+          if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT')) {
+            this.props.setLoading({
+              isLoading: true,
+              loadingMessage: 'Rescanning...'
+            })
+          }
+          if(err.message === 'connect ECONNREFUSED 127.0.0.1:19119'){
+            this.props.setLoading({
+              isLoading: true,
+              loadingMessage: 'Please Start your wallet'
+            })
+          }
+        }
+      });
+  }
   /**
    * Subscribe the daemon to manager events
    */
@@ -79,7 +136,12 @@ class Coin extends Component {
     // ipcRenderer.on('guiUpdate', this.handleGuiUpdate.bind(this));
     // ipcRenderer.on('daemonUpdate', this.handleDaemonUpdate.bind(this));
     // ipcRenderer.on('daemonUpdated', this.handleDaemonUpdated.bind(this));
-    event.on('startConnectorChildren', this.startCycles.bind(this));
+    event.on('startConnectorChildren', () => {
+      this.stateCheckerInitialStartupCycle.bind(this);
+      this.setState({
+        checkStartupStatusInterval: setInterval(async() => {await this.stateCheckerInitialStartupCycle(); }, 2000),
+      });
+    });
 
     ipcRenderer.on('loading-error', (e, arg) => {
       console.log(`loading failure: ${arg.message}`);
@@ -105,11 +167,13 @@ class Coin extends Component {
     });
 
     this.listenForDownloadEvents();
-    event.on('runMainCycle', () => {
+    event.on('runMainCycle', async() => {
       console.log('run main cycle');
-      if (!this.runningMainCycle) {
-        this.firstRun = true;
-        this.mainCycle();
+      if (!this.state.running) {
+        this.setState({
+          firstRun: true
+        });
+        await this.startCycles();
       }
     });
   }
@@ -164,20 +228,21 @@ class Coin extends Component {
         updateFailed: true,
         downloadMessage: arg.message
       });
-      if (this.store.getState().startup.daemonUpdate) {
-        this.firstRun = true;
-        this.checkStartupStatusInterval = setInterval(() => {
-          this.stateCheckerInitialStartup();
-        }, 2000);
+      if (this.props.daemonUpdate) {
+        this.setState({
+          checkStartupStatusInterval: setInterval(async() => {await this.stateCheckerInitialStartupCycle(); }, 2000),
+          firstRun: true
+        });
       }
     });
   }
 
 
-  startCycles() {
+  async startCycles() {
     // we can starting syncing the block data with redux now
     this.setState({
-      walletRunningInterval: setInterval(async () => { await this.walletCycle(); }, this.state.interval)
+      walletRunningInterval: setInterval(async () => { await this.walletCycle(); }, this.state.interval),
+      running: true
     });
   }
 
@@ -191,7 +256,7 @@ class Coin extends Component {
   }
   async loadTransactionsForProcessing() {
     // TODO : WUT
-    await this.checkIfTransactionsNeedToBeDeleted();
+    // await this.checkIfTransactionsNeedToBeDeleted();
 
     let txId = '',
       time = 0,
@@ -537,7 +602,7 @@ class Coin extends Component {
     this.from = latestTransaction != null ? latestTransaction.time : 0;
 
 
-    const transactions = await this.props.wallet.getTransactions('*', 10, 0);
+    const transactions = await this.props.wallet.getTransactions('*', 10000, 0);
     console.log(transactions);
     if ((latestTransaction === undefined || latestTransaction === null) && transactions.length === 0) {
       this.setState({
@@ -547,6 +612,8 @@ class Coin extends Component {
       this.setState({
         transactionsIndexed: false
       });
+      console.log(this.state.transactionsIndexed)
+     await this.loadTransactionsForProcessing();
     } else {
       this.transactionsIndexed = true;
     }
@@ -594,7 +661,10 @@ class Coin extends Component {
 const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
-    wallet: state.application.wallet
+    wallet: state.application.wallet,
+    updatingApp: state.startup.updatingApp,
+    initialSetup: state.startup.initialSetup,
+    daemonUpdate: state.startup.daemonUpdate
   };
 };
 
