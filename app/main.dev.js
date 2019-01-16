@@ -34,7 +34,6 @@ let walletPath;
 let tray = null;
 // let daemonManager = null;
 let guiManager = null;
-let maximized = false;
 let ds = null;
 let mainWindow = null;
 let guiUpdate = false;
@@ -348,11 +347,12 @@ function setupEventHandlers() {
   });
 
   ipcMain.on('maximize', (e, args) => {
-    if(!maximized)
+    if(mainWindow.isMaximized()) {
+      mainWindow.unmaximize()
+    }
+    else {
       mainWindow.maximize();
-    else mainWindow.unmaximize();
-
-    maximized = !maximized;
+    }
   });
 
   //done with initial setup tell DaemonManager to start
