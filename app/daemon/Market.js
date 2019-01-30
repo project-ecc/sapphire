@@ -50,7 +50,7 @@ class News extends Component {
     await this.getCoinMarketCapStats();
     this.setState({
       eccMarketTimer: setInterval(async () => {
-        await this.newsFeedCycle();
+        await this.getCoinMarketCapStats();
       }, this.state.eccMarketInterval)
     });
   }

@@ -7,7 +7,6 @@ const { exec, spawn } = require('child_process');
 let client;
 
 export default class Wallet {
-
   constructor(username = 'yourusername', password = 'yourpassword') {
     client = new Client({
       host: '127.0.0.1',
@@ -18,6 +17,7 @@ export default class Wallet {
       password
     });
   }
+
   help() {
     return new Promise((resolve, reject) => {
       client.help().then((data) => {

@@ -19,7 +19,7 @@ import {
   STAKING_REWARD, UPDATING_APP
 } from '../actions/types';
 
-import FullscreenModal from './../components/Others/FullscreenModal'
+import FullscreenModal from './../components/Others/FullscreenModal';
 
 const event = require('../utils/eventhandler');
 const db = require('../utils/database/db');
@@ -35,7 +35,7 @@ class Coin extends Component {
     this.addressCycle = this.addressCycle.bind(this);
     this.transactionCycle = this.transactionCycle.bind(this);
     this.addressCycle = this.addressCycle.bind(this);
-    this.stateCheckerInitialStartupCycle = this.stateCheckerInitialStartupCycle.bind(this)
+    this.stateCheckerInitialStartupCycle = this.stateCheckerInitialStartupCycle.bind(this);
 
 
     // Misc functions
@@ -75,6 +75,7 @@ class Coin extends Component {
     clearInterval(this.state.blockProcessorInterval);
     clearInterval(this.state.coinMarketCapInterval);
     clearInterval(this.state.checkStartupStatusInterval);
+    clearInterval(this.state.addressProcessorInterval);
   }
 
   async stateCheckerInitialStartupCycle() {
@@ -89,7 +90,7 @@ class Coin extends Component {
         await db.sequelize.sync();
         this.setState({
           running: true
-        })
+        });
         clearInterval(this.state.checkStartupStatusInterval);
         await this.startCycles();
       }
@@ -99,31 +100,30 @@ class Coin extends Component {
         if (err.message === 'Loading block index...' || err.message === 'Activating best chain...' ||
           err.message === 'Loading wallet...' || err.message === 'Rescanning...' ||
           err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT') {
-
           if (err.message === 'Loading block index...') {
             if (!this.props.initialSetup) {
               this.props.setLoading({
                 isLoading: true,
                 loadingMessage: 'Loading block index...'
-              })
+              });
             }
           } else if (err.message === 'Rescanning...') {
             this.props.setLoading({
               isLoading: true,
               loadingMessage: 'Rescanning...'
-            })
+            });
           }
           if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT')) {
             this.props.setLoading({
               isLoading: true,
               loadingMessage: 'Rescanning...'
-            })
+            });
           }
-          if(err.message === 'connect ECONNREFUSED 127.0.0.1:19119'){
+          if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
             this.props.setLoading({
               isLoading: true,
               loadingMessage: 'Please Start your wallet'
-            })
+            });
           }
         }
       });
@@ -139,7 +139,7 @@ class Coin extends Component {
     event.on('startConnectorChildren', () => {
       this.stateCheckerInitialStartupCycle.bind(this);
       this.setState({
-        checkStartupStatusInterval: setInterval(async() => {await this.stateCheckerInitialStartupCycle(); }, 2000),
+        checkStartupStatusInterval: setInterval(async () => { await this.stateCheckerInitialStartupCycle(); }, 2000),
       });
     });
 
@@ -167,7 +167,7 @@ class Coin extends Component {
     });
 
     this.listenForDownloadEvents();
-    event.on('runMainCycle', async() => {
+    event.on('runMainCycle', async () => {
       console.log('run main cycle');
       if (!this.state.running) {
         this.setState({
@@ -230,7 +230,7 @@ class Coin extends Component {
       });
       if (this.props.daemonUpdate) {
         this.setState({
-          checkStartupStatusInterval: setInterval(async() => {await this.stateCheckerInitialStartupCycle(); }, 2000),
+          checkStartupStatusInterval: setInterval(async () => { await this.stateCheckerInitialStartupCycle(); }, 2000),
           firstRun: true
         });
       }
@@ -549,11 +549,10 @@ class Coin extends Component {
    */
   async addressCycle() {
     this.props.wallet.listReceivedByAddress().then(async (data) => {
-
       let addresses = data;
 
       // if my current database addresses are not all in the addresses returned from the daemon,
-      let myAddresses = await getAllMyAddresses();
+      const myAddresses = await getAllMyAddresses();
 
       for (const [i, add] of myAddresses.entries()) {
         const found = addresses.filter((daemonAddress) => {
@@ -562,7 +561,7 @@ class Coin extends Component {
         if (!found || found.length === 0) {
           await clearDB();
           console.log('in here');
-          //this.transactionsIndexed = false;
+          // this.transactionsIndexed = false;
           break;
         }
       }
@@ -573,21 +572,21 @@ class Coin extends Component {
       }
 
       addresses = await getAllMyAddresses();
-      this.props.setUserAddresses(addresses)
+      this.props.setUserAddresses(addresses);
       // }
       // We need to have the addresses loaded to be able to index transactions
       // this.currentAddresses = normalAddresses;
       if (!this.transactionsIndexed && this.firstRun && this.currentAddresses.length > 0 && !this.isIndexingTransactions) {
         await this.loadTransactionsForProcessing();
-        this.props.setIndexingTransactions(true)
+        this.props.setIndexingTransactions(true);
       }
 
 
-      console.log(data)
-    })
+      console.log(data);
+    });
     this.props.wallet.listAddressGroupings().then(async (data) => {
-      console.log(data)
-    })
+      console.log(data);
+    });
   }
 
 
@@ -612,8 +611,8 @@ class Coin extends Component {
       this.setState({
         transactionsIndexed: false
       });
-      console.log(this.state.transactionsIndexed)
-     await this.loadTransactionsForProcessing();
+      console.log(this.state.transactionsIndexed);
+      await this.loadTransactionsForProcessing();
     } else {
       this.transactionsIndexed = true;
     }
@@ -651,7 +650,7 @@ class Coin extends Component {
   render() {
     return (
       <div>
-        {/*<FullscreenModal ref={(e) => this.}/>*/}
+        {/* <FullscreenModal ref={(e) => this.}/> */}
       </div>
     );
   }
