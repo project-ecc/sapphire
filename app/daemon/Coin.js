@@ -402,19 +402,22 @@ class Coin extends Component {
     await this.insertIntoDb(entries);
   }
   async insertIntoDb(entries) {
-    const lastCheckedEarnings = this.store.getState().notifications.lastCheckedEarnings;
+    const lastCheckedEarnings = this.props.notifications.lastCheckedEarnings;
     let earningsCountNotif = 0;
     let earningsTotalNotif = 0;
-    const shouldNotifyEarnings = this.store.getState().notifications.stakingNotificationsEnabled;
+    const shouldNotifyEarnings = this.props.notifications.stakingNotificationsEnabled;
 
     for (let i = 0; i < entries.length; i++) {
       // console.log(lastCheckedEarnings)
       if (this.firstRun) {
-        this.store.dispatch({ type: LOADING, payload: { isLoading: true, loadingMessage: `Indexing transaction ${i}/${entries.length}` } });
+        this.props.setLoading({
+          isLoading: true,
+          loadingMessage: `Indexing transaction ${i}/${entries.length}`
+        });
       }
       const entry = entries[i];
       if (Number(entry.confirmations) < 30) {
-        this.store.dispatch({ type: PENDING_TRANSACTION, payload: entry.txId });
+        // this.store.dispatch({ type: PENDING_TRANSACTION, payload: entry.txId });
       }
 
       let isPending = false;
@@ -429,7 +432,10 @@ class Coin extends Component {
       // update with 1 new staking reward since previous ones have already been loaded on startup
       if (entry.category === 'generate') {
         if (entry.time > lastCheckedEarnings && shouldNotifyEarnings) {
-          this.store.dispatch({ type: STAKING_NOTIFICATION, payload: { earnings: entry.amount, date: entry.time } });
+          this.props.setStakingNotifications({
+            earnings: entry.amount,
+            date: entry.time
+          });
           earningsCountNotif++;
           earningsTotalNotif += entry.amount;
         }
@@ -447,9 +453,9 @@ class Coin extends Component {
     // no more transactions to process, mark as done to avoid spamming the daemon
     if (!this.transactionsIndexed) {
       this.transactionsIndexed = true;
-      this.store.dispatch({ type: INDEXING_TRANSACTIONS, payload: false });
+      this.props.setIndexingTransactions(false);
       const rewards = await getAllRewardTransactions();
-      this.store.dispatch({ type: STAKING_REWARD, payload: rewards });
+      this.props.setStakingReward(rewards);
     }
 
     this.transactionsPage = 0;
@@ -663,7 +669,8 @@ const mapStateToProps = state => {
     wallet: state.application.wallet,
     updatingApp: state.startup.updatingApp,
     initialSetup: state.startup.initialSetup,
-    daemonUpdate: state.startup.daemonUpdate
+    daemonUpdate: state.startup.daemonUpdate,
+    notifications: state.notifications
   };
 };
 
