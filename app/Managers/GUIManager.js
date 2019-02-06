@@ -2,6 +2,7 @@ import { getSapphireDownloadUrl, grabWalletDir } from '../utils/platform.service
 import { version } from './../../package.json';
 import Tools from '../utils/tools';
 import { downloadFile } from '../utils/downloader';
+import runExec from './../globals/runExec';
 import shell from 'node-powershell';
 
 const request = require('request-promise-native');
@@ -102,7 +103,7 @@ class GUIManager {
           try {
             self.downloading = false;
             console.log('current version: ', self.currentVersion);
-            installGUI(self.currentVersion);
+            await this.installGUI(self.currentVersion);
           } catch (e) {
             console.log(e);
           }
@@ -115,110 +116,97 @@ class GUIManager {
     });
   }
 
+  async installGUI(guiVersion) {
+    console.log(guiVersion);
+    console.log('installing GUI...');
+
+    if (process.platform === 'linux') {
+      const walletDir = `${homedir}/.eccoin-wallet/`;
+
+      const fileName = 'sapphire';
+      const architecture = arch() === 'x86' ? 'linux32' : 'linux64';
+      let fullPath = `${walletDir + fileName}-v${guiVersion}-${architecture}`;
+
+
+      // This must be added to escape the space.
+      fullPath = `"${fullPath}"`;
+
+      try {
+        await Tools.createInstallScript(['sleep 2', `open ${fullPath}`], `${walletDir}script.sh`);
+      } catch (err) {
+        event.emit('download-error', err);
+        console.log(err);
+      }
+
+      const shPath = `${walletDir}script.sh`;
+
+      runExec(`chmod +x "${shPath}" && sh "${shPath}"`, 1000).then(() => {
+        event.emit('close');
+      })
+        .catch(() => {
+          event.emit('close');
+        });
+    } else if (process.platform === 'darwin') {
+      const walletDir = `${homedir}/Library/Application Support/.eccoin-wallet/`;
+      const fileName = 'sapphire';
+      let fullPath = `${walletDir + fileName}-v${guiVersion}-mac.dmg`;
+
+      // This must be added to escape the space.
+      fullPath = `"${fullPath}"`;
+
+      try {
+        await Tools.createInstallScript(['sleep 2', `open ${fullPath}`], `${walletDir}script.sh`);
+      } catch (err) {
+        event.emit('download-error', err);
+        console.log(err);
+      }
+
+      const shPath = `${walletDir}script.sh`;
+
+      runExec(`chmod +x "${shPath}" && sh "${shPath}"`, 1000).then(() => {
+        event.emit('close');
+      })
+        .catch(() => {
+          event.emit('close');
+        });
+    } else if (process.platform.indexOf('win') > -1) {
+      const walletDir = `${homedir}\\.eccoin-wallet\\`;
+
+      const fileName = 'sapphire';
+      const architecture = arch() === 'x86' ? 'win32' : 'win64';
+      const execName = `${fileName}-v${guiVersion}-${architecture}.exe`;
+
+      try {
+        await Tools.createInstallScript(['timeout /t 1', `start /d "${walletDir}" ${execName}`], `${walletDir}script.bat`);
+      } catch (err) {
+        event.emit('download-error', err);
+        console.log(err);
+      }
+
+      const path = `& "${walletDir}script.bat"`;
+
+      // create powershell
+      const ps = new shell({ //eslint-disable-line
+        executionPolicy: 'Bypass',
+        noProfile: true
+      });
+
+      // add command to start script
+      ps.addCommand(path);
+
+      // close on error and success
+      ps.invoke().then(() => {
+        event.emit('close');
+      })
+        .catch(err => {
+          console.log(err);
+          ps.dispose();
+          event.emit('download-error', err);
+        });
+    }
+  }
+
 }
 
 module.exports = GUIManager;
 
-async function installGUI(guiVersion) {
-  console.log(guiVersion);
-  console.log('installing GUI...');
-
-  if (process.platform === 'linux') {
-    const walletDir = `${homedir}/.eccoin-wallet/`;
-
-    const fileName = 'sapphire';
-    const architecture = arch() === 'x86' ? 'linux32' : 'linux64';
-    let fullPath = `${walletDir + fileName}-v${guiVersion}-${architecture}`;
-
-
-    // This must be added to escape the space.
-    fullPath = `"${fullPath}"`;
-
-    try {
-      await Tools.createInstallScript(['sleep 2', `open ${fullPath}`], `${walletDir}script.sh`);
-    } catch (err) {
-      event.emit('download-error', err);
-      console.log(err);
-    }
-
-    const shPath = `${walletDir}script.sh`;
-
-    runExec(`chmod +x "${shPath}" && sh "${shPath}"`, 1000).then(() => {
-      event.emit('close');
-    })
-    .catch(() => {
-      event.emit('close');
-    });
-  } else if (process.platform === 'darwin') {
-    const walletDir = `${homedir}/Library/Application Support/.eccoin-wallet/`;
-    const fileName = 'sapphire';
-    let fullPath = `${walletDir + fileName}-v${guiVersion}-mac.dmg`;
-
-    // This must be added to escape the space.
-    fullPath = `"${fullPath}"`;
-
-    try {
-      await Tools.createInstallScript(['sleep 2', `open ${fullPath}`], `${walletDir}script.sh`);
-    } catch (err) {
-      event.emit('download-error', err);
-      console.log(err);
-    }
-
-    const shPath = `${walletDir}script.sh`;
-
-    runExec(`chmod +x "${shPath}" && sh "${shPath}"`, 1000).then(() => {
-      event.emit('close');
-    })
-    .catch(() => {
-      event.emit('close');
-    });
-  } else if (process.platform.indexOf('win') > -1) {
-    const walletDir = `${homedir}\\.eccoin-wallet\\`;
-
-    const fileName = 'sapphire';
-    const architecture = arch() === 'x86' ? 'win32' : 'win64';
-    const execName = `${fileName}-v${guiVersion}-${architecture}.exe`;
-
-    try {
-      await Tools.createInstallScript(['timeout /t 1', `start /d "${walletDir}" ${execName}`], `${walletDir}script.bat`);
-    } catch (err) {
-      event.emit('download-error', err);
-      console.log(err);
-    }
-
-    const path = `& "${walletDir}script.bat"`;
-
-    // create powershell
-    const ps = new shell({ //eslint-disable-line
-      executionPolicy: 'Bypass',
-      noProfile: true
-    });
-
-    // add command to start script
-    ps.addCommand(path);
-
-    // close on error and success
-    ps.invoke().then(() => {
-      event.emit('close');
-    })
-    .catch(err => {
-      console.log(err);
-      ps.dispose();
-      event.emit('download-error', err);
-    });
-  }
-}
-
-function runExec(cmd, timeout) {
-  return new Promise((resolve, reject) => {
-    exec(cmd, (error, stdout, stderr) => {
-      if (error) {
-        reject(error);
-      } else {
-        console.log(stdout);
-        resolve('program exited without an error');
-      }
-      event.emit('close');
-    });
-  });
-}

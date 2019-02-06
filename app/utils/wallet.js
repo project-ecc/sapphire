@@ -1,6 +1,7 @@
 import Client from 'eccoin-js';
 import shell from 'node-powershell';
 import { getPlatformWalletUri } from './platform.service';
+import runExec from './../globals/runExec';
 
 const { exec, spawn } = require('child_process');
 
@@ -366,17 +367,3 @@ export default class Wallet {
   }
 }
 
-async function runExec(cmd, timeout, cb) {
-  return new Promise((resolve, reject) => {
-    exec(cmd, (error, stdout, stderr) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve('program exited without an error');
-      }
-    });
-    setTimeout(() => {
-      resolve('program still running');
-    }, timeout);
-  });
-}
