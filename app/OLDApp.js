@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import InitialSetup from '../components/Setup/OldIndex';
 import Settings from '../components/Settings/Settings';
-import Loading from './components/Others/FullscreenModal';
+import Loading from './components/Settings/modals/BlockIndexModal';
 import * as actions from './actions/index';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import UpdateApplication from './components/Settings/partials/UpdateApplicationModal';

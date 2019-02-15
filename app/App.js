@@ -4,20 +4,15 @@ import { connect } from 'react-redux';
 import { Redirect, withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ipcRenderer } from 'electron';
-import $ from 'jquery';
 import TopBar from './Layouts/partials/TopBar';
 import routes from './router/routes';
-import { traduction } from './lang/lang';
+import BlockIndexModal from './components/Settings/modals/BlockIndexModal';
+import UpdateFailedModal from './components/Settings/modals/UpdateFailedModal';
+import DownloadingUpdateModal from './components/Settings/modals/DownloadingUpdateModal';
 import * as actions from './actions/index';
-import hash from './router/hash';
-import Loading from './components/Others/FullscreenModal';
 import DaemonConnector from './daemon/Connector';
-import Toast from 'globals/Toast/Toast';
 
 const event = require('utils/eventhandler');
-
-const lang = traduction();
-const Tools = require('./utils/tools');
 const settings = require('electron').remote.require('electron-settings');
 
 class App extends Component {
@@ -102,10 +97,13 @@ class App extends Component {
     return (
       <div>
         <DaemonConnector />
-        {this.props.loading && (<Loading />)}
         {this.props.setupStep !== 'complete' && (<Redirect to="/setup" />)}
         <TopBar />
         <div>{renderRoutes(routes)}</div>
+
+        { this.props.loading && <BlockIndexModal /> }
+        { this.props.updateFailed && <UpdateFailedModal /> }
+        { this.props.downloadMessage && <DownloadingUpdateModal /> }
       </div>
     );
   }
@@ -119,6 +117,8 @@ const mapStateToProps = state => {
     minimizeOnClose: state.application.minimizeOnClose,
     closingApplication: state.application.closingApplication,
     theme: state.application.theme,
+    updateFailed: state.application.updateFailed,
+    downloadMessage: state.application.downloadMessage
   };
 };
 

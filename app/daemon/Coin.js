@@ -10,16 +10,6 @@ import {
   getAllMyAddresses, clearDB
 } from '../Managers/SQLManager';
 import * as tools from '../utils/tools';
-import {
-  BLOCK_INDEX_PAYMENT,
-  INDEXING_TRANSACTIONS, LOADER_MESSAGE_FROM_LOG,
-  LOADING,
-  PENDING_TRANSACTION,
-  STAKING_NOTIFICATION,
-  STAKING_REWARD, UPDATING_APP
-} from '../actions/types';
-
-import FullscreenModal from './../components/Others/FullscreenModal';
 
 const event = require('../utils/eventhandler');
 const db = require('../utils/database/db');
@@ -654,11 +644,7 @@ class Coin extends Component {
 
 
   render() {
-    return (
-      <div>
-        {/* <FullscreenModal ref={(e) => this.}/> */}
-      </div>
-    );
+    return null;
   }
 
 }
