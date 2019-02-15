@@ -130,7 +130,7 @@ class Connector extends Component {
 
   startDaemonChecker() {
     this.checkIfDaemonIsRunning();
-    this.intervalID = setInterval(this.checkIfDaemonIsRunning.bind(this), 30000);
+    this.intervalID = setInterval(this.checkIfDaemonIsRunning.bind(this), 50000);
     this.intervalIDCheckUpdates = setInterval(this.getLatestVersion.bind(this), 6000000);
   }
 

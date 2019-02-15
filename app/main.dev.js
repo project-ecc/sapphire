@@ -236,13 +236,7 @@ async function closeApplication(){
     }
     sendMessage("closing_daemon");
     let closedDaemon = false;
-    // console.log(daemonManager)
-    // do{
-      // TODO : close daemon
-      // closedDaemon = await daemonManager.stopDaemon();
-      //console.log("closedDaemon: ", closedDaemon);
-    // }while(!closedDaemon);
-    // }while(true);
+
     console.log("shutdown");
     app.exit();
   }
@@ -250,6 +244,7 @@ async function closeApplication(){
 
 app.on('before-quit', async function (e) {
   e.preventDefault();
+  sendMessage("stop");
   await closeApplication();
  });
 
@@ -332,6 +327,7 @@ function setupEventHandlers() {
   });
 
 	ipcMain.on('quit', () => {
+    sendMessage("stop");
     app.quit();
   });
 
@@ -402,8 +398,9 @@ function setupEventHandlers() {
     sendMessage('guiUpdate');
   });
 
-  event.on('close', () => {
-    closeApplication();
+  event.on('close', async() => {
+    sendMessage("stop");
+    await closeApplication();
   })
 
   event.on('updatedDaemon', () => {
@@ -552,7 +549,7 @@ tail.on("line", (data) => {
   ];
   const castedArg = String(data);
   if (castedArg != null && (!ignoreStrings.some(function(v) { return castedArg.indexOf(v) >= 0; }))) {
-    console.log(castedArg);
+    // console.log(castedArg);
 
     sendMessage('message-from-log', data);
   }

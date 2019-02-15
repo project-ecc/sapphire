@@ -23,7 +23,6 @@ class Coin extends Component {
     this.blockCycle = this.blockCycle.bind(this);
     this.transactionCycle = this.transactionCycle.bind(this);
     this.addressCycle = this.addressCycle.bind(this);
-    this.transactionCycle = this.transactionCycle.bind(this);
     this.addressCycle = this.addressCycle.bind(this);
     this.stateCheckerInitialStartupCycle = this.stateCheckerInitialStartupCycle.bind(this);
 
@@ -86,35 +85,50 @@ class Coin extends Component {
       }
     })
       .catch((err) => {
-        console.log(err.message);
-        if (err.message === 'Loading block index...' || err.message === 'Activating best chain...' ||
-          err.message === 'Loading wallet...' || err.message === 'Rescanning...' ||
-          err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT') {
-          if (err.message === 'Loading block index...') {
-            if (!this.props.initialSetup) {
-              this.props.setLoading({
-                isLoading: true,
-                loadingMessage: 'Loading block index...'
-              });
-            }
-          } else if (err.message === 'Rescanning...') {
+        console.log("error", err.message);
+
+        if (err.message === 'Loading wallet...') {
+          if (!this.props.initialSetup) {
             this.props.setLoading({
               isLoading: true,
-              loadingMessage: 'Rescanning...'
+              loadingMessage: 'Loading wallet...'
             });
           }
-          if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT')) {
+        }
+        if (err.message === 'Activating best chain...') {
+          if (!this.props.initialSetup) {
             this.props.setLoading({
               isLoading: true,
-              loadingMessage: 'Rescanning...'
+              loadingMessage: 'Activating best chain...'
             });
           }
-          if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
+        }
+        if (err.message === 'Loading block index...') {
+          if (!this.props.initialSetup) {
             this.props.setLoading({
               isLoading: true,
-              loadingMessage: 'Please Start your wallet'
+              loadingMessage: 'Loading block index...'
             });
           }
+        }
+        if (err.message === 'Rescanning...') {
+          let rescarnningMessage = this.props.rescanningLogInfo.peekEnd()
+          this.props.setLoading({
+            isLoading: true,
+            loadingMessage: 'Rescanning...' + rescarnningMessage
+          });
+        }
+        if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT')) {
+          this.props.setLoading({
+            isLoading: true,
+            loadingMessage: 'Rescanning...'
+          });
+        }
+        if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
+          this.props.setLoading({
+            isLoading: true,
+            loadingMessage: 'Please Start your wallet'
+          });
         }
       });
   }
@@ -146,7 +160,7 @@ class Coin extends Component {
     ipcRenderer.on('message-from-log', (e, arg) => {
       this.props.setAppendToDebugLog(arg);
       const castedArg = String(arg);
-      console.log(castedArg);
+      // console.log(castedArg);
       if (castedArg != null && (castedArg.indexOf('init message') !== -1 || castedArg.indexOf('Still rescanning') !== -1 || castedArg.indexOf('Corrupted block database detected') !== -1)) {
         this.loadingMessage = castedArg;
         if (castedArg.indexOf('Corrupted block database detected') !== -1) {
@@ -263,7 +277,7 @@ class Coin extends Component {
 
     let transactions = null;
     while (transactions == null && attempts <= maxAttempts) {
-      transactions = await this.wallet.getTransactions('*', this.transactionsToRequest, this.transactionsToRequest * this.transactionsPage);
+      transactions = await this.props.wallet.getTransactions('*', this.transactionsToRequest, this.transactionsToRequest * this.transactionsPage);
     }
 
     transactions = this.orderTransactions(transactions);
@@ -302,7 +316,7 @@ class Coin extends Component {
       }
     }
 
-    if (transactions.length === this.transactionsToRequest && shouldRequestAnotherPage) {
+    if (transactions.length === this.transactionsToRequest) {
       this.transactionsPage++;
       await this.loadTransactionsForProcessing();
     } else {
@@ -503,6 +517,12 @@ class Coin extends Component {
         transactionProcessorInterval: setInterval(async () => { await this.transactionCycle(); }, this.state.interval),
         addressProcessorInterval: setInterval(async () => { await this.addressCycle(); }, this.state.interval)
       });
+
+      this.props.setLoading({
+        isLoading: true,
+        loadingMessage: 'Connecting Sapphire to the blockchain!'
+      });
+      clearInterval(this.state.walletRunningInterval);
     }
   }
 
@@ -534,6 +554,15 @@ class Coin extends Component {
     this.props.wallet.getWalletInfo().then(async (data) => {
       console.log(data);
       this.props.walletInfoSec(data);
+    });
+
+    this.props.setLoading({
+      isLoading: true,
+      loadingMessage: 'Connected!'
+    });
+
+    this.props.setLoading({
+      isLoading: false,
     });
   }
 
@@ -598,7 +627,6 @@ class Coin extends Component {
 
 
     const transactions = await this.props.wallet.getTransactions('*', 10000, 0);
-    console.log(transactions);
     if ((latestTransaction === undefined || latestTransaction === null) && transactions.length === 0) {
       this.setState({
         transactionsIndexed: true
@@ -607,10 +635,15 @@ class Coin extends Component {
       this.setState({
         transactionsIndexed: false
       });
-      console.log(this.state.transactionsIndexed);
-      await this.loadTransactionsForProcessing();
     } else {
-      this.transactionsIndexed = true;
+      this.setState({
+        transactionsIndexed: true
+      });
+    }
+
+    if(this.state.transactionsIndexed === false){
+      console.log('transactions indexed',this.state.transactionsIndexed);
+      await this.loadTransactionsForProcessing();
     }
 
     // check if transactions have been indexed before.
@@ -656,7 +689,8 @@ const mapStateToProps = state => {
     updatingApp: state.startup.updatingApp,
     initialSetup: state.startup.initialSetup,
     daemonUpdate: state.startup.daemonUpdate,
-    notifications: state.notifications
+    notifications: state.notifications,
+    rescanningLogInfo: state.application.debugLog
   };
 };
 
