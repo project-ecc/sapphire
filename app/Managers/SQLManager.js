@@ -1,7 +1,7 @@
 const db = require('../../app/utils/database/db')
 const Address = db.Address;
 const Transaction = db.Transaction;
-const AnsRecord = db.AnsRecord;
+// const AnsRecord = db.AnsRecord;
 const Contact = db.Contact;
 const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
@@ -303,35 +303,6 @@ async function addAddress(address, belongsToMe = false){
   });
 }
 
-async function addAnsRecord(address, ansRecord){
-  return new Promise(async (resolve, reject) => {
-    await AnsRecord
-      .findOrCreate({
-        where: {
-          name: ansRecord.Name,
-          code: ansRecord.Code,
-        },
-        defaults: {
-          name: ansRecord.Name,
-          code: ansRecord.Code,
-          expire_time: ansRecord.ExpireTime,
-          // creation_block: ansRecord.currentBlock
-        }
-      }).spread(async (ansRecord, createdAns) => {
-        if(createdAns){
-          address.status = 'ready';
-          await address.save()
-        }
-        await ansRecord.setAddress(address).then(result =>{
-          resolve([ansRecord, createdAns]);
-        });
-      }).catch(err => {
-        console.log(err);
-        reject(err);
-      });
-  });
-}
-
 async function getAddress(a){
   return new Promise(async (resolve, reject)=>{
     await Address.find({
@@ -348,13 +319,7 @@ async function getAddress(a){
 
 async function getAllAddresses() {
   return new Promise(async (resolve, reject) => {
-    await Address.findAll({
-      include: [
-        {
-          model: AnsRecord
-        }
-      ]
-    }).then(addresses => {
+    await Address.findAll().then(addresses => {
       resolve(addresses);
     }).catch(err => {
       reject(err)
@@ -365,11 +330,6 @@ async function getAllAddresses() {
 async function getAllMyAddresses(){
   return new Promise(async (resolve, reject) => {
       await Address.findAll({
-        include: [
-          {
-            model: AnsRecord
-          }
-        ],
         where: {
           is_mine: true
         }
@@ -402,38 +362,13 @@ async function deleteAddressByName(addressString){
 }
 
 
-
-async function deleteAnsRecordById(id){
-  AnsRecord.destroy({
-    where: {
-      id: id
-    }
-  }).then(affectedRows => {
-    return affectedRows > 1;
-  })
-}
-
-async function deleteAnsRecordByName(recordName) {
-  AnsRecord.destroy({
-    where: {
-      name: recordName
-    }
-  }).then(affectedRows => {
-    return affectedRows > 1;
-  })
-}
-
-
 /**
  * Contacts functions
  */
 
-async function addContact(contactObject, withAns = false){
+async function addContact(contactObject){
   return new Promise(async (resolve, reject) => {
     let name = contactObject.name;
-    if(withAns){
-      name += '#' + contactObject.code
-    }
     await Contact
       .findOrCreate({
         where: {
@@ -454,19 +389,6 @@ async function addContact(contactObject, withAns = false){
           }
         });
         newContact.setAddress(address[0]);
-        if (withAns){
-         const ansRecord = await AnsRecord.findOrCreate({
-              where: {
-                name: contactObject.name,
-                code: contactObject.code
-              },
-              defaults: {
-                name: contactObject.name,
-                code: contactObject.code
-              }
-         });
-         newContact.setAnsrecord(ansRecord[0]);
-        }
 
         await newContact.save()
         resolve(newContact)
@@ -485,12 +407,6 @@ async function findContact(name){
           model: Address,
           where: {
             id: db.Sequelize.col('contacts.addressId')
-          }
-        },
-        {
-          model: AnsRecord,
-          where: {
-            id: db.Sequelize.col('contacts.ansrecordId')
           }
         }
       ],
@@ -511,9 +427,6 @@ async function getContacts(){
       include: [
         {
           model: Address
-        },
-        {
-          model: AnsRecord
         }
       ]
     }).then(contacts => {
@@ -536,10 +449,6 @@ async function deleteContact(contact) {
 
 async function clearDB(){
   return new Promise(async (resolve, reject) => {
-    await AnsRecord.destroy({
-      where: {},
-      truncate: true
-    })
 
     await Transaction.destroy({
       where: {},
@@ -565,9 +474,6 @@ export {
   addAddress,
   getAddress,
   deleteAddressByName,
-  addAnsRecord,
-  deleteAnsRecordById,
-  deleteAnsRecordByName,
   deleteTransactionById,
   deleteAddressById,
   deleteTransactionByName,
@@ -581,7 +487,6 @@ export {
   deletePendingTransaction,
   getLatestTransaction,
   Address,
-  AnsRecord,
   Transaction,
   getAllAddresses,
   getAllMyAddresses,
