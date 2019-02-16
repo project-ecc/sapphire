@@ -75,6 +75,10 @@ class MainSidebar extends Component {
               </div>
               <p style={{ fontSize: '13px' }}>{`${this.props.lang.activeConnections}: ${this.props.connections}`}</p>
             </NavLink>
+            <div className="menu mt-0 mb-2 pl-4 pr-4 text-center">
+              { this.props.daemonRunning && (<span className="text-green">Daemon Running</span>) }
+              { !this.props.daemonRunning && (<span className="text-warning">Daemon Stopped</span>) }
+            </div>
             <div className="menu mt-0">
               <ul>
                 <li>
@@ -97,7 +101,8 @@ const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
     connections: state.chains.connections,
-    paymentChainSync: state.chains.paymentChainSync
+    paymentChainSync: state.chains.paymentChainSync,
+    daemonRunning: state.application.daemonRunning
   };
 };
 

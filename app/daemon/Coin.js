@@ -127,7 +127,7 @@ class Coin extends Component {
         if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
           this.props.setLoading({
             isLoading: true,
-            loadingMessage: 'Please Start your wallet'
+            loadingMessage: 'Please wait while we try to restart your wallet. You may also try closing and reopening Sapphire.'
           });
         }
       });

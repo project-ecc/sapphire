@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron';
 import {
+  DAEMON_RUNNING,
   LOADING,
   DAEMON_CREDENTIALS,
   STEP_INITIAL_SETUP,
@@ -54,6 +55,13 @@ import {
 export const setWalletCredentials = (args) => {
   return {
     type: DAEMON_CREDENTIALS,
+    payload: args
+  };
+};
+
+export const setDaemonRunning = (args) => {
+  return {
+    type: DAEMON_RUNNING,
     payload: args
   };
 };

@@ -29,7 +29,6 @@ class Connector extends Component {
     this.arch = arch();
     this.os = process.platform;
     this.arch = process.arch;
-    this.running = false;
 
     this.state = {
       interval: 5000,
@@ -39,10 +38,16 @@ class Connector extends Component {
       currentVersion: -1,
       walletDat: false,
       toldUserAboutUpdate: false,
-      running: false
+      daemonCheckerTimer: null,
+      daemonUpdateTimer: null
     };
 
     this.initialSetup();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.daemonCheckerTimer);
+    clearInterval(this.state.daemonUpdateTimer);
   }
 
   async initialSetup() {
@@ -130,8 +135,10 @@ class Connector extends Component {
 
   startDaemonChecker() {
     this.checkIfDaemonIsRunning();
-    this.intervalID = setInterval(this.checkIfDaemonIsRunning.bind(this), 50000);
-    this.intervalIDCheckUpdates = setInterval(this.getLatestVersion.bind(this), 6000000);
+    this.setState({
+      daemonCheckerTimer: setInterval(this.checkIfDaemonIsRunning.bind(this), 50000),
+      daemonUpdateTimer: setInterval(this.getLatestVersion.bind(this), 6000000)
+    });
   }
 
 
@@ -142,9 +149,10 @@ class Connector extends Component {
       find('name', 'eccoind').then((list) => {
         if (list && list.length > 0) {
           console.log('Daemon running');
+          this.props.setDaemonRunning(true);
         } else if (list && list.length == 0) {
           console.log('daemon not running');
-          self.running = false;
+          this.props.setDaemonRunning(false);
           // if (!self.downloading) { self.startDaemon(); }
           if (!self.downloading) { event.emit('start'); }
         }

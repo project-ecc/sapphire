@@ -63,3 +63,4 @@ export const SELECTED_CURRENCY = 'selected_currency';
 export const DONATION_GOALS = 'donation_goals';
 export const DAEMON_ERROR_POPUP = 'daemon_error_popup';
 export const DAEMON_ERROR = 'daemon_error';
+export const DAEMON_RUNNING = 'daemon_running';

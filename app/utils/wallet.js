@@ -1,5 +1,5 @@
 import Client from 'eccoin-js';
-import shell from 'node-powershell';
+import Shell from 'node-powershell';
 import { getPlatformWalletUri } from './platform.service';
 import runExec from './../globals/runExec';
 
@@ -348,7 +348,7 @@ export default class Wallet {
         // TODO: uncomment this when package is fixed
         path = `& start-process "${path}" -verb runAs -WindowStyle Hidden`;
         // path = `& "${path}" `;
-        const ps = new shell({ //eslint-disable-line
+        const ps = new Shell({
           executionPolicy: 'Bypass',
           noProfile: true
         });
@@ -359,7 +359,7 @@ export default class Wallet {
           })
           .catch(err => {
             console.log(err);
-            reject(err);
+            return reject(false);
             ps.dispose();
           });
       }
