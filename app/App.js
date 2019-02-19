@@ -34,6 +34,7 @@ class App extends Component {
   }
 
   componentWillUnmount() {
+    ipcRenderer.removeListener('closing_daemon')
     event.emit('stop');
   }
 

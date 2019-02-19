@@ -48,6 +48,10 @@ class Connector extends Component {
   componentWillUnmount() {
     clearInterval(this.state.daemonCheckerTimer);
     clearInterval(this.state.daemonUpdateTimer);
+
+    event.removeListener('start')
+    event.removeListener('stop')
+    event.removeListener('updateDaemon')
   }
 
   async initialSetup() {

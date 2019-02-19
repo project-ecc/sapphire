@@ -65,6 +65,17 @@ class Coin extends Component {
     clearInterval(this.state.coinMarketCapInterval);
     clearInterval(this.state.checkStartupStatusInterval);
     clearInterval(this.state.addressProcessorInterval);
+
+    event.removeListener('startConnectorChildren');
+    event.removeListener('runMainCycle');
+    ipcRenderer.removeListener('loading-error');
+    ipcRenderer.removeListener('message-from-log');
+    ipcRenderer.removeListener('downloading-file');
+    ipcRenderer.removeListener('downloaded-file');
+    ipcRenderer.removeListener('verifying-file');
+    ipcRenderer.removeListener('unzipping-file');
+    ipcRenderer.removeListener('file-download-complete');
+    ipcRenderer.removeListener('download-error');
   }
 
   async stateCheckerInitialStartupCycle() {
