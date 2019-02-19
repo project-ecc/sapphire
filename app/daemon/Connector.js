@@ -147,7 +147,7 @@ class Connector extends Component {
 
 
   checkIfDaemonIsRunning() {
-    if (this.state.installedVersion !== -1 && !this.downloading) {
+    if (this.state.installedVersion !== -1 && !this.state.downloading) {
       const self = this;
       console.log('Checking if daemon is running...');
       find('name', 'eccoind').then((list) => {
@@ -158,7 +158,7 @@ class Connector extends Component {
           console.log('daemon not running');
           this.props.setDaemonRunning(false);
           // if (!self.downloading) { self.startDaemon(); }
-          if (!self.downloading) { event.emit('start'); }
+          if (!self.state.downloading) { event.emit('start'); }
         }
       });
     }
