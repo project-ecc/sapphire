@@ -23,7 +23,7 @@ class Coin extends Component {
     this.blockCycle = this.blockCycle.bind(this);
     this.transactionCycle = this.transactionCycle.bind(this);
     this.addressCycle = this.addressCycle.bind(this);
-    this.addressCycle = this.addressCycle.bind(this);
+    this.orderTransactions = this.orderTransactions.bind(this);
     this.stateCheckerInitialStartupCycle = this.stateCheckerInitialStartupCycle.bind(this);
 
 
@@ -32,7 +32,8 @@ class Coin extends Component {
     this.checkQueuedNotifications = this.checkQueuedNotifications.bind(this);
 
     this.state = {
-      interval: 5000,
+      miscInterval: 15000,
+      blockInterval: 5000,
       latestBlockTime: 0,
       currentHighestBlock: 0,
       currentHighestHeader: 0,
@@ -49,7 +50,8 @@ class Coin extends Component {
       transactionsToRequest: 4000,
       shouldRequestMoreTransactions: false,
       running: false,
-      firstRun: false
+      firstRun: false,
+      transactionsPage: 0
     };
 
 
@@ -256,7 +258,7 @@ class Coin extends Component {
   async startCycles() {
     // we can starting syncing the block data with redux now
     this.setState({
-      walletRunningInterval: setInterval(async () => { await this.walletCycle(); }, this.state.interval),
+      walletRunningInterval: setInterval(async () => { await this.walletCycle(); }, this.state.blockInterval),
       running: true
     });
   }
@@ -270,9 +272,10 @@ class Coin extends Component {
 
   }
   async loadTransactionsForProcessing() {
+    console.log('in transaction funciton')
     // TODO : WUT
     // await this.checkIfTransactionsNeedToBeDeleted();
-
+    let transactionMap = {}
     let txId = '',
       time = 0,
       amount = 0,
@@ -287,8 +290,10 @@ class Coin extends Component {
 
 
     let transactions = null;
+    console.log("transactions", transactions)
     while (transactions == null && attempts <= maxAttempts) {
-      transactions = await this.props.wallet.getTransactions('*', this.transactionsToRequest, this.transactionsToRequest * this.transactionsPage);
+      transactions = await this.props.wallet.getTransactions('*', this.state.transactionsToRequest, this.state.transactionsToRequest * this.state.transactionsPage);
+      console.log(transactions)
     }
 
     transactions = this.orderTransactions(transactions);
@@ -307,10 +312,10 @@ class Coin extends Component {
         address = transactions[i].address;
         fee = transactions[i].fee === undefined ? 0 : transactions[i].fee;
         confirmations = transactions[i].confirmations;
-        if (!this.transactionsMap[txId]) {
-          this.transactionsMap[txId] = [];
+        if (!this.state.transactionMap[txId]) {
+          this.state.transactionMap[txId] = [];
         }
-        this.transactionsMap[txId].push({
+        this.state.transactionMap[txId].push({
           txId,
           time,
           amount,
@@ -334,6 +339,15 @@ class Coin extends Component {
       await this.processTransactions();
     }
   }
+
+  orderTransactions(data) {
+    const aux = [];
+    for (let i = data.length - 1; i >= 0; i -= 1) {
+      aux.push(data[i]);
+    }
+    return aux;
+  }
+
   async processTransactions() {
     let entries = [];
     const rewards = [];
@@ -341,8 +355,8 @@ class Coin extends Component {
     const change = [];
 
     // process transactions
-    for (const key of Object.keys(this.transactionsMap)) {
-      const values = this.transactionsMap[key];
+    for (const key of Object.keys(this.state.transactionMap)) {
+      const values = this.state.transactionMap[key];
       let generatedFound = false;
 
       // check if current values array contains a staked transaction, if it does flag the rest of them as category staked
@@ -410,7 +424,9 @@ class Coin extends Component {
     // console.log(entries);
     // console.log(rewards);
     // console.log(staked);
-    this.transactionsMap = {};
+    this.setState({
+      transactionsMap: {}
+    })
     entries = entries.concat(rewards, staked, change);
     // console.log(entries.length)
     // console.log(JSON.stringify(entries))
@@ -424,7 +440,7 @@ class Coin extends Component {
 
     for (let i = 0; i < entries.length; i++) {
       // console.log(lastCheckedEarnings)
-      if (this.firstRun) {
+      if (this.state.firstRun) {
         this.props.setLoading({
           isLoading: true,
           loadingMessage: `Indexing transaction ${i}/${entries.length}`
@@ -524,9 +540,9 @@ class Coin extends Component {
 
       // start all the other intervals
       this.setState({
-        blockProcessorInterval: setInterval(() => { this.blockCycle(); }, this.state.interval),
-        transactionProcessorInterval: setInterval(async () => { await this.transactionCycle(); }, this.state.interval),
-        addressProcessorInterval: setInterval(async () => { await this.addressCycle(); }, this.state.interval)
+        blockProcessorInterval: setInterval(() => { this.blockCycle(); }, this.state.blockInterval),
+        transactionProcessorInterval: setInterval(async () => { await this.transactionCycle(); }, this.state.miscInterval),
+        addressProcessorInterval: setInterval(async () => { await this.addressCycle(); }, this.state.miscInterval)
       });
 
       this.props.setLoading({
@@ -585,6 +601,7 @@ class Coin extends Component {
    */
   async addressCycle() {
     this.props.wallet.listReceivedByAddress().then(async (data) => {
+      console.log(data)
       let addresses = data;
 
       // if my current database addresses are not all in the addresses returned from the daemon,
@@ -653,7 +670,7 @@ class Coin extends Component {
     }
 
     if(this.state.transactionsIndexed === false){
-      console.log('transactions indexed',this.state.transactionsIndexed);
+      console.log('transactions indexed', this.state.transactionsIndexed);
       await this.loadTransactionsForProcessing();
     }
 
