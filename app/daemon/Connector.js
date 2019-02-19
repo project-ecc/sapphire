@@ -98,7 +98,7 @@ class Connector extends Component {
       do {
         try {
           await this.downloadDaemon();
-          version = parseInt(this.installedVersion.replace(/\D/g, ''));
+          version = parseInt(this.state.installedVersion.replace(/\D/g, ''));
         } catch (e) {
           event.emit('download-error', { message: e.message });
         }
@@ -143,7 +143,7 @@ class Connector extends Component {
 
 
   checkIfDaemonIsRunning() {
-    if (this.installedVersion !== -1 && !this.downloading) {
+    if (this.state.installedVersion !== -1 && !this.downloading) {
       const self = this;
       console.log('Checking if daemon is running...');
       find('name', 'eccoind').then((list) => {
@@ -245,7 +245,7 @@ class Connector extends Component {
       if (data) {
         const parsed = JSON.parse(data);
         this.setState({
-          currentVersion: parsed.versions[0].name.substring(1)
+          currentVersion: parsed.versions[0].name
         });
         if (this.state.currentVersion === -1) {
           if (failCounter < 3) {
@@ -268,8 +268,8 @@ class Connector extends Component {
   checkForUpdates() {
     // check that version value has been set and
     // the user has not yet been told about an update
-    if (this.installedVersion !== -1 && !this.toldUserAboutUpdate) {
-      if (Tools.compareVersion(this.installedVersion, this.currentVersion) === -1 && this.currentVersion.replace(/\D/g, '') > REQUIRED_DAEMON_VERSION) {
+    if (this.state.installedVersion !== -1 && !this.state.toldUserAboutUpdate) {
+      if (Tools.compareVersion(this.state.installedVersion, this.state.currentVersion) === -1 && this.state.currentVersion.replace(/\D/g, '') > REQUIRED_DAEMON_VERSION) {
         this.setState({
           toldUserAboutUpdate: true
         });
