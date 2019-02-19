@@ -262,20 +262,10 @@ class Coin extends Component {
       running: true
     });
   }
-
-
-  processAddresses() {}
-
-  processTransactions() {}
-
-  recalculateStakingsEarnings() {
-
-  }
   async loadTransactionsForProcessing() {
-    console.log('in transaction funciton')
-    // TODO : WUT
-    // await this.checkIfTransactionsNeedToBeDeleted();
-    let transactionMap = {}
+    this.setState({
+      isIndexingTransactions: true
+    })
     let txId = '',
       time = 0,
       amount = 0,
@@ -400,14 +390,7 @@ class Coin extends Component {
                   change.push({ ...original, txId: key });
                   entries.splice(entries.indexOf(original), 1);
                   entries.splice(entries.indexOf(current), 1);
-                } else {
-                  // console.log('similarity too low')
-                  // console.log(tools.similarity(original.amount.toString(), current.amount.toString()))
                 }
-              } else {
-                // console.log('Sim value')
-                // console.log(tools.similarity(original.amount.toString(), current.amount.toString()))
-                // console.log('values dont line up')
               }
             }
           }
@@ -421,15 +404,10 @@ class Coin extends Component {
       entries[j].is_main = true;
     }
 
-    // console.log(entries);
-    // console.log(rewards);
-    // console.log(staked);
     this.setState({
       transactionsMap: {}
     })
     entries = entries.concat(rewards, staked, change);
-    // console.log(entries.length)
-    // console.log(JSON.stringify(entries))
     await this.insertIntoDb(entries);
   }
   async insertIntoDb(entries) {
@@ -440,7 +418,7 @@ class Coin extends Component {
 
     for (let i = 0; i < entries.length; i++) {
       // console.log(lastCheckedEarnings)
-      if (this.state.firstRun) {
+      if (this.state.transactionsIndexed === false) {
         this.props.setLoading({
           isLoading: true,
           loadingMessage: `Indexing transaction ${i}/${entries.length}`
@@ -482,16 +460,19 @@ class Coin extends Component {
     }
 
     // no more transactions to process, mark as done to avoid spamming the daemon
-    if (!this.transactionsIndexed) {
-      this.transactionsIndexed = true;
+    if (!this.state.transactionsIndexed) {
+      this.setState({
+        transactionsIndexed: true
+      })
       this.props.setIndexingTransactions(false);
       const rewards = await getAllRewardTransactions();
       this.props.setStakingReward(rewards);
     }
 
-    this.transactionsPage = 0;
-    this.currentFrom = this.from;
-    this.isIndexingTransactions = false;
+    this.setState({
+      transactionsPage: 0,
+      isIndexingTransactions: false
+    })
   }
 
 
