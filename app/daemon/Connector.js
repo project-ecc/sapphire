@@ -305,6 +305,7 @@ class Connector extends Component {
 
         const downloaded = await downloadFile(downloadUrl, walletDirectory, 'Eccoind.zip', zipChecksum, true);
 
+        // test
         if (downloaded) {
           await self.saveVersion(self.state.installedVersion);
           self.setState({
