@@ -64,24 +64,6 @@ class Encrypt extends Component {
     });
   }
 
-  componentWillMount() {
-    if (this.props.checkEncrypted) {
-      const self = this;
-      setTimeout(() => {
-        self.checkIfEncrypted();
-      }, 2000);
-    }
-  }
-
-  componentDidMount() {
-    console.log('Check if encrypted: ', this.props.checkEncrypted);
-    if (this.props.checkEncrypted) {
-      this.setState({
-        encrypting: 2
-      });
-    }
-  }
-
   onTextFieldChange(key, e) {
     const value = e.target.value;
     const payload = {};
@@ -119,10 +101,6 @@ class Encrypt extends Component {
         this.props.setUnencryptedWallet(false);
         setTimeout(() => {
           self.startWallet();
-          // making sure >_>
-          setTimeout(() => {
-            self.startWallet();
-          }, 7000);
         }, 5000);
         console.log('encrypted! ', data);
       }

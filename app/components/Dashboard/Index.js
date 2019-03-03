@@ -7,6 +7,7 @@ import * as actions from '../../actions/index';
 import Header from '../Others/Header';
 import Body from '../Others/Body';
 import UnlockModal from '../Others/UnlockModal';
+import UnencryptedWalletPartial from './../Settings/modals/UnencryptedWalletModal';
 
 const Tools = require('../../utils/tools');
 
@@ -102,14 +103,9 @@ class Index extends Component {
           { this.props.lang.overview }
         </Header>
         <Body noPadding>
-          <Card body inverse className="bg-gradient-red standout mb-5">
-            <CardTitle>Wallet Unencrypted</CardTitle>
-            <CardText>
-              Your wallet is currently unencrypted. Most functionality of Sapphire will be locked until you encrypt your wallet.
-            </CardText>
-            <Button color="danger" className="mt-2">Fix</Button>
-          </Card>
-
+          { this.props.unencryptedWallet && (
+            <UnencryptedWalletPartial />
+          )}
           <Card body inverse className="homeSection text-center bg-gradient-blue standout" id="balanceInfo">
             <CardTitle id="balance" style={{ fontSize: '25px' }}>{ this.props.lang.balance }</CardTitle>
             <div className="row">

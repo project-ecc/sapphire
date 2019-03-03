@@ -82,12 +82,18 @@ class Coin extends Component {
 
   async stateCheckerInitialStartupCycle() {
     this.props.wallet.getInfo().then(async (data) => {
+      console.log('NICK', data)
       if (!data.encrypted) {
         this.props.setUnencryptedWallet(true);
       }
+      else {
+        this.props.setUnencryptedWallet(false);
+      }
+
       if (this.props.updatingApp) {
         this.props.setUpdatingApplication(true);
       }
+
       if (!this.state.running) {
         await db.sequelize.sync();
         this.setState({
@@ -153,8 +159,9 @@ class Coin extends Component {
     // ipcRenderer.on('guiUpdate', this.handleGuiUpdate.bind(this));
     // ipcRenderer.on('daemonUpdate', this.handleDaemonUpdate.bind(this));
     // ipcRenderer.on('daemonUpdated', this.handleDaemonUpdated.bind(this));
-    event.on('startConnectorChildren', () => {
-      this.stateCheckerInitialStartupCycle.bind(this);
+    event.on('startConnectorChildren', async () => {
+      console.log('FUNCTION LOADED')
+      await this.stateCheckerInitialStartupCycle();
       this.setState({
         checkStartupStatusInterval: setInterval(async () => { await this.stateCheckerInitialStartupCycle(); }, 2000),
       });
