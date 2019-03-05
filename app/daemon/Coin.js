@@ -550,6 +550,10 @@ class Coin extends Component {
       this.props.setDaemonVersion(tools.formatVersion(data.version));
       this.props.chainInfo(data);
       this.props.walletInfo(data);
+
+      this.props.setLoading({
+        isLoading: false
+      });
     });
 
     this.props.wallet.getWalletInfo().then(async (data) => {
