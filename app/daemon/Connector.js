@@ -150,10 +150,15 @@ class Connector extends Component {
     if (this.state.installedVersion !== -1 && !this.state.downloadingDaemon) {
       const self = this;
       console.log('Checking if daemon is running...');
-      find('name', 'eccoind').then((list) => {
+      find('name', 'eccoind').then(async (list) => {
         if (list && list.length > 0) {
           console.log('Daemon running');
-          this.props.setDaemonRunning(true);
+          try {
+            await this.props.wallet.getInfo();
+            this.props.setDaemonRunning(true);
+          } catch (e) {
+            this.props.setDaemonRunning(false);
+          }
         } else if (list && list.length == 0) {
           console.log('daemon not running');
           this.props.setDaemonRunning(false);

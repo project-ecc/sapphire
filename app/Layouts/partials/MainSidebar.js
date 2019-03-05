@@ -69,11 +69,11 @@ class MainSidebar extends Component {
           </div>
           <div className="pt-5 pb-2">
             <NavLink to="/coin/network" className="text-center pl-4 pr-4" data-tip="View network stats">
-              <p style={{ fontSize: '13px' }}>{`${this.props.lang.syncing} ${progressBar}%`}</p>
+              <div style={{ fontSize: '13px' }}>{`${this.props.lang.syncing} ${progressBar}%`}</div>
               <div className="progress">
                 <div className="bar" style={{ width: `${progressBar}%` }} />
               </div>
-              <p style={{ fontSize: '13px' }}>{`${this.props.lang.activeConnections}: ${this.props.connections}`}</p>
+              <div style={{ fontSize: '13px' }}>{`${this.props.lang.activeConnections}: ${this.props.connections}`}</div>
             </NavLink>
             <div className="menu mt-0 mb-2 pl-4 pr-4 text-center">
               { this.props.daemonRunning && (<span className="text-green">Daemon Running</span>) }

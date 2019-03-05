@@ -60,6 +60,7 @@
     "updateFailed": "Update failed, please try again later.",
 
     "loading": "Loading",
+    "loadingWallet": "Loading Wallet...",
     "mainMessage": "Hello, we are getting a few things ready...",
     "updateAvailableNotif": "Application update available",
 
@@ -290,5 +291,9 @@
     "console": "Console",
     "accessConsole": "Access Console",
     "create": "Create",
-    "totalValue": "Total Value"
+    "totalValue": "Total Value",
+    "activatingBestChain": "Activating best chain...",
+    "loadingBlockIndex": "Loading block index...",
+    "rescanning": "Rescanning...",
+    "restartYourWalletMessage": "Please wait while we try to restart your wallet. You may also try closing and reopening Sapphire."
 }

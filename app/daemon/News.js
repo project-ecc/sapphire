@@ -36,6 +36,7 @@ class News extends Component {
 
   componentWillUnmount() {
     clearInterval(this.state.eccNewsTimer);
+    event.removeListener('startConnectorChildren');
   }
 
   listenToEvents() {

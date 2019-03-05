@@ -82,11 +82,10 @@ class Coin extends Component {
 
   async stateCheckerInitialStartupCycle() {
     this.props.wallet.getInfo().then(async (data) => {
-      console.log('NICK', data)
+      console.log(data);
       if (!data.encrypted) {
         this.props.setUnencryptedWallet(true);
-      }
-      else {
+      } else {
         this.props.setUnencryptedWallet(false);
       }
 
@@ -104,13 +103,13 @@ class Coin extends Component {
       }
     })
       .catch((err) => {
-        console.log("error", err.message);
+        console.log('error', err.message);
 
         if (err.message === 'Loading wallet...') {
           if (!this.props.initialSetup) {
             this.props.setLoading({
               isLoading: true,
-              loadingMessage: 'Loading wallet...'
+              loadingMessage: this.props.lang.loadingWallet
             });
           }
         }
@@ -118,7 +117,7 @@ class Coin extends Component {
           if (!this.props.initialSetup) {
             this.props.setLoading({
               isLoading: true,
-              loadingMessage: 'Activating best chain...'
+              loadingMessage: this.props.lang.activatingBestChain
             });
           }
         }
@@ -126,27 +125,27 @@ class Coin extends Component {
           if (!this.props.initialSetup) {
             this.props.setLoading({
               isLoading: true,
-              loadingMessage: 'Loading block index...'
+              loadingMessage: this.props.lang.loadingBlockIndex
             });
           }
         }
         if (err.message === 'Rescanning...') {
-          let rescarnningMessage = this.props.rescanningLogInfo.peekEnd()
+          const rescarnningMessage = this.props.rescanningLogInfo.peekEnd();
           this.props.setLoading({
             isLoading: true,
-            loadingMessage: 'Rescanning...' + rescarnningMessage
+            loadingMessage: `${this.props.lang.rescanning} ${rescarnningMessage}`
           });
         }
         if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT')) {
           this.props.setLoading({
             isLoading: true,
-            loadingMessage: 'Rescanning...'
+            loadingMessage: this.props.lang.rescanning
           });
         }
         if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
           this.props.setLoading({
             isLoading: true,
-            loadingMessage: 'Please wait while we try to restart your wallet. You may also try closing and reopening Sapphire.'
+            loadingMessage: this.props.lang.restartYourWalletMessage
           });
         }
       });
@@ -160,7 +159,6 @@ class Coin extends Component {
     // ipcRenderer.on('daemonUpdate', this.handleDaemonUpdate.bind(this));
     // ipcRenderer.on('daemonUpdated', this.handleDaemonUpdated.bind(this));
     event.on('startConnectorChildren', async () => {
-      console.log('FUNCTION LOADED')
       await this.stateCheckerInitialStartupCycle();
       this.setState({
         checkStartupStatusInterval: setInterval(async () => { await this.stateCheckerInitialStartupCycle(); }, 2000),
@@ -272,7 +270,7 @@ class Coin extends Component {
   async loadTransactionsForProcessing() {
     this.setState({
       isIndexingTransactions: true
-    })
+    });
     let txId = '',
       time = 0,
       amount = 0,
@@ -287,10 +285,10 @@ class Coin extends Component {
 
 
     let transactions = null;
-    console.log("transactions", transactions)
+    console.log('transactions', transactions);
     while (transactions == null && attempts <= maxAttempts) {
       transactions = await this.props.wallet.getTransactions('*', this.state.transactionsToRequest, this.state.transactionsToRequest * this.state.transactionsPage);
-      console.log(transactions)
+      console.log(transactions);
     }
 
     transactions = this.orderTransactions(transactions);
@@ -413,7 +411,7 @@ class Coin extends Component {
 
     this.setState({
       transactionsMap: {}
-    })
+    });
     entries = entries.concat(rewards, staked, change);
     await this.insertIntoDb(entries);
   }
@@ -470,7 +468,7 @@ class Coin extends Component {
     if (!this.state.transactionsIndexed) {
       this.setState({
         transactionsIndexed: true
-      })
+      });
       this.props.setIndexingTransactions(false);
       const rewards = await getAllRewardTransactions();
       this.props.setStakingReward(rewards);
@@ -479,7 +477,7 @@ class Coin extends Component {
     this.setState({
       transactionsPage: 0,
       isIndexingTransactions: false
-    })
+    });
   }
 
 
@@ -512,33 +510,21 @@ class Coin extends Component {
 
 
   /**
-   * Wallet Cycle Function: this funcntion checks if the block index is loaded and the wallet is functioning normally
+   * Wallet Cycle Function: this function checks if the block index is loaded and the wallet is functioning normally
    */
-
   async walletCycle() {
-    let data = null;
-    try {
-      data = await this.props.wallet.getInfo();
-    } catch (e) {
-      console.log(e);
+    if (!this.props.daemonRunning) {
+      return;
     }
 
-    if (data != null) {
-      clearInterval(this.state.walletRunningInterval);
+    // start all the other intervals
+    this.setState({
+      blockProcessorInterval: setInterval(() => { this.blockCycle(); }, this.state.blockInterval),
+      transactionProcessorInterval: setInterval(async () => { await this.transactionCycle(); }, this.state.miscInterval),
+      addressProcessorInterval: setInterval(async () => { await this.addressCycle(); }, this.state.miscInterval)
+    });
 
-      // start all the other intervals
-      this.setState({
-        blockProcessorInterval: setInterval(() => { this.blockCycle(); }, this.state.blockInterval),
-        transactionProcessorInterval: setInterval(async () => { await this.transactionCycle(); }, this.state.miscInterval),
-        addressProcessorInterval: setInterval(async () => { await this.addressCycle(); }, this.state.miscInterval)
-      });
-
-      this.props.setLoading({
-        isLoading: true,
-        loadingMessage: 'Connecting Sapphire to the blockchain!'
-      });
-      clearInterval(this.state.walletRunningInterval);
-    }
+    clearInterval(this.state.walletRunningInterval);
   }
 
   /**
@@ -570,15 +556,6 @@ class Coin extends Component {
       console.log(data);
       this.props.walletInfoSec(data);
     });
-
-    this.props.setLoading({
-      isLoading: true,
-      loadingMessage: 'Connected!'
-    });
-
-    this.props.setLoading({
-      isLoading: false,
-    });
   }
 
 
@@ -589,7 +566,7 @@ class Coin extends Component {
    */
   async addressCycle() {
     this.props.wallet.listReceivedByAddress().then(async (data) => {
-      console.log(data)
+      console.log(data);
       let addresses = data;
 
       // if my current database addresses are not all in the addresses returned from the daemon,
@@ -657,7 +634,7 @@ class Coin extends Component {
       });
     }
 
-    if(this.state.transactionsIndexed === false){
+    if (this.state.transactionsIndexed === false) {
       console.log('transactions indexed', this.state.transactionsIndexed);
       await this.loadTransactionsForProcessing();
     }
@@ -706,7 +683,8 @@ const mapStateToProps = state => {
     initialSetup: state.startup.initialSetup,
     daemonUpdate: state.startup.daemonUpdate,
     notifications: state.notifications,
-    rescanningLogInfo: state.application.debugLog
+    rescanningLogInfo: state.application.debugLog,
+    daemonRunning: state.application.daemonRunning
   };
 };
 

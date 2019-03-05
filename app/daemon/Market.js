@@ -33,6 +33,8 @@ class News extends Component {
 
   componentWillUnmount() {
     clearInterval(this.state.eccMarketTimer);
+
+    event.removeListener('startConnectorChildren');
   }
 
   listenToEvents() {
