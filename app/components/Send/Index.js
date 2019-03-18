@@ -153,7 +153,7 @@ class Index extends Component {
     return (
       <div className="padding-titlebar">
         <Header titleClassName="d-flex justify-content-between">
-          <div>{ this.props.lang.send }</div>
+          <div>{ this.props.lang.sendCoins }</div>
           <div className="text-right">
             <p className="normalWeight homePanelTitleOne" style={{ fontSize: '14px' }}>Available { this.props.lang.balance }</p>
             <p className="normalWeight" style={{ fontSize: '20px' }}>{this.props.balance} <span className="ecc">ecc</span></p>

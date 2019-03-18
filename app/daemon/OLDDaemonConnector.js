@@ -480,7 +480,8 @@ class OLDDaemonConnector {
       console.log(err.message);
       if (err.message === 'Loading block index...' || err.message === 'Activating best chain...' ||
         err.message === 'Loading wallet...' || err.message === 'Rescanning...' ||
-        err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT') {
+        err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT')
+      {
         if (!this.loadingBlockIndexPayment) {
           this.loadingBlockIndexPayment = true;
           this.store.dispatch({ type: BLOCK_INDEX_PAYMENT, payload: true });

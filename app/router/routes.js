@@ -1,6 +1,6 @@
 // Pages
 import HomePage from './../components/Dashboard/Index';
-import ReceivePage from '../components/Addresses/Index';
+import ReceivePage from '../components/Receive/Index';
 import TransactionPage from './../components/Transactions/Index';
 import SendPage from '../components/Send/Index';
 import ContactsPage from './../components/Contacts/Index';
@@ -120,7 +120,7 @@ export default [
             component: SendPage
           },
           {
-            path: '/coin/addresses',
+            path: '/coin/receive',
             component: ReceivePage
           },
           {

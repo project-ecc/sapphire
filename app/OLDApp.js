@@ -9,7 +9,7 @@ import * as actions from './actions/index';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import UpdateApplication from './components/Settings/partials/UpdateApplicationModal';
 import SendConfirmation from './components/Send/partials/SendConfirmation';
-import ConfirmNewAddress from './components/Addresses/partials/NewAddressModal';
+import ConfirmNewAddress from './components/Receive/partials/NewRequestModal';
 import ClosingApplication from './components/Others/ClosingApplication';
 import TopBar from './Layouts/partials/TopBar';
 import NotificationPopup from './components/NotificationPopup';

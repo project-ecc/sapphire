@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
-import { BellOutlineIcon, CurrencyUsdIcon, SendIcon, FormatListBulletedIcon, ContactsIcon, ForumIcon, SettingsOutlineIcon, NewspaperIcon, GiftIcon } from 'mdi-react';
+import { CurrencyUsdIcon, SendIcon, FormatListBulletedIcon, ContactsIcon, DownloadIcon, GiftIcon } from 'mdi-react';
 
 import * as actions from '../../actions/index';
-
-const Tools = require('../../utils/tools');
 
 class MainSidebar extends Component {
   constructor(props) {
@@ -42,9 +40,9 @@ class MainSidebar extends Component {
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/coin/addresses" activeClassName="active">
-                    {/*<img src={addresses} />*/}
-                    { this.props.lang.addresses }
+                  <NavLink to="/coin/receive" activeClassName="active">
+                    <DownloadIcon size={20} />
+                    { this.props.lang.receive }
                   </NavLink>
                 </li>
                 <li>

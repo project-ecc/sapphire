@@ -265,7 +265,10 @@
 
     "overview": "Overview",
     "send": "Send",
+    "sendCoins": "Send Coins",
     "addresses": "Addresses",
+    "receive": "Receive",
+    "receiveCoins": "Receive Coins",
     "customer": "Customer",
     "gallery": "Gallery",
     "provider": "Provider",

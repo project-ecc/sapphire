@@ -13,7 +13,7 @@ import { getAddress } from '../../../Managers/SQLManager';
 
 const event = require('../../../utils/eventhandler');
 
-class NewAddressModal extends Component {
+class NewRequestModal extends Component {
   constructor(props) {
     super(props);
 
@@ -153,4 +153,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connect(mapStateToProps, actions, null, { withRef: true })(NewAddressModal);
+export default connect(mapStateToProps, actions, null, { withRef: true })(NewRequestModal);
