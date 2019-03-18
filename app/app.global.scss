@@ -229,6 +229,13 @@ input::-webkit-inner-spin-button {
   cursor: text;
 }
 
+/* Dot */
+.dot {
+  margin: auto 10px;
+  display: inline-block;
+  border-radius: 100%;
+}
+
 /* Gradients */
 .bg-gradient-blue {
   background: linear-gradient(75deg, #0488E9, #0BA5EE);

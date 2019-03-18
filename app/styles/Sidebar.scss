@@ -237,27 +237,6 @@
   left: 45px;
 }
 
-.progress {
-    margin: 10px;
-    height: 6px;
-    border-radius: 5px;
-    overflow: visible;
-    width: 162px;
-    margin: 0 auto;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.bar {
-    @include themify($themes) {
-      background-color: themed('progressBarBackgroundColor');
-      box-shadow: themed('progressBarBoxShadow');
-    }
-    height: 6px;
-    border-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-
 .fixLink{
   padding: 0 0 !important;
   text-decoration: none !important;

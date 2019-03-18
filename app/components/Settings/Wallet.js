@@ -69,7 +69,7 @@ class Wallet extends Component {
               { this.props.lang.backup } wallet.dat
               <CloudUploadIcon className="ml-2" />
             </Button>
-            <Button onClick={this.handleExportPrivateKeys} color="warning" className="ml-3">
+            <Button onClick={this.handleExportPrivateKeys} color="warning" className="ml-3" disabled={this.props.unencryptedWallet}>
               { this.props.lang.exportPrivateKeys }
               <FileExportIcon className="ml-2" />
             </Button>
@@ -107,7 +107,8 @@ const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
     wallet: state.application.wallet,
-    backingUpWallet: state.application.backingUpWallet
+    backingUpWallet: state.application.backingUpWallet,
+    unencryptedWallet: state.startup.unencryptedWallet
   };
 };
 

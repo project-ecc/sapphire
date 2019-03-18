@@ -274,6 +274,8 @@
     "provider": "Provider",
     "syncing": "Syncing",
     "activeConnections": "Active Connections",
+    "blockchainConnected": "Blockchain Connected",
+    "blockchainDisconnected": "Blockchain Disconnected",
 
     "usd": "USD",
     "gbp": "GBP",

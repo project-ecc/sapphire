@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
 import { CurrencyUsdIcon, SendIcon, FormatListBulletedIcon, ContactsIcon, DownloadIcon, GiftIcon } from 'mdi-react';
+import { Progress } from 'reactstrap';
+import Dot from './../../components/Others/Dot';
 
 import * as actions from '../../actions/index';
 
@@ -68,14 +70,17 @@ class MainSidebar extends Component {
           <div className="pt-5 pb-2">
             <NavLink to="/coin/network" className="text-center pl-4 pr-4" data-tip="View network stats">
               <div style={{ fontSize: '13px' }}>{`${this.props.lang.syncing} ${progressBar}%`}</div>
-              <div className="progress">
-                <div className="bar" style={{ width: `${progressBar}%` }} />
-              </div>
+              <Progress animated striped value={progressBar} color="warning" />
               <div style={{ fontSize: '13px' }}>{`${this.props.lang.activeConnections}: ${this.props.connections}`}</div>
             </NavLink>
-            <div className="menu mt-0 mb-2 pl-4 pr-4 text-center">
-              { this.props.daemonRunning && (<span className="text-green">Daemon Running</span>) }
-              { !this.props.daemonRunning && (<span className="text-warning">Daemon Stopped</span>) }
+            <div className="menu mt-0 mb-2 pl-3 pr-2 d-flex">
+              <Dot size={10} color={this.props.daemonRunning ? 'success' : 'danger'} />
+              { this.props.daemonRunning && (<small className="text-success">
+                { this.props.lang.blockchainConnected}
+              </small>) }
+              { !this.props.daemonRunning && (<small className="text-danger">
+                { this.props.lang.blockchainDisconnected }
+              </small>) }
             </div>
             <div className="menu mt-0">
               <ul>
