@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Modal, ModalBody, ModalHeader, ModalFooter, Card, Button, CardTitle, CardText, Input } from 'reactstrap';
-import * as actions from '../../../actions/index';
+import * as actions from '../../../actions';
 import Toast from '../../../globals/Toast/Toast';
 
-class UnencryptedWalletModal extends Component {
+class UnencryptedWalletCard extends Component {
   constructor (props) {
     super(props);
 
@@ -207,4 +207,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connect(mapStateToProps, actions, null, { withRef: true })(UnencryptedWalletModal);
+export default connect(mapStateToProps, actions, null, { withRef: true })(UnencryptedWalletCard);

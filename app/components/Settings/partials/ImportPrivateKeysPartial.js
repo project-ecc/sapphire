@@ -202,9 +202,9 @@
              onSubmit={this.importPrivateKey}
              className="ml-auto mr-auto"
            />
-           <div className="mt-5">
+           <div className="mt-4 text-center">
              { this.props.children }
-             <Button size="lg" color="white" className="ml-2" onClick={this.importPrivateKey}>
+             <Button size="lg" color="primary" className="ml-2" onClick={this.importPrivateKey}>
                { this.props.lang.import }
                <KeyIcon className="ml-2" />
              </Button>

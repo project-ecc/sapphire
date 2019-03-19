@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import * as actions from '../../actions/index';
-import { SettingsIcon } from 'mdi-react';
 import { Button } from 'reactstrap';
-import { CloudUploadIcon, FileExportIcon } from 'mdi-react';
+import { connect } from 'react-redux';
+import { SettingsIcon, CloudUploadIcon, FileExportIcon } from 'mdi-react';
+import * as actions from '../../actions/index';
 
 import ExportPrivateKeysModal from './partials/ExportPrivateKeysModal';
 import ChangePasswordModal from './partials/ChangePasswordModal';
 import ImportPrivateKeysModal from './partials/ImportPrivateKeysModal';
+
+import UnencryptedWalletPartial from './cards/UnencryptedWalletCard'
 
 import Header from '../Others/Header';
 import Body from '../Others/Body';
@@ -62,6 +63,9 @@ class Wallet extends Component {
           { this.props.lang.wallet }
         </Header>
         <Body>
+          { this.props.unencryptedWallet && (
+            <UnencryptedWalletPartial />
+          )}
           <p id="walletBackup">{ this.props.lang.backup }</p>
           <p id="walletBackupExplanation" className="mt-3">{ this.props.lang.backupExplanation }</p>
           <div className="d-flex justify-content-center mt-3">
@@ -76,14 +80,16 @@ class Wallet extends Component {
           </div>
 
           <div className="mt-3">
-            <div className="row settingsToggle">
-              <div className="col-sm-10 text-left removePadding">
-                <p className="walletBackupOptions">{ this.props.lang.password }</p>
+            { !this.props.unencryptedWallet && (
+              <div className="row settingsToggle">
+                <div className="col-sm-10 text-left removePadding">
+                  <p className="walletBackupOptions">{ this.props.lang.password }</p>
+                </div>
+                <div className="col-sm-2 text-right removePadding">
+                  <Button color="link" onClick={this.handleChangePasswordClicked}>{ this.props.lang.change }</Button>
+                </div>
               </div>
-              <div className="col-sm-2 text-right removePadding">
-                <Button color="link" onClick={this.handleChangePasswordClicked}>{ this.props.lang.change }</Button>
-              </div>
-            </div>
+            )}
             <div className="row settingsToggle" >
               <div className="col-sm-10 text-left removePadding">
                 <p className="walletBackupOptions">{ this.props.lang.privateKey }</p>

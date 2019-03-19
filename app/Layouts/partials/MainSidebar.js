@@ -70,10 +70,10 @@ class MainSidebar extends Component {
           <div className="pt-5 pb-2">
             <NavLink to="/coin/network" className="text-center pl-4 pr-4" data-tip="View network stats">
               <div style={{ fontSize: '13px' }}>{`${this.props.lang.syncing} ${progressBar}%`}</div>
-              <Progress animated striped value={progressBar} color="warning" />
+              <Progress animated striped value={progressBar} color="success" className="mt-2 mb-2" style={{borderRadius: 0, height: 6}} />
               <div style={{ fontSize: '13px' }}>{`${this.props.lang.activeConnections}: ${this.props.connections}`}</div>
             </NavLink>
-            <div className="menu mt-0 mb-2 pl-3 pr-2 d-flex">
+            <div className="menu mt-0 mb-2 pl-2 pr-2 text-center">
               <Dot size={10} color={this.props.daemonRunning ? 'success' : 'danger'} />
               { this.props.daemonRunning && (<small className="text-success">
                 { this.props.lang.blockchainConnected}

@@ -7,7 +7,7 @@ import * as actions from '../../actions/index';
 import Header from '../Others/Header';
 import Body from '../Others/Body';
 import UnlockModal from '../Others/UnlockModal';
-import UnencryptedWalletPartial from './../Settings/modals/UnencryptedWalletModal';
+import UnencryptedWalletPartial from '../Settings/cards/UnencryptedWalletCard';
 
 const Tools = require('../../utils/tools');
 
@@ -33,9 +33,6 @@ class Index extends Component {
   }
 
   async lockWallet() {
-    // const updated = await Tools.updateConfig(0);
-    // if (updated){
-
     const batch = [];
     const obj = {
       method: 'walletlock', parameters: []
@@ -53,7 +50,6 @@ class Index extends Component {
     }).catch((err) => {
       console.log('err unlocking wallet: ', err);
     });
-    // }
   }
 
   earningsFilterClicked(filter) {
@@ -112,14 +108,16 @@ class Index extends Component {
               <div className="col-sm-4" style={{ padding: '0 0' }}>
                 <CardTitle className="text-white-50 mb-0"><small>{ this.props.lang.staking }</small></CardTitle>
                 <p className="normalWeight">{this.props.stakingVal} <span className="ecc text-white">ecc</span></p>
-                <div style={{ width: '52px', margin: '0 auto', marginTop: '10px' }}>
-                  <ToggleButton
-                    checked={this.props.staking}
-                    onChange={() => {
-                      this.processStakingClicked();
-                    }}
-                  />
-                </div>
+                { !this.props.unencryptedWallet && this.props.balance > 0 && (
+                  <div style={{ width: '52px', margin: '0 auto', marginTop: '10px' }}>
+                    <ToggleButton
+                      checked={this.props.staking}
+                      onChange={() => {
+                        this.processStakingClicked();
+                      }}
+                    />
+                  </div>
+                )}
               </div>
               <div className="col-sm-4" style={{ padding: '0 0' }}>
                 <p className="normalWeight" style={{ fontSize: '20px' }}>{this.props.balance} <span className="ecc text-white">ecc</span></p>

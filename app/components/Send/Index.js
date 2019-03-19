@@ -6,6 +6,7 @@ import { ArrowRightIcon } from 'mdi-react';
 import Body from './../Others/Body';
 import Header from './../Others/Header';
 import UnlockModal from './../Others/UnlockModal';
+import StakingPartial from '../Settings/cards/StakingCard';
 
 import AddressBook from './partials/AddressBook';
 import * as actions from '../../actions';
@@ -160,6 +161,9 @@ class Index extends Component {
           </div>
         </Header>
         <Body noPadding>
+          { this.props.staking && (
+            <StakingPartial />
+          )}
           <div className="row flex-row-reverse">
             <div className="col-md-5">
               <div>
@@ -177,7 +181,7 @@ class Index extends Component {
                   onChange={e => this.onTextFieldChange('amount', e)}
                 />
                 <div className="mt-3 d-flex justify-content-end">
-                  <Button onClick={this.confirmSend} color="primary">
+                  <Button onClick={this.confirmSend} color="primary" disabled={this.props.staking}>
                     { this.props.lang.send }
                     <ArrowRightIcon className="ml-2" />
                   </Button>
