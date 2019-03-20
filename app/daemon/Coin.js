@@ -125,7 +125,7 @@ class Coin extends Component {
           if (!this.props.initialSetup) {
             this.props.setLoading({
               isLoading: true,
-              loadingMessage: this.props.lang.loadingBlockIndex
+              loadingMessage: 'Loading block index...'
             });
           }
         }
@@ -270,7 +270,7 @@ class Coin extends Component {
   async loadTransactionsForProcessing() {
     this.setState({
       isIndexingTransactions: true
-    });
+    })
     let txId = '',
       time = 0,
       amount = 0,

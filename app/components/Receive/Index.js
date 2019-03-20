@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Input, Button, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
 import { CheckIcon } from 'mdi-react';
-
+import { getAllTransactions } from '../../Managers/SQLManager';
 import * as actions from '../../actions';
 import NewRequestModal from './partials/NewRequestModal';
 
@@ -14,18 +14,36 @@ class Index extends Component {
   constructor(props) {
     super(props);
     this.openNewAddressModal = this.openNewAddressModal.bind(this);
+    this.loadTransactions = this.loadTransactions.bind(this);
 
     this.state = {
       request: {
         amount: 0,
         description: '',
-        address: ''
+        address: '',
+        latestTransactions: {}
       }
     };
   }
 
   openNewAddressModal () {
     this.confirmAddressModal.getWrappedInstance().toggle();
+  }
+
+  async componentDidMount() {
+    await this.loadTransactions();
+  }
+
+  async loadTransactions(){
+    const where = {
+      is_main: 1,
+      category: 'receive'
+    };
+    let data = await getAllTransactions(10, 0, where);
+    this.setState({
+      latestTransactions: data
+    });
+    console.log(data)
   }
 
   onTextFieldChange(key, e) {
@@ -38,6 +56,7 @@ class Index extends Component {
   }
 
   render() {
+
     console.log('ADDRESSES', this.props.userAddresses);
     return (
       <div className="padding-titlebar">
@@ -49,24 +68,16 @@ class Index extends Component {
             <div className="col-xl-8">
               <h4 className="mb-3">Request History</h4>
               <ListGroup>
-                <ListGroupItem active action>
-                  <ListGroupItemHeading>List group item heading</ListGroupItemHeading>
-                  <ListGroupItemText>
-                    Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
-                  </ListGroupItemText>
-                </ListGroupItem>
-                <ListGroupItem color="dark" action>
-                  <ListGroupItemHeading>List group item heading</ListGroupItemHeading>
-                  <ListGroupItemText>
-                    Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
-                  </ListGroupItemText>
-                </ListGroupItem>
-                <ListGroupItem color="dark" action>
-                  <ListGroupItemHeading>List group item heading</ListGroupItemHeading>
-                  <ListGroupItemText>
-                    Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
-                  </ListGroupItemText>
-                </ListGroupItem>
+                { this.state && this.state.latestTransactions && this.state.latestTransactions.map((result, index) => {
+                  return (
+                    <ListGroupItem key={index} active action>
+                      <ListGroupItemHeading>{result.address.address}</ListGroupItemHeading>
+                      <ListGroupItemText>
+                        {result.amount}
+                      </ListGroupItemText>
+                    </ListGroupItem>
+                  );
+                })}
               </ListGroup>
             </div>
             <div className="col-xl-4">
