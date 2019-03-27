@@ -1,0 +1,51 @@
+// Page transition
+.pageTransition-appear,
+.pageTransition-enter {
+  opacity:0;
+  transform:translateY(50px);
+}
+
+.pageTransition-appear-active,
+.pageTransition-enter-active {
+  transition: all .15s ease;
+  opacity:1;
+  transform:translateY(0px);
+}
+
+
+.pageTransition-exit {
+  opacity:1;
+  transform:translateY(0px);
+  transition: all .25s ease;
+}
+
+.pageTransition-exit-active {
+  opacity: 0.001;
+}
+
+
+// Scale transition
+.scaleTransition-appear,
+.scaleTransition-enter {
+  opacity:0;
+  transform: scale(0.9);
+}
+
+.scaleTransition-appear-active,
+.scaleTransition-enter-active {
+  transition: all .15s ease;
+  opacity:1;
+  transform: scale(1);
+}
+
+
+.scaleTransition-exit {
+  opacity:1;
+  transform: scale(1);
+  transition: all .25s ease;
+}
+
+.scaleTransition-exit-active {
+  opacity: 0.001;
+  transform: scale(0.9);
+}

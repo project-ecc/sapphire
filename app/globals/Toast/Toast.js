@@ -18,15 +18,25 @@ export default function (options) {
   const message = options.message || null;
   const title = options.title || null;
   const buttons = options.buttons || [];
-  const color = options.color || null;
+  const color = options.color || 'gradient-green';
 
-  const alert = document.createElement('div');
-  if (color !== null) {
-    alert.className = `bg-${color}`;
+  let gradColor = color;
+  switch (color) {
+    default:
+    case 'green': gradColor = 'gradient-green'; break
+    case 'red': gradColor = 'gradient-red'; break
+    case 'blue': gradColor = 'gradient-blue'; break
+    case 'light-blue': gradColor = 'gradient-light-blue'; break
+    case 'purple': gradColor = 'gradient-purple'; break
+    case 'deep-purple': gradColor = 'gradient-deep-purple'; break
+    case 'orange': gradColor = 'gradient-orange'; break
   }
 
+  const alert = document.createElement('div');
+  alert.className = `bg-${gradColor} standout`;
+
   if (title !== null) {
-    const titleDom = document.createElement('h4');
+    const titleDom = document.createElement('h5');
     titleDom.innerText = title;
     alert.appendChild(titleDom);
   }
@@ -39,11 +49,11 @@ export default function (options) {
 
   if (buttons.length > 0) {
     const buttonContainerDom = document.createElement('div');
-    buttonContainerDom.className = 'buttons';
+    buttonContainerDom.className = 'buttons mt-2';
 
     for (const ele in buttons) {
       const buttonDom = document.createElement('a');
-      buttonDom.className = 'btn btn-light btn-sm';
+      buttonDom.className = 'btn btn-dark btn-outline btn-sm';
       buttonDom.innerText = buttons[ele].title;
       buttonDom.onclick = buttons[ele].method;
       buttonContainerDom.appendChild(buttonDom);
@@ -55,6 +65,17 @@ export default function (options) {
   container.appendChild(alert);
 
   setTimeout(() => {
-    alert.remove();
+    requestAnimationFrame(() => {
+      alert.classList.add('show');
+    });
+  }, 100);
+
+  setTimeout(() => {
+    requestAnimationFrame(() => {
+      alert.classList.remove('show');
+      setTimeout(() => {
+        alert.remove();
+      }, 750);
+    });
   }, timeout);
 }

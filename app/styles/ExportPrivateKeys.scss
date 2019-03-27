@@ -1,9 +1,10 @@
-@import "./styles/themes.scss";
+@import "./themes/themes.scss";
 
 .pdfExample{
-	@include themify($themes) { 
-    	color: themed('bodySecondaryParagraphColor');  
+	@include themify($themes) {
+    	color: themed('bodySecondaryParagraphColor');
   	}
+  	font-family: Courier, sans-serif;
 }
 
 .keysItem{
@@ -25,8 +26,8 @@
     top: 17px;
     visibility: hidden;
     font-weight: 700;
-	@include themify($themes) { 
-    	color: themed('eccTicker'); 
+	@include themify($themes) {
+    	color: themed('eccTicker');
   	}
 }
 
@@ -41,7 +42,7 @@
     /* box-shadow: inset 7px 6px 10px -5px #000; */
     margin: 0 auto;
     border-radius: 14px;
-    @include themify($themes) { 
-        background-color: themed('homePanelsBackgroundColor'); 
+    @include themify($themes) {
+        background-color: themed('cardBackgroundColor');
     }
 }

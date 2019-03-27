@@ -19,7 +19,7 @@ module.exports = function (sequelize, DataTypes) {
   // class association method
   Address.associate = function (models) {
     Address.hasMany(models.Transaction);
-    Address.hasMany(models.AnsRecord);
+    // Address.hasMany(models.AnsRecord);
   };
 
   return Address;

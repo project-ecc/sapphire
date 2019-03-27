@@ -1,0 +1,33 @@
+#themes {
+  .themeSelector {
+    text-align: center;
+    opacity: 0.6;
+    padding: 25px 10px;
+    cursor: pointer;
+    display: inline-block;
+    width: 125px;
+
+    &.selectedTheme, &:hover {
+      opacity: 1;
+    }
+
+    .output {
+      width: 30px;
+      height: 30px;
+      transform: rotate(45deg);
+      margin: 0 auto;
+      box-shadow: 2px 2px 5px rgba(255,255,255,0.1);
+
+      & > div {
+        width:30px;
+        height:15px;
+      }
+    }
+  }
+
+  p {
+    padding-top: 22px;
+    font-size: 16px;
+    font-weight: 400;
+  }
+}

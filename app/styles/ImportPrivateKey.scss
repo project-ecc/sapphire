@@ -1,36 +1,8 @@
-@import "./styles/themes.scss";
-
-#importPrivKey{
-	height: 330px;
-}
-
-#importPrivKeyPopup{
-    height: 320px;
-    width: 600px;
-    position: relative;
-}
+@import "./themes/themes.scss";
 
 .privateKey{
 	margin-top: 0px;
 	margin-bottom: 50px;
-}
-
-#importedAddress{
-	visibility: hidden;
-	width: 100%;
-	transform: scale(1);
-	font-size: 20px;
-	position: absolute;
-	top: 20%;
-}
-
-#importFailed{
-	visibility: hidden;
-	width: 100%;
-	transform: scale(1);
-	font-size: 20px;
-	position: absolute;
-	top: 20%;
 }
 
 .importButtonAddress{
@@ -38,42 +10,9 @@
 	margin-top: 60px !important;
 }
 
-#importFailedSlack{
-	visibility: hidden;
-	width: 100%;
-	transform: scale(1);
-	font-size: 20px;
-	position: absolute;
-	top: 20%;
-}
-
-#importingPrivKey{
-	visibility: hidden;
-	width: 100%;
-	transform: scale(0.5);
-	font-size: 20px;
-	position: absolute;
-	top: 22%;
-}
-
-#importingPrivKey p{
-	@include themify($themes) { 
-		color: themed('bodySecondaryParagraphColor');  
-	}
-	width:450px; 
-	margin:0 auto; 
-	padding-top:65px; 
-	visibility:hidden; 
-	font-weight: 600;
-}
-
 .importAddressPopup{
 	position: absolute;
 	left: 50px;
-}
-
-#importing, #importFailed, #importedAddress{
-	position: absolute;
 }
 
 .importFailedPopup, .importedAddressPopup, .importingAddressPopup{

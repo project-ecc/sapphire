@@ -43,7 +43,6 @@ const configureStore = (initialState) => {
   // Apply Middleware & Compose Enhancers
   enhancers.push(applyMiddleware(...middleware));
   const enhancer = composeEnhancers(...enhancers);
-  console.log("INITIALSTATE", initialState);
   // Create Store
   const store = createStore(rootReducer, initialState, enhancer);
 

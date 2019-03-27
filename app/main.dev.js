@@ -12,7 +12,7 @@
  */
 
 import MenuBuilder from './menu';
-import DaemonManager from './Managers/DaemonManager';
+// import DaemonManager from './Managers/DaemonManager';
 import GUIManager from './Managers/GUIManager';
 import {getDebugUri, grabEccoinDir, grabWalletDir} from "./utils/platform.service";
 import { traduction } from './lang/lang';
@@ -32,9 +32,8 @@ let autoECCLauncher = new AutoLaunch({
 });
 let walletPath;
 let tray = null;
-let daemonManager = null;
+// let daemonManager = null;
 let guiManager = null;
-let maximized = false;
 let ds = null;
 let mainWindow = null;
 let guiUpdate = false;
@@ -145,15 +144,18 @@ app.on('ready', async () => {
   app.setAppUserModelId("com.github.csmartinsfct.sapphire");
 
   mainWindow = new BrowserWindow({
-    show: false,
+    show: true,
     width: 1367,
     height: 768,
-    minWidth: 800,
-    minHeight: 600,
+    minWidth: 1024,
+    minHeight: 800,
     title: "Sapphire",
     backgroundColor: getBackgroundColor(),
     frame: false,
-    webPreferences: {backgroundThrottling: false}
+    webPreferences: {
+      backgroundThrottling: false,
+      experimentalFeatures: true
+    }
   });
 
   mainWindow.loadURL(`file://${__dirname}/version.html#v${app.getVersion()}`);
@@ -234,11 +236,7 @@ async function closeApplication(){
     }
     sendMessage("closing_daemon");
     let closedDaemon = false;
-    console.log(daemonManager)
-    do{
-      closedDaemon = await daemonManager.stopDaemon();
-      //console.log("closedDaemon: ", closedDaemon);
-    }while(!closedDaemon);
+
     console.log("shutdown");
     app.exit();
   }
@@ -246,6 +244,7 @@ async function closeApplication(){
 
 app.on('before-quit', async function (e) {
   e.preventDefault();
+  sendMessage("stop");
   await closeApplication();
  });
 
@@ -297,7 +296,7 @@ function setupEventHandlers() {
   ipcMain.on('app:ready', (e, args) => {
     console.log("ELECTRON GOT READY MESSAGE");
     guiManager = new GUIManager();
-    daemonManager = new DaemonManager();
+    // daemonManager = new DaemonManager();
     mainWindow.once('ready-to-show', () => {
       mainWindow.show()
     });
@@ -328,6 +327,7 @@ function setupEventHandlers() {
   });
 
 	ipcMain.on('quit', () => {
+    sendMessage("stop");
     app.quit();
   });
 
@@ -343,11 +343,12 @@ function setupEventHandlers() {
   });
 
   ipcMain.on('maximize', (e, args) => {
-    if(!maximized)
+    if(mainWindow.isMaximized()) {
+      mainWindow.unmaximize()
+    }
+    else {
       mainWindow.maximize();
-    else mainWindow.unmaximize();
-
-    maximized = !maximized;
+    }
   });
 
   //done with initial setup tell DaemonManager to start
@@ -356,28 +357,33 @@ function setupEventHandlers() {
   });
 
   //done with initial setup tell DaemonManager to start
-  ipcMain.on('initialSetup', (e, args) => {
-    settings.set('settings.initialSetup', true);
-    daemonManager.startDaemonChecker();
-  });
+  // ipcMain.on('initialSetup', (e, args) => {
+  //   // settings.set('settings.initialSetup', true);
+  //   daemonManager.startDaemonChecker();
+  // });
 
   event.on('wallet', (exists, daemonCredentials) => {
-    var initialSetup = settings.has('settings.initialSetup');
+    // exists: does wallet.dat exist
+    // deamonCredentials: object of username and password
+    // var initialSetup = settings.has('settings.initialSetup');
+    // console.log('GOT MESSAGE', exists, daemonCredentials);
 
-    sendMessage("daemonCredentials", daemonCredentials)
-
-    if(initialSetup && exists){
-      sendMessage("setup_done");
-    }
-    else if(initialSetup && !exists){
-      sendMessage("import_wallet");
-    }
-    else if(!initialSetup && exists){
-      sendMessage("partial_initial_setup");
-    }
-    else if(!initialSetup && !exists){
-      sendMessage("initial_setup");
-    }
+    sendMessage("daemonCredentials", {
+      credentials: daemonCredentials
+    });
+    //
+    // if(initialSetup && exists){
+    //   sendMessage("setup_done");
+    // }
+    // else if(initialSetup && !exists){
+    //   sendMessage("import_wallet");
+    // }
+    // else if(!initialSetup && exists){
+    //   sendMessage("partial_initial_setup");
+    // }
+    // else if(!initialSetup && !exists){
+    //   sendMessage("initial_setup");
+    // }
   });
 
   event.on('daemonUpdate', () => {
@@ -392,8 +398,9 @@ function setupEventHandlers() {
     sendMessage('guiUpdate');
   });
 
-  event.on('close', () => {
-    closeApplication();
+  event.on('close', async() => {
+    sendMessage("stop");
+    await closeApplication();
   })
 
   event.on('updatedDaemon', () => {
@@ -534,5 +541,17 @@ function copyFile(source, target, cb) {
 }
 
 tail.on("line", (data) => {
-  sendMessage('message-from-log', data);
+
+  const ignoreStrings = [
+    'UpdateTip:',
+    'sending getdata',
+    'sending getheaders'
+  ];
+  const castedArg = String(data);
+  if (castedArg != null && (!ignoreStrings.some(function(v) { return castedArg.indexOf(v) >= 0; }))) {
+    // console.log(castedArg);
+
+    sendMessage('message-from-log', data);
+  }
+
 });

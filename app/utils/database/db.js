@@ -29,14 +29,14 @@ const sequelize = new Sequelize({
 // pass your sequelize config here
 
 const Transaction = require("./model/Transaction.model");
-const AnsRecord = require("./model/AnsRecord.model");
+// const AnsRecord = require("./model/AnsRecord.model");
 const Address = require("./model/Address.model");
 const Contact = require("./model/Contact.model");
 //
 const models = {
   Address: Address(sequelize, Sequelize),
   Transaction: Transaction(sequelize, Sequelize),
-  AnsRecord: AnsRecord(sequelize, Sequelize),
+  // AnsRecord: AnsRecord(sequelize, Sequelize),
   Contact: Contact(sequelize, Sequelize)
 };
 //

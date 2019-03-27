@@ -7,7 +7,7 @@ import MiniLoaderAnimation from './MiniLoaderAnimation';
 
 import $ from 'jquery';
 
-class ClosingApplication extends React.Component {
+class ClosingApplication extends Component {
  constructor() {
     super();
   }

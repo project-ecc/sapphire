@@ -1,202 +1,47 @@
-@import "./themes.scss";
+@import "themes/themes.scss";
 
-#eccNews{
+.newsPost{
+  margin: 20px 0;
+  padding: 20px 25px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+
+  &:hover {
+	background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .newsItemTime{
 	@include themify($themes) {
-		color: themed('bigPanelTimeColor');
+	  color: themed('eccTicker');
 	}
-	font-size: 70px;
-	font-weight: 800;
-	margin-top: 15px;
-	margin-bottom: 20px;
-}
+	font-size: 14px;
+	padding-top: 5px;
+  }
 
-.newsItemTitle{
+  .newsItemBody{
+	@include themify($themes) {
+	  color: themed('bodySecondaryParagraphColor');
+	}
+	font-size: 16px;
+	font-weight: 700;
+	padding-bottom: 15px;
+	line-height: 20px;
+  }
+
+  .newsItemTitle{
 	font-size: 19px;
 	font-weight: 500;
 	padding-bottom: 10px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
-	width: calc(100% - 50px);
+  }
 }
 
-#panelHolder{
-	position: relative;
-	margin-right: 40px;
-}
+.statsItem {
+  padding-bottom: 15px;
 
-.newsItemBody{
-	@include themify($themes) {
-		color: themed('bodySecondaryParagraphColor');
-	}
-	font-size: 16px;
-	font-weight: 700;
-	padding-bottom: 15px;
-	text-align: justify;
-	line-height: 20px;
-}
-
-.newsItemTime{
-	@include themify($themes) {
-		color: themed('eccTicker');
-	}
-	font-size: 14px;
-	padding-bottom: 15px;
-	display: inline-block;
-}
-
-.newsPost{
-	@include themify($themes) {
-		border-bottom: themed('newsItemBorderBottom');
-	}
-	margin-bottom: 20px;
-}
-
-.postsContainer{
-	overflow-y: hidden;
-	margin-left: 30px;
-	position: absolute;
-	width: 100%;
-}
-
-.arrowNews {
-	@include themify($themes) {
-		border: themed('sidebarArrowBorder');
-		border-width: 3px 3px 0 0;
-	}
-	height: 9px;
-	width: 9px;
-	display: inline-block;
-	position: absolute;
-	transition: all 0.3s;
-  	right: 7px;
-  	top: 6px;
-}
-
-.increaseClickArea{
-	padding: 10px 10px;
-    height: 9px;
-    width: 9px;
-    position: absolute;
-    right: 40%;
-    cursor: pointer;
-    top: -5px;
-}
-
-.increaseClickAreaLeft{
-	left: 40%;
-}
-
-.arrowRightNews {
-  transform: rotate(45deg);
-  right: 7px;
-}
-
-.arrowLeftNews {
-  transform: rotate(225deg);
-  left: 7px;
-}
-
-.arrowActive{
-
-}
-
-.arrowInactive{
-	@include themify($themes) {
-		border: themed('newsArrowInactive');
-		border-width: 3px 3px 0 0;
-	}
-	cursor: default;
-}
-
-.cursorPointerFalse{
-	cursor: default;
-}
-
-#arrows{
-	margin-left: 30px;
-	position: absolute;
-}
-
-.mediumIcon{
-	position: absolute;
-	width: 23px;
-    margin-left: 20px;
-    padding-top: 3px;
-    cursor: pointer;
-}
-
-.playIcon{
-    position: absolute;
-    width: 21px;
-    margin-left: 20px;
-    padding-top: 4px;
-    opacity: 0.7;
-}
-
-#stats{
-	width: 800px;
-	position: fixed;
-	bottom:0px;
-	left: 50%;
-	margin-left: -270px;
-	transition: all 0.3s;
-    margin-bottom: 10px;
-}
-
-.statsItem{
-	height: 100%;
-	position:relative;
-	font-size: 16px;
-	text-align: center;
-	display: inline-block;
-}
-
-.mask {
-	@include themify($themes) {
-		border-right: themed('newsMarkerDetailsSplitterBorderRight');
-	}
-	position: absolute;
-	top: 12px;
-	left:1px;
-	height:50%;
-	width: 100%;
-	opacity: 0.23;
-}
-
-.statsItem p:first-child{
-	@include themify($themes) {
-		color: themed('bodySecondaryParagraphColor');
-	}
-	font-weight: 700;
-	padding-bottom: 12px;
-}
-
-.statsItem p:nth-child(2){
-	@include themify($themes) {
-		color: themed('newsMarketDetailsValueColor');
-	}
-	font-weight: 600;
-}
-
-#rank{
-	width: 130px;
-}
-
-#marketCap{
-	width: 250px;
-}
-
-#price{
-	width: 200px;
-}
-
-#volume{
-	width: 220px;
-}
-
-@media screen and (max-width: 1024px) {
-	#stats{
-		margin-left: -400px;
-	}
+  & > *:first-child {
+	opacity: 0.6;
+  }
 }
