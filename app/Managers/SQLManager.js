@@ -332,7 +332,8 @@ async function getAllMyAddresses(){
       await Address.findAll({
         where: {
           is_mine: true
-        }
+        },
+        order: [['createdAt', 'DESC']]
       }).then(addresses => {
         resolve(addresses)
       }).catch(err => {
@@ -456,8 +457,9 @@ async function clearDB(){
     })
 
     await Address.destroy({
-      where: {},
-      truncate: true
+      where: {
+        is_mine: 1
+      }
     })
 
     resolve(true)

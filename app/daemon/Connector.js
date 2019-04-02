@@ -256,8 +256,10 @@ class Connector extends Component {
         this.setState({
           currentVersion: parsed.versions[0].name
         });
+        console.log(this.state.currentVersion)
         if (this.state.currentVersion === -1) {
           if (failCounter < 3) {
+            console.log("in here")
             await self.getLatestVersion();
           } else {
             event.emit('loading-error', { message: 'Error Checking for latest version' });

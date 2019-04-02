@@ -51,7 +51,7 @@ class AddressBook extends Component {
                 return (
                   <tr key={index} className={`${selected ? 'selected' : ''} cursor-pointer`} onClick={() => clickContact(friend)}>
                     <td>
-                      Coming Soon - personal contact name
+                      {friend.name}
                       <br/>
                       <small className="transactionInfoTitle">
                         {friend.address !== null ? friend.address.address : 'Unknown Address'}

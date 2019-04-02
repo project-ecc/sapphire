@@ -11,21 +11,12 @@ class ContactModal extends Component {
   constructor(props) {
     super(props);
     this.toggle = this.toggle.bind(this);
-    this.search = this.search.bind(this);
-    this.onSearchChanged = this.onSearchChanged.bind(this);
-    this.onSelectAddress = this.onSelectAddress.bind(this);
     this.addContact = this.addContact.bind(this);
 
     this.state = {
       open: false,
-      results: [],
-      ans: false,
-      newContact: {
-        searchVal: '',
-        name: null,
-        code: null,
-        address: null
-      }
+      name: '',
+      address: ''
     };
   }
 
@@ -47,82 +38,24 @@ class ContactModal extends Component {
     });
   }
 
-  /**
-   * Perform search
-   * @returns {Promise<void>}
-   */
-  async search() {
-    try {
-      const response = await Tools.searchForUsernameOrAddress(
-        this.props.wallet,
-        this.state.newContact.searchVal
-      );
-      const payload = {};
-      this.setState({
-        results: response.addresses,
-        ans: response.ans,
-        ...payload
-      });
-    } catch (err) {
-      this.setState({
-        results: [],
-        ans: false
-      });
-      console.log('Error searching for ANS Name / Address', err);
-    }
+
+  onTextFieldChange(key, e) {
+    const value = e;
+    const payload = {};
+    payload[key] = value;
+    this.setState(payload);
   }
 
-  /**
-   * On search value changed
-   * @param val
-   */
-  onSearchChanged(val) {
-    if (this.timeout !== null) {
-      clearTimeout(this.timeout);
-    }
-
-    this.setState({
-      newContact: {
-        ...this.state.newContact,
-        searchVal: val,
-        address: null
-      }
-    });
-
-    this.timeout = setTimeout(() => {
-      this.search();
-    }, 500);
-  }
-
-  /**
-   * Make a contact selection from the suggestions
-   * @param address
-   * @param name
-   * @param code
-   */
-  onSelectAddress(address, name, code) {
-    this.setState({
-      newContact: {
-        ...this.state.newContact,
-        address: address,
-        name: name,
-        code: code
-      }
-    });
-    console.log(this.state.newContact);
-  }
 
   /**
    * Add the contact
    * @returns {Promise<void>}
    */
   async addContact() {
-    if (this.state.newContact.address === null) {
+    if (this.state.name.length === 0 || this.state.name.length === 0) {
       return;
     }
-    const ans = this.state.ans
-    const { code, name, address } = this.state.newContact;
-    const checkContact = await findContact(ans ? `${name}#${code}` : address);
+    const checkContact = await findContact(this.state.name);
 
     // User is already a contact
     if (checkContact.length > 0) {
@@ -134,8 +67,13 @@ class ContactModal extends Component {
       return;
     }
 
+    const contactObject = {
+      name: this.state.name,
+      address: this.state.address
+    };
+
     // All good - add the contact!
-    await addContact({ name, address, code, ans }, ans);
+    await addContact(contactObject);
 
     // refresh the redux store with new contacts
     const friendList = await getContacts();
@@ -149,58 +87,10 @@ class ContactModal extends Component {
     this.toggle(false);
     this.setState({
       newContact: {
-        searchVal: '',
         name: null,
-        code: null,
         address: null
       }
     })
-  }
-
-  renderSearchBox() {
-    return (
-      <Input
-        placeholder={this.props.lang.address}
-        value={this.state.newContact.searchVal}
-        handleChange={(val) => this.onSearchChanged(val)}
-        type="text"
-        autoFocus
-        isLeft
-        onSubmit={this.search}
-      />
-    );
-  }
-
-  renderResults() {
-    let title = <div>{ this.props.lang.noResults }</div>;
-    if (this.state.ans && this.state.results.length > 0) {
-      title = <div>{ this.props.lang.results } ({ this.state.results.length }):</div>;
-    } else if (!this.state.ans && this.state.results.length > 0) {
-      title = <div>{ this.props.lang.results }</div>;
-    }
-
-    return (
-      <div>
-        <div className="mb-2">{ title }</div>
-        <div className="radioGroup">
-          {this.state.results.map((val, index) => {
-            let label = `${val.Name}#${val.Code}`;
-            if (!this.state.ans) {
-              label = `${val.address}`;
-            }
-            const address = (this.state.ans ? val.Address : val.address);
-            const name = (this.state.ans ? val.Name : null);
-            const code = (this.state.ans ? val.Code : null);
-            const className = (this.state.newContact.address === address ? 'selected' : '');
-            return (
-              <div key={index} onClick={this.onSelectAddress.bind(this, address, name, code)} className={className}>
-                {label}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
   }
 
   render() {
@@ -208,12 +98,26 @@ class ContactModal extends Component {
       <Modal isOpen={this.state.open} toggle={this.toggle}>
         <ModalHeader toggle={this.toggle}>{this.props.lang.addContact}</ModalHeader>
         <ModalBody>
-          {this.renderSearchBox()}
+          <Input
+            placeholder={this.props.lang.name}
+            value={this.state.name}
+            handleChange={e => this.onTextFieldChange('name', e)}
+            type="text"
+            autoFocus
+            isLeft
+          />
+          <Input
+            placeholder={this.props.lang.address}
+            value={this.state.address}
+            handleChange={e => this.onTextFieldChange('address', e)}
+            type="text"
+            autoFocus
+            isLeft
+          />
           <hr />
-          {this.renderResults()}
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" disabled={this.state.newContact.address === null} onClick={this.addContact}>Add Contact</Button>
+          <Button color="primary" disabled={this.state.address.length === 0 || this.state.length === 0} onClick={this.addContact}>Add Contact</Button>
         </ModalFooter>
       </Modal>
     );

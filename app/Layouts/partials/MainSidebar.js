@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
 import { CurrencyUsdIcon, SendIcon, FormatListBulletedIcon, ContactsIcon, DownloadIcon, GiftIcon } from 'mdi-react';
-import { Progress } from 'reactstrap';
+import { Progress, Button, Row, Col } from 'reactstrap';
 import Dot from './../../components/Others/Dot';
 
 import * as actions from '../../actions/index';
@@ -11,6 +11,15 @@ import * as actions from '../../actions/index';
 class MainSidebar extends Component {
   constructor(props) {
     super(props);
+    this.state = { staking: false };
+
+    this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
+  }
+
+  onRadioBtnClick(rSelected) {
+    this.setState({
+      staking: rSelected
+    });
   }
 
   render() {
@@ -89,6 +98,12 @@ class MainSidebar extends Component {
                     <GiftIcon size={20} />
                     { this.props.lang.donate }
                   </NavLink>
+                </li>
+                <li>
+                  <Row className="bg-dark">
+                    <Col style={{paddingLeft: '25px'}}>Staking</Col>
+                    <Col><Button style={{right: '25px'}} size="sm" outline color="warning" onClick={() => this.onRadioBtnClick(!this.state.staking)} active={this.state.staking === true}>{this.state.staking ? "On" : "Off"}</Button></Col>
+                  </Row>
                 </li>
               </ul>
             </div>

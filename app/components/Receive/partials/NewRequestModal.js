@@ -9,7 +9,7 @@ import Toast from '../../../globals/Toast/Toast';
 import hash from '../../../router/hash';
 import ActionModal from './../../Others/ActionModal';
 
-import { getAddress } from '../../../Managers/SQLManager';
+import {addAddress, getAddress} from '../../../Managers/SQLManager';
 
 const event = require('../../../utils/eventhandler');
 
@@ -55,7 +55,13 @@ class NewRequestModal extends Component {
 
   createNormalAddress() {
     const vm = this;
-    this.props.wallet.createNewAddress().then((newAddress) => {
+    this.props.wallet.createNewAddress().then(async (newAddress) => {
+      console.log(newAddress)
+      const address = {
+        address: newAddress,
+        amount: 0,
+      }
+      await addAddress(address, true);
       event.emit('newAddress');
       Toast({
         title: this.props.lang.addressCreatedSuccessfullyTitle,

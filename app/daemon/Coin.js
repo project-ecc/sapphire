@@ -51,7 +51,8 @@ class Coin extends Component {
       shouldRequestMoreTransactions: false,
       running: false,
       firstRun: false,
-      transactionsPage: 0
+      transactionsPage: 0,
+      isIndexingTransactions: false
     };
 
 
@@ -551,9 +552,11 @@ class Coin extends Component {
       this.props.chainInfo(data);
       this.props.walletInfo(data);
 
-      this.props.setLoading({
-        isLoading: false
-      });
+      if(!this.state.isIndexingTransactions){
+        this.props.setLoading({
+          isLoading: false
+        });
+      }
     });
 
     this.props.wallet.getWalletInfo().then(async (data) => {
@@ -598,7 +601,7 @@ class Coin extends Component {
       // }
       // We need to have the addresses loaded to be able to index transactions
       // this.currentAddresses = normalAddresses;
-      if (!this.transactionsIndexed && this.firstRun && this.currentAddresses.length > 0 && !this.isIndexingTransactions) {
+      if (!this.transactionsIndexed && this.firstRun && this.currentAddresses.length > 0 && !this.state.isIndexingTransactions) {
         await this.loadTransactionsForProcessing();
         this.props.setIndexingTransactions(true);
       }

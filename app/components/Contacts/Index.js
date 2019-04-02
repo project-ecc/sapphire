@@ -76,7 +76,7 @@ class Index extends Component {
           </div>
           { friend && (
             <div className="p-3">
-              { friend.name } Coming  Soon - personal contact name
+              { friend.name }
               <div className="small-text transactionInfoTitle">
                 {friend.address !== null ? friend.address.address : 'Unknown Address'}
               </div>
