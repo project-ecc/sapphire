@@ -15,7 +15,7 @@ import TopBar from './Layouts/partials/TopBar';
 import NotificationPopup from './components/NotificationPopup';
 import GenericPanel from './GenericPanel';
 import TransitionComponent from './components/Others/TransitionComponent';
-import DaemonErrorModal from './components/Others/DaemonErrorModal';
+import DaemonErrorModal from './components/Others/DaemonErrorComponent';
 
 const settings = require('electron').remote.require('electron-settings');
 const Tools = require('./utils/tools');

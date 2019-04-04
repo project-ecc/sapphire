@@ -12,7 +12,6 @@ const moment = require('moment');
 
 moment.locale('en');
 
-
 class Index extends Component {
   constructor(props) {
     super(props);
@@ -29,34 +28,19 @@ class Index extends Component {
     };
   }
 
-  openNewAddressModal () {
-    this.confirmAddressModal.getWrappedInstance().toggle();
-  }
-
   async componentDidMount() {
     await this.loadAddresses();
   }
 
+  openNewAddressModal () {
+    this.confirmAddressModal.getWrappedInstance().toggle();
+  }
+
   async loadAddresses(){
-    const where = {
-      is_main: 1,
-      category: 'receive',
-      status: 'confirmed'
-    };
     let data = await getAllMyAddresses();
     this.setState({
       allAddresses: data
     });
-    console.log(data)
-  }
-
-  onTextFieldChange(key, e) {
-    const value = e.target.value;
-    const payload = {
-      request: {}
-    };
-    payload.request[key] = value;
-    this.setState(payload);
   }
 
   render() {

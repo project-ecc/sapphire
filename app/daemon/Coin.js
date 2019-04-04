@@ -166,10 +166,15 @@ class Coin extends Component {
       });
     });
 
+    // if there is a loading error we must force all loading to stop
     ipcRenderer.on('loading-error', (e, arg) => {
       console.log(`loading failure: ${arg.message}`);
       this.props.setDaemonError(arg.message);
       this.props.setDaemonErrorPopup(true);
+
+      //remove the interval and display the error
+      clearInterval(this.state.checkStartupStatusInterval);
+      setTimeout(20000);
       this.props.setLoading({
         isLoading: true,
         loadingMessage: arg.message

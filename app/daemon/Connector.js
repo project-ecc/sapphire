@@ -163,7 +163,7 @@ class Connector extends Component {
           console.log('daemon not running');
           this.props.setDaemonRunning(false);
           // if (!self.downloading) { self.startDaemon(); }
-          if (!self.state.downloadingDaemon) { event.emit('start'); }
+          if (!self.state.downloadingDaemon && self.props.daemonErrorPopup !== true) { event.emit('start'); }
         }
       });
     }
@@ -262,7 +262,7 @@ class Connector extends Component {
             console.log("in here")
             await self.getLatestVersion();
           } else {
-            event.emit('loading-error', { message: 'Error Checking for latest version' });
+            event.emit('download-error', { message: 'Error Checking for latest version' });
           }
           failCounter += 1;
         } else {
@@ -406,7 +406,9 @@ class Connector extends Component {
 const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
-    wallet: state.application.wallet
+    wallet: state.application.wallet,
+    daemonError: state.application.daemonError,
+    daemonErrorPopup: state.application.daemonErrorPopup
   };
 };
 
