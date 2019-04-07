@@ -44,7 +44,7 @@ class Goal extends Component {
   }
 
   render() {
-    const goal = this.props.goal
+    const goal = this.props.goal;
 
     return (
       <div className="col-lg-6 col-xl-4">

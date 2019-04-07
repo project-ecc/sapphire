@@ -56,7 +56,7 @@ class Index extends Component {
               <ListGroup style={{backgroundColor: null, maxHeight: '400px', overflowY:'scroll'}}>
                 { this.state && this.state.allAddresses != null && Object.entries(this.state.allAddresses).map((result) => {
                   let data = result[1];
-                  let index = result[0]
+                  let index = result[0];
                   return (
                     <div id="rows">
                       <div className={"row normalWeight tableRowCustom tableRowCustomTransactions"} style={{backgroundColor: null}} key={index} >

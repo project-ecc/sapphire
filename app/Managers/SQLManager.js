@@ -1,4 +1,4 @@
-const db = require('../../app/utils/database/db')
+const db = require('../../app/utils/database/db');
 const Address = db.Address;
 const Transaction = db.Transaction;
 // const AnsRecord = db.AnsRecord;
@@ -290,8 +290,8 @@ async function addAddress(address, belongsToMe = false){
       })
       .spread(async (newAddress, created) => {
         if(!created){
-          newAddress.current_balance = address.amount
-          newAddress.is_mine = belongsToMe
+          newAddress.current_balance = address.amount;
+          newAddress.is_mine = belongsToMe;
           await newAddress.save()
         }
         resolve(newAddress);
@@ -391,7 +391,7 @@ async function addContact(contactObject){
         });
         newContact.setAddress(address[0]);
 
-        await newContact.save()
+        await newContact.save();
         resolve(newContact)
       }).catch(err => {
       console.log(err);
@@ -454,13 +454,13 @@ async function clearDB(){
     await Transaction.destroy({
       where: {},
       truncate: true
-    })
+    });
 
     await Address.destroy({
       where: {
         is_mine: 1
       }
-    })
+    });
 
     resolve(true)
   });

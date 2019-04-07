@@ -25,7 +25,7 @@ const sequelize = new Sequelize({
   // - default ':memory:'
   storage: app.getPath('userData') +'/database.sqlite',
   logging:false
-})
+});
 // pass your sequelize config here
 
 const Transaction = require("./model/Transaction.model");

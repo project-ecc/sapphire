@@ -325,28 +325,20 @@ export default class Wallet {
     }
   }
 
-  walletstart() {
+  walletstart(rescan = false) {
     return new Promise(async (resolve, reject) => {
       let path = getPlatformWalletUri();
-      if (process.platform === 'linux') {
-        await runExec(`chmod +x "${path}" && "${path}"`, 1000).then(() => {
+      if (process.platform === 'linux' || process.platform === 'darwin') {
+        const cmd = rescan === true ? `chmod +x "${path}" && "${path} -reindex"` : `chmod +x "${path}" && "${path} -reindex"`;
+        await runExec(cmd, 1000).then(() => {
           return resolve(true);
         })
         .catch((err) => {
-          reject(err);
-        });
-      } else if (process.platform === 'darwin') {
-        console.log(path);
-        await runExec(`chmod +x "${path}" && "${path}"`, 1000).then(() => {
-          return resolve(true);
-        })
-        .catch((err) => {
-          // console.log(err);
           reject(err);
         });
       } else if (process.platform.indexOf('win') > -1) {
         // TODO: uncomment this when package is fixed
-        path = `& start-process "${path}" -verb runAs -WindowStyle Hidden`;
+        path = rescan === true ? `& start-process "${path}" -ArgumentList "-reindex" -verb runAs -WindowStyle Hidden` : `& start-process "${path}" -verb runAs -WindowStyle Hidden`;
         // path = `& "${path}" `;
         const ps = new Shell({
           executionPolicy: 'Bypass',
@@ -359,8 +351,8 @@ export default class Wallet {
           })
           .catch(err => {
             console.log(err);
-            return reject(false);
             ps.dispose();
+            return reject(false);
           });
       }
     });

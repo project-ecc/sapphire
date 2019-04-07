@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { ipcRenderer } from 'electron';
 import { connect } from 'react-redux';
 import { Modal, ModalBody, ModalFooter, ModalHeader, Button } from 'reactstrap';
 import * as actions from '../../../actions/index';
@@ -13,13 +14,7 @@ class FullscreenModal extends Component {
   handleDismissUpdateFailed() {
     this.props.settellUserUpdateFailed(false);
     this.props.setUpdatingApplication(false);
-    this.props.wallet.walletstart((result) => {
-      if (result) {
-        console.log('started daemon');
-      }
-    }).catch(err => {
-      event.emit('loading-error', {message: err.message});
-    });
+    ipcRenderer.send('start');
 
     if (this.props.guiUpdate) {
       event.emit('runMainCycle');

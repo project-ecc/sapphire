@@ -48,7 +48,7 @@ class ChangePasswordModal extends Component {
           message: this.props.lang.wrongPasswordProper,
           color: 'red'
         });
-      }1
+      }1;
       this.props.setPopupLoading(false);
     })
     .catch((err) => {

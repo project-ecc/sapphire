@@ -52,7 +52,7 @@
          } else if (data === null) {
            resolve()
          } else {
-           console.log("in here")
+           console.log("in here");
            resolve(data)
            // setTimeout(() => {
            //   self.importPrivateKey();

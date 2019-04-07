@@ -42,6 +42,7 @@ class Connector extends Component {
       daemonUpdateTimer: null
     };
 
+    this.bindListeners();
     this.initialSetup();
   }
 
@@ -49,13 +50,15 @@ class Connector extends Component {
     clearInterval(this.state.daemonCheckerTimer);
     clearInterval(this.state.daemonUpdateTimer);
 
-    event.removeListener('start')
-    event.removeListener('stop')
-    event.removeListener('updateDaemon')
+    event.removeListener('start');
+    event.removeListener('stop');
+    event.removeListener('updateDaemon');
   }
 
-  async initialSetup() {
-    event.on('start', this.startDaemon.bind(this));
+  bindListeners() {
+    event.on('start', async (args) => {
+      await this.startDaemon(args);
+    });
 
     event.on('stop', async () => {
       await this.stopDaemon((err) => {
@@ -63,13 +66,16 @@ class Connector extends Component {
         console.log('stopped daemon');
       });
     });
+
     event.on('updateDaemon', async (restart) => {
       this.setState({
         shouldRestart: restart
       });
       await this.updateDaemon();
     });
+  }
 
+  async initialSetup() {
     let daemonCredentials = await Tools.readRpcCredentials();
     const iVersion = await this.checkIfDaemonExists();
     this.setState({
@@ -117,8 +123,8 @@ class Connector extends Component {
 
   /**
    * Create the wallet instance
-   * @param event
-   * @param arg
+   * @param dataFileExists
+   * @param credentials
    */
   createWallet(dataFileExists, credentials) {
     this.props.setWalletCredentials(credentials);
@@ -131,8 +137,6 @@ class Connector extends Component {
     } else {
       this.props.setStepInitialSetup('start');
     }
-
-    // this.startDaemonChecker();
     event.emit('startConnectorChildren');
   }
 
@@ -162,7 +166,6 @@ class Connector extends Component {
         } else if (list && list.length == 0) {
           console.log('daemon not running');
           this.props.setDaemonRunning(false);
-          // if (!self.downloading) { self.startDaemon(); }
           if (!self.state.downloadingDaemon && self.props.daemonErrorPopup !== true) { event.emit('start'); }
         }
       });
@@ -256,10 +259,10 @@ class Connector extends Component {
         this.setState({
           currentVersion: parsed.versions[0].name
         });
-        console.log(this.state.currentVersion)
+        console.log(this.state.currentVersion);
         if (this.state.currentVersion === -1) {
           if (failCounter < 3) {
-            console.log("in here")
+            console.log("in here");
             await self.getLatestVersion();
           } else {
             event.emit('download-error', { message: 'Error Checking for latest version' });
@@ -346,17 +349,15 @@ class Connector extends Component {
 
   /**
    * Start the daemon instance
-   * @param withResult
+   * @param args
    */
-  startDaemon(withResult) {
+  startDaemon(args) {
     console.log('starting daemon...');
-    this.props.wallet.walletstart((result) => {
-      if (withResult) {
-        if (result) {
-          event.emit('daemonStarted');
-        } else {
-          event.emit('daemonFailed');
-        }
+    this.props.wallet.walletstart(args).then((result) => {
+      if (result) {
+        event.emit('daemonStarted');
+      } else {
+        event.emit('daemonFailed');
       }
     }).catch(err => {
       console.log('Error starting daemon');
@@ -371,9 +372,8 @@ class Connector extends Component {
    */
 
   async stopDaemon() {
-    const self = this;
     return new Promise((resolve, reject) => {
-      self.props.wallet.walletstop()
+      this.props.wallet.walletstop()
         .then((data) => {
           console.log(data);
           if (data && data === 'ECC server stopping') {

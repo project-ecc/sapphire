@@ -23,12 +23,12 @@ export default function (options) {
   let gradColor = color;
   switch (color) {
     default:
-    case 'green': gradColor = 'gradient-green'; break
-    case 'red': gradColor = 'gradient-red'; break
-    case 'blue': gradColor = 'gradient-blue'; break
-    case 'light-blue': gradColor = 'gradient-light-blue'; break
-    case 'purple': gradColor = 'gradient-purple'; break
-    case 'deep-purple': gradColor = 'gradient-deep-purple'; break
+    case 'green': gradColor = 'gradient-green'; break;
+    case 'red': gradColor = 'gradient-red'; break;
+    case 'blue': gradColor = 'gradient-blue'; break;
+    case 'light-blue': gradColor = 'gradient-light-blue'; break;
+    case 'purple': gradColor = 'gradient-purple'; break;
+    case 'deep-purple': gradColor = 'gradient-deep-purple'; break;
     case 'orange': gradColor = 'gradient-orange'; break
   }
 

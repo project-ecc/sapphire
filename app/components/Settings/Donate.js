@@ -29,7 +29,7 @@ class Donate extends Component {
   }
 
   render() {
-    const goals = this.props.donationGoals || {}
+    const goals = this.props.donationGoals || {};
 
     return (
       <div className="padding-titlebar">

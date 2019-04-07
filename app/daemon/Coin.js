@@ -276,7 +276,7 @@ class Coin extends Component {
   async loadTransactionsForProcessing() {
     this.setState({
       isIndexingTransactions: true
-    })
+    });
     let txId = '',
       time = 0,
       amount = 0,

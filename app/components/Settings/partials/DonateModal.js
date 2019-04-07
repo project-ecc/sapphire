@@ -14,7 +14,7 @@ class DonateModal extends Component {
 
     this.state = {
       open: false
-    }
+    };
 
     this.renderGoals = this.renderGoals.bind(this);
     this.toggle = this.toggle.bind(this);
@@ -27,7 +27,7 @@ class DonateModal extends Component {
   }
 
   handleECCDonation(eccObject) {
-    this.toggle()
+    this.toggle();
     // this.props.setAddressSend(eccObject.address);
     hash.push('/coin/send');
   }

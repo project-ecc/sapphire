@@ -56,11 +56,11 @@ class NewRequestModal extends Component {
   createNormalAddress() {
     const vm = this;
     this.props.wallet.createNewAddress().then(async (newAddress) => {
-      console.log(newAddress)
+      console.log(newAddress);
       const address = {
         address: newAddress,
         amount: 0,
-      }
+      };
       await addAddress(address, true);
       event.emit('newAddress');
       Toast({

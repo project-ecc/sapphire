@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { ipcRenderer } from 'electron';
 import { connect } from 'react-redux';
 import { Modal, ModalBody, ModalHeader, ModalFooter, Card, Button, CardTitle, CardText, Input } from 'reactstrap';
 import * as actions from '../../../actions';
@@ -108,7 +109,7 @@ class UnencryptedWalletCard extends Component {
           color: 'green'
         });
         setTimeout(() => {
-          self.props.wallet.walletstart();
+          ipcRenderer.send('start');
         }, 5000);
         console.log('encrypted! ', data);
       }

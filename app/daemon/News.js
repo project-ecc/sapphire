@@ -67,7 +67,7 @@ class News extends Component {
     const lastCheckedNews = this.props.notifications.lastCheckedNews;
 
     https.get('https://medium.com/feed/@project_ecc', res => {
-      console.log('NEWS RESPONSE', res)
+      console.log('NEWS RESPONSE', res);
       if (res.statusCode !== 200) {
         console.error(new Error(`status code ${res.statusCode}`));
         return;

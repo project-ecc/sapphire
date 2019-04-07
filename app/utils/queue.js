@@ -54,5 +54,5 @@ Queue.prototype.peek = function () {
 Queue.prototype.peekEnd = function () {
   if (this.size() === 0) return null;
   return this.store[this.end];
-}
-module.exports = Queue
+};
+module.exports = Queue;

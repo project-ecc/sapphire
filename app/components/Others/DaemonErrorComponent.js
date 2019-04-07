@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions/index';
 import {getDebugUri} from '../../utils/platform.service';
 import { Progress, Button, Row, Col } from 'reactstrap';
-
+const event = require('../../utils/eventhandler');
 const fs = require('fs-extra');
 const dialog = require('electron').remote.require('electron').dialog;
 
@@ -12,6 +12,7 @@ class DaemonErrorComponent extends Component {
     super();
     this.handleCancel = this.handleCancel.bind(this);
     this.exportDebugLogFile = this.exportDebugLogFile.bind(this);
+    this.rebootDaemonWithReIndex = this.rebootDaemonWithReIndex.bind(this);
   }
 
   _handleKeyPress = (e) => {
@@ -19,7 +20,7 @@ class DaemonErrorComponent extends Component {
     if (e.key === 'Enter') {
       this.handleConfirm();
     }
-  }
+  };
 
   exportDebugLogFile() {
     dialog.showOpenDialog({
@@ -38,13 +39,52 @@ class DaemonErrorComponent extends Component {
     });
   }
 
+  rebootDaemonWithReIndex(){
+    console.log('in here')
+    event.emit('start', true);
+    event.emit('runMainCycle');
+  }
+
   handleCancel() {
     this.props.setDaemonErrorPopup(false);
   }
 
+  renderReIndexWindow() {
+    if(this.props.daemonError === 'Corrupted block database detected.' && this.props.daemonErrorPopup){
+      return (
+        <div>
+          <Row style={{textAlign: 'center'}}>
+            <Col>
+              <h3>Oops!</h3>
+              <p className="backupSuccessful">It looks like Sapphire is unable to load ECC's blockchain:</p>
+              <p className="backupSuccessful">{this.props.daemonError}</p>
+              <Button size="sm" outline color="warning" onClick={this.rebootDaemonWithReIndex} className="buttonPrimary caps">Fix Now</Button>
+            </Col>
+          </Row>
+        </div>
+      );
+    }
+  }
+  renderDaemonErrorPopup(){
+    if(this.props.daemonErrorPopup){
+      return (
+        <div>
+          <Row style={{position:'absolute',bottom:'20px', left: '15px', width: '300px'}}>
+          <Col>
+            <Button size="sm" outline color="warning" onClick={this.exportDebugLogFile} className="buttonPrimary caps">Export Debug file</Button>
+            <p className="backupSuccessful">If you are stuck on your issue please join our discord below, report your issue in #support and attach the
+              above debug file</p>
+            <a href="https://discord.gg/wAV3n2q" target="_blank">https://discord.gg/wAV3n2q</a>
+          </Col>
+        </Row>
+        </div>
+      );
+    }
+  }
 
   render() {
       return (
+        <div>
         <div style={{
           height: '100%',
           display: 'block',
@@ -53,25 +93,10 @@ class DaemonErrorComponent extends Component {
           padding: '10px',
           minHeight: '400px'
         }}>
-          <Row style={{textAlign: 'center'}}>
-            <Col>
-              <h3>Oops!</h3>
-              {/*<img height="75px" width="75px" src={discordIcon} />*/}
-              <p className="backupSuccessful">It looks like Sapphire is unable to load ECC's blockchain:</p>
-              <p className="backupSuccessful">{this.props.daemonError}</p>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Button size="sm" outline color="warning" onClick={this.exportDebugLogFile} className="buttonPrimary caps">Export Debug file</Button>
-            </Col>
-            <Col>
-              <p className="backupSuccessful">Please join our discord below, report your issue in #support and attach the
-                above debug file</p>
-              <a href="https://discord.gg/wAV3n2q" target="_blank">https://discord.gg/wAV3n2q</a>
-            </Col>
-          </Row>
-        </div>
+          {this.renderReIndexWindow()}
+          </div>
+          {this.renderDaemonErrorPopup()}
+          </div>
       );
   }
 }

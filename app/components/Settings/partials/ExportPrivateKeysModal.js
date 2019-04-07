@@ -52,7 +52,7 @@ class ExportPrivateKeysModal extends Component {
   }
 
   onPasswordFieldChange (e) {
-    const value = e.target.value
+    const value = e.target.value;
     this.setState({
       password: value
     });

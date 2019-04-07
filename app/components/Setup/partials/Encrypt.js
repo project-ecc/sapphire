@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { ipcRenderer } from 'electron';
 import { Button, Modal, Input, ModalFooter, ModalBody, ModalHeader } from 'reactstrap';
 import { ArrowRightIcon, LockIcon } from 'mdi-react';
 import {connect} from "react-redux";
@@ -100,20 +101,13 @@ class Encrypt extends Component {
         this.showWalletEncrypted();
         this.props.setUnencryptedWallet(false);
         setTimeout(() => {
+          ipcRenderer.send('start');
           self.startWallet();
         }, 5000);
         console.log('encrypted! ', data);
       }
     }).catch((err) => {
       console.log('error encrypting wallet: ', err);
-    });
-  }
-
-  startWallet() {
-    this.props.wallet.walletstart((result) => {
-      if (result) {
-        console.log('started daemon');
-      } else console.log('ERROR ', result);
     });
   }
 
