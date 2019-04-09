@@ -17,6 +17,8 @@ const request = require('request-promise-native');
 const fs = require('fs');
 const event = require('../utils/eventhandler');
 const settings = require('electron-settings');
+const zmq = require('zmq');
+const socket = zmq.socket('sub');
 
 const REQUIRED_DAEMON_VERSION = 2511;
 
@@ -43,7 +45,6 @@ class Connector extends Component {
     };
 
     this.bindListeners();
-    this.initialSetup();
   }
 
   componentWillUnmount() {
@@ -53,6 +54,7 @@ class Connector extends Component {
     event.removeListener('start');
     event.removeListener('stop');
     event.removeListener('updateDaemon');
+    event.removeListener('inital_setup');
   }
 
   bindListeners() {
@@ -73,22 +75,42 @@ class Connector extends Component {
       });
       await this.updateDaemon();
     });
+
+    event.on('inital_setup', async () => {
+      this.initialSetup();
+    });
+
+    // subber.js
+
+
+    socket.connect('tcp://127.0.0.1:28332');
+    socket.subscribe('pubhashblock');
+    console.log('Subscriber connected to port 3000');
+
+    socket.on('message', function(topic, message) {
+      console.log('received a message related to:', topic, 'containing message:', message);
+    });
+
+    // Register to monitoring events
+    socket.on('connect', function(fd, ep) {console.log('connect, endpoint:', ep);});
+    socket.on('connect_delay', function(fd, ep) {console.log('connect_delay, endpoint:', ep);});
+    socket.on('connect_retry', function(fd, ep) {console.log('connect_retry, endpoint:', ep);});
+    socket.on('listen', function(fd, ep) {console.log('listen, endpoint:', ep);});
+    socket.on('bind_error', function(fd, ep) {console.log('bind_error, endpoint:', ep);});
+    socket.on('accept', function(fd, ep) {console.log('accept, endpoint:', ep);});
+    socket.on('accept_error', function(fd, ep) {console.log('accept_error, endpoint:', ep);});
+    socket.on('close', function(fd, ep) {console.log('close, endpoint:', ep);});
+    socket.on('close_error', function(fd, ep) {console.log('close_error, endpoint:', ep);});
+    socket.on('disconnect', function(fd, ep) {console.log('disconnect, endpoint:', ep);});
+
   }
 
   async initialSetup() {
-    let daemonCredentials = await Tools.readRpcCredentials();
     const iVersion = await this.checkIfDaemonExists();
     this.setState({
       installedVersion: iVersion
     });
 
-    if (!daemonCredentials || daemonCredentials.username === 'yourusername' || daemonCredentials.password === 'yourpassword') {
-      daemonCredentials = {
-        username: Tools.generateId(5),
-        password: Tools.generateId(5)
-      };
-      await Tools.updateOrCreateConfig(daemonCredentials.username, daemonCredentials.password);
-    }
 
     console.log('going to check daemon version');
     console.log(this.state.installedVersion);
@@ -115,31 +137,9 @@ class Connector extends Component {
       } while (this.state.installedVersion === -1 || version < REQUIRED_DAEMON_VERSION);
       console.log('telling electron about wallet.dat');
     }
-    console.log(this.state.walletDat, daemonCredentials);
-    this.createWallet(this.state.walletDat, daemonCredentials);
+
     this.startDaemonChecker();
   }
-
-
-  /**
-   * Create the wallet instance
-   * @param dataFileExists
-   * @param credentials
-   */
-  createWallet(dataFileExists, credentials) {
-    this.props.setWalletCredentials(credentials);
-
-    // alert('credentials');
-    const key = 'settings.initialSetup';
-    if (settings.has(key)) {
-      const val = settings.get(key);
-      this.props.setStepInitialSetup(val);
-    } else {
-      this.props.setStepInitialSetup('start');
-    }
-    event.emit('startConnectorChildren');
-  }
-
 
   startDaemonChecker() {
     this.checkIfDaemonIsRunning();
@@ -356,7 +356,9 @@ class Connector extends Component {
     this.props.wallet.walletstart(args).then((result) => {
       if (result) {
         event.emit('daemonStarted');
+        this.props.setDaemonRunning(true);
       } else {
+        this.props.setDaemonRunning(false);
         event.emit('daemonFailed');
       }
     }).catch(err => {
@@ -378,6 +380,7 @@ class Connector extends Component {
           console.log(data);
           if (data && data === 'ECC server stopping') {
             console.log('stopping daemon');
+            this.props.setDaemonRunning(false);
             resolve(true);
           }	else if (data && data.code === 'ECONNREFUSED') {
             resolve(true);
@@ -408,7 +411,7 @@ const mapStateToProps = state => {
     lang: state.startup.lang,
     wallet: state.application.wallet,
     daemonError: state.application.daemonError,
-    daemonErrorPopup: state.application.daemonErrorPopup
+    daemonErrorPopup: state.application.daemonErrorPopup,
   };
 };
 

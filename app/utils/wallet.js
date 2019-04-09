@@ -329,7 +329,7 @@ export default class Wallet {
     return new Promise(async (resolve, reject) => {
       let path = getPlatformWalletUri();
       if (process.platform === 'linux' || process.platform === 'darwin') {
-        const cmd = rescan === true ? `chmod +x "${path}" && "${path} -reindex"` : `chmod +x "${path}" && "${path} -reindex"`;
+        const cmd = rescan === true ? `chmod +x "${path}" && "${path}" -daemon -reindex` : `chmod +x "${path}" && "${path}" -daemon`;
         await runExec(cmd, 1000).then(() => {
           return resolve(true);
         })

@@ -5,6 +5,7 @@ import { ArrowRightIcon, LockIcon } from 'mdi-react';
 import {connect} from "react-redux";
 import * as actions from "../../../actions";
 import Toast from "../../../globals/Toast/Toast";
+import event from '../../../utils/eventhandler';
 
 class Encrypt extends Component {
   constructor(props) {
@@ -16,7 +17,7 @@ class Encrypt extends Component {
     this.showEncryptWallet = this.showEncryptWallet.bind(this);
     this.showWalletEncrypted = this.showWalletEncrypted.bind(this);
     this.encryptWallet = this.encryptWallet.bind(this);
-    this.startWallet = this.startWallet.bind(this);
+    this.checkIfWalletRunning = this.checkIfWalletRunning.bind(this);
 
     this.state = {
       password: '',
@@ -29,6 +30,14 @@ class Encrypt extends Component {
        */
       encrypting: 0
     };
+    this.checkIfWalletRunning()
+
+  }
+
+  checkIfWalletRunning(){
+    if(this.props.daemonRunning === false){
+      event.emit('start');
+    }
   }
 
   checkIfEncrypted() {
@@ -101,8 +110,7 @@ class Encrypt extends Component {
         this.showWalletEncrypted();
         this.props.setUnencryptedWallet(false);
         setTimeout(() => {
-          ipcRenderer.send('start');
-          self.startWallet();
+          event.emit('start');
         }, 5000);
         console.log('encrypted! ', data);
       }
@@ -139,7 +147,7 @@ class Encrypt extends Component {
             className="ml-auto mr-auto"
           />
 
-          <Button size="lg" color="white" className="mt-3" onClick={this.encryptWallet}>
+          <Button size="lg" color="white" style={{color:'white'}}className="mt-3" onClick={this.encryptWallet}>
             { this.props.lang.encrypt }
             <LockIcon className="ml-2" />
           </Button>
@@ -185,6 +193,7 @@ const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
     wallet: state.application.wallet,
+    daemonRunning: state.application.daemonRunning
   };
 };
 

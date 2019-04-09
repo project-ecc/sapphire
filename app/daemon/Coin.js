@@ -185,11 +185,10 @@ class Coin extends Component {
       this.props.setAppendToDebugLog(arg);
       const castedArg = String(arg);
       // console.log(castedArg);
-      if (castedArg != null && (castedArg.indexOf('init message') !== -1 || castedArg.indexOf('Still rescanning') !== -1 || castedArg.indexOf('Corrupted block database detected') !== -1)) {
-        this.loadingMessage = castedArg;
+      if (castedArg != null && (castedArg.indexOf('init message') !== -1 || castedArg.indexOf('Still rescanning') !== -1 || castedArg.indexOf('Corrupted block database detected') !== -1 || castedArg.indexOf('Aborted block database rebuild') !== -1)) {
         if (castedArg.indexOf('Corrupted block database detected') !== -1) {
-          console.log('Corrupted block database detected.');
-          ipcRenderer.send('loading-error', { message: 'Corrupted block database detected.' });
+          console.log(castedArg);
+          ipcRenderer.send('loading-error', { message: castedArg});
         }
       }
     });

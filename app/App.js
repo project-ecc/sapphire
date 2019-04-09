@@ -11,6 +11,7 @@ import UpdateFailedModal from './components/Settings/modals/UpdateFailedModal';
 import DownloadingUpdateModal from './components/Settings/modals/DownloadingUpdateModal';
 import * as actions from './actions/index';
 import DaemonConnector from './daemon/Connector';
+import Tools from "./utils/tools";
 
 const event = require('utils/eventhandler');
 const settings = require('electron').remote.require('electron-settings');
@@ -34,7 +35,6 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    ipcRenderer.removeListener('closing_daemon');
     event.emit('stop');
   }
 
@@ -75,6 +75,39 @@ class App extends Component {
     this.props.setOperativeSystemNotifications(operativeSystemNotifications);
     this.props.setNewsNotifications(newsNotifications);
     this.props.setStakingNotifications(stakingNotifications);
+
+    this.createWallet()
+  }
+
+  /**
+   * Create the wallet instance
+   * @param credentials
+   */
+  async createWallet() {
+
+    let daemonCredentials = await Tools.readRpcCredentials();
+
+    if (!daemonCredentials || daemonCredentials.username === 'yourusername' || daemonCredentials.password === 'yourpassword') {
+      daemonCredentials = {
+        username: Tools.generateId(5),
+        password: Tools.generateId(5)
+      };
+      await Tools.updateOrCreateConfig(daemonCredentials.username, daemonCredentials.password);
+    }
+
+    console.log(daemonCredentials);
+    this.props.setWalletCredentials(daemonCredentials);
+    event.emit('inital_setup');
+
+    // alert('credentials');
+    const key = 'settings.initialSetup';
+    if (settings.has(key)) {
+      const val = settings.get(key);
+      this.props.setStepInitialSetup(val);
+    } else {
+      this.props.setStepInitialSetup('start');
+    }
+    event.emit('startConnectorChildren');
   }
 
   /*
