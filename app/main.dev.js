@@ -224,7 +224,7 @@ async function closeApplication() {
       mainWindow.show();
       mainWindow.focus();
     }
-    sendMessage('closing_daemon');
+    sendMessage('stop');
     const closedDaemon = false;
 
     console.log('shutdown');

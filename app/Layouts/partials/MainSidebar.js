@@ -100,9 +100,9 @@ class MainSidebar extends Component {
                   </NavLink>
                 </li>
                 <li>
-                  <Row className="bg-dark">
-                    <Col style={{paddingLeft: '25px'}}>Staking</Col>
-                    <Col><Button style={{right: '25px'}} size="sm" outline color="warning" onClick={() => this.onRadioBtnClick(!this.state.staking)} active={this.state.staking === true}>{this.state.staking ? "On" : "Off"}</Button></Col>
+                  <Row className="bg-dark" style={{paddingBottom: '5px'}}>
+                    <Col style={{marginLeft: '25px'}}>Staking</Col>
+                    <Col ><Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.onRadioBtnClick(!this.state.staking)} active={this.state.staking === true}>{this.state.staking ? "On" : "Off"}</Button></Col>
                   </Row>
                 </li>
               </ul>
@@ -120,7 +120,8 @@ const mapStateToProps = state => {
     lang: state.startup.lang,
     connections: state.chains.connections,
     paymentChainSync: state.chains.paymentChainSync,
-    daemonRunning: state.application.daemonRunning
+    daemonRunning: state.application.daemonRunning,
+    wallet: state.application.wallet
   };
 };
 
