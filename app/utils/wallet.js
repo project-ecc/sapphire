@@ -235,6 +235,16 @@ export default class Wallet {
     return newAddress;
   }
 
+  async listAddresses() {
+    return new Promise((resolve, reject) => {
+      client.listAddresses().then(data => {
+        return resolve(data);
+      }).catch(err => {
+        return reject(err);
+      });
+    });
+  }
+
   async createNewANSAddress(address, name) {
     const newAddress = await client.registerANS(address, name);
     return newAddress;

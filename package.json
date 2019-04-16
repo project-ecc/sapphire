@@ -199,7 +199,7 @@
     "classnames": "^2.2.6",
     "devtron": "^1.4.0",
     "dmg": "^0.1.0",
-    "eccoin-js": "^1.0.2",
+    "eccoin-js": "git+https://github.com/project-ecc/eccoin-js.git",
     "electron-debug": "^1.2.0",
     "electron-dl": "^1.13.0",
     "electron-lets-move": "0.0.5",

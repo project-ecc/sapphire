@@ -22,7 +22,7 @@ class Coin extends Component {
     this.walletCycle = this.walletCycle.bind(this);
     this.blockCycle = this.blockCycle.bind(this);
     this.transactionCycle = this.transactionCycle.bind(this);
-    this.addressCycle = this.addressCycle.bind(this);
+    this.addressLoader = this.addressLoader.bind(this);
     this.orderTransactions = this.orderTransactions.bind(this);
     this.stateCheckerInitialStartupCycle = this.stateCheckerInitialStartupCycle.bind(this);
 
@@ -131,10 +131,10 @@ class Coin extends Component {
           }
         }
         if (err.message === 'Rescanning...') {
-          const rescarnningMessage = this.props.rescanningLogInfo.peekEnd();
+          const rescanningMessage = this.props.rescanningLogInfo.peekEnd();
           this.props.setLoading({
             isLoading: true,
-            loadingMessage: `${this.props.lang.rescanning} ${rescarnningMessage}`
+            loadingMessage: `${this.props.lang.rescanning} ${rescanningMessage}`
           });
         }
         if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT')) {
@@ -144,9 +144,11 @@ class Coin extends Component {
           });
         }
         if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
+          const errorMessage = this.props.rescanningLogInfo.peekEnd();
+          console.log(errorMessage)
           this.props.setLoading({
             isLoading: true,
-            loadingMessage: this.props.lang.restartYourWalletMessage
+            loadingMessage: errorMessage
           });
         }
       });
@@ -164,6 +166,10 @@ class Coin extends Component {
       this.setState({
         checkStartupStatusInterval: setInterval(async () => { await this.stateCheckerInitialStartupCycle(); }, 2000),
       });
+    });
+
+    event.on('loadAddresses', async () => {
+      await this.addressLoader();
     });
 
     // if there is a loading error we must force all loading to stop
@@ -184,12 +190,17 @@ class Coin extends Component {
     ipcRenderer.on('message-from-log', (e, arg) => {
       this.props.setAppendToDebugLog(arg);
       const castedArg = String(arg);
-      // console.log(castedArg);
-      if (castedArg != null && (castedArg.indexOf('init message') !== -1 || castedArg.indexOf('Still rescanning') !== -1 || castedArg.indexOf('Corrupted block database detected') !== -1 || castedArg.indexOf('Aborted block database rebuild') !== -1)) {
-        if (castedArg.indexOf('Corrupted block database detected') !== -1) {
-          console.log(castedArg);
-          ipcRenderer.send('loading-error', { message: castedArg});
-        }
+      const captureStrings = [
+        'init message',
+        'Still rescanning',
+        'Corrupted block database detected',
+        'Aborted block database rebuild',
+        'initError: Cannot obtain a lock on data directory /home/dolaned/.eccoin. Eccoind is probably already running.'
+      ];
+      if (castedArg != null && (captureStrings.some((v) => { return castedArg.indexOf(v) >= 0; }))) {
+        // console.log(castedArg);
+        console.log(castedArg);
+        ipcRenderer.send('loading-error', { message: castedArg});
       }
     });
 
@@ -525,8 +536,7 @@ class Coin extends Component {
     // start all the other intervals
     this.setState({
       blockProcessorInterval: setInterval(() => { this.blockCycle(); }, this.state.blockInterval),
-      transactionProcessorInterval: setInterval(async () => { await this.transactionCycle(); }, this.state.miscInterval),
-      addressProcessorInterval: setInterval(async () => { await this.addressCycle(); }, this.state.miscInterval)
+      transactionProcessorInterval: setInterval(async () => { await this.transactionCycle(); }, this.state.miscInterval)
     });
 
     clearInterval(this.state.walletRunningInterval);
@@ -575,25 +585,19 @@ class Coin extends Component {
    * addresses, at the same time this should check if the address has a registered ans name not in the database
    * if so, store it and tell the user with a notifications.
    */
-  async addressCycle() {
-    this.props.wallet.listReceivedByAddress().then(async (data) => {
+  async addressLoader() {
+    this.props.wallet.listAddresses().then(async (data) => {
       console.log(data);
       let addresses = data;
 
       // if my current database addresses are not all in the addresses returned from the daemon,
       const myAddresses = await getAllMyAddresses();
 
-      for (const [i, add] of myAddresses.entries()) {
-        const found = addresses.filter((daemonAddress) => {
-          return daemonAddress.address === add.address;
-        });
-        if (!found || found.length === 0) {
-          await clearDB();
-          console.log('in here');
-          // this.transactionsIndexed = false;
-          break;
-        }
+      if (myAddresses.length > addresses.length) {
+        await clearDB();
+        console.log('in here');
       }
+
       // if(normalAddresses.length > this.currentAddresses.length) {
       for (const [index, address] of addresses.entries()) {
         // handle the response
@@ -609,11 +613,6 @@ class Coin extends Component {
         await this.loadTransactionsForProcessing();
         this.props.setIndexingTransactions(true);
       }
-
-
-      console.log(data);
-    });
-    this.props.wallet.listAddressGroupings().then(async (data) => {
       console.log(data);
     });
   }

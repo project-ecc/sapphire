@@ -17,7 +17,7 @@ const request = require('request-promise-native');
 const fs = require('fs');
 const event = require('../utils/eventhandler');
 const settings = require('electron-settings');
-const zmq = require('zmq');
+const zmq = require('zeromq');
 const socket = zmq.socket('sub');
 
 const REQUIRED_DAEMON_VERSION = 2511;
@@ -83,8 +83,8 @@ class Connector extends Component {
     // subber.js
 
 
-    socket.connect('tcp://127.0.0.1:28332');
-    socket.subscribe('pubhashblock');
+    socket.connect('tcp://127.0.0.1:3000');
+    socket.subscribe('hashblock');
     console.log('Subscriber connected to port 3000');
 
     socket.on('message', function(topic, message) {

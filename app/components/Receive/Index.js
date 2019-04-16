@@ -8,7 +8,9 @@ import NewRequestModal from './partials/NewRequestModal';
 
 import Header from './../Others/Header';
 import Body from './../Others/Body';
+import UnlockModal from "../Others/UnlockModal";
 const moment = require('moment');
+const event = require('./../../utils/eventhandler');
 
 moment.locale('en');
 
@@ -17,6 +19,8 @@ class Index extends Component {
     super(props);
     this.openNewAddressModal = this.openNewAddressModal.bind(this);
     this.loadAddresses = this.loadAddresses.bind(this);
+    this.reloadAddresses = this.reloadAddresses.bind(this);
+    this.unlocktoggle = this.unlocktoggle.bind(this);
 
     this.state = {
       request: {
@@ -36,6 +40,14 @@ class Index extends Component {
     this.confirmAddressModal.getWrappedInstance().toggle();
   }
 
+  reloadAddresses(){
+    event.emit('loadAddresses');
+  }
+
+  unlocktoggle(){
+    this.unlockModal.getWrappedInstance().toggle();
+  }
+
   async loadAddresses(){
     let data = await getAllMyAddresses();
     this.setState({
@@ -53,6 +65,10 @@ class Index extends Component {
           <div className="row">
             <div className="col-xl-8">
               <h4 className="mb-3">Addresses available in this wallet</h4>
+              <Button color="success" onClick={this.unlocktoggle}>
+              Reload Addresses
+              <CheckIcon className="ml-2" />
+            </Button>
               <ListGroup style={{backgroundColor: null, maxHeight: '400px', overflowY:'scroll'}}>
                 { this.state && this.state.allAddresses != null && Object.entries(this.state.allAddresses).map((result) => {
                   let data = result[1];
@@ -82,7 +98,9 @@ class Index extends Component {
             </div>
           </div>
         </Body>
-
+        <UnlockModal ref={(e) => { this.unlockModal = e; }} onUnlock={this.reloadAddresses()}>
+          <p>{`${this.props.lang.unlockWalletExplanation1} ${this.props.lang.unlockWalletExplanation2}`} <span className="ecc">ECC</span>.</p>
+        </UnlockModal>
         <NewRequestModal ref={(e) => { this.confirmAddressModal = e; }} />
       </div>
     );
