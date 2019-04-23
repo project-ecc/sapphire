@@ -169,6 +169,7 @@ class Coin extends Component {
     });
 
     event.on('loadAddresses', async () => {
+      console.log('in here somehow')
       await this.addressLoader();
     });
 
@@ -190,15 +191,18 @@ class Coin extends Component {
     ipcRenderer.on('message-from-log', (e, arg) => {
       this.props.setAppendToDebugLog(arg);
       const castedArg = String(arg);
+      console.log('in renderer')
+      console.log(castedArg)
       const captureStrings = [
         'init message',
         'Still rescanning',
         'Corrupted block database detected',
-        'Aborted block database rebuild',
-        'initError: Cannot obtain a lock on data directory /home/dolaned/.eccoin. Eccoind is probably already running.'
+        'Aborted block database rebuild. Exiting.',
+        'initError: Cannot obtain a lock on data directory ',
+        'ERROR: VerifyDB():'
       ];
-      if (castedArg != null && (captureStrings.some((v) => { return castedArg.indexOf(v) >= 0; }))) {
-        // console.log(castedArg);
+      if (captureStrings.includes(castedArg)) {
+        console.log('matching something');
         console.log(castedArg);
         ipcRenderer.send('loading-error', { message: castedArg});
       }

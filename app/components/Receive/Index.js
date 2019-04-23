@@ -41,7 +41,8 @@ class Index extends Component {
   }
 
   reloadAddresses(){
-    event.emit('loadAddresses');
+    console.log('something is triggering this');
+    // event.emit('loadAddresses');
   }
 
   unlocktoggle(){
@@ -98,7 +99,7 @@ class Index extends Component {
             </div>
           </div>
         </Body>
-        <UnlockModal ref={(e) => { this.unlockModal = e; }} onUnlock={this.reloadAddresses()}>
+        <UnlockModal ref={(e) => { this.unlockModal = e; }} onUnlock={this.reloadAddresses}>
           <p>{`${this.props.lang.unlockWalletExplanation1} ${this.props.lang.unlockWalletExplanation2}`} <span className="ecc">ECC</span>.</p>
         </UnlockModal>
         <NewRequestModal ref={(e) => { this.confirmAddressModal = e; }} />

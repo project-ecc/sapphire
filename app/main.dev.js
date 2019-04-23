@@ -527,12 +527,11 @@ tail.on('line', (data) => {
     'UpdateTip:',
     'sending getdata',
     'sending getheaders',
-    'LoadExternalBlockFile',
-    ''
+    'LoadExternalBlockFile'
   ];
   const castedArg = String(data);
-  if (castedArg != null && (!ignoreStrings.some((v) => { return castedArg.indexOf(v) >= 0; }))) {
-    // console.log(castedArg);
+  if(castedArg != null && !ignoreStrings.includes(castedArg)) {
+    console.log(castedArg);
 
     sendMessage('message-from-log', data);
   }
