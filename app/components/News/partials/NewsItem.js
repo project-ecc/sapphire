@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { ChevronRightIcon } from 'mdi-react';
 import { Button, Card, CardTitle, CardText } from 'reactstrap';
-var open = require("open");
+// const open = require('open');
 
 class NewsItem extends Component {
   constructor(props) {
     super(props);
   }
 
-  handleOnClick(url){
-    open(url);
+  async handleOnClick(url){
+    // TODO : FIX THIS
+    alert('This function is broken');
+    // await open(url);
   }
 
   render() {

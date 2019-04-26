@@ -201,7 +201,7 @@ class Coin extends Component {
         'initError: Cannot obtain a lock on data directory ',
         'ERROR: VerifyDB():'
       ];
-      if (captureStrings.includes(castedArg)) {
+      if (castedArg != null && captureStrings.indexOf(castedArg) > -1) {
         console.log('matching something');
         console.log(castedArg);
         ipcRenderer.send('loading-error', { message: castedArg});

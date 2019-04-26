@@ -219,7 +219,7 @@ async function closeApplication() {
       mainWindow.hide();
     }
   } else {
-    console.log('Herererere', mainWindow);
+    // console.log('Herererere', mainWindow);
     if (mainWindow) {
       mainWindow.show();
       mainWindow.focus();
@@ -527,10 +527,11 @@ tail.on('line', (data) => {
     'UpdateTip:',
     'sending getdata',
     'sending getheaders',
-    'LoadExternalBlockFile'
+    'LoadExternalBlockFile',
+    ''
   ];
   const castedArg = String(data);
-  if(castedArg != null && !ignoreStrings.includes(castedArg)) {
+  if (castedArg != null && (!ignoreStrings.some((v) => { return castedArg.indexOf(v) >= 0; }))) {
     console.log(castedArg);
 
     sendMessage('message-from-log', data);

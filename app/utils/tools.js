@@ -6,7 +6,7 @@ import { ipcRenderer } from 'electron';
 const homedir = require('os').homedir();
 const fs = require('fs');
 const os = require('os');
-const fsPath = require('fs-path');
+// const fsPath = require('fs-path');
 const settings = require('electron-settings');
 
 module.exports = {
@@ -465,7 +465,7 @@ module.exports = {
         if (!exists) {
            // create
           const toWrite = `maxconnections=100${os.EOL}rpcuser=${username}${os.EOL}rpcpassword=${password}${os.EOL}addnode=www.cryptounited.io${os.EOL}rpcport=19119${os.EOL}rpcconnect=127.0.0.1${os.EOL}staking=0${os.EOL}zapwallettxes=0`;
-          fsPath.writeFile(getConfUri(), toWrite, 'utf8', (err) => {
+          fs.writeFile(getConfUri(), toWrite, 'utf8', (err) => {
             if (err) {
               console.log(err);
               resolve(false);
