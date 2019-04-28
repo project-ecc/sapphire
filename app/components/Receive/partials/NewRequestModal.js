@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { TweenMax } from 'gsap';
-import { Modal, ModalBody, ModalFooter, ModalHeader, Button, Input } from 'reactstrap';
+import { Modal, ModalBody, ModalFooter, ModalHeader, Button } from 'reactstrap';
 import { PlusIcon } from 'mdi-react';
 
 import * as actions from '../../../actions/index';
 import Toast from '../../../globals/Toast/Toast';
 import hash from '../../../router/hash';
-import ActionModal from './../../Others/ActionModal';
 
 import {addAddress, getAddress} from '../../../Managers/SQLManager';
 
@@ -20,13 +19,11 @@ class NewRequestModal extends Component {
     this.handleConfirm = this.handleConfirm.bind(this);
     this.createNormalAddress = this.createNormalAddress.bind(this);
     this.getConfirmationText = this.getConfirmationText.bind(this);
+
     this.toggle = this.toggle.bind(this);
     this.selectType = this.selectType.bind(this);
-
     this.state = {
-      name: '',
-      password: '',
-      open: false
+      open: false,
     };
   }
 
@@ -42,12 +39,6 @@ class NewRequestModal extends Component {
     });
   }
 
-  onFieldChange(key, e) {
-    const value = e.target.value;
-    const payload = {};
-    payload[key] = value;
-    this.setState(payload);
-  }
 
   goToBackupPage() {
     hash.push('/settings/wallet');
@@ -84,12 +75,6 @@ class NewRequestModal extends Component {
 
     this.createNormalAddress();
 
-    // reset the dialog test afterwould
-    // this.setState({
-    //   type: 'normal',
-    //   name: '',
-    //   password: ''
-    // });
   }
 
   unlockWallet(flag, time, callback) {
@@ -126,6 +111,7 @@ class NewRequestModal extends Component {
       <p className="confirmationText">{ this.props.lang.normalCreateConfirm1 } <span className="ecc">{ this.props.lang.normalCreateConfirm2 }</span>.</p>
     );
   }
+
 
   render() {
     return (

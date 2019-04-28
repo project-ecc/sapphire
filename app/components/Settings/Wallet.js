@@ -3,7 +3,7 @@ import { Button } from 'reactstrap';
 import { connect } from 'react-redux';
 import { SettingsIcon, CloudUploadIcon, FileExportIcon } from 'mdi-react';
 import * as actions from '../../actions/index';
-
+import Toast from '../../globals/Toast/Toast';
 import ExportPrivateKeysModal from './partials/ExportPrivateKeysModal';
 import ChangePasswordModal from './partials/ChangePasswordModal';
 import ImportPrivateKeysModal from './partials/ImportPrivateKeysModal';
@@ -26,6 +26,35 @@ class Wallet extends Component {
     this.handleImportPrivateKey = this.handleImportPrivateKey.bind(this);
   }
 
+  backupWallet(location) {
+    this.props.wallet.command([{
+      method: 'backupwallet', parameters: [location]
+    }]).then(data => {
+      //Work on error handling
+      if (data[0] === null) {
+        Toast({
+          title: this.props.lang.exportedWallet,
+          message: location,
+          color: 'green'
+        });
+      } else {
+        Toast({
+          title: this.props.lang.exportFailed,
+          message: "error backing up wallet: " + data,
+          color: 'red'
+        });
+      }
+      this.props.setBackupOperationInProgress(false);
+    }).catch(err => {
+      this.props.setBackupOperationInProgress(false);
+      Toast({
+        title: this.props.lang.exportFailed,
+        message: "error backing up wallet: " + err,
+        color: 'red'
+      });
+    })
+  }
+
   onClickBackupLocation() {
     if(this.props.backingUpWallet) return;
     this.props.setBackupOperationInProgress(true);
@@ -36,10 +65,8 @@ class Wallet extends Component {
         this.props.setBackupOperationInProgress(false);
         return;
       }
-      let walletpath;
 
-      var backupLocation = `${folderPaths}/walletBackup.dat`;
-      this.backupWallet(backupLocation);
+      this.backupWallet(`${folderPaths}/walletBackup.dat`);
     });
   }
 

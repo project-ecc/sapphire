@@ -157,10 +157,6 @@ class Coin extends Component {
    * Subscribe the daemon to manager events
    */
   listenToEvents() {
-    // TODO: Review these and remove them where applicable
-    // ipcRenderer.on('guiUpdate', this.handleGuiUpdate.bind(this));
-    // ipcRenderer.on('daemonUpdate', this.handleDaemonUpdate.bind(this));
-    // ipcRenderer.on('daemonUpdated', this.handleDaemonUpdated.bind(this));
     event.on('startConnectorChildren', async () => {
       await this.stateCheckerInitialStartupCycle();
       this.setState({
@@ -168,9 +164,14 @@ class Coin extends Component {
       });
     });
 
+    // Reload Addresses
     event.on('loadAddresses', async () => {
       console.log('in here somehow')
       await this.addressLoader();
+    });
+    // Toggle Staking State
+    event.on('toggleStaking', async () => {
+
     });
 
     // if there is a loading error we must force all loading to stop

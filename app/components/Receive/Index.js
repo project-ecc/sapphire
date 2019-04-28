@@ -5,6 +5,7 @@ import { CheckIcon } from 'mdi-react';
 import { getAllMyAddresses } from '../../Managers/SQLManager';
 import * as actions from '../../actions';
 import NewRequestModal from './partials/NewRequestModal';
+import ReceiveQRModal from './partials/ReceiveQRModal';
 
 import Header from './../Others/Header';
 import Body from './../Others/Body';
@@ -18,16 +19,13 @@ class Index extends Component {
   constructor(props) {
     super(props);
     this.openNewAddressModal = this.openNewAddressModal.bind(this);
+    this.selectAddressForReceive = this.selectAddressForReceive.bind(this);
     this.loadAddresses = this.loadAddresses.bind(this);
     this.reloadAddresses = this.reloadAddresses.bind(this);
     this.unlocktoggle = this.unlocktoggle.bind(this);
 
     this.state = {
-      request: {
-        amount: 0,
-        description: '',
-        address: '',
-      },
+      address: null,
       allAddresses: {}
     };
   }
@@ -36,13 +34,24 @@ class Index extends Component {
     await this.loadAddresses();
   }
 
-  openNewAddressModal () {
-    this.confirmAddressModal.getWrappedInstance().toggle();
+  selectAddressForReceive (address) {
+    console.log(address)
+    this.setState({
+      address: address
+    });
+    console.log(this.state)
+    this.ReceiveQRModal.getWrappedInstance().toggle();
+  }
+
+  openNewAddressModal(){
+    this.setState({
+      address: null
+    });
+    this.confirmAddressModal.getWrappedInstance().toggle()
   }
 
   reloadAddresses(){
-    console.log('something is triggering this');
-    // event.emit('loadAddresses');
+    event.emit('loadAddresses');
   }
 
   unlocktoggle(){
@@ -65,20 +74,20 @@ class Index extends Component {
         <Body noPadding>
           <div className="row">
             <div className="col-xl-8">
-              <h4 className="mb-3">Addresses available in this wallet</h4>
-              <Button color="success" onClick={this.unlocktoggle}>
-              Reload Addresses
-              <CheckIcon className="ml-2" />
-            </Button>
+              <h4 className="mb-3">Addresses available in this wallet
+                <Button size="sm" outline color="warning" onClick={() => { this.unlocktoggle() }}>
+                Reload
+                </Button>
+              </h4>
+
               <ListGroup style={{backgroundColor: null, maxHeight: '400px', overflowY:'scroll'}}>
-                { this.state && this.state.allAddresses != null && Object.entries(this.state.allAddresses).map((result) => {
+                { this.state && this.state.allAddresses !== null && Object.entries(this.state.allAddresses).map((result) => {
                   let data = result[1];
                   let index = result[0];
                   return (
-                    <div id="rows">
-                      <div className={"row normalWeight tableRowCustom tableRowCustomTransactions"} style={{backgroundColor: null}} key={index} >
-                        Address: {data['address']} <br/>
-                        Created on: {moment(data['created_at']).format('MMMM Do YYYY hh:mm a')}
+                    <div id="rows" key={index}>
+                      <div className={"row normalWeight tableRowCustom tableRowCustomTransactions"} style={{backgroundColor: null}}  onClick={() => { this.selectAddressForReceive(data['address']) }}>
+                        <p>{data['address']}</p>
                       </div>
                     </div>
                   );
@@ -102,7 +111,8 @@ class Index extends Component {
         <UnlockModal ref={(e) => { this.unlockModal = e; }} onUnlock={this.reloadAddresses}>
           <p>{`${this.props.lang.unlockWalletExplanation1} ${this.props.lang.unlockWalletExplanation2}`} <span className="ecc">ECC</span>.</p>
         </UnlockModal>
-        <NewRequestModal ref={(e) => { this.confirmAddressModal = e; }} />
+        <NewRequestModal ref={(e) => { this.confirmAddressModal = e; }}/>
+        <ReceiveQRModal ref={(e) => { this.ReceiveQRModal = e; }} address={this.state.address}/>
       </div>
     );
   }
