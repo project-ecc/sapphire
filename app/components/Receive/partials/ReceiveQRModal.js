@@ -114,7 +114,7 @@ class NewRequestModal extends Component {
     if(this.state.generateCode){
       return (
         <div style={{textAlign:'center', padding:'15px'}}>
-          <QRCode includeMargin="true" value={this.buildUriString()} />
+          <QRCode renderAs="svg" includeMargin="true" value={this.buildUriString()} />
         </div>
       );
     }
