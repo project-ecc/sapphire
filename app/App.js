@@ -16,10 +16,12 @@ import Tools from "./utils/tools";
 const event = require('utils/eventhandler');
 const settings = require('electron').remote.require('electron-settings');
 
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.startUp = this.startUp.bind(this);
+
   }
 
   componentDidMount() {

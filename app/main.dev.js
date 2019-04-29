@@ -28,6 +28,7 @@ const arch = require('arch');
 const fs = require('fs');
 const AutoLaunch = require('auto-launch');
 
+const { autoUpdater } = require('electron-updater')
 const autoECCLauncher = new AutoLaunch({
   name: 'Sapphire'
 });
@@ -103,22 +104,14 @@ if (shouldQuit) {
 
 app.on('ready', async () => {
   ds = settings.get('settings.display');
-  const walletDir = grabWalletDir();
-  const fileName = 'sapphire';
-  let fullPath = '';
-  // delete downloaded update if it exists.
-  if (process.platform === 'linux') {
-    const architecture = arch() === 'x86' ? 'linux32' : 'linux64';
-    fullPath = `${walletDir + fileName}-v${version}-${architecture}`;
-  } else if (process.platform === 'darwin') {
-    fullPath = `${walletDir + fileName}-v${version}-mac.dmg`;
-  } else if (process.platform.indexOf('win') > -1) {
-    const architecture = arch() === 'x86' ? 'win32' : 'win64';
-    fullPath = `${walletDir + fileName}-v${version}-${architecture}.exe`;
-  }
 
-  if (fs.existsSync(fullPath)) {
-    fs.unlink(fullPath);
+  const log = require("electron-log")
+  log.transports.file.level = "debug"
+  autoUpdater.logger = log
+  try {
+    autoUpdater.checkForUpdatesAndNotify()
+  }catch (e){
+    console.log(e)
   }
 
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
@@ -131,7 +124,7 @@ app.on('ready', async () => {
     if (!selectedTheme || selectedTheme === 'theme-darkEcc') { return '#1c1c23'; } else if (selectedTheme && selectedTheme === 'theme-defaultEcc') { return '#181e35'; }
   };
 
-  app.setAppUserModelId('com.github.csmartinsfct.sapphire');
+  app.setAppUserModelId('com.github.project-ecc.sapphire');
 
   mainWindow = new BrowserWindow({
     show: true,
@@ -531,7 +524,7 @@ tail.on('line', (data) => {
     ''
   ];
   const castedArg = String(data);
-  if (castedArg != null && (ignoreStrings.some((v) => { return castedArg.indexOf(v) > -1; }))) {
+  if (castedArg != null && (!ignoreStrings.some((v) => { return castedArg.indexOf(v) > -1; }))) {
     console.log(castedArg, 'in here');
 
     sendMessage('message-from-log', data);

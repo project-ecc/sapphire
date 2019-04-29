@@ -1,13 +1,17 @@
-import React, { Component } from 'react';
-import { ipcRenderer } from 'electron';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {ipcRenderer} from 'electron';
+import {connect} from 'react-redux';
 
 import * as actions from '../actions/index';
 import {
-  addTransaction, addAddress,
-  getAllTransactions, getAllRewardTransactions,
-  getLatestTransaction, updateTransactionsConfirmations,
-  getAllMyAddresses, clearDB
+  addAddress,
+  addTransaction,
+  clearDB,
+  getAllMyAddresses,
+  getAllRewardTransactions,
+  getAllTransactions,
+  getLatestTransaction,
+  updateTransactionsConfirmations
 } from '../Managers/SQLManager';
 import * as tools from '../utils/tools';
 
@@ -507,10 +511,6 @@ class Coin extends Component {
       let syncedPercentage = (data.blocks * 100) / data.headers;
       syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
 
-      // dont know if should even bother putting this here and just do it all the transaction loop.
-      // if (data.blocks >= this.state.currentHighestBlock && this.transactionsIndexed && !this.firstRun) {
-      //   // do something to process new transactions here.
-      // }
       this.setState({
         currentHighestBlock: data.blocks,
         currentHighestHeader: data.headers,
@@ -584,7 +584,7 @@ class Coin extends Component {
   async transactionCycle() {
     // compare the latest transaction time stored in memory against the latest 10 transactions.
     const latestTransaction = await getLatestTransaction();
-    this.from = latestTransaction != null ? latestTransaction.time : 0;
+    this.from = latestTransaction !== null ? latestTransaction.time : 0;
 
 
     const transactions = await this.props.wallet.getTransactions('*', 10000, 0);

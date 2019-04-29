@@ -58,17 +58,12 @@ class Index extends Component {
 
     let result;
     try {
-      result = await Tools.searchForUsernameOrAddress(this.props.wallet, this.state.address);
-      if (result) {
-        this.setState({
-          address: result.addresses[0].address
-        });
-      }
+      result = await this.props.wallet.validate(this.state.address);
     } catch (err) {
       console.log('err: ', err);
     }
 
-    if (!result) {
+    if (!result.isvalid) {
       Toast({
         title: this.props.lang.error,
         message: this.props.lang.invalidFailedAddress,

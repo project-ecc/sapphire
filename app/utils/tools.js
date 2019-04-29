@@ -3,69 +3,11 @@ import { getConfUri } from './platform.service';
 import $ from 'jquery';
 import { ipcRenderer } from 'electron';
 
-const homedir = require('os').homedir();
 const fs = require('fs');
 const os = require('os');
-// const fsPath = require('fs-path');
 const settings = require('electron-settings');
 
 module.exports = {
-  searchForUsernameOrAddress(wallet, addressOrUsername) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const response = await wallet.validate(addressOrUsername);
-        let username;
-        let code;
-        // try to find ans username, if it exists
-        if (response.isvalid) {
-          const ansAddress = await wallet.getAnsRecord(addressOrUsername, 'PTR');
-          if (ansAddress[0].Code !== '') {
-            code = ansAddress[0].Code;
-            username = ansAddress[0].Name;
-            resolve({ ans: true, addresses: [ansAddress[0]] });
-          } else {
-            resolve({ ans: false, addresses: [response] });
-          }
-        }
-        // looks up for a specific ans username
-        else if (addressOrUsername.indexOf('#') !== -1) {
-          const arr = addressOrUsername.split('#');
-          username = arr[0];
-          code = arr[1];
-          const ansAddress = await wallet.getAnsRecord(username, 'A');
-          // multiple usernames
-          if (ansAddress) {
-            ansAddress.map((val) => {
-              if (val.Code == code) {
-                resolve({ ans: true, addresses: [val] });
-              }
-            });
-            reject();
-          } else {
-            reject();
-          }
-        }
-        // case where it may return a list of addresses using the same username
-        else {
-          const ansAddress = await wallet.getAnsRecord(addressOrUsername, 'A');
-          const toReturn = [];
-          if (ansAddress) {
-            const foundCode = false;
-            ansAddress.map((val) => {
-              toReturn.push(val);
-            });
-            if (toReturn.length > 0) {
-              resolve({ ans: true, addresses: toReturn });
-            } else {
-              reject();
-            }
-          }
-        }
-      } catch (err) {
-        reject();
-      }
-    });
-  },
 
   // MISC
   sendOSNotification(body, callback) {
@@ -334,65 +276,6 @@ module.exports = {
       }
     }
   },
-
-  // Animations
-
-  disableInput(id) {
-    $(id).attr('disabled', true);
-    $(id).css('opacity', '0.5');
-  },
-
-  enableInput(id) {
-    $(id).attr('disabled', false);
-    $(id).css('opacity', '1');
-  },
-
-  animateGeneralPanelIn(element, callback, f, scaleStart) {
-    TweenMax.set(element, { willChange: 'transform' });
-    requestAnimationFrame(() => {
-      TweenMax.fromTo(element, 0.15, { autoAlpha: 0, scale: scaleStart }, { autoAlpha: 1, scale: 1, ease: Linear.easeNone, onComplete: callback, onCompleteParams: [f] });
-    });
-  },
-
-  animateGeneralPanelOut(element, callback, f, scaleEnd) {
-    TweenMax.set(element, { willChange: 'transform' });
-    requestAnimationFrame(() => {
-      TweenMax.fromTo(element, 0.15, { autoAlpha: 1, scale: 1 }, { autoAlpha: 0, scale: scaleEnd, ease: Linear.easeNone, onComplete: callback, onCompleteParams: [f] });
-    });
-  },
-
-  animateLoaderIn(element, updatingApplication, animateLogo, callback) {
-    console.log('animateLoaderIn');
-    TweenMax.fromTo(element, 1, { autoAlpha: 0 }, { autoAlpha: 1, ease: Linear.easeNone, onComplete: animateLogo, onCompleteParams: [callback] });
-    if (updatingApplication) {
-      $('#gettingReady').text('We are updating your application...');
-    }
-  },
-
-  animateLoaderOut(element, callback) {
-    TweenMax.fromTo(element, 1, { autoAlpha: 1 }, { autoAlpha: 0, ease: Linear.easeNone, onComplete: callback });
-  },
-
-  animateInitialSetupIn(element, callback) {
-    TweenMax.fromTo(element, 0.5, { autoAlpha: 0, scale: 1 }, { autoAlpha: 1, scale: 1, ease: Linear.easeNone, onComplete: callback });
-  },
-
-  animateInitialSetupOut(element, callback) {
-    TweenMax.fromTo(element, 0.5, { autoAlpha: 1, scale: 1 }, { autoAlpha: 0, scale: 2.5, ease: Linear.easeNone, onComplete: callback });
-  },
-
-  animatePopupIn(element, callback, top) {
-    TweenMax.set(('.mancha'), { css: { display: 'block' } });
-    TweenMax.fromTo(('.mancha'), 0.3, { autoAlpha: 0 }, { autoAlpha: 1, ease: Linear.easeNone });
-    TweenMax.fromTo(element, 0.3, { css: { top: '-50%', opacity: 0 } }, { css: { top, opacity: 1 }, ease: Power1.easeOut, onComplete: callback });
-  },
-
-  animatePopupOut(element, callback) {
-    TweenMax.fromTo(('.mancha'), 0.3, { autoAlpha: 1 }, { autoAlpha: 0, ease: Linear.easeNone });
-    TweenMax.to(element, 0.3, { css: { top: '-50%', opacity: 0 }, ease: Linear.easeIn, onComplete: callback });
-  },
-
-  // Animations end
 
   createInstallScript(commands, path) {
     let script = '';

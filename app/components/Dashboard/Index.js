@@ -6,7 +6,7 @@ import { Card, Button, CardTitle, CardText } from 'reactstrap';
 import * as actions from '../../actions/index';
 import Header from '../Others/Header';
 import Body from '../Others/Body';
-import UnlockModal from '../Others/UnlockModal';
+
 import UnencryptedWalletPartial from '../Settings/cards/UnencryptedWalletCard';
 
 const Tools = require('../../utils/tools');
@@ -14,42 +14,7 @@ const Tools = require('../../utils/tools');
 class Index extends Component {
   constructor(props) {
     super(props);
-    this.processStakingClicked = this.processStakingClicked.bind(this);
-    this.lockWallet = this.lockWallet.bind(this);
     this.getEarnings = this.getEarnings.bind(this);
-    this.startStaking = this.startStaking.bind(this);
-  }
-
-  processStakingClicked() {
-    if (!this.props.staking) {
-      this.unlockModal.getWrappedInstance().toggle();
-    } else {
-      this.lockWallet().then(() => {
-        this.props.wallet.setGenerate().then(() => {
-          this.props.setStaking(false);
-        });
-      });
-    }
-  }
-
-  async lockWallet() {
-    const batch = [];
-    const obj = {
-      method: 'walletlock', parameters: []
-    };
-    batch.push(obj);
-
-    this.props.wallet.command(batch).then((data) => {
-      console.log('data: ', data);
-      data = data[0];
-      if (data !== null && data.code === 'ECONNREFUSED') {
-        console.log('daemon not working?');
-      } else if (data !== null) {
-        console.log('error unlocking wallet: ', data);
-      }
-    }).catch((err) => {
-      console.log('err unlocking wallet: ', err);
-    });
   }
 
   earningsFilterClicked(filter) {
@@ -85,12 +50,6 @@ class Index extends Component {
                   .reduce((accumulator, val) => accumulator + parseFloat(this.props[val]), 0);
   }
 
-  startStaking () {
-    this.props.wallet.setGenerate().then(() => {
-      setTimeout(() => this.props.setStaking(true), 1000);
-    });
-  }
-
 
   render() {
     return (
@@ -108,16 +67,6 @@ class Index extends Component {
               <div className="col-sm-4" style={{ padding: '0 0' }}>
                 <CardTitle className="text-white-50 mb-0"><small>{ this.props.lang.staking }</small></CardTitle>
                 <p className="normalWeight">{this.props.stakingVal} <span className="ecc text-white">ecc</span></p>
-                { !this.props.unencryptedWallet && this.props.balance > 0 && (
-                  <div style={{ width: '52px', margin: '0 auto', marginTop: '10px' }}>
-                    <ToggleButton
-                      checked={this.props.staking}
-                      onChange={() => {
-                        this.processStakingClicked();
-                      }}
-                    />
-                  </div>
-                )}
               </div>
               <div className="col-sm-4" style={{ padding: '0 0' }}>
                 <p className="normalWeight" style={{ fontSize: '20px' }}>{this.props.balance} <span className="ecc text-white">ecc</span></p>
@@ -152,9 +101,6 @@ class Index extends Component {
             </div>
           </div>
         </Body>
-        <UnlockModal ref={(e) => { this.unlockModal = e; }} onUnlock={this.startStaking}>
-          <p>{`${this.props.lang.unlockWalletExplanation1} ${this.props.lang.unlockWalletExplanation2}`} <span className="ecc">ECC</span>.</p>
-        </UnlockModal>
       </div>
     );
   }

@@ -5,7 +5,6 @@ import { ipcRenderer } from 'electron';
 
 import * as actions from '../../../actions/index';
 import CloseButtonPopup from '../../Others/CloseButtonPopup';
-import ConfirmButtonPopup from '../../Others/ConfirmButtonPopup';
 
 import $ from 'jquery';
 
@@ -49,7 +48,6 @@ class UpdateApplicationModal extends Component {
         <CloseButtonPopup handleClose={this.handleCancel}/>
         <p className="popupTitle">{ this.props.lang.applicationUpdate }</p>
         {this.getCorrectHtml()}
-        <ConfirmButtonPopup handleConfirm={this.handleConfirm} text={ this.props.lang.confirm }/>
       </div>
       );
     }

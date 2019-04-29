@@ -77,7 +77,7 @@ class Connector extends Component {
     });
 
     event.on('inital_setup', async () => {
-      this.initialSetup();
+      await this.initialSetup();
     });
 
     // subber.js

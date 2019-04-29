@@ -5,20 +5,60 @@ import ReactTooltip from 'react-tooltip';
 import { CurrencyUsdIcon, SendIcon, FormatListBulletedIcon, ContactsIcon, DownloadIcon, GiftIcon } from 'mdi-react';
 import { Progress, Button, Row, Col } from 'reactstrap';
 import Dot from './../../components/Others/Dot';
+import UnlockModal from './../../components/Others/UnlockModal';
 
 import * as actions from '../../actions/index';
 
 class MainSidebar extends Component {
   constructor(props) {
     super(props);
-    this.state = { staking: false };
-
-    this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
+    this.state = { staking: this.props.staking };
+    this.processStakingClicked = this.processStakingClicked.bind(this);
+    this.lockWallet = this.lockWallet.bind(this);
+    this.startStaking = this.startStaking.bind(this);
   }
 
-  onRadioBtnClick(rSelected) {
-    this.setState({
-      staking: rSelected
+  processStakingClicked() {
+    if (!this.props.staking) {
+      this.unlockModal.getWrappedInstance().toggle();
+    } else {
+      this.lockWallet().then(() => {
+        this.props.wallet.setGenerate().then(() => {
+          this.setState({
+            staking: false
+          });
+          this.props.setStaking(false);
+        });
+      });
+    }
+  }
+
+  async lockWallet() {
+    const batch = [];
+    const obj = {
+      method: 'walletlock', parameters: []
+    };
+    batch.push(obj);
+
+    this.props.wallet.command(batch).then((data) => {
+      console.log('data: ', data);
+      data = data[0];
+      if (data !== null && data.code === 'ECONNREFUSED') {
+        console.log('daemon not working?');
+      } else if (data !== null) {
+        console.log('error unlocking wallet: ', data);
+      }
+    }).catch((err) => {
+      console.log('err unlocking wallet: ', err);
+    });
+  }
+
+  startStaking () {
+    this.props.wallet.setGenerate().then(() => {
+      this.setState({
+        staking: true
+      });
+      setTimeout(() => this.props.setStaking(true), 1000);
     });
   }
 
@@ -99,16 +139,21 @@ class MainSidebar extends Component {
                     { this.props.lang.donate }
                   </NavLink>
                 </li>
-                <li>
-                  <Row className="bg-dark" style={{paddingBottom: '5px'}}>
-                    <Col style={{marginLeft: '25px'}}>Staking</Col>
-                    <Col ><Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.onRadioBtnClick(!this.state.staking)} active={this.state.staking === true}>{this.state.staking ? "On" : "Off"}</Button></Col>
-                  </Row>
-                </li>
+                { this.props.balance > 0 && (
+                  <li>
+                    <Row className="bg-dark" style={{paddingBottom: '5px'}}>
+                      <Col style={{marginLeft: '25px'}}>Staking</Col>
+                      <Col ><Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.processStakingClicked()} active={this.state.staking === true}>{this.state.staking ? "On" : "Off"}</Button></Col>
+                    </Row>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
         </div>
+        <UnlockModal ref={(e) => { this.unlockModal = e; }} onUnlock={this.startStaking}>
+          <p>{`${this.props.lang.unlockWalletExplanation1} ${this.props.lang.unlockWalletExplanation2}`} <span className="ecc">ECC</span>.</p>
+        </UnlockModal>
         <ReactTooltip />
       </div>
     );
