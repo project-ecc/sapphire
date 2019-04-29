@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
-import { ChevronRightIcon } from 'mdi-react';
-import { Button, Card, CardTitle, CardText } from 'reactstrap';
+import React, {Component} from 'react';
+import {ChevronRightIcon} from 'mdi-react';
+import {Button, CardText, CardTitle} from 'reactstrap';
+
 // const open = require('open');
 
 class NewsItem extends Component {

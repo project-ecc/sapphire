@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ToggleButton from 'react-toggle';
 
 class SettingsToggle extends Component {

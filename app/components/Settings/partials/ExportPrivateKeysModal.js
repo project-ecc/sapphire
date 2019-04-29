@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { TweenMax, TimelineMax } from 'gsap';
-import { ipcRenderer } from 'electron';
-import { Button, Modal, ModalHeader, ModalBody, Input } from 'reactstrap';
-import { ArrowRightIcon, ContentSaveOutlineIcon } from 'mdi-react';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {TimelineMax, TweenMax} from 'gsap';
+import {Button, Input, Modal, ModalBody, ModalHeader} from 'reactstrap';
+import {ArrowRightIcon, ContentSaveOutlineIcon} from 'mdi-react';
 
 import * as actions from '../../../actions/index';
 

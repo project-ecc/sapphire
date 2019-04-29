@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import React, {Component} from 'react';
+import {Button} from 'reactstrap';
 import {connect} from "react-redux";
-import { HomeIcon } from 'mdi-react';
+import {HomeIcon} from 'mdi-react';
 import hash from './../../../router/hash';
 import * as actions from "../../../actions";
 

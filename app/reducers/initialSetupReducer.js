@@ -1,8 +1,6 @@
 import settings from 'electron-settings';
 
-import {
-  STEP_INITIAL_SETUP,
-} from '../actions/types';
+import {STEP_INITIAL_SETUP,} from '../actions/types';
 
 
 const INITIAL_STATE = { step: 'complete' };

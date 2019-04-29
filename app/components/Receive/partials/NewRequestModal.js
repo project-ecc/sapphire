@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { TweenMax } from 'gsap';
-import { Modal, ModalBody, ModalFooter, ModalHeader, Button } from 'reactstrap';
-import { PlusIcon } from 'mdi-react';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {TweenMax} from 'gsap';
+import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
+import {PlusIcon} from 'mdi-react';
 
 import * as actions from '../../../actions/index';
 import Toast from '../../../globals/Toast/Toast';
 import hash from '../../../router/hash';
 
-import {addAddress, getAddress} from '../../../Managers/SQLManager';
+import {addAddress} from '../../../Managers/SQLManager';
 
 const event = require('../../../utils/eventhandler');
 

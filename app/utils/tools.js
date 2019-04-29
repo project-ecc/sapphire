@@ -1,7 +1,6 @@
-import { TweenMax } from 'gsap';
-import { getConfUri } from './platform.service';
-import $ from 'jquery';
-import { ipcRenderer } from 'electron';
+import {TweenMax} from 'gsap';
+import {getConfUri} from './platform.service';
+import {ipcRenderer} from 'electron';
 
 const fs = require('fs');
 const os = require('os');

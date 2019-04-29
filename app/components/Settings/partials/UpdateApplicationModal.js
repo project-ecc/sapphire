@@ -1,12 +1,10 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {TweenMax} from "gsap";
-import { ipcRenderer } from 'electron';
+import {ipcRenderer} from 'electron';
 
 import * as actions from '../../../actions/index';
 import CloseButtonPopup from '../../Others/CloseButtonPopup';
-
-import $ from 'jquery';
 
 const tools = require('../../../utils/tools');
 

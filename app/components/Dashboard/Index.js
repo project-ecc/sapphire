@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import ToggleButton from 'react-toggle';
-import { Card, Button, CardTitle, CardText } from 'reactstrap';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Card, CardTitle} from 'reactstrap';
 
 import * as actions from '../../actions/index';
 import Header from '../Others/Header';

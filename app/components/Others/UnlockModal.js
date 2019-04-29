@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Modal, ModalBody, ModalHeader, Button, Input } from 'reactstrap';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Button, Input, Modal, ModalBody, ModalHeader} from 'reactstrap';
 
 import * as actions from '../../actions/index';
 import Toast from '../../globals/Toast/Toast';

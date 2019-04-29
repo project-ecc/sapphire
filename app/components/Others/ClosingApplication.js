@@ -1,11 +1,9 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {TweenMax} from "gsap";
 
 import * as actions from '../../actions';
 import MiniLoaderAnimation from './MiniLoaderAnimation';
-
-import $ from 'jquery';
 
 class ClosingApplication extends Component {
  constructor() {

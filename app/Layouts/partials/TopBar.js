@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-import $ from 'jquery';
-import { ipcRenderer } from 'electron';
+import React, {Component} from 'react';
+import {ipcRenderer} from 'electron';
 
 class TopBar extends Component {
   constructor() {

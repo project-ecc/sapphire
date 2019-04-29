@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { SettingsIcon } from 'mdi-react';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {SettingsIcon} from 'mdi-react';
 import ReactTooltip from 'react-tooltip';
 
 import * as actions from '../../actions/index';

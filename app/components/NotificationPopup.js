@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { TweenMax } from 'gsap';
-import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {TweenMax} from 'gsap';
+import {Modal, ModalBody, ModalHeader} from 'reactstrap';
 
 import hash from './../router/hash';
 import * as actions from '../actions';

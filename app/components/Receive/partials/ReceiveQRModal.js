@@ -1,13 +1,11 @@
-import React, { Component } from 'react';
-const QRCode = require('qrcode.react');
-import { connect } from 'react-redux';
-import { TweenMax } from 'gsap';
-import { Modal, ModalBody, ModalFooter, ModalHeader, Button, Input } from 'reactstrap';
-import { PlusIcon } from 'mdi-react';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {TweenMax} from 'gsap';
+import {Button, Input, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 
 import * as actions from '../../../actions/index';
-import Toast from '../../../globals/Toast/Toast';
-import hash from '../../../router/hash';
+
+const QRCode = require('qrcode.react');
 
 const event = require('../../../utils/eventhandler');
 

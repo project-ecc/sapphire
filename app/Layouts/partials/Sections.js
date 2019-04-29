@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { NavLink, withRouter } from 'react-router-dom';
-import { SettingsIcon, BitcoinIcon, NewspaperIcon, BellOutlineIcon } from 'mdi-react';
+import React, {Component} from 'react';
+import {NavLink, withRouter} from 'react-router-dom';
+import {BellOutlineIcon, BitcoinIcon, NewspaperIcon, SettingsIcon} from 'mdi-react';
 import ReactTooltip from 'react-tooltip';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from '../../actions/index';
 import NotificationPopup from '../../components/NotificationPopup';
 

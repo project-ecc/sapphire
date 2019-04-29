@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { Button } from 'reactstrap';
-import { connect } from 'react-redux';
-import { SettingsIcon, CloudUploadIcon, FileExportIcon } from 'mdi-react';
+import React, {Component} from 'react';
+import {Button} from 'reactstrap';
+import {connect} from 'react-redux';
+import {CloudUploadIcon, FileExportIcon, SettingsIcon} from 'mdi-react';
 import * as actions from '../../actions/index';
 import Toast from '../../globals/Toast/Toast';
 import ExportPrivateKeysModal from './partials/ExportPrivateKeysModal';

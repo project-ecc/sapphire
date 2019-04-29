@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
+import {connect} from 'react-redux';
 
-import { traduction } from '../../../lang/lang';
-import { getConfUri, getDebugUri } from '../../../utils/platform.service';
+import {traduction} from '../../../lang/lang';
+import {getConfUri, getDebugUri} from '../../../utils/platform.service';
 
 
 import * as actions from '../../../actions/index';

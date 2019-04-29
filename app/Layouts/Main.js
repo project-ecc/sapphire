@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
-import { renderRoutes } from 'react-router-config';
-import { Switch } from 'react-router-dom';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import React, {Component} from 'react';
+import {renderRoutes} from 'react-router-config';
+import {Switch} from 'react-router-dom';
+import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import {connect} from "react-redux";
 import * as actions from '../actions';
-import Sections from './partials/Sections';
 
 class Main extends Component {
   /* Sidebar content is dynamic */

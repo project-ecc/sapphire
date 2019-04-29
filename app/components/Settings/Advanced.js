@@ -1,17 +1,16 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { getSapphireDirectory } from '../../utils/platform.service';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {getSapphireDirectory} from '../../utils/platform.service';
 import * as actions from '../../actions/index';
 import Console from './partials/Console';
 import fs from 'fs';
-import { SettingsIcon } from 'mdi-react';
-
-const remote = require('electron').remote;
-const app = remote.app;
-
+import {SettingsIcon} from 'mdi-react';
 import Header from '../Others/Header';
 import Body from '../Others/Body';
 import ActionModal from '../Others/ActionModal';
+
+const remote = require('electron').remote;
+const app = remote.app;
 
 class Advanced extends Component {
   constructor(props) {

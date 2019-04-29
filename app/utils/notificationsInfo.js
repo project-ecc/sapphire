@@ -1,5 +1,6 @@
 import low from 'lowdb';
 import storage from 'lowdb/lib/storages/file-async';
+
 var fs = require('fs');
 
 let remote = require('electron').remote;

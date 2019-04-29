@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 import startupReducer from './startupReducer';
 import initialSetupReducer from './initialSetupReducer';
 import chainsReducer from './chainsReducer';

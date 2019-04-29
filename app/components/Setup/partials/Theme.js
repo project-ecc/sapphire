@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { ArrowRightIcon } from 'mdi-react';
-import { Button } from 'reactstrap';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {ArrowRightIcon} from 'mdi-react';
+import {Button} from 'reactstrap';
+import {connect} from 'react-redux';
 
 import ThemeSelector from '../../Others/ThemeSelector';
 import * as actions from '../../../actions';

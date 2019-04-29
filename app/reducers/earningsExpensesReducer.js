@@ -1,7 +1,4 @@
-import {
-	FILTER_EARNINGS_TIME,
-	FILTER_EARNINGS_TYPE,
-} from '../actions/types';
+import {FILTER_EARNINGS_TIME, FILTER_EARNINGS_TYPE,} from '../actions/types';
 
 
 const INITIAL_STATE = { allEarningsSelected: true, fileStorageEarningsSelected: false, stakingEarningsSelected: false, weekEarningsSelected: false, monthEarningsSelected: false, allTimeEarningsSelected: true };

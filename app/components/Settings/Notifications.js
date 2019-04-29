@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { ipcRenderer } from 'electron';
-import { SettingsIcon } from 'mdi-react';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {ipcRenderer} from 'electron';
+import {SettingsIcon} from 'mdi-react';
 
 import * as actions from '../../actions/index';
 import SettingsToggle from './partials/SettingsToggle';

@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
-import { ipcRenderer } from 'electron';
-import { Button, Modal, Input, ModalFooter, ModalBody, ModalHeader } from 'reactstrap';
-import { ArrowRightIcon, LockIcon } from 'mdi-react';
+import React, {Component} from 'react';
+import {Button, Input, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
+import {LockIcon} from 'mdi-react';
 import {connect} from "react-redux";
 import * as actions from "../../../actions";
 import Toast from "../../../globals/Toast/Toast";

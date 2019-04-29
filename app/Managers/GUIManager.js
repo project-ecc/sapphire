@@ -1,7 +1,7 @@
-import { getSapphireDownloadUrl, grabWalletDir } from '../utils/platform.service';
-import { version } from './../../package.json';
+import {getSapphireDownloadUrl, grabWalletDir} from '../utils/platform.service';
+import {version} from './../../package.json';
 import Tools from '../utils/tools';
-import { downloadFile } from '../utils/downloader';
+import {downloadFile} from '../utils/downloader';
 import runExec from './../globals/runExec';
 import shell from 'node-powershell';
 

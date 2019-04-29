@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
-import { ipcRenderer } from 'electron';
-import { connect } from 'react-redux';
-import { Modal, ModalBody, ModalFooter, ModalHeader, Button } from 'reactstrap';
+import React, {Component} from 'react';
+import {ipcRenderer} from 'electron';
+import {connect} from 'react-redux';
+import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import * as actions from '../../../actions/index';
+
 const event = require('../../../utils/eventhandler');
 
 class FullscreenModal extends Component {

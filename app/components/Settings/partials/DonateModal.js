@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router';
-import { connect } from 'react-redux';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { GiftIcon } from 'mdi-react';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Button, Modal, ModalBody, ModalHeader} from 'reactstrap';
+import {GiftIcon} from 'mdi-react';
 
 import hash from './../../../router/hash';
 import * as actions from '../../../actions/index';
+
 const Tools = require('../../../utils/tools');
 
 class DonateModal extends Component {

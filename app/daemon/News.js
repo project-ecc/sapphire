@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import moment from 'moment';
 import hash from '../router/hash';
 import * as tools from '../utils/tools';
-import {DONATION_GOALS, ECC_POST} from '../actions/types';
 import {connect} from "react-redux";
 import * as actions from "../actions";
 

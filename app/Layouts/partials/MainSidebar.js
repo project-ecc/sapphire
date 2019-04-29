@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {NavLink} from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
-import { CurrencyUsdIcon, SendIcon, FormatListBulletedIcon, ContactsIcon, DownloadIcon, GiftIcon } from 'mdi-react';
-import { Progress, Button, Row, Col } from 'reactstrap';
+import {ContactsIcon, CurrencyUsdIcon, DownloadIcon, FormatListBulletedIcon, GiftIcon, SendIcon} from 'mdi-react';
+import {Button, Col, Progress, Row} from 'reactstrap';
 import Dot from './../../components/Others/Dot';
 import UnlockModal from './../../components/Others/UnlockModal';
 

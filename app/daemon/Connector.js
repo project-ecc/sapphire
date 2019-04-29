@@ -1,15 +1,14 @@
-import React, { Component } from 'react';
-import { ipcRenderer } from 'electron';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 
-import { getPlatformWalletUri, grabWalletDir, grabEccoinDir, getDaemonDownloadUrl, getPlatformFileName } from '../utils/platform.service';
+import {getDaemonDownloadUrl, getPlatformWalletUri, grabEccoinDir, grabWalletDir} from '../utils/platform.service';
 import * as actions from '../actions/index';
 
 import ConnectorNews from './News';
 import ConnectorCoin from './Coin';
 import ConnectorMarket from './Market';
 import Tools from '../utils/tools';
-import { downloadFile } from '../utils/downloader';
+import {downloadFile} from '../utils/downloader';
 
 const arch = require('arch');
 const find = require('find-process');

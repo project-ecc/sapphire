@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { ipcRenderer } from 'electron';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {ipcRenderer} from 'electron';
 import fs from 'fs';
-import { SettingsIcon } from 'mdi-react';
+import {SettingsIcon} from 'mdi-react';
 
 import * as actions from '../../actions/index';
-import { version } from '../../../package.json';
+import {version} from '../../../package.json';
 import SettingsToggle from './partials/SettingsToggle';
 import Header from '../Others/Header';
 import Body from '../Others/Body';

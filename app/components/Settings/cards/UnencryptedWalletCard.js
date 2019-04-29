@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { ipcRenderer } from 'electron';
-import { connect } from 'react-redux';
-import { Modal, ModalBody, ModalHeader, ModalFooter, Card, Button, CardTitle, CardText, Input } from 'reactstrap';
+import React, {Component} from 'react';
+import {ipcRenderer} from 'electron';
+import {connect} from 'react-redux';
+import {Button, Card, CardText, CardTitle, Input, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import * as actions from '../../../actions';
 import Toast from '../../../globals/Toast/Toast';
 

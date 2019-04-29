@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { NavLink } from 'react-router-dom';
-import { FacebookIcon, TwitterIcon, MediumIcon, SlackIcon, RedditIcon, ArrowLeftIcon } from 'mdi-react';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {NavLink} from 'react-router-dom';
+import {FacebookIcon, MediumIcon, RedditIcon, SlackIcon, TwitterIcon} from 'mdi-react';
 
 import * as actions from '../../actions/index';
 

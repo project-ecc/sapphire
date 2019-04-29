@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+
 const classNames = require('classnames');
 
 class RightSidebar extends Component {

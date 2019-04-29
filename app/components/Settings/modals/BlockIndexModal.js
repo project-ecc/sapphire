@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Modal, ModalBody, ModalHeader } from 'reactstrap';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Modal, ModalBody, ModalHeader} from 'reactstrap';
 import * as actions from '../../../actions/index';
 import DaemonErrorComponent from '../../../components/Others/DaemonErrorComponent';
 

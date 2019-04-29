@@ -6,7 +6,6 @@ import SendPage from '../components/Send/Index';
 import ContactsPage from './../components/Contacts/Index';
 import NetworkStatsPage from './../components/NetworkStats/Index';
 import NewsPage from '../components/News/Index';
-
 // Settings
 import SettingsAdvanced from '../components/Settings/Advanced';
 import SettingsDonate from '../components/Settings/Donate';
@@ -15,16 +14,13 @@ import SettingsNotifications from '../components/Settings/Notifications';
 import SettingsAppearance from '../components/Settings/Appearance';
 import SettingsWallet from '../components/Settings/Wallet';
 import SettingsGeneral from '../components/Settings/General';
-
 // Layouts
 import MainLayout from './../Layouts/Main';
 import Setup from '../components/Setup/Index';
 import BasicLayout from './../Layouts/Basic';
-
 // Sidebars
 import MainSidebar from '../Layouts/partials/MainSidebar';
 import SettingSidebar from '../Layouts/partials/SettingSidebar';
-
 // Setup
 import SetupStart from './../components/Setup/partials/Start';
 import SetupTheme from './../components/Setup/partials/Theme';

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {TweenMax} from "gsap";
 
 class MiniLoaderAnimation extends Component {

@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Button } from 'reactstrap';
-import { PlusIcon, CloseCircleOutlineIcon } from 'mdi-react';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Button} from 'reactstrap';
+import {CloseCircleOutlineIcon, PlusIcon} from 'mdi-react';
 import moment from 'moment';
-import renderHTML from 'react-render-html';
 
 import Body from './../Others/Body';
 import Header from './../Others/Header';
@@ -11,7 +10,7 @@ import RightSidebar from './../Others/RightSidebar';
 import * as actions from '../../actions';
 import AddressBook from '../Send/partials/AddressBook';
 import ContactModal from './partials/ContactModal';
-import { deleteContact } from '../../Managers/SQLManager';
+import {deleteContact} from '../../Managers/SQLManager';
 
 const event = require('./../../utils/eventhandler');
 

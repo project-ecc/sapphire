@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { SettingsIcon } from 'mdi-react';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {SettingsIcon} from 'mdi-react';
 
 import * as actions from '../../actions/index';
 import ThemeSelector from '../Others/ThemeSelector';

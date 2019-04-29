@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import React, {Component} from 'react';
+import {Button} from 'reactstrap';
 import {connect} from "react-redux";
-import { ArrowRightIcon } from 'mdi-react';
+import {ArrowRightIcon} from 'mdi-react';
 import * as actions from "../../../actions";
 
 class Start extends Component {

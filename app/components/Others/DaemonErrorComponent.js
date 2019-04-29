@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from '../../actions/index';
 import {getDebugUri} from '../../utils/platform.service';
-import { Progress, Button, Row, Col } from 'reactstrap';
-import {ipcRenderer} from "electron";
+import {Button, Col, Row} from 'reactstrap';
+
 const event = require('../../utils/eventhandler');
 const fs = require('fs-extra');
 const dialog = require('electron').remote.require('electron').dialog;

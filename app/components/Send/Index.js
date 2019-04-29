@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Input, Button } from 'reactstrap';
-import { ArrowRightIcon } from 'mdi-react';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Button, Input} from 'reactstrap';
+import {ArrowRightIcon} from 'mdi-react';
 
 import Body from './../Others/Body';
 import Header from './../Others/Header';

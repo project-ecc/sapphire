@@ -1,14 +1,14 @@
-import { traduction } from './../lang/lang';
-var lang = traduction();
-
+import {traduction} from './../lang/lang';
 import {
-  SET_LANGUAGE,
   LOADING,
-  UPDATING_APP,
-  UPDATE_AVAILABLE,
-  UNENCRYPTED_WALLET,
+  SET_LANGUAGE,
   TELL_USER_OF_UPDATE,
+  UNENCRYPTED_WALLET,
+  UPDATE_AVAILABLE,
+  UPDATING_APP,
 } from '../actions/types';
+
+var lang = traduction();
 
 
 const INITIAL_STATE = {lang: lang, loader: true, loading: true, loadingMessage: '', updatingApp: false, guiUpdate: false, daemonUpdate:false, unencryptedWallet: false, toldUserAboutUpdate: false };

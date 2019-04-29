@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { ipcRenderer } from 'electron';
+import React, {Component} from 'react';
+import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
+import {ipcRenderer} from 'electron';
 import {connect} from "react-redux";
 import * as actions from "../../../actions";
-import { ArrowRightIcon, KeyIcon, UploadIcon } from 'mdi-react';
+import {ArrowRightIcon, KeyIcon, UploadIcon} from 'mdi-react';
 
 class ImportWallet extends Component {
   constructor(props) {

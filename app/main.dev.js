@@ -13,9 +13,9 @@
 
 import MenuBuilder from './menu';
 import GUIManager from './Managers/GUIManager';
-import { getDebugUri, grabEccoinDir, grabWalletDir } from './utils/platform.service';
-import { traduction } from './lang/lang';
-import { version } from './../package.json';
+import {getDebugUri, grabEccoinDir} from './utils/platform.service';
+import {traduction} from './lang/lang';
+import {version} from './../package.json';
 
 const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote } = require('electron');
 const dialog = require('electron').dialog;

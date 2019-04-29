@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Card, Button, CardTitle, CardText } from 'reactstrap';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Button, Card, CardText, CardTitle} from 'reactstrap';
 import * as actions from '../../../actions';
 
 class StakingCard extends Component {

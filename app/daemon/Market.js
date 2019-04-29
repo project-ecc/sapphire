@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
-import hash from '../router/hash';
+import React, {Component} from 'react';
 import * as tools from '../utils/tools';
-import { ECC_POST } from '../actions/types';
-import { connect } from 'react-redux';
-import { ipcRenderer } from 'electron';
+import {connect} from 'react-redux';
+import {ipcRenderer} from 'electron';
 import * as actions from '../actions';
 
 

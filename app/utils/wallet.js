@@ -1,6 +1,6 @@
 import Client from 'eccoin-js';
 import Shell from 'node-powershell';
-import { getPlatformWalletUri } from './platform.service';
+import {getPlatformWalletUri} from './platform.service';
 import runExec from './../globals/runExec';
 
 const { exec, spawn } = require('child_process');

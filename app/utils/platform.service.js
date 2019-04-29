@@ -1,5 +1,6 @@
 import daemonConfig from '../../daemon-data.json';
 import sapphireConfig from '../../gui-data.json';
+
 const homedir = require('os').homedir();
 let arch = require('arch');
 

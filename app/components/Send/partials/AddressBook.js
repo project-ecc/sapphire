@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
-import { TweenMax } from 'gsap';
-import { connect } from 'react-redux';
-import renderHTML from 'react-render-html';
-import { Table } from 'reactstrap';
+import React, {Component} from 'react';
+import {TweenMax} from 'gsap';
+import {connect} from 'react-redux';
+import {Table} from 'reactstrap';
 import * as actions from '../../../actions/index';
 
-import { getContacts } from '../../../Managers/SQLManager';
+import {getContacts} from '../../../Managers/SQLManager';
 
 const moment = require('moment');
 const event = require('./../../../utils/eventhandler');

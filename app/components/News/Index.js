@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import * as actions from '../../actions';
-import { connect } from 'react-redux';
-import { ipcRenderer } from 'electron';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Button } from 'reactstrap';
-import { RefreshIcon } from 'mdi-react';
+import {connect} from 'react-redux';
+import {ipcRenderer} from 'electron';
+import {Button, Dropdown, DropdownItem, DropdownMenu, DropdownToggle} from 'reactstrap';
+import {RefreshIcon} from 'mdi-react';
 
 import NewsItem from './partials/NewsItem';
 import Header from './../Others/Header';

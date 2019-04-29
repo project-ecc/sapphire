@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Sections from './partials/Sections';
-import { renderRoutes } from 'react-router-config';
+import {renderRoutes} from 'react-router-config';
 
 class Basic extends Component {
   render() {

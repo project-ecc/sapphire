@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Modal, ModalHeader, ModalBody, Button, ModalFooter } from 'reactstrap';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import * as actions from '../../../actions/index';
 import Input from '../../Others/Input';
-import Tools from './../../../utils/tools';
-import { addContact, findContact, getContacts } from '../../../Managers/SQLManager';
+import {addContact, findContact, getContacts} from '../../../Managers/SQLManager';
 import Toast from '../../../globals/Toast/Toast';
 
 class ContactModal extends Component {

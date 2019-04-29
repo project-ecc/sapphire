@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { getAllTransactions } from '../../Managers/SQLManager';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {getAllTransactions} from '../../Managers/SQLManager';
 
-import { traduction } from '../../lang/lang';
+import {traduction} from '../../lang/lang';
 import * as actions from '../../actions';
 
 import Header from './../../components/Others/Header';

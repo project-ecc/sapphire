@@ -1,12 +1,12 @@
- import React, { Component } from 'react';
- import { connect } from 'react-redux';
- import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
- import { TweenMax } from 'gsap';
- import { KeyIcon } from 'mdi-react';
- import * as actions from '../../../actions/index';
- import Toast from '../../../globals/Toast/Toast';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Button, Input, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
+import {TweenMax} from 'gsap';
+import {KeyIcon} from 'mdi-react';
+import * as actions from '../../../actions/index';
+import Toast from '../../../globals/Toast/Toast';
 
- class ImportPrivateKeysPartial extends Component {
+class ImportPrivateKeysPartial extends Component {
    constructor(props) {
      super(props);
 

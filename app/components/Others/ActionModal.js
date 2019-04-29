@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { Modal, ModalBody, ModalFooter, ModalHeader, Button } from 'reactstrap';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
+import {connect} from 'react-redux';
 import * as actions from '../../actions';
 
 class ActionModal extends Component {

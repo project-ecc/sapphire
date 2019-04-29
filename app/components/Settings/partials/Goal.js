@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {connect} from "react-redux";
-import { Button } from 'reactstrap';
-import { ArrowRightIcon } from 'mdi-react';
+import {Button} from 'reactstrap';
+import {ArrowRightIcon} from 'mdi-react';
 import * as actions from "../../../actions";
 
 class Goal extends Component {

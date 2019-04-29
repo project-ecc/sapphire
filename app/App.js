@@ -1,9 +1,9 @@
 // @flow
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Redirect, withRouter } from 'react-router-dom';
-import { renderRoutes } from 'react-router-config';
-import { ipcRenderer } from 'electron';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Redirect, withRouter} from 'react-router-dom';
+import {renderRoutes} from 'react-router-config';
+import {ipcRenderer} from 'electron';
 import TopBar from './Layouts/partials/TopBar';
 import routes from './router/routes';
 import BlockIndexModal from './components/Settings/modals/BlockIndexModal';

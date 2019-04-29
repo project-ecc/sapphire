@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Input, Button, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
-import { CheckIcon } from 'mdi-react';
-import { getAllMyAddresses } from '../../Managers/SQLManager';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Button, ListGroup} from 'reactstrap';
+import {CheckIcon} from 'mdi-react';
+import {getAllMyAddresses} from '../../Managers/SQLManager';
 import * as actions from '../../actions';
 import NewRequestModal from './partials/NewRequestModal';
 import ReceiveQRModal from './partials/ReceiveQRModal';
@@ -10,6 +10,7 @@ import ReceiveQRModal from './partials/ReceiveQRModal';
 import Header from './../Others/Header';
 import Body from './../Others/Body';
 import UnlockModal from "../Others/UnlockModal";
+
 const moment = require('moment');
 const event = require('./../../utils/eventhandler');
 
