@@ -104,53 +104,7 @@ class Coin extends Component {
       }
     })
       .catch((err) => {
-        console.log('error', err.message);
-
-        if (err.message === 'Loading wallet...') {
-          if (!this.props.initialSetup) {
-            this.props.setLoading({
-              isLoading: true,
-              loadingMessage: this.props.lang.loadingWallet
-            });
-          }
-        }
-        if (err.message === 'Activating best chain...') {
-          if (!this.props.initialSetup) {
-            this.props.setLoading({
-              isLoading: true,
-              loadingMessage: this.props.lang.activatingBestChain
-            });
-          }
-        }
-        if (err.message === 'Loading block index...') {
-          if (!this.props.initialSetup) {
-            this.props.setLoading({
-              isLoading: true,
-              loadingMessage: 'Loading block index...'
-            });
-          }
-        }
-        if (err.message === 'Rescanning...') {
-          const rescanningMessage = this.props.rescanningLogInfo.peekEnd();
-          this.props.setLoading({
-            isLoading: true,
-            loadingMessage: `${this.props.lang.rescanning} ${rescanningMessage}`
-          });
-        }
-        if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT')) {
-          this.props.setLoading({
-            isLoading: true,
-            loadingMessage: this.props.lang.rescanning
-          });
-        }
-        if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
-          const errorMessage = this.props.rescanningLogInfo.peekEnd();
-          console.log(errorMessage)
-          this.props.setLoading({
-            isLoading: true,
-            loadingMessage: errorMessage
-          });
-        }
+        this.processError(err)
       });
   }
   /**
@@ -192,8 +146,6 @@ class Coin extends Component {
     ipcRenderer.on('message-from-log', (e, arg) => {
       this.props.setAppendToDebugLog(arg);
       const castedArg = String(arg);
-      console.log('in renderer')
-      console.log(castedArg)
       const captureStrings = [
         'init message',
         'Still rescanning',
@@ -202,9 +154,8 @@ class Coin extends Component {
         'initError: Cannot obtain a lock on data directory ',
         'ERROR: VerifyDB():'
       ];
-      if (castedArg != null && captureStrings.indexOf(castedArg) > -1) {
-        console.log('matching something');
-        console.log(castedArg);
+
+      if (captureStrings.some((v) => { return castedArg.indexOf(v) > -1; })) {
         ipcRenderer.send('loading-error', { message: castedArg});
       }
     });
@@ -581,6 +532,8 @@ class Coin extends Component {
     this.props.wallet.getWalletInfo().then(async (data) => {
       console.log(data);
       this.props.walletInfoSec(data);
+    }).catch((err) => {
+      this.processError(err)
     });
   }
 
@@ -681,6 +634,61 @@ class Coin extends Component {
       }).catch(errors => {
         console.log(errors);
       });
+  }
+
+
+  processError(err){
+    console.log('error message', err.message);
+    console.log('error code', err.code);
+
+    if (err.message === 'Loading wallet...') {
+      if (!this.props.initialSetup) {
+        this.props.setLoading({
+          isLoading: true,
+          loadingMessage: this.props.lang.loadingWallet
+        });
+      }
+    }
+    if (err.message === 'Activating best chain...') {
+      if (!this.props.initialSetup) {
+        this.props.setLoading({
+          isLoading: true,
+          loadingMessage: this.props.lang.activatingBestChain
+        });
+      }
+    }
+    if (err.code === -28) {
+      if (!this.props.initialSetup) {
+        const loadingMessage = this.props.rescanningLogInfo.peekEnd() != null ?
+          this.props.rescanningLogInfo.peekEnd(): err.message;
+
+        this.props.setLoading({
+          isLoading: true,
+          loadingMessage: `${loadingMessage}`
+        });
+      }
+    }
+    if (err.message === 'Rescanning...') {
+      const rescanningMessage = this.props.rescanningLogInfo.peekEnd();
+      this.props.setLoading({
+        isLoading: true,
+        loadingMessage: `${this.props.lang.rescanning} ${rescanningMessage}`
+      });
+    }
+    if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT')) {
+      this.props.setLoading({
+        isLoading: true,
+        loadingMessage: this.props.lang.rescanning
+      });
+    }
+    if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
+      const errorMessage = this.props.rescanningLogInfo.peekEnd();
+      console.log(errorMessage)
+      this.props.setLoading({
+        isLoading: true,
+        loadingMessage: errorMessage
+      });
+    }
   }
 
 

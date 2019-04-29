@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions/index';
 import {getDebugUri} from '../../utils/platform.service';
 import { Progress, Button, Row, Col } from 'reactstrap';
+import {ipcRenderer} from "electron";
 const event = require('../../utils/eventhandler');
 const fs = require('fs-extra');
 const dialog = require('electron').remote.require('electron').dialog;
@@ -50,7 +51,17 @@ class DaemonErrorComponent extends Component {
   }
 
   renderReIndexWindow() {
-    if(this.props.daemonError === 'Corrupted block database detected.' && this.props.daemonErrorPopup){
+    let needsReindexing = false
+    const captureStrings = [
+      'Corrupted block database detected',
+      'Aborted block database rebuild. Exiting.',
+      'ERROR: VerifyDB():'
+    ];
+
+    if (captureStrings.some((v) => { return this.props.daemonError.indexOf(v) > -1; })) {
+      needsReindexing = true
+    }
+    if(needsReindexing && this.props.daemonErrorPopup){
       return (
         <div>
           <Row style={{textAlign: 'center'}}>
