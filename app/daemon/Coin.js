@@ -527,6 +527,8 @@ class Coin extends Component {
           isLoading: false
         });
       }
+    }).catch((err) => {
+      this.processError(err)
     });
 
     this.props.wallet.getWalletInfo().then(async (data) => {
@@ -676,12 +678,10 @@ class Coin extends Component {
       });
     }
     if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT')) {
-      this.props.setLoading({
-        isLoading: true,
-        loadingMessage: this.props.lang.rescanning
-      });
+      this.props.setDaemonRunning(false);
     }
     if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
+      this.props.setDaemonRunning(false);
       const errorMessage = this.props.rescanningLogInfo.peekEnd();
       console.log(errorMessage)
       this.props.setLoading({

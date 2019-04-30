@@ -229,11 +229,6 @@ export default class Wallet {
     });
   }
 
-  async createNewANSAddress(address, name) {
-    const newAddress = await client.registerANS(address, name);
-    return newAddress;
-  }
-
   async importPrivateKey(key) {
     return await client.ImportPrivKey(key);
   }

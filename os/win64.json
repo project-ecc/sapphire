@@ -1,6 +1,6 @@
 {
   "productName": "Sapphire",
-  "appId": "com.github.csmartinsfct.sapphire",
+  "appId": "com.github.project-ecc.sapphire",
   "files": [
     "./app/dist/",
     "./app/node_modules/",
