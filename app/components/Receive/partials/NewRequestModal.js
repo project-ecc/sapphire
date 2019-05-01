@@ -53,7 +53,7 @@ class NewRequestModal extends Component {
         amount: 0,
       };
       await addAddress(address, true);
-      event.emit('newAddress');
+      event.emit('newAddress', address);
       Toast({
         title: this.props.lang.addressCreatedSuccessfullyTitle,
         message: this.props.lang.addressCreatedSuccessfully,

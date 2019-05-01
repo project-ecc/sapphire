@@ -448,6 +448,20 @@ async function deleteContact(contact) {
   });
 }
 
+async function clearTransactions () {
+  return new Promise(async (resolve, reject) => {
+    let result = await Transaction.destroy({
+      where: {},
+      truncate: true
+    }).then( result => {
+      resolve(result);
+    }).catch(err => {
+      reject(err);
+    });
+
+  })
+}
+
 async function clearDB(){
   return new Promise(async (resolve, reject) => {
 
@@ -498,6 +512,7 @@ export {
   addContact,
   findContact,
   getContacts,
-  deleteContact
+  deleteContact,
+  clearTransactions
 };
 

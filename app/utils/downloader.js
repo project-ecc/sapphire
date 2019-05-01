@@ -2,14 +2,16 @@ const fs = require('fs');
 const request = require('request-promise-native');
 const progress = require('request-progress');
 const checksum = require('checksum');
+const tar = require('tar');
 const extract = require('extract-zip');
+const path = require('path');
 const event = require('../utils/eventhandler');
 /**
  * This function downloads files and can either unzip them or validate them against a checksum value (cs)
  * @param srcUrl
  * @param destFolder
  * @param destFileName
- * @param csgit pull
+ * @param cs
  *
  * @param unzip
  */
@@ -91,12 +93,40 @@ export function downloadFile(srcUrl, destFolder, destFileName, cs = null, unzip 
  * @returns {Promise}
  */
 export function unzipFile(fileToUnzip, targetDirectory, deleteOldZip = false) {
-  return new Promise((resolve, reject) =>{
-    extract(fileToUnzip, { dir: targetDirectory }, (err) => {
-      if (err) {
-        console.log(err);
-        reject(err);
-      } else {
+  return new Promise((resolve, reject) => {
+    let ext = path.extname(fileToUnzip);
+    if(ext === '.zip'){
+      extract(fileToUnzip, { dir: targetDirectory }, (err) => {
+        if (err) {
+          console.log(err);
+          reject(err);
+        } else {
+          //event.emit('unzipping-file', { message: 'Unzipped!' });
+          console.log('unzip successfully.');
+          if(deleteOldZip){
+            if (fs.existsSync(fileToUnzip)) {
+              fs.unlink(fileToUnzip, (deleteFileError) => {
+                if (deleteFileError) {
+                  console.log(deleteFileError);
+                  reject(deleteFileError)
+                } else {
+                  //event.emit('unzipping-file', { message: 'Cleaning up..' });
+                  console.log('File successfully deleted');
+                  resolve(true);
+                }
+              });
+            }
+          }
+          resolve(true);
+        }
+      });
+    } else {
+      tar.x(  // or tar.extract(
+        {
+          file: fileToUnzip,
+          cwd: targetDirectory
+        }
+      ).then(_=> {
         //event.emit('unzipping-file', { message: 'Unzipped!' });
         console.log('unzip successfully.');
         if(deleteOldZip){
@@ -114,8 +144,9 @@ export function unzipFile(fileToUnzip, targetDirectory, deleteOldZip = false) {
           }
         }
         resolve(true);
-      }
-    });
+      })
+    }
+    reject('Should not be here')
   });
 }
 /**
@@ -127,7 +158,7 @@ export function unzipFile(fileToUnzip, targetDirectory, deleteOldZip = false) {
 export function validateChecksum (fileName, toValidateAgainst) {
   return new Promise((resolve, reject) =>{
     //event.emit('verifying-file');
-    checksum.file(fileName, (error, sum) => {
+    checksum.file(fileName, {'algorithm': 'sha256'}, (error, sum) => {
 
       console.log(`checksum from file ${sum}`);
       console.log(`validating against ${toValidateAgainst}`);

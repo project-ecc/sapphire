@@ -5,6 +5,7 @@ import fs from 'fs';
 import {SettingsIcon} from 'mdi-react';
 
 import * as actions from '../../actions/index';
+import {Button} from 'reactstrap';
 import {version} from '../../../package.json';
 import SettingsToggle from './partials/SettingsToggle';
 import Header from '../Others/Header';
@@ -13,6 +14,8 @@ import ActionModal from '../Others/ActionModal';
 
 const settings = require('electron').remote.require('electron-settings');
 const remote = require('electron').remote;
+
+const event = require('../../utils/eventhandler');
 
 const app = remote.app;
 
@@ -28,6 +31,7 @@ class General extends Component {
     this.handleMinimizeToTray = this.handleMinimizeToTray.bind(this);
     this.handleMinimizeOnClose = this.handleMinimizeOnClose.bind(this);
     this.handleHelpFile = this.handleHelpFile.bind(this);
+    this.checkForUpdates = this.checkForUpdates.bind(this);
   }
 
   handleUpdateApplication() {
@@ -35,6 +39,11 @@ class General extends Component {
       return;
     }
     this.props.setUpdateApplication(true);
+  }
+
+  checkForUpdates(){
+    console.log('in here')
+    event.emit('checkForDaemonUpdates');
   }
 
   handleStartAtLogin() {
@@ -153,7 +162,11 @@ class General extends Component {
               <p id="applicationVersion">v{guiVersion}g & v{this.props.daemonVersion}d</p>
             </div>
             <div className="col-sm-6 text-right removePadding">
-              <p onClick={this.handleUpdateApplication.bind(this)} id={this.props.updateAvailable ? 'updateAvailable' : 'updateUnavailable'}>{this.props.updateAvailable ? this.props.lang.installUpdate : this.props.lang.noUpdateAvailable }</p>
+              <p id={this.props.updateAvailable ? 'updateAvailable' : 'updateUnavailable'}>{this.props.updateAvailable ? this.props.lang.installUpdate : this.props.lang.noUpdateAvailable }</p>
+              {this.props.updateAvailable && (
+                <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.handleUpdateApplication()}>{ this.props.lang.accessConsole }</Button>
+              )}
+              <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.checkForUpdates()}>Check for updates</Button>
             </div>
           </div>
           <div className="row settingsToggle" >

@@ -7,6 +7,7 @@ let arch = require('arch');
 let serverUrl = process.env.NODE_ENV === 'production' ? daemonConfig.live_server_address : daemonConfig.dev_server_address;
 
 export function getPlatformFileName() {
+
   if (process.platform === 'linux') {
 
     return arch() === 'x86' ? 'eccoind-linux32' : 'eccoind-linux64';
@@ -19,6 +20,22 @@ export function getPlatformFileName() {
 
     return arch() === 'x86' ? 'eccoind-win32.exe' : 'eccoind-win64.exe';
   }
+
+  // TODO uncomment below when new daemon is read 2.5.15
+
+
+  // if (process.platform === 'linux') {
+  //
+  //   return 'bin/eccoind';
+  //
+  // } else if (process.platform === 'darwin') {
+  //
+  //   return 'bin/eccoind';
+  //
+  // } else if (process.platform.indexOf('win') > -1) {
+  //
+  //   return 'bin/eccoind.exe';
+  // }
 }
 
 export function getDaemonDownloadUrl() {

@@ -29,6 +29,18 @@ class Index extends Component {
       address: null,
       allAddresses: {}
     };
+
+    event.on('reloadAddresses', async() => {
+      await this.loadAddresses()
+    });
+
+    event.on('newAddresses', async(address) => {
+      event.emit('loadAddresses');
+      this.setState({
+        address: address
+      });
+      this.newAddressModal.getWrappedInstance().toggle()
+    });
   }
 
   async componentDidMount() {
@@ -48,7 +60,7 @@ class Index extends Component {
     this.setState({
       address: null
     });
-    this.confirmAddressModal.getWrappedInstance().toggle()
+    this.newAddressModal.getWrappedInstance().toggle()
   }
 
   reloadAddresses(){
@@ -112,7 +124,7 @@ class Index extends Component {
         <UnlockModal ref={(e) => { this.unlockModal = e; }} onUnlock={this.reloadAddresses}>
           <p>{`${this.props.lang.unlockWalletExplanation1} ${this.props.lang.unlockWalletExplanation2}`} <span className="ecc">ECC</span>.</p>
         </UnlockModal>
-        <NewRequestModal ref={(e) => { this.confirmAddressModal = e; }}/>
+        <NewRequestModal ref={(e) => { this.newAddressModal = e; }}/>
         <ReceiveQRModal ref={(e) => { this.ReceiveQRModal = e; }} address={this.state.address}/>
       </div>
     );

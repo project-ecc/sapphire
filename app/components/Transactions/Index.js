@@ -10,6 +10,7 @@ import Body from './../../components/Others/Body';
 
 import $ from 'jquery';
 
+const event = require('../../utils/eventhandler');
 const moment = require('moment');
 
 moment.locale('en');
@@ -31,6 +32,10 @@ class Index extends Component {
       transactionData: props.data,
       isRefreshing: false
     };
+
+    event.on('reloadTransactions', async() => {
+      await getAllTransactions()
+    })
   }
 
   async componentDidMount() {
@@ -88,7 +93,10 @@ class Index extends Component {
     $('#rows').animate({ scrollTop: 0 }, 'fast');
   }
 
+
   async getAllTransactions(page, type = 'all') {
+
+    event.emit('loadTransactions');
     this.setState({
       isRefreshing: true
     });

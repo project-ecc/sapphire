@@ -25,7 +25,7 @@ class Coin extends Component {
     // Cycle bindings
     this.walletCycle = this.walletCycle.bind(this);
     this.blockCycle = this.blockCycle.bind(this);
-    this.transactionCycle = this.transactionCycle.bind(this);
+    this.transactionLoader = this.transactionLoader.bind(this);
     this.addressLoader = this.addressLoader.bind(this);
     this.orderTransactions = this.orderTransactions.bind(this);
     this.stateCheckerInitialStartupCycle = this.stateCheckerInitialStartupCycle.bind(this);
@@ -124,12 +124,11 @@ class Coin extends Component {
 
     // Reload Addresses
     event.on('loadAddresses', async () => {
-      console.log('in here somehow')
       await this.addressLoader();
     });
     // Toggle Staking State
-    event.on('toggleStaking', async () => {
-
+    event.on('loadTransactions', async () => {
+      await this.transactionLoader()
     });
 
     // if there is a loading error we must force all loading to stop
@@ -495,8 +494,7 @@ class Coin extends Component {
 
     // start all the other intervals
     this.setState({
-      blockProcessorInterval: setInterval(() => { this.blockCycle(); }, this.state.blockInterval),
-      transactionProcessorInterval: setInterval(async () => { await this.transactionCycle(); }, this.state.miscInterval)
+      blockProcessorInterval: setInterval(() => { this.blockCycle(); }, this.state.blockInterval)
     });
 
     clearInterval(this.state.walletRunningInterval);
@@ -574,6 +572,7 @@ class Coin extends Component {
         this.props.setIndexingTransactions(true);
       }
       console.log(data);
+      event.emit('reloadAddresses');
     });
   }
 
@@ -583,10 +582,11 @@ class Coin extends Component {
    * algorithm i wrote. this function should not notify the user of previous transactions if they are resyncing the DB.
    * This function should also notify if there is new transactions.
    */
-  async transactionCycle() {
+  async transactionLoader() {
     // compare the latest transaction time stored in memory against the latest 10 transactions.
     const latestTransaction = await getLatestTransaction();
-    this.from = latestTransaction !== null ? latestTransaction.time : 0;
+    console.log(latestTransaction)
+    this.from = latestTransaction != null ? latestTransaction.time : 0;
 
 
     const transactions = await this.props.wallet.getTransactions('*', 10000, 0);
@@ -608,6 +608,8 @@ class Coin extends Component {
       console.log('transactions indexed', this.state.transactionsIndexed);
       await this.loadTransactionsForProcessing();
     }
+    //emit globally to update transaction list
+    event.emit('reloadTransactions');
 
     // check if transactions have been indexed before.
 

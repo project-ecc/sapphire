@@ -54,13 +54,18 @@ class Connector extends Component {
     event.removeListener('stop');
     event.removeListener('updateDaemon');
     event.removeListener('inital_setup');
+    event.removeListener('checkForDaemonUpdates');
+    event.removeListener('inital_setup');
   }
 
   bindListeners() {
+
+    // Start Daemon
     event.on('start', async (args) => {
       await this.startDaemon(args);
     });
 
+    // Stop Daemon
     event.on('stop', async () => {
       await this.stopDaemon((err) => {
         if (err) console.log('error stopping daemon: ', err);
@@ -68,6 +73,12 @@ class Connector extends Component {
       });
     });
 
+    // Check for daemon update
+    event.on('checkForDaemonUpdates', async () =>{
+      await this.getLatestVersion()
+    });
+
+    //Update Daemon
     event.on('updateDaemon', async (restart) => {
       this.setState({
         shouldRestart: restart
@@ -106,17 +117,10 @@ class Connector extends Component {
 
   async initialSetup() {
     const iVersion = await this.checkIfDaemonExists();
-    this.setState({
-      installedVersion: iVersion
-    });
-
-
-    console.log('going to check daemon version');
-    console.log(this.state.installedVersion);
-    let version = this.state.installedVersion === -1 ? this.state.installedVersion : parseInt(this.state.installedVersion.replace(/\D/g, ''));
-    console.log('VERSION INT: ', version);
     const walletFile = await this.checkIfWalletExists();
+
     this.setState({
+      installedVersion: iVersion,
       walletDat: walletFile
     });
 
@@ -125,6 +129,8 @@ class Connector extends Component {
 
     console.log(this.state.currentVersion);
     console.log('got latest version');
+    let version = this.state.installedVersion === -1 ? this.state.installedVersion : parseInt(this.state.installedVersion.replace(/\D/g, ''));
+    console.log('VERSION INT: ', version);
     if (this.state.installedVersion === -1 || version < REQUIRED_DAEMON_VERSION) {
       do {
         try {
@@ -165,7 +171,8 @@ class Connector extends Component {
         } else if (list && list.length == 0) {
           console.log('daemon not running');
           this.props.setDaemonRunning(false);
-          if (!self.state.downloadingDaemon && self.props.daemonErrorPopup !== true) { event.emit('start'); }
+          if (!self.state.downloadingDaemon && self.props.daemonErrorPopup !== true)
+          { event.emit('start'); }
         }
       });
     }
