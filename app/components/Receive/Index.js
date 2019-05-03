@@ -121,7 +121,7 @@ class Index extends Component {
             </div>
           </div>
         </Body>
-        <UnlockModal ref={(e) => { this.unlockModal = e; }} onUnlock={this.reloadAddresses}>
+        <UnlockModal ref={(e) => { this.unlockModal = e; }} onUnlock={this.reloadAddresses} forStaking={false}>
           <p>{`${this.props.lang.unlockWalletExplanation1} ${this.props.lang.unlockWalletExplanation2}`} <span className="ecc">ECC</span>.</p>
         </UnlockModal>
         <NewRequestModal ref={(e) => { this.newAddressModal = e; }}/>

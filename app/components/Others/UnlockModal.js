@@ -44,9 +44,10 @@ class UnlockModal extends Component {
   async unlockWallet() {
     // const updated = await Tools.updateConfig(1);
     // if (updated){
+    let forStaking = this.props.forStaking == true;
     const batch = [];
     const obj = {
-      method: 'walletpassphrase', parameters: [this.state.password, 31556926, true]
+      method: 'walletpassphrase', parameters: [this.state.password, 31556926, forStaking]
     };
     batch.push(obj);
 
