@@ -1,7 +1,7 @@
 import Client from 'eccoin-js';
 import Shell from 'node-powershell';
 import {getPlatformWalletUri} from './platform.service';
-import runExec from './../globals/runExec';
+import {runExec, runExecFile} from './../globals/runExec';
 
 const { exec, spawn } = require('child_process');
 
@@ -314,20 +314,25 @@ export default class Wallet {
     }
   }
 
-  walletstart(rescan = false) {
+  async runWalletWithOptions(path, options){
+    // options = options.join(" ");
     return new Promise(async (resolve, reject) => {
-      let path = getPlatformWalletUri();
       if (process.platform === 'linux' || process.platform === 'darwin') {
-        const cmd = rescan === true ? `chmod +x "${path}" && "${path}" -daemon -reindex` : `chmod +x "${path}" && "${path}" -daemon`;
-        await runExec(cmd, 1000).then(() => {
-          return resolve(true);
-        })
-        .catch((err) => {
-          reject(err);
-        });
+        await runExec(`chmod +x "${path}"`, 1000)
+          .then(() => {
+            runExecFile(path, options).then((data)=>{
+              return resolve(data);
+            }).catch((err)=>{
+              console.log('in here')
+              reject(err);
+            })
+          })
+          .catch((err) => {
+            reject(err);
+          });
       } else if (process.platform.indexOf('win') > -1) {
         // TODO: uncomment this when package is fixed
-        path = rescan === true ? `& start-process "${path}" -ArgumentList "-reindex" -verb runAs -WindowStyle Hidden` : `& start-process "${path}" -verb runAs -WindowStyle Hidden`;
+        path = `& start-process "${path}" -ArgumentList "${options}" -verb runAs -WindowStyle Hidden`;
         // path = `& "${path}" `;
         const ps = new Shell({
           executionPolicy: 'Bypass',
@@ -341,9 +346,42 @@ export default class Wallet {
           .catch(err => {
             console.log(err);
             ps.dispose();
-            return reject(false);
+            return reject(err);
           });
       }
+    });
+  }
+
+  walletstart(rescan = false) {
+    console.log('in wallet start');
+    return new Promise(async (resolve, reject) => {
+      let options = [];
+      options.push('-daemon');
+      if(rescan == true){
+        options.push('-reindex');
+      }
+      let path = getPlatformWalletUri();
+      this.runWalletWithOptions(path, options).then(()=>{
+        resolve(true);
+      }).catch((err)=>{
+        reject(err)
+      })
+    });
+  }
+
+  getWalletVersion(){
+    return new Promise(async (resolve, reject) => {
+      let path = getPlatformWalletUri();
+      this.runWalletWithOptions(path, ['-version']).then((data)=>{
+        // Eccoind version v0.2.5.15-06804e7
+        let firstLine = data.split(/\r?\n/)[0];
+        let splitOnSpace = firstLine.split(" ")[2];
+        let cleaned = splitOnSpace.split("-")[0];
+        // this will return vxx.xx.xx.xx IE v0.2.5.15
+        resolve(cleaned);
+      }).catch((err)=>{
+        reject(err)
+      })
     });
   }
 }

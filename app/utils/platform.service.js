@@ -8,34 +8,34 @@ let serverUrl = process.env.NODE_ENV === 'production' ? daemonConfig.live_server
 
 export function getPlatformFileName() {
 
-  if (process.platform === 'linux') {
-
-    return arch() === 'x86' ? 'eccoind-linux32' : 'eccoind-linux64';
-
-  } else if (process.platform === 'darwin') {
-
-    return 'Eccoind.app';
-
-  } else if (process.platform.indexOf('win') > -1) {
-
-    return arch() === 'x86' ? 'eccoind-win32.exe' : 'eccoind-win64.exe';
-  }
+  // if (process.platform === 'linux') {
+  //
+  //   return arch() === 'x86' ? 'eccoind-linux32' : 'eccoind-linux64';
+  //
+  // } else if (process.platform === 'darwin') {
+  //
+  //   return 'Eccoind.app';
+  //
+  // } else if (process.platform.indexOf('win') > -1) {
+  //
+  //   return arch() === 'x86' ? 'eccoind-win32.exe' : 'eccoind-win64.exe';
+  // }
 
   // TODO uncomment below when new daemon is read 2.5.15
 
 
-  // if (process.platform === 'linux') {
-  //
-  //   return 'bin/eccoind';
-  //
-  // } else if (process.platform === 'darwin') {
-  //
-  //   return 'bin/eccoind';
-  //
-  // } else if (process.platform.indexOf('win') > -1) {
-  //
-  //   return 'bin/eccoind.exe';
-  // }
+  if (process.platform === 'linux') {
+
+    return 'bin/eccoind';
+
+  } else if (process.platform === 'darwin') {
+
+    return 'bin/eccoind';
+
+  } else if (process.platform.indexOf('win') > -1) {
+
+    return 'bin/eccoind.exe';
+  }
 }
 
 export function getDaemonDownloadUrl() {
@@ -124,7 +124,7 @@ export function getPlatformWalletUri() {
     return `${grabWalletDir()}${getPlatformFileName()}`;
   } else if (process.platform === 'darwin') {
     // OSX
-    return `${grabWalletDir()}${getPlatformFileName()}/Contents/MacOS/eccoind`;
+    return `${grabWalletDir()}${getPlatformFileName()}`;
   } else if (process.platform.indexOf('win') > -1) {
     // Windows
     return `${grabWalletDir()}${getPlatformFileName()}`;

@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
-import {getDaemonDownloadUrl, getPlatformWalletUri, grabEccoinDir, grabWalletDir} from '../utils/platform.service';
+import {
+  getDaemonDownloadUrl, getPlatformWalletUri, grabEccoinDir,
+  grabWalletDir
+} from '../utils/platform.service';
 import * as actions from '../actions/index';
 
 import ConnectorNews from './News';
@@ -10,7 +13,6 @@ import ConnectorMarket from './Market';
 import Tools from '../utils/tools';
 import {downloadFile} from '../utils/downloader';
 
-const arch = require('arch');
 const find = require('find-process');
 const request = require('request-promise-native');
 const fs = require('fs');
@@ -19,17 +21,11 @@ const settings = require('electron-settings');
 // const zmq = require('zeromq');
 // const socket = zmq.socket('sub');
 
-const REQUIRED_DAEMON_VERSION = 2511;
+const REQUIRED_DAEMON_VERSION = 2515;
 
 class Connector extends Component {
   constructor(props) {
     super(props);
-
-    this.path = `${grabWalletDir()}`;
-    this.versionPath = `${grabWalletDir()}wallet-version.txt`;
-    this.arch = arch();
-    this.os = process.platform;
-    this.arch = process.arch;
 
     this.state = {
       interval: 5000,
@@ -118,7 +114,7 @@ class Connector extends Component {
   async initialSetup() {
     const iVersion = await this.checkIfDaemonExists();
     const walletFile = await this.checkIfWalletExists();
-
+    console.log(iVersion)
     this.setState({
       installedVersion: iVersion,
       walletDat: walletFile
@@ -197,20 +193,12 @@ class Connector extends Component {
   async checkIfDaemonExists() {
     if (fs.existsSync(getPlatformWalletUri())) {
       try {
-        const data = fs.readFileSync(this.versionPath, 'utf8');
-        console.log('daemon exists, version: ', data);
-        if (data.indexOf('version') > -1) {
-          return data.replace('version', ' ').trim();
-        }
-
-        return data;
+        let version = await this.props.wallet.getWalletVersion();
+        return version;
       } catch (e) {
-        console.log('daemon.txt does not exist');
+        console.log('daemon does not exist', e);
         return -1;
       }
-    }	else if (!fs.existsSync(this.path) && fs.mkdirSync(this.path)) {
-      console.log('daemon does not exist');
-      return -1;
     }
     return -1;
   }
@@ -250,38 +238,42 @@ class Connector extends Component {
 
 
   async getLatestVersion() {
-    console.log('checking for latest daemon version');
-    let failCounter = 0;
-    const daemonDownloadURL = getDaemonDownloadUrl();
-    const self = this;
-    // download latest daemon info from server
-    const opts = {
-      url: daemonDownloadURL
-    };
+    return new Promise(async (resolve, reject) => {
+      console.log('checking for latest daemon version');
+      let failCounter = 0;
+      const daemonDownloadURL = getDaemonDownloadUrl();
+      const self = this;
+      // download latest daemon info from server
+      const opts = {
+        url: daemonDownloadURL
+      };
 
-    request(opts).then(async (data) => {
-      if (data) {
-        const parsed = JSON.parse(data);
-        this.setState({
-          currentVersion: parsed.versions[0].name
-        });
-        console.log(this.state.currentVersion);
-        if (this.state.currentVersion === -1) {
-          if (failCounter < 3) {
-            console.log("in here");
-            await self.getLatestVersion();
+      await request(opts).then(async (data) => {
+        if (data) {
+          const parsed = JSON.parse(data);
+          this.setState({
+            currentVersion: parsed.versions[0].name
+          });
+          console.log(this.state.currentVersion);
+          if (this.state.currentVersion === -1) {
+            if (failCounter < 3) {
+              console.log("in here");
+              await self.getLatestVersion();
+            } else {
+              event.emit('download-error', { message: 'Error Checking for latest version' });
+            }
+            failCounter += 1;
           } else {
-            event.emit('download-error', { message: 'Error Checking for latest version' });
+            self.checkForUpdates();
+            resolve(true)
           }
-          failCounter += 1;
-        } else {
-          self.checkForUpdates();
         }
-      }
-    }).catch(error => {
-      console.log(error.message);
-      failCounter += 1;
+      }).catch(error => {
+        console.log(error.message);
+        failCounter += 1;
+      });
     });
+
   }
 
 
@@ -343,14 +335,6 @@ class Connector extends Component {
         reject(error);
       });
     });
-  }
-
-
-  async saveVersion(version) {
-    console.log(this.versionPath);
-    console.log(`version${version}`);
-    const writer = fs.createWriteStream(this.versionPath);
-    writer.write(version.toString());
   }
 
   /**

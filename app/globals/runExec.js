@@ -1,16 +1,30 @@
-const { exec } = require('child_process');
+const { exec, execFile } = require('child_process');
 
-export default async function runExec(cmd, timeout) {
-  return new Promise((resolve, reject) => {
-    exec(cmd, (error, stdout, stderr) => {
+export async function runExec(cmd, timeout) {
+  return new Promise(async(resolve, reject) => {
+    await exec(cmd,{timeout: timeout}, (error, stdout, stderr) => {
       if (error) {
         reject(error);
       } else {
-        resolve('program exited without an error');
+        resolve(stdout);
       }
+      // console.log(`stdout: ${stdout}`);
+      // console.log(`stderr: ${stderr}`);
     });
-    setTimeout(() => {
-      resolve('program still running');
-    }, timeout);
+  });
+}
+
+export async function runExecFile(cmd, args, timeout) {
+  return new Promise(async(resolve, reject) => {
+    await execFile(cmd, args, {timeout: timeout}, (error, stdout, stderr) => {
+      if (error && stderr) {
+        console.log(error)
+        reject(error);
+      } else {
+        resolve(stdout);
+      }
+      // console.log(`stdout: ${stdout}`);
+      // console.log(`stderr: ${stderr}`);
+    });
   });
 }
