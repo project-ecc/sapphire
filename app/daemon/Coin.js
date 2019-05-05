@@ -87,6 +87,22 @@ class Coin extends Component {
 
   async stateCheckerInitialStartupCycle() {
     this.props.wallet.getInfo().then(async (data) => {
+
+      // process block height in here.
+      let syncedPercentage = (data.blocks * 100) / data.headers;
+      syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
+
+      this.setState({
+        currentHighestBlock: data.blocks,
+        currentHighestHeader: data.headers,
+      });
+
+      // mutate redux data with data from the system.
+      this.props.updatePaymentChainSync(data.blocks === 0 || data.headers === 0 ? 0 : syncedPercentage);
+      this.props.setDaemonVersion(tools.formatVersion(data.version));
+      this.props.chainInfo(data);
+      this.props.walletInfo(data);
+
       console.log(data);
       if (!data.encrypted) {
         this.props.setUnencryptedWallet(true);
@@ -679,8 +695,15 @@ class Coin extends Component {
         loadingMessage: `${this.props.lang.rescanning} ${rescanningMessage}`
       });
     }
-    if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT')) {
-      this.props.setDaemonRunning(false);
+    if ((err.code === 401)) {
+      this.props.setLoading({
+        isLoading: true,
+        loadingMessage: err.message
+      });
+    }
+    if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT' || err.body === 'Work queue depth exceeded')) {
+      clearInterval(this.state.checkStartupStatusInterval);
+      clearInterval(this.state.blockInterval);
     }
     if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
       this.props.setDaemonRunning(false);

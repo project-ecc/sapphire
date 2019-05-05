@@ -62,10 +62,13 @@ class Connector extends Component {
     });
 
     // Stop Daemon
-    event.on('stop', async () => {
+    event.on('stop', async (restart) => {
       await this.stopDaemon((err) => {
         if (err) console.log('error stopping daemon: ', err);
         console.log('stopped daemon');
+        if(restart){
+          event.emit('start')
+        }
       });
     });
 
