@@ -260,7 +260,8 @@
     "sqlite3": "^4.0.6",
     "tail": "^1.4.0",
     "tar": "^4.4.8",
-    "twemoji-awesome": "^1.0.6"
+    "twemoji-awesome": "^1.0.6",
+    "zeromq": "^5.1.0"
   },
   "devEngines": {
     "node": ">=8.x",

@@ -25,6 +25,7 @@ class Coin extends Component {
     // Cycle bindings
     this.walletCycle = this.walletCycle.bind(this);
     this.blockCycle = this.blockCycle.bind(this);
+    this.coinCycle = this.coinCycle.bind(this);
     this.transactionLoader = this.transactionLoader.bind(this);
     this.addressLoader = this.addressLoader.bind(this);
     this.orderTransactions = this.orderTransactions.bind(this);
@@ -38,6 +39,7 @@ class Coin extends Component {
     this.state = {
       miscInterval: 15000,
       blockInterval: 5000,
+      coinInterval: 30000,
       latestBlockTime: 0,
       currentHighestBlock: 0,
       currentHighestHeader: 0,
@@ -46,6 +48,7 @@ class Coin extends Component {
       walletRunningInterval: null,
       checkStartupStatusInterval: null,
       blockProcessorInterval: null,
+      coinCycleInterval: null,
       coinMarketCapInterval: null,
       transactionProcessorInterval: null,
       addressProcessorInterval: null,
@@ -53,7 +56,6 @@ class Coin extends Component {
       lastTransactionTime: 0,
       transactionsToRequest: 4000,
       shouldRequestMoreTransactions: false,
-      running: false,
       firstRun: false,
       transactionsPage: 0,
       isIndexingTransactions: false
@@ -86,6 +88,7 @@ class Coin extends Component {
   }
 
   async stateCheckerInitialStartupCycle() {
+
     this.props.wallet.getInfo().then(async (data) => {
 
       // process block height in here.
@@ -114,18 +117,15 @@ class Coin extends Component {
         this.props.setUpdatingApplication(true);
       }
 
-      if (!this.state.running) {
+      if (this.props.daemonRunning) {
         await db.sequelize.sync();
-        this.setState({
-          running: true
-        });
         clearInterval(this.state.checkStartupStatusInterval);
         await this.startCycles();
       }
     })
-      .catch((err) => {
-        this.processError(err)
-      });
+    .catch((err) => {
+      this.processError(err)
+    });
   }
   /**
    * Subscribe the daemon to manager events
@@ -182,12 +182,10 @@ class Coin extends Component {
     this.listenForDownloadEvents();
     event.on('runMainCycle', async () => {
       console.log('run main cycle');
-      if (!this.state.running) {
-        this.setState({
-          firstRun: true
-        });
-        await this.startCycles();
-      }
+      this.setState({
+        firstRun: true
+      });
+      await this.startCycles();
     });
   }
 
@@ -254,8 +252,7 @@ class Coin extends Component {
   async startCycles() {
     // we can starting syncing the block data with redux now
     this.setState({
-      walletRunningInterval: setInterval(async () => { await this.walletCycle(); }, this.state.blockInterval),
-      running: true
+      walletRunningInterval: setInterval(async () => { await this.walletCycle(); }, this.state.blockInterval)
     });
   }
   async loadTransactionsForProcessing() {
@@ -471,7 +468,6 @@ class Coin extends Component {
     });
   }
 
-
   /**
    * Notification based stuff, should be moved into its own file maybe?
    * @param callback
@@ -510,7 +506,8 @@ class Coin extends Component {
 
     // start all the other intervals
     this.setState({
-      blockProcessorInterval: setInterval(() => { this.blockCycle(); }, this.state.blockInterval)
+      blockProcessorInterval: setInterval(() => { this.blockCycle(); }, this.state.blockInterval),
+      coinCycleInterval: setInterval(async () => { await this.coinCycle(); }, this.state.coinInterval)
     });
 
     clearInterval(this.state.walletRunningInterval);
@@ -520,6 +517,25 @@ class Coin extends Component {
    * This function should update the block height and sync percentage and should trigger the confirmations cycle.
    */
   blockCycle() {
+    this.props.wallet.getBlockChainInfo().then(async (data) => {
+      // process block height in here.
+      let syncedPercentage = (data.blocks * 100) / data.headers;
+      syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
+
+      this.setState({
+        currentHighestBlock: data.blocks,
+        currentHighestHeader: data.headers,
+      });
+
+      // mutate redux data with data from the system.
+      this.props.updatePaymentChainSync(data.blocks === 0 || data.headers === 0 ? 0 : syncedPercentage);
+    })
+    .catch((err) => {
+      this.processError(err)
+    });
+  }
+
+  coinCycle() {
     this.props.wallet.getInfo().then(async (data) => {
       // process block height in here.
       let syncedPercentage = (data.blocks * 100) / data.headers;
@@ -553,7 +569,6 @@ class Coin extends Component {
     });
   }
 
-
   /**
    * This function should check all addresses to see if their balance has changed and update confirmations for
    * addresses, at the same time this should check if the address has a registered ans name not in the database
@@ -583,7 +598,7 @@ class Coin extends Component {
       // }
       // We need to have the addresses loaded to be able to index transactions
       // this.currentAddresses = normalAddresses;
-      if (!this.transactionsIndexed && this.firstRun && this.currentAddresses.length > 0 && !this.state.isIndexingTransactions) {
+      if (!this.transactionsIndexed && this.firstRun && this.props.userAddresses.length > 0 && !this.state.isIndexingTransactions) {
         await this.loadTransactionsForProcessing();
         this.props.setIndexingTransactions(true);
       }
@@ -623,14 +638,12 @@ class Coin extends Component {
     if (this.state.transactionsIndexed === false) {
       console.log('transactions indexed', this.state.transactionsIndexed);
       await this.loadTransactionsForProcessing();
+
+    } else{
+      await this.updateConfirmations();
     }
     //emit globally to update transaction list
     event.emit('reloadTransactions');
-
-    // check if transactions have been indexed before.
-
-    // if they havent been indexed before run the indexing process, and popup a loading module to the user
-
 
     // index transactions and calculate staking reward, once complete destroy this cycle.
   }
@@ -640,10 +653,10 @@ class Coin extends Component {
    * stored Transations this should be coded in a way it doesnt interupt the UI and should replace the in memory
    * transactions when its done. SHOULD NOT BE CALLED WHEN USER IS USING A TRANSACTION FILTER.
    */
-  confirmationsCycle() {
+  updateConfirmations() {
     getAllTransactions()
       .then(async (transactionData) => {
-        const walletTransactions = await this.wallet.getTransactions('*', transactionData.length, 0);
+        const walletTransactions = await this.props.wallet.getTransactions('*', transactionData.length, 0);
         await Promise.all(walletTransactions.map(async (transactions) => {
           try {
             return await updateTransactionsConfirmations(transactions.txid, transactions.confirmations);
@@ -707,6 +720,9 @@ class Coin extends Component {
     }
     if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
       this.props.setDaemonRunning(false);
+      this.setState({
+        running: false
+      });
       const errorMessage = this.props.rescanningLogInfo.peekEnd();
       console.log(errorMessage)
       this.props.setLoading({
@@ -732,7 +748,8 @@ const mapStateToProps = state => {
     daemonUpdate: state.startup.daemonUpdate,
     notifications: state.notifications,
     rescanningLogInfo: state.application.debugLog,
-    daemonRunning: state.application.daemonRunning
+    daemonRunning: state.application.daemonRunning,
+    userAddresses: state.application.userAddresses
   };
 };
 
