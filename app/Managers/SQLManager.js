@@ -280,11 +280,11 @@ async function addAddress(address, belongsToMe = false){
     await Address
       .findOrCreate({
         where: {
-          address: address.address
+          address: address
         },
         defaults: {
-          current_balance: address.amount,
-          address: address.address,
+          current_balance: 0,
+          address: address,
           is_mine: belongsToMe
         }
       })

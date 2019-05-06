@@ -6,7 +6,6 @@ import * as actions from '../actions/index';
 import {
   addAddress,
   addTransaction,
-  clearDB,
   getAllMyAddresses,
   getAllRewardTransactions,
   getAllTransactions,
@@ -576,18 +575,14 @@ class Coin extends Component {
    */
   async addressLoader() {
     this.props.wallet.listAddresses().then(async (data) => {
-      console.log(data);
+
+      this.props.setLoading({
+        isLoading: true,
+        loadingMessage: 'Loading Addresses...'
+      });
+
       let addresses = data;
 
-      // if my current database addresses are not all in the addresses returned from the daemon,
-      const myAddresses = await getAllMyAddresses();
-
-      if (myAddresses.length > addresses.length) {
-        await clearDB();
-        console.log('in here');
-      }
-
-      // if(normalAddresses.length > this.currentAddresses.length) {
       for (const [index, address] of addresses.entries()) {
         // handle the response
         const addressObj = await addAddress(address, true);
@@ -602,8 +597,14 @@ class Coin extends Component {
         await this.loadTransactionsForProcessing();
         this.props.setIndexingTransactions(true);
       }
-      console.log(data);
+
+
+      this.props.setLoading({
+        isLoading: false
+      });
       event.emit('reloadAddresses');
+    }).catch((err) => {
+      this.processError(err)
     });
   }
 
@@ -614,6 +615,10 @@ class Coin extends Component {
    * This function should also notify if there is new transactions.
    */
   async transactionLoader() {
+    this.props.setLoading({
+      isLoading: true,
+      loadingMessage: 'Loading Transactions... '
+    });
     // compare the latest transaction time stored in memory against the latest 10 transactions.
     const latestTransaction = await getLatestTransaction();
     console.log(latestTransaction)
@@ -640,9 +645,16 @@ class Coin extends Component {
       await this.loadTransactionsForProcessing();
 
     } else{
+      this.props.setLoading({
+        isLoading: true,
+        loadingMessage: 'Updating confirmations!'
+      });
       await this.updateConfirmations();
     }
     //emit globally to update transaction list
+    this.props.setLoading({
+      isLoading: false
+    });
     event.emit('reloadTransactions');
 
     // index transactions and calculate staking reward, once complete destroy this cycle.
@@ -653,8 +665,8 @@ class Coin extends Component {
    * stored Transations this should be coded in a way it doesnt interupt the UI and should replace the in memory
    * transactions when its done. SHOULD NOT BE CALLED WHEN USER IS USING A TRANSACTION FILTER.
    */
-  updateConfirmations() {
-    getAllTransactions()
+  async updateConfirmations() {
+    await getAllTransactions()
       .then(async (transactionData) => {
         const walletTransactions = await this.props.wallet.getTransactions('*', transactionData.length, 0);
         await Promise.all(walletTransactions.map(async (transactions) => {

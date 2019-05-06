@@ -44,6 +44,7 @@ class Index extends Component {
   }
 
   async componentDidMount() {
+    this.unlockModal.getWrappedInstance().toggle();
     await this.loadAddresses();
   }
 
@@ -122,7 +123,7 @@ class Index extends Component {
           </div>
         </Body>
         <UnlockModal ref={(e) => { this.unlockModal = e; }} onUnlock={this.reloadAddresses} forStaking={false}>
-          <p>{`${this.props.lang.unlockWalletExplanation1} ${this.props.lang.unlockWalletExplanation2}`} <span className="ecc">ECC</span>.</p>
+          <p> Please unlock your wallet to update your address list to receive <span className="ecc">ECC</span>.</p>
         </UnlockModal>
         <NewRequestModal ref={(e) => { this.newAddressModal = e; }}/>
         <ReceiveQRModal ref={(e) => { this.ReceiveQRModal = e; }} address={this.state.address}/>

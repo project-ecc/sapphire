@@ -48,12 +48,8 @@ class NewRequestModal extends Component {
     const vm = this;
     this.props.wallet.createNewAddress().then(async (newAddress) => {
       console.log(newAddress);
-      const address = {
-        address: newAddress,
-        amount: 0,
-      };
-      await addAddress(address, true);
-      event.emit('newAddress', address);
+      await addAddress(newAddress, true);
+      event.emit('newAddress', newAddress);
       Toast({
         title: this.props.lang.addressCreatedSuccessfullyTitle,
         message: this.props.lang.addressCreatedSuccessfully,
@@ -71,7 +67,6 @@ class NewRequestModal extends Component {
 
 
   async handleConfirm() {
-    console.log('created address', this.state.createdAddress);
 
     this.createNormalAddress();
 
