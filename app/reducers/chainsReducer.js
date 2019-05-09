@@ -1,9 +1,9 @@
 import {
-  BLOCK_INDEX_PAYMENT,
-  CHAIN_INFO,
+  BLOCK_INDEX_PAYMENT, BLOCKS_AND_HEADERS,
+  CHAIN_INFO, INITIAL_BLOCK_DOWNLOAD,
   PAYMENT_CHAIN_SYNC,
   SET_DAEMON_VERSION,
-  SET_TEMPORARY_BALANCE,
+  SET_TEMPORARY_BALANCE, SIZE_ON_DISK,
   STAKING,
   TRANSACTIONS_DATA,
   TRANSACTIONS_TYPE,
@@ -12,7 +12,7 @@ import {
 } from '../actions/types';
 
 
-const INITIAL_STATE = {paymentChainSync: 0, loadingBlockIndexPayment: false, blockPayment: 0, headersPayment:0, connectionsPayment: 0, isStaking: false, stakingConfig: false, staking: 0, balance: 0, transactionsData: [], connections: 0, transactionsType: "all", unconfirmedBalance: 0, daemonVersion: '', newMint: 0, immatureBalance: 0 };
+const INITIAL_STATE = {paymentChainSync: 0, loadingBlockIndexPayment: false, blockPayment: 0, headersPayment:0, connectionsPayment: 0, isStaking: false, stakingConfig: false, staking: 0, balance: 0, transactionsData: [], connections: 0, transactionsType: "all", unconfirmedBalance: 0, daemonVersion: '', newMint: 0, immatureBalance: 0, initialDownload: false, sizeOnDisk: 0 };
 
 export default(state = INITIAL_STATE, action) => {
    if(action.type == BLOCK_INDEX_PAYMENT){
@@ -30,6 +30,15 @@ export default(state = INITIAL_STATE, action) => {
 	else if(action.type == CHAIN_INFO){
 		return {...state, stakingConfig: action.payload.staking, isStaking: (action.payload.staking === true && action.payload.unlocked_until > 0), connections: action.payload.connections, blockPayment: action.payload.blocks, headersPayment: action.payload.headers, connectionsPayment: action.payload.connections}
 	}
+	else if(action.type == SIZE_ON_DISK) {
+	  return {...state, sizeOnDisk: action.payload}
+	}
+	else if(action.type == INITIAL_BLOCK_DOWNLOAD) {
+    return {...state, initialDownload: action.payload}
+  }
+  else if(action.type == BLOCKS_AND_HEADERS){
+    return {...state, blockPayment: action.payload.blocks, headersPayment: action.payload.headers}
+  }
 	else if(action.type == WALLET_INFO){
 		return {...state, balance: action.payload.balance, newMint: action.payload.newmint, staking: action.payload.stake}
 	}

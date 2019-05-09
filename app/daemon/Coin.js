@@ -528,6 +528,12 @@ class Coin extends Component {
 
       // mutate redux data with data from the system.
       this.props.updatePaymentChainSync(data.blocks === 0 || data.headers === 0 ? 0 : syncedPercentage);
+      this.props.setBlocksAndHeaders({
+        blocks: data.blocks,
+        headers: data.headers
+      });
+      this.props.setInitialBlockDownload(data.initialblockdownload);
+      this.props.setSizeOnDisk(data.size_on_disk);
     })
     .catch((err) => {
       this.processError(err)

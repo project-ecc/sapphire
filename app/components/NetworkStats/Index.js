@@ -61,6 +61,7 @@ class Index extends Component {
         </div>
         <p style={{fontSize:"14px", marginTop:"15px"}}>{ this.props.lang.headers }: <span style={{fontSize:"16px"}}>{headers}</span></p>
         <p style={{fontSize:"14px", marginTop:"15px"}}>{ this.props.lang.block } <span style={{fontSize:"16px"}}>{block}</span> { this.props.lang.of } <span style={{fontSize:"16px"}}>{headers}</span></p>
+        <p style={{fontSize:"14px", marginTop:"15px"}}>Size:<span style={{fontSize:"16px"}}>{Tools.formatBytes(this.props.sizeOnDisk)}</span></p>
       </div>
     )
   }
@@ -91,7 +92,8 @@ const mapStateToProps = state => {
     connectionsPayment: state.chains.connectionsPayment,
     blockPaymentChain: state.chains.blockPayment,
     headersPaymentChain: state.chains.headersPayment,
-    theme: state.application.theme
+    theme: state.application.theme,
+    sizeOnDisk: state.chains.sizeOnDisk
   };
 };
 

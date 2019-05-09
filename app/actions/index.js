@@ -55,7 +55,10 @@ import {
   USER_ADDRESSES,
   WALLET_INFO,
   WALLET_INFO_SEC,
-  WAS_STAKING
+  WAS_STAKING,
+  INITIAL_BLOCK_DOWNLOAD,
+  BLOCKS_AND_HEADERS,
+  SIZE_ON_DISK
 } from './types';
 
 export const setWalletCredentials = (args) => {
@@ -95,6 +98,27 @@ export const updatePaymentChainSync = (percentage) => {
     payload: percentage
   };
 };
+
+export const setInitialBlockDownload = (value) => {
+  return {
+    type: INITIAL_BLOCK_DOWNLOAD,
+    payload: value
+  };
+};
+
+export const setBlocksAndHeaders = (val) => {
+  return {
+    type: BLOCKS_AND_HEADERS,
+    payload: { blocks: val.blocks, headers: val.headers}
+  };
+};
+
+export const setSizeOnDisk = (val) => {
+  return {
+    type : SIZE_ON_DISK,
+    payload: val
+  }
+}
 
 export const updateBlockIndexPayment = (value) => {
   return	{
