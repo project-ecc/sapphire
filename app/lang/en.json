@@ -48,6 +48,7 @@
     "failedSapphireInfo": "Something went wrong exporting the file",
     "sapphireInfoDesc": "Click on Generate to make a log file that can help Sapphire developers track down the issues you are experiencing. Use only if requested to",
     "dismiss": "Dismiss",
+    "retry"  : "Retry",
     "exportPrivKeyDesc": "Please choose a method for exporting your private keys. You can either view them individually on-screen, or export them all at once to a PDF.",
     "viewOnScreen": "View On-screen",
     "exportToPdf": "Export to PDF",

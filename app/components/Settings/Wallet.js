@@ -12,6 +12,7 @@ import UnencryptedWalletPartial from './cards/UnencryptedWalletCard'
 
 import Header from '../Others/Header';
 import Body from '../Others/Body';
+import UnlockModal from "../Others/UnlockModal";
 
 const remote = require('electron').remote;
 const dialog = remote.require('electron').dialog;
@@ -20,6 +21,7 @@ class Wallet extends Component {
   constructor(props) {
     super(props);
 
+    this.unlockForPrivateKeys = this.unlockForPrivateKeys.bind(this);
     this.onClickBackupLocation = this.onClickBackupLocation.bind(this);
     this.handleExportPrivateKeys = this.handleExportPrivateKeys.bind(this);
     this.handleChangePasswordClicked = this.handleChangePasswordClicked.bind(this);
@@ -71,7 +73,11 @@ class Wallet extends Component {
   }
 
   handleExportPrivateKeys(){
-    this.modal.getWrappedInstance().toggle();
+    this.exportPrivateKeysModel.getWrappedInstance().toggle();
+  }
+
+  unlockForPrivateKeys(){
+    this.unlockModal.getWrappedInstance().toggle();
   }
 
   handleChangePasswordClicked(){
@@ -100,7 +106,7 @@ class Wallet extends Component {
               { this.props.lang.backup } wallet.dat
               <CloudUploadIcon className="ml-2" />
             </Button>
-            <Button onClick={this.handleExportPrivateKeys} color="warning" className="ml-3" disabled={this.props.unencryptedWallet}>
+            <Button onClick={this.unlockForPrivateKeys} color="warning" className="ml-3" disabled={this.props.unencryptedWallet}>
               { this.props.lang.exportPrivateKeys }
               <FileExportIcon className="ml-2" />
             </Button>
@@ -127,8 +133,10 @@ class Wallet extends Component {
             </div>
           </div>
         </Body>
-
-        <ExportPrivateKeysModal ref={(e) => { this.modal = e; }} />
+        <UnlockModal ref={(e) => { this.unlockModal = e; }} onUnlock={() => { this.handleExportPrivateKeys() }} forStaking={false}>
+          <p> Please unlock your wallet to export your private keys</p>
+        </UnlockModal>
+        <ExportPrivateKeysModal ref={(e) => { this.exportPrivateKeysModel = e; }} />
         <ChangePasswordModal ref={(e) => { this.passwordModal = e; }} />
         <ImportPrivateKeysModal ref={(e) => { this.importKeysModal = e; }} />
       </div>

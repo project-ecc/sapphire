@@ -10,6 +10,7 @@ class FullscreenModal extends Component {
   constructor(props) {
     super(props);
     this.handleDismissUpdateFailed = this.handleDismissUpdateFailed.bind(this);
+    this.retryDownload = this.retryDownload.bind(this);
   }
 
   handleDismissUpdateFailed() {
@@ -22,6 +23,10 @@ class FullscreenModal extends Component {
     }
   }
 
+  retryDownload() {
+    event.emit('downloadDaemon');
+  }
+
   render() {
     return (
       <Modal isOpen className="fullscreenModal">
@@ -31,6 +36,7 @@ class FullscreenModal extends Component {
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={this.handleDismissUpdateFailed}>{ this.props.lang.dismiss }</Button>
+          <Button color="primary" onClick={this.retryDownload}>{ this.props.lang.retry }</Button>
         </ModalFooter>
       </Modal>
     );

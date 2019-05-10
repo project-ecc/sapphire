@@ -17,7 +17,6 @@ class News extends Component {
     super(props);
 
     this.newsFeedCycle = this.newsFeedCycle.bind(this);
-    this.donationGoalsCycle = this.donationGoalsCycle.bind(this);
     this.startCycle = this.startCycle.bind(this);
     this.queueOrSendNotification = this.queueOrSendNotification.bind(this);
 
@@ -45,7 +44,6 @@ class News extends Component {
   async startCycle() {
     // Fetch the news first.. then start the interval for checking every x milliseconds
     await this.newsFeedCycle();
-    await this.donationGoalsCycle();
 
     this.setState({
       eccNewsTimer: setInterval(async () => {
@@ -53,7 +51,6 @@ class News extends Component {
       }, this.state.eccNewsInterval),
 
       goalTimer: setInterval(async () => {
-        await this.donationGoalsCycle();
       }, this.state.goalInterval)
     });
   }
@@ -120,30 +117,6 @@ class News extends Component {
         }
       });
       res.pipe(parser);
-    });
-  }
-
-  donationGoalsCycle() {
-    return new Promise((resolve, reject) => {
-      const options = {
-        url: 'https://ecc.network/api/v1/donation_goals',
-      };
-
-      request(options, (error, response, body) => {
-        if (!error && response.statusCode == 200) {
-          const json = JSON.parse(body);
-          console.log(json);
-
-          this.props.setDonationGoals({
-            goals: json.goals,
-            lastUpdated: moment().unix()
-          });
-          resolve(true);
-        }
-        else {
-          reject();
-        }
-      });
     });
   }
 

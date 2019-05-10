@@ -63,19 +63,19 @@ export function downloadFile(srcUrl, destFolder, destFileName, cs = null, unzip 
       .on('end', async () => {
         event.emit('downloaded-file');
         try {
-          //event.emit('verifying-file');
+          event.emit('verifying-file');
           if (cs !== null) {
             const validated = await validateChecksum(fileName, cs);
             if (!validated) reject(validated);
           }
-          //event.emit('verifying-file');
-          //event.emit('unzipping-file', { message: 'Unzipping..' });
+          event.emit('verifying-file');
+          event.emit('unzipping-file', { message: 'Unzipping..' });
           if(unzip) {
             const unzipped = await unzipFile(fileName, destFolder, true);
             if(!unzipped) reject(unzipped);
           }
-          //event.emit('unzipping-file', { message: 'Unzip Complete' });
-          //event.emit('file-download-complete');
+          event.emit('unzipping-file', { message: 'Unzip Complete' });
+          event.emit('file-download-complete');
           resolve(true);
         } catch (e){
           reject(e)

@@ -79,7 +79,7 @@ class NewRequestModal extends Component {
     if(this.props.address !== null){
       return (
         <div>
-          <p>{this.props.address}</p>
+          <p style={{userSelect:'all'}}>{this.props.address}</p>
           <Input
             placeholder="Amount"
             value={this.state.amount}

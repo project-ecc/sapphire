@@ -12,6 +12,7 @@ import ConnectorCoin from './Coin';
 import ConnectorMarket from './Market';
 import Tools from '../utils/tools';
 import {downloadFile} from '../utils/downloader';
+import {ipcRenderer} from "electron";
 
 const find = require('find-process');
 const request = require('request-promise-native');
@@ -89,6 +90,12 @@ class Connector extends Component {
       await this.initialSetup();
     });
 
+    event.on('downloadDaemon', async () => {
+      await this.downloadDaemon();
+    });
+
+    this.listenForDownloadEvents();
+
     // subber.js
 
 
@@ -115,6 +122,64 @@ class Connector extends Component {
 
   }
 
+  listenForDownloadEvents() {
+    // downloader events.
+    ipcRenderer.on('downloading-file', (event, arg) => {
+      // console.log("downloading-file", e, arg);
+      const walletPercent = arg.percent * 100;
+      this.props.setFileDownloadStatus({
+        downloadMessage: 'Downloading the required files',
+        downloadPercentage: walletPercent.toFixed(2),
+        downloadRemainingTime: arg.time.remaining
+      });
+      // console.log(payload)
+    });
+
+    ipcRenderer.on('downloaded-file', () => {
+      this.props.setFileDownloadStatus({
+        downloadMessage: 'Downloading the required files',
+        downloadPercentage: 100,
+        downloadRemainingTime: 0.0
+      });
+    });
+
+    ipcRenderer.on('verifying-file', () => {
+      this.props.setFileDownloadStatus({
+        downloadMessage: 'Validating',
+        downloadPercentage: undefined,
+        downloadRemainingTime: 0.0
+      });
+    });
+
+    ipcRenderer.on('unzipping-file', () => {
+      this.props.setFileDownloadStatus({
+        downloadMessage: 'Unzipping',
+        downloadPercentage: undefined,
+        downloadRemainingTime: 0.0
+      });
+    });
+    ipcRenderer.on('file-download-complete', () => {
+      this.props.setFileDownloadStatus({
+        downloadMessage: '',
+        downloadPercentage: undefined,
+        downloadRemainingTime: 0.0
+      });
+    });
+    ipcRenderer.on('download-error', (e, arg) => {
+      console.log(`Download failure: ${arg.message}`);
+      this.props.settellUserUpdateFailed({
+        updateFailed: true,
+        downloadMessage: arg.message
+      });
+      if (this.props.daemonUpdate) {
+        this.setState({
+          checkStartupStatusInterval: setInterval(async () => { await this.stateCheckerInitialStartupCycle(); }, 2000),
+          firstRun: true
+        });
+      }
+    });
+  }
+
   async initialSetup() {
     const iVersion = await this.checkIfDaemonExists();
     const walletFile = await this.checkIfWalletExists();
@@ -129,21 +194,17 @@ class Connector extends Component {
 
     console.log(this.state.currentVersion);
     console.log('got latest version');
-    let version = this.state.installedVersion === -1 ? this.state.installedVersion : parseInt(this.state.installedVersion.replace(/\D/g, ''));
+    const version = this.state.installedVersion === -1 ? this.state.installedVersion : parseInt(this.state.installedVersion.replace(/\D/g, ''));
     console.log('VERSION INT: ', version);
     if (this.state.installedVersion === -1 || version < REQUIRED_DAEMON_VERSION) {
-      do {
-        try {
-          await this.downloadDaemon();
-          version = parseInt(this.state.installedVersion.replace(/\D/g, ''));
-        } catch (e) {
-          event.emit('download-error', { message: e.message });
-        }
-      } while (this.state.installedVersion === -1 || version < REQUIRED_DAEMON_VERSION);
-      console.log('telling electron about wallet.dat');
+      await this.downloadDaemon().then((data) => {
+        this.startDaemonChecker();
+      }).catch((err) => {
+        event.emit('download-error', { message: err.message });
+      });
+    } else {
+      this.startDaemonChecker();
     }
-
-    this.startDaemonChecker();
   }
 
   startDaemonChecker() {
@@ -197,7 +258,7 @@ class Connector extends Component {
   async checkIfDaemonExists() {
     if (fs.existsSync(getPlatformWalletUri())) {
       try {
-        let version = await this.props.wallet.getWalletVersion();
+        const version = await this.props.wallet.getWalletVersion();
         return version;
       } catch (e) {
         console.log('daemon does not exist', e);
@@ -244,7 +305,6 @@ class Connector extends Component {
   async getLatestVersion() {
     return new Promise(async (resolve, reject) => {
       console.log('checking for latest daemon version');
-      let failCounter = 0;
       const daemonDownloadURL = getDaemonDownloadUrl();
       const self = this;
       // download latest daemon info from server
@@ -260,21 +320,16 @@ class Connector extends Component {
           });
           console.log(this.state.currentVersion);
           if (this.state.currentVersion === -1) {
-            if (failCounter < 3) {
-              console.log("in here");
-              await self.getLatestVersion();
-            } else {
-              event.emit('download-error', { message: 'Error Checking for latest version' });
-            }
-            failCounter += 1;
+            event.emit('download-error', { message: 'Error Checking for latest version' });
+            reject({ message: 'Error Checking for latest version' });
           } else {
             self.checkForUpdates();
-            resolve(true)
+            resolve(true);
           }
         }
       }).catch(error => {
         console.log(error.message);
-        failCounter += 1;
+        reject({ message: error.message });
       });
     });
 

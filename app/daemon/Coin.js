@@ -126,6 +126,7 @@ class Coin extends Component {
       this.processError(err)
     });
   }
+
   /**
    * Subscribe the daemon to manager events
    */
@@ -154,11 +155,6 @@ class Coin extends Component {
 
       //remove the interval and display the error
       clearInterval(this.state.checkStartupStatusInterval);
-      setTimeout(20000);
-      this.props.setLoading({
-        isLoading: true,
-        loadingMessage: arg.message
-      });
     });
 
     ipcRenderer.on('message-from-log', (e, arg) => {
@@ -178,7 +174,6 @@ class Coin extends Component {
       }
     });
 
-    this.listenForDownloadEvents();
     event.on('runMainCycle', async () => {
       console.log('run main cycle');
       this.setState({
@@ -187,66 +182,6 @@ class Coin extends Component {
       await this.startCycles();
     });
   }
-
-
-  listenForDownloadEvents() {
-    // downloader events.
-    ipcRenderer.on('downloading-file', (event, arg) => {
-      // console.log("downloading-file", e, arg);
-      const walletPercent = arg.percent * 100;
-      this.props.setFileDownloadStatus({
-        downloadMessage: 'Downloading the required files',
-        downloadPercentage: walletPercent.toFixed(2),
-        downloadRemainingTime: arg.time.remaining
-      });
-      // console.log(payload)
-    });
-
-    ipcRenderer.on('downloaded-file', () => {
-      this.props.setFileDownloadStatus({
-        downloadMessage: 'Downloading the required files',
-        downloadPercentage: 100,
-        downloadRemainingTime: 0.0
-      });
-    });
-
-    ipcRenderer.on('verifying-file', () => {
-      this.props.setFileDownloadStatus({
-        downloadMessage: 'Validating',
-        downloadPercentage: undefined,
-        downloadRemainingTime: 0.0
-      });
-    });
-
-    ipcRenderer.on('unzipping-file', () => {
-      this.props.setFileDownloadStatus({
-        downloadMessage: 'Unzipping',
-        downloadPercentage: undefined,
-        downloadRemainingTime: 0.0
-      });
-    });
-    ipcRenderer.on('file-download-complete', () => {
-      this.props.setFileDownloadStatus({
-        downloadMessage: '',
-        downloadPercentage: undefined,
-        downloadRemainingTime: 0.0
-      });
-    });
-    ipcRenderer.on('download-error', (e, arg) => {
-      console.log(`Download failure: ${arg.message}`);
-      this.props.settellUserUpdateFailed({
-        updateFailed: true,
-        downloadMessage: arg.message
-      });
-      if (this.props.daemonUpdate) {
-        this.setState({
-          checkStartupStatusInterval: setInterval(async () => { await this.stateCheckerInitialStartupCycle(); }, 2000),
-          firstRun: true
-        });
-      }
-    });
-  }
-
 
   async startCycles() {
     // we can starting syncing the block data with redux now

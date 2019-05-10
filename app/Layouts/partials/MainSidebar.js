@@ -139,7 +139,7 @@ class MainSidebar extends Component {
                     { this.props.lang.donate }
                   </NavLink>
                 </li>
-                { this.props.balance > 0 && (
+                { this.props.balance > 0 && this.props.initialDownload === false && (
                   <li>
                     <Row className="bg-dark" style={{paddingBottom: '5px'}}>
                       <Col style={{marginLeft: '25px'}}>Staking</Col>
@@ -166,7 +166,8 @@ const mapStateToProps = state => {
     connections: state.chains.connections,
     paymentChainSync: state.chains.paymentChainSync,
     daemonRunning: state.application.daemonRunning,
-    wallet: state.application.wallet
+    wallet: state.application.wallet,
+    initialDownload: state.chains.initialDownload
   };
 };
 

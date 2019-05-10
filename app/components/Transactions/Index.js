@@ -215,20 +215,25 @@ class Index extends Component {
     }
   }
 
-  render() {
-    // const data = this.orderTransactions(this.props.data);
-    const data = this.state.transactionData;
-    const today = new Date();
-    let counter = -1;
-    const rowClassName = 'row normalWeight tableRowCustom tableRowCustomTransactions';
-    const spinClass = this.state.isRefreshing ? 'fa-spin' : '';
+  renderTransactionTable(){
 
-    return (
-      <div id="transactionAddresses" className="padding-titlebar">
-        <Header>
-          { this.props.lang.transactions }
-        </Header>
-        <Body noPadding>
+    if(this.props.initialDownload) {
+      return (
+        <div>
+          <h4>Your transactions will appear after your initial sync</h4>
+        </div>
+      );
+    } else {
+      // const data = this.orderTransactions(this.props.data);
+      const data = this.state.transactionData;
+      const today = new Date();
+      let counter = -1;
+      const rowClassName = 'row normalWeight tableRowCustom tableRowCustomTransactions';
+      const spinClass = this.state.isRefreshing ? 'fa-spin' : '';
+
+
+      return (
+        <div id='table'>
           <div className="tableHeaderNormal" style={{ display: 'flex', alignItems: 'center' }}>
 
             <div className="d-flex justify-content-end w-100">
@@ -259,7 +264,7 @@ class Index extends Component {
                       <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="orphaned">{ this.props.lang.orphaned }</li>
                     </ul>
                   </div>
-                  }
+                }
               </div>
             </div>
 
@@ -272,12 +277,12 @@ class Index extends Component {
             </div>
             <div id="rows">
               {data.map((t, index) => {
-             // console.log(t, index)
-             // console.log(t)
+                // console.log(t, index)
+                // console.log(t)
 
                 if (this.props.type === 'all'
-              || this.props.type === t.category
-              || this.props.type === t.status) {
+                  || this.props.type === t.category
+                  || this.props.type === t.status) {
                   counter++;
                   const iTime = new Date(t.time * 1000);
                   const time = Tools.calculateTimeSince(this.props.lang, today, iTime);
@@ -352,6 +357,20 @@ class Index extends Component {
               <p className="buttonTransaction" onClick={this.handleNextClicked} style={{ marginLeft: '50px', opacity: this.props.data.length < 100 ? '0.2' : '1', cursor: this.props.data.length < 100 ? 'default' : 'pointer' }}>{ this.props.lang.next }</p>
             </div>
           </div>
+        </div>
+      );
+    }
+
+  }
+
+  render() {
+    return (
+      <div id="transactionAddresses" className="padding-titlebar">
+        <Header>
+          { this.props.lang.transactions }
+        </Header>
+        <Body noPadding>
+        {this.renderTransactionTable()}
         </Body>
       </div>
     );
@@ -366,7 +385,8 @@ const mapStateToProps = state => {
     type: state.chains.transactionsType,
     requesting: state.application.transactionsRequesting,
     wallet: state.application.wallet,
-    isFilteringTransactions: state.application.filteringTransactions
+    isFilteringTransactions: state.application.filteringTransactions,
+    initialDownload: state.chains.initialDownload
   };
 };
 

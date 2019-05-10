@@ -1,13 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {SettingsIcon} from 'mdi-react';
-import ReactTooltip from 'react-tooltip';
-
+import {LockIcon, SettingsIcon} from 'mdi-react';
+import {Input} from 'reactstrap';
 import * as actions from '../../actions/index';
 import Header from '../Others/Header';
 import Body from '../Others/Body';
-import DonateModal from './partials/DonateModal';
-import Goal from './partials/Goal';
 
 class Donate extends Component {
   constructor(props) {
@@ -22,14 +19,10 @@ class Donate extends Component {
   }
 
   handleClick(val) {
-    this.setState({
-      selectedGoal: val
-    });
-    this.modal.getWrappedInstance().toggle();
+
   }
 
   render() {
-    const goals = this.props.donationGoals || {};
 
     return (
       <div className="padding-titlebar">
@@ -38,18 +31,44 @@ class Donate extends Component {
           { this.props.lang.donate }
         </Header>
         <Body noPadding>
-          { Object.keys(goals).length > 0 && (
-            <div className="row">
-              {goals.map((goal, index) => {
-                return (
-                  <Goal key={index} goal={goal} handleClick={this.handleClick} />
-                );
-              })
-              }
-            </div>
-          )}
-          <ReactTooltip />
-          <DonateModal ref={(e) => {this.modal = e}} goal={this.state.selectedGoal} />
+        <p>The developer fund is used to cover many of the expenses that are incurred while developing ecc.
+          Currently all of these expenses are paid for out of pocket by the dev team.<br/>
+          These include but are not limited to paying for github services, website hosting, services like blockexplorers, research, and development in general.<br/>
+          We would like to offer the ability to donate directly to the developers and do appreciate any amount you may want to contribute.</p>
+        <div className="mt-3">
+          <p>BTC</p>
+          <Input
+            readOnly
+            style={{ width: '400px' }}
+            value="1LC8zhYNXgRQ5d6sCTxDrC8wBq6D1gdQDZ"
+            type="test"
+            className="ml-auto mr-auto mb-2"
+          />
+          <p>BCH</p>
+          <Input
+            readOnly
+            style={{ width: '400px' }}
+            value="1LC8zhYNXgRQ5d6sCTxDrC8wBq6D1gdQDZ"
+            type="test"
+            className="ml-auto mr-auto mb-2"
+          />
+          <p>ECC</p>
+          <Input
+            readOnly
+            style={{ width: '400px' }}
+            value="ESnoQdpHH5vLafzj9nvXqRugPSkd2ZNrch"
+            type="test"
+            className="ml-auto mr-auto mb-2"
+          />
+          <p>LTC</p>
+          <Input
+            readOnly
+            style={{ width: '400px' }}
+            value="LPADrS2UjUXjYikZd3y3jv6MeZSHP5HukT"
+            type="test"
+            className="ml-auto mr-auto mb-2"
+          />
+        </div>
         </Body>
       </div>
     );
@@ -59,9 +78,7 @@ class Donate extends Component {
 const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
-    wallet: state.application.wallet,
-    donationGoals: state.application.donationGoals,
-    donationGoalsLastUpdated: state.application.donationGoalsLastUpdated
+    wallet: state.application.wallet
   };
 };
 
