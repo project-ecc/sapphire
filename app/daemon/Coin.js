@@ -210,6 +210,7 @@ class Coin extends Component {
     for (let i = 0; i < transactions.length; i++) {
       time = transactions[i].time;
       if (time > this.state.lastTransactionTime) {
+        console.log(transactions[i])
         this.setState({
           shouldRequestMoreTransactions: true
         });
@@ -554,10 +555,26 @@ class Coin extends Component {
     // compare the latest transaction time stored in memory against the latest 10 transactions.
     const latestTransaction = await getLatestTransaction();
     console.log(latestTransaction)
-    this.from = latestTransaction != null ? latestTransaction.time : 0;
+    const latestTransactionTime = latestTransaction != null ? latestTransaction.time : 0;
+    this.setState({
+      lastTransactionTime : latestTransactionTime
+    })
 
 
-    const transactions = await this.props.wallet.getTransactions('*', 10000, 0);
+    let transactions = await this.props.wallet.getTransactions('*', 10000, 0);
+    if(latestTransactionTime !== 0 && transactions !== null && transactions.length > 0 ){
+      transactions = this.orderTransactions(transactions)
+      console.log(transactions[0].time)
+      console.log(this.state.lastTransactionTime)
+      if(transactions[0].time > this.state.lastTransactionTime){
+        console.log('in here')
+        await this.loadTransactionsForProcessing();
+        this.setState({
+          transactionsIndexed: false
+        })
+      }
+    }
+
     if ((latestTransaction === undefined || latestTransaction === null) && transactions.length === 0) {
       this.setState({
         transactionsIndexed: true
