@@ -6,35 +6,34 @@ let arch = require('arch');
 
 let serverUrl = process.env.NODE_ENV === 'production' ? daemonConfig.live_server_address : daemonConfig.dev_server_address;
 
-export function getPlatformFileName() {
 
-  // if (process.platform === 'linux') {
-  //
-  //   return arch() === 'x86' ? 'eccoind-linux32' : 'eccoind-linux64';
-  //
-  // } else if (process.platform === 'darwin') {
-  //
-  //   return 'Eccoind.app';
-  //
-  // } else if (process.platform.indexOf('win') > -1) {
-  //
-  //   return arch() === 'x86' ? 'eccoind-win32.exe' : 'eccoind-win64.exe';
-  // }
-
-  // TODO uncomment below when new daemon is read 2.5.15
-
-
+export function getPlatformName(){
   if (process.platform === 'linux') {
 
-    return 'bin/eccoind';
+    return arch() === 'x86' ? 'linux32' : 'linux64';
 
   } else if (process.platform === 'darwin') {
 
-    return 'bin/eccoind';
+    return 'osx64';
 
   } else if (process.platform.indexOf('win') > -1) {
 
-    return 'bin/eccoind.exe';
+    return arch() === 'x86' ? 'win32' : 'win64';
+  }
+}
+export function getPlatformFileName() {
+
+  if (process.platform === 'linux') {
+
+    return arch() === 'x86' ? 'eccoind-linux32' : 'eccoind-linux64';
+
+  } else if (process.platform === 'darwin') {
+
+    return 'eccoind';
+
+  } else if (process.platform.indexOf('win') > -1) {
+
+    return arch() === 'x86' ? 'eccoind-win32.exe' : 'eccoind-win64.exe';
   }
 }
 

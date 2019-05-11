@@ -43,7 +43,6 @@ class DaemonErrorComponent extends Component {
   rebootDaemonWithReIndex(){
     console.log('in here')
     event.emit('start', true);
-    event.emit('runMainCycle');
   }
 
   handleCancel() {

@@ -13,7 +13,7 @@ import * as actions from './actions/index';
 import DaemonConnector from './daemon/Connector';
 import Tools from "./utils/tools";
 
-const event = require('utils/eventhandler');
+const event = require('./utils/eventhandler');
 const settings = require('electron').remote.require('electron-settings');
 
 
@@ -21,7 +21,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.startUp = this.startUp.bind(this);
-
   }
 
   componentDidMount() {
@@ -29,9 +28,6 @@ class App extends Component {
     this.startUp();
 
     ipcRenderer.on('closing_daemon', () => {
-      if (this.props.loader) {
-        TweenMax.to('#loading-wrapper', 0.3, { autoAlpha: 0.5 });
-      }
       this.props.setClosingApplication();
     });
   }
@@ -44,6 +40,10 @@ class App extends Component {
    * Load the app settings
    */
   startUp() {
+    this.props.setLoading({
+      isLoading: true,
+      loadingMessage: 'Starting Sapphire!'
+    });
     let tray = false;
     let startAtLogin = false;
     let minimizeToTray = false;
@@ -99,7 +99,6 @@ class App extends Component {
 
     console.log(daemonCredentials);
     this.props.setWalletCredentials(daemonCredentials);
-    event.emit('inital_setup');
 
     // alert('credentials');
     const key = 'settings.initialSetup';
@@ -109,7 +108,7 @@ class App extends Component {
     } else {
       this.props.setStepInitialSetup('start');
     }
-    event.emit('startConnectorChildren');
+    event.emit('initial_setup');
   }
 
   /*
@@ -129,7 +128,7 @@ class App extends Component {
   render() {
     /* Add the theme class to body */
     this.checkThemeClass();
-
+    console.log('in here')
     return (
       <div>
         <DaemonConnector />

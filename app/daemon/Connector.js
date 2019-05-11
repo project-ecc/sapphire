@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
 import {
-  getDaemonDownloadUrl, getPlatformWalletUri, grabEccoinDir,
+  getDaemonDownloadUrl, getPlatformFileName, getPlatformName, getPlatformWalletUri, grabEccoinDir,
   grabWalletDir
 } from '../utils/platform.service';
 import * as actions from '../actions/index';
@@ -12,7 +12,6 @@ import ConnectorCoin from './Coin';
 import ConnectorMarket from './Market';
 import Tools from '../utils/tools';
 import {downloadFile} from '../utils/downloader';
-import {ipcRenderer} from "electron";
 
 const find = require('find-process');
 const request = require('request-promise-native');
@@ -50,15 +49,15 @@ class Connector extends Component {
     event.removeListener('start');
     event.removeListener('stop');
     event.removeListener('updateDaemon');
-    event.removeListener('inital_setup');
+    event.removeListener('initial_setup');
     event.removeListener('checkForDaemonUpdates');
-    event.removeListener('inital_setup');
   }
 
   bindListeners() {
 
     // Start Daemon
     event.on('start', async (args) => {
+      console.log('starting daemon')
       await this.startDaemon(args);
     });
 
@@ -75,7 +74,11 @@ class Connector extends Component {
 
     // Check for daemon update
     event.on('checkForDaemonUpdates', async () =>{
-      await this.getLatestVersion()
+      await this.getLatestVersion().then((data) => {
+        return data;
+      }).catch((err) => {
+        console.log(err)
+      });
     });
 
     //Update Daemon
@@ -86,7 +89,7 @@ class Connector extends Component {
       await this.updateDaemon();
     });
 
-    event.on('inital_setup', async () => {
+    event.on('initial_setup', async () => {
       await this.initialSetup();
     });
 
@@ -124,7 +127,7 @@ class Connector extends Component {
 
   listenForDownloadEvents() {
     // downloader events.
-    ipcRenderer.on('downloading-file', (event, arg) => {
+    event.on('downloading-file', (arg) => {
       // console.log("downloading-file", e, arg);
       const walletPercent = arg.percent * 100;
       this.props.setFileDownloadStatus({
@@ -135,7 +138,7 @@ class Connector extends Component {
       // console.log(payload)
     });
 
-    ipcRenderer.on('downloaded-file', () => {
+    event.on('downloaded-file', () => {
       this.props.setFileDownloadStatus({
         downloadMessage: 'Downloading the required files',
         downloadPercentage: 100,
@@ -143,40 +146,36 @@ class Connector extends Component {
       });
     });
 
-    ipcRenderer.on('verifying-file', () => {
+    event.on('verifying-file', (args) => {
+      console.log(args)
       this.props.setFileDownloadStatus({
-        downloadMessage: 'Validating',
+        downloadMessage: `Validating file ${args.fileChecksum} against ${args.serverChecksum}`,
         downloadPercentage: undefined,
         downloadRemainingTime: 0.0
       });
     });
 
-    ipcRenderer.on('unzipping-file', () => {
+    event.on('unzipping-file', () => {
       this.props.setFileDownloadStatus({
         downloadMessage: 'Unzipping',
         downloadPercentage: undefined,
         downloadRemainingTime: 0.0
       });
     });
-    ipcRenderer.on('file-download-complete', () => {
+    event.on('file-download-complete', () => {
       this.props.setFileDownloadStatus({
         downloadMessage: '',
         downloadPercentage: undefined,
         downloadRemainingTime: 0.0
       });
     });
-    ipcRenderer.on('download-error', (e, arg) => {
+    event.on('download-error', (arg) => {
+      console.log(arg)
       console.log(`Download failure: ${arg.message}`);
       this.props.settellUserUpdateFailed({
         updateFailed: true,
         downloadMessage: arg.message
       });
-      if (this.props.daemonUpdate) {
-        this.setState({
-          checkStartupStatusInterval: setInterval(async () => { await this.stateCheckerInitialStartupCycle(); }, 2000),
-          firstRun: true
-        });
-      }
     });
   }
 
@@ -189,20 +188,32 @@ class Connector extends Component {
       walletDat: walletFile
     });
 
-    console.log('getting latest version');
-    await this.getLatestVersion();
+    await this.getLatestVersion().catch((err)=> {
+      console.log(err.message);
+      this.props.setLoading({
+        isLoading: true,
+        loadingMessage: err.message
+      });
+    });
 
-    console.log(this.state.currentVersion);
-    console.log('got latest version');
+    console.log("server version: ", this.state.currentVersion);
     const version = this.state.installedVersion === -1 ? this.state.installedVersion : parseInt(this.state.installedVersion.replace(/\D/g, ''));
-    console.log('VERSION INT: ', version);
+    console.log('LOCAL VERSION INT: ', version);
     if (this.state.installedVersion === -1 || version < REQUIRED_DAEMON_VERSION) {
       await this.downloadDaemon().then((data) => {
+        console.log('downloaded')
+        this.setState({
+          downloadingDaemon: false
+        });
         this.startDaemonChecker();
+        event.emit('startConnectorChildren');
       }).catch((err) => {
+        console.log(err)
+        console.log('download daemon failed')
         event.emit('download-error', { message: err.message });
       });
     } else {
+      event.emit('startConnectorChildren');
       this.startDaemonChecker();
     }
   }
@@ -269,36 +280,40 @@ class Connector extends Component {
   }
 
   async updateDaemon() {
-    console.log('daemon manager got update call');
-    this.setState({
-      downloading: true
-    });
-    const r = await this.stopDaemon();
-    if (r) {
-      setTimeout(async () => {
-        let downloaded = false;
-        try {
-          downloaded = await this.downloadDaemon();
-        } catch (e) {
-          event.emit('download-error', { message: e.message });
+    return new Promise(async (resolve, reject) => {
+      console.log('daemon manager got update call');
+      this.setState({
+        downloading: true
+      });
+      const r = await this.stopDaemon();
+      if (r) {
+        setTimeout(async () => {
+          let downloaded = false;
+          try {
+            downloaded = await this.downloadDaemon();
+          } catch (e) {
+            event.emit('download-error', { message: e.message });
+            this.setState({
+              downloading: false
+            });
+            return;
+          }
           this.setState({
             downloading: false
           });
-          return;
-        }
-        this.setState({
-          downloading: false
-        });
 
-        if (downloaded !== false) {
-          event.emit('updatedDaemon');
-          if (!this.state.shouldRestart) { event.emit('start'); }
-          this.setState({
-            toldUserAboutUpdate: false
-          });
-        }
-      }, 7000);
-    }
+          if (downloaded !== false) {
+            event.emit('updatedDaemon');
+            if (!this.state.shouldRestart) { event.emit('start'); }
+            this.setState({
+              toldUserAboutUpdate: false
+            });
+            resolve(true)
+          }
+          reject(downloaded);
+        }, 7000);
+      }
+    });
   }
 
 
@@ -372,16 +387,21 @@ class Connector extends Component {
         console.log(data);
         const parsed = JSON.parse(data);
         const latestDaemon = parsed.versions[0];
-        const latestVersion = latestDaemon.name.substring(1);
+        const latestDaemonVersion = latestDaemon.name.substring(1);
         const zipChecksum = latestDaemon.checksum;
         const downloadUrl = latestDaemon.download_url;
+        const downloadFileName = getPlatformName() === ('win32' || 'win64') ? 'Eccoind.zip' : 'Eccoind.tar.gz';
+        console.log(getPlatformName())
+        const downloaded = await downloadFile(downloadUrl, walletDirectory, downloadFileName, zipChecksum, true);
 
-        const downloaded = await downloadFile(downloadUrl, walletDirectory, 'Eccoind.zip', zipChecksum, true);
-
-        if (downloaded) {
-          await self.saveVersion(self.state.installedVersion);
+        if (downloaded === true) {
+          const platFileName = getPlatformFileName();
+          fs.rename(walletDirectory + "eccoin-"+ latestDaemonVersion +"/bin/eccoind", walletDirectory + platFileName, function (err) {
+            if (err) reject(err)
+            console.log('Successfully renamed - AKA moved!')
+          });
           self.setState({
-            installedVersion: latestVersion,
+            installedVersion: await this.checkIfDaemonExists(),
             downloading: false
           });
           resolve(true);

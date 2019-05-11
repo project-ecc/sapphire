@@ -75,7 +75,6 @@ class Coin extends Component {
     clearInterval(this.state.addressProcessorInterval);
 
     event.removeListener('startConnectorChildren');
-    event.removeListener('runMainCycle');
     ipcRenderer.removeListener('loading-error');
     ipcRenderer.removeListener('message-from-log');
     ipcRenderer.removeListener('downloading-file');
@@ -172,14 +171,6 @@ class Coin extends Component {
       if (captureStrings.some((v) => { return castedArg.indexOf(v) > -1; })) {
         ipcRenderer.send('loading-error', { message: castedArg});
       }
-    });
-
-    event.on('runMainCycle', async () => {
-      console.log('run main cycle');
-      this.setState({
-        firstRun: true
-      });
-      await this.startCycles();
     });
   }
 

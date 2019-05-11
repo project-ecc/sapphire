@@ -139,7 +139,7 @@ class MainSidebar extends Component {
                     { this.props.lang.donate }
                   </NavLink>
                 </li>
-                { this.props.balance > 0 && this.props.initialDownload === false && (
+                { this.props.balance > 0 && this.props.initialDownload == false && (
                   <li>
                     <Row className="bg-dark" style={{paddingBottom: '5px'}}>
                       <Col style={{marginLeft: '25px'}}>Staking</Col>

@@ -16,11 +16,7 @@ class FullscreenModal extends Component {
   handleDismissUpdateFailed() {
     this.props.settellUserUpdateFailed(false);
     this.props.setUpdatingApplication(false);
-    ipcRenderer.send('start');
-
-    if (this.props.guiUpdate) {
-      event.emit('runMainCycle');
-    }
+    event.emit('initial_setup');
   }
 
   retryDownload() {
@@ -30,7 +26,9 @@ class FullscreenModal extends Component {
   render() {
     return (
       <Modal isOpen className="fullscreenModal">
-        <ModalHeader></ModalHeader>
+        <ModalHeader>
+          Daemon Update Failed
+        </ModalHeader>
         <ModalBody>
           { this.props.downloadMessage }
         </ModalBody>

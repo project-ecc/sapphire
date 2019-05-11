@@ -390,30 +390,30 @@ function setupEventHandlers() {
   });
 
 
-  // downloader events.
-  event.on('downloading-file', (payload) => {
-    sendMessage('downloading-file', payload);
-  });
-
-  event.on('downloaded-file', () => {
-    sendMessage('downloaded-file');
-  });
-
-  event.on('verifying-file', () => {
-    sendMessage('verifying-file');
-  });
-
-  event.on('unzipping-file', () => {
-    sendMessage('unzipping-file');
-  });
-
-  event.on('file-download-complete', () => {
-    sendMessage('file-download-complete');
-  });
-
-  event.on('download-error', (payload) => {
-    sendMessage('download-error', payload);
-  });
+  // // downloader events.
+  // event.on('downloading-file', (payload) => {
+  //   sendMessage('downloading-file', payload);
+  // });
+  //
+  // event.on('downloaded-file', () => {
+  //   sendMessage('downloaded-file');
+  // });
+  //
+  // event.on('verifying-file', () => {
+  //   sendMessage('verifying-file');
+  // });
+  //
+  // event.on('unzipping-file', () => {
+  //   sendMessage('unzipping-file');
+  // });
+  //
+  // event.on('file-download-complete', () => {
+  //   sendMessage('file-download-complete');
+  // });
+  //
+  // event.on('download-error', (payload) => {
+  //   sendMessage('download-error', payload);
+  // });
 
   event.on('loading-error', (payload) => {
     sendMessage('loading-error', payload);

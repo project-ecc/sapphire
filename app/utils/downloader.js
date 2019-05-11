@@ -62,19 +62,16 @@ export function downloadFile(srcUrl, destFolder, destFileName, cs = null, unzip 
       })
       .on('end', async () => {
         event.emit('downloaded-file');
+        console.log(fileName)
         try {
-          event.emit('verifying-file');
           if (cs !== null) {
             const validated = await validateChecksum(fileName, cs);
             if (!validated) reject(validated);
           }
-          event.emit('verifying-file');
-          event.emit('unzipping-file', { message: 'Unzipping..' });
           if(unzip) {
             const unzipped = await unzipFile(fileName, destFolder, true);
             if(!unzipped) reject(unzipped);
           }
-          event.emit('unzipping-file', { message: 'Unzip Complete' });
           event.emit('file-download-complete');
           resolve(true);
         } catch (e){
@@ -93,60 +90,58 @@ export function downloadFile(srcUrl, destFolder, destFileName, cs = null, unzip 
  * @returns {Promise}
  */
 export function unzipFile(fileToUnzip, targetDirectory, deleteOldZip = false) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async(resolve, reject) => {
     let ext = path.extname(fileToUnzip);
+    console.log(ext);
     if(ext === '.zip'){
       extract(fileToUnzip, { dir: targetDirectory }, (err) => {
         if (err) {
           console.log(err);
           reject(err);
         } else {
-          //event.emit('unzipping-file', { message: 'Unzipped!' });
+          event.emit('unzipping-file', { message: 'Unzipped!' });
           console.log('unzip successfully.');
           if(deleteOldZip){
             if (fs.existsSync(fileToUnzip)) {
-              fs.unlink(fileToUnzip, (deleteFileError) => {
+              fs.unlinkSync(fileToUnzip, (deleteFileError) => {
                 if (deleteFileError) {
                   console.log(deleteFileError);
                   reject(deleteFileError)
-                } else {
-                  //event.emit('unzipping-file', { message: 'Cleaning up..' });
-                  console.log('File successfully deleted');
-                  resolve(true);
                 }
               });
             }
           }
+          event.emit('unzipping-file', { message: 'Cleaning up..' });
+          console.log('File successfully deleted');
+          event.emit('file-download-complete');
           resolve(true);
         }
       });
     } else {
-      tar.x(  // or tar.extract(
+      await tar.x(  // or tar.extract(
         {
           file: fileToUnzip,
           cwd: targetDirectory
         }
       ).then(_=> {
-        //event.emit('unzipping-file', { message: 'Unzipped!' });
+        event.emit('unzipping-file', { message: 'Unzipped!' });
         console.log('unzip successfully.');
         if(deleteOldZip){
           if (fs.existsSync(fileToUnzip)) {
-            fs.unlink(fileToUnzip, (deleteFileError) => {
+            fs.unlinkSync(fileToUnzip, (deleteFileError) => {
               if (deleteFileError) {
                 console.log(deleteFileError);
                 reject(deleteFileError)
-              } else {
-                //event.emit('unzipping-file', { message: 'Cleaning up..' });
-                console.log('File successfully deleted');
-                resolve(true);
               }
             });
           }
         }
+        event.emit('unzipping-file', { message: 'Cleaning up..' });
+        console.log('File successfully deleted');
+        event.emit('file-download-complete');
         resolve(true);
       })
     }
-    reject('Should not be here')
   });
 }
 /**
@@ -157,9 +152,11 @@ export function unzipFile(fileToUnzip, targetDirectory, deleteOldZip = false) {
  */
 export function validateChecksum (fileName, toValidateAgainst) {
   return new Promise((resolve, reject) =>{
-    //event.emit('verifying-file');
-    checksum.file(fileName, {'algorithm': 'sha256'}, (error, sum) => {
 
+    checksum.file(fileName, {'algorithm': 'sha256'}, (error, sum) => {
+      const payload = {fileChecksum: sum, serverChecksum: toValidateAgainst};
+      console.log(payload)
+      event.emit('verifying-file', payload);
       console.log(`checksum from file ${sum}`);
       console.log(`validating against ${toValidateAgainst}`);
       console.log('Done downloading verifying');
