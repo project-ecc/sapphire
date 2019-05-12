@@ -167,7 +167,8 @@ const mapStateToProps = state => {
     paymentChainSync: state.chains.paymentChainSync,
     daemonRunning: state.application.daemonRunning,
     wallet: state.application.wallet,
-    initialDownload: state.chains.initialDownload
+    initialDownload: state.chains.initialDownload,
+    balance: state.chains.balance
   };
 };
 

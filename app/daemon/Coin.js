@@ -344,9 +344,6 @@ class Coin extends Component {
         });
       }
       const entry = entries[i];
-      if (Number(entry.confirmations) < 30) {
-        // this.store.dispatch({ type: PENDING_TRANSACTION, payload: entry.txId });
-      }
 
       let isPending = false;
 
