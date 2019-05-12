@@ -1,7 +1,7 @@
-const db = require('../../app/utils/database/db')
+const db = require('../../app/utils/database/db');
 const Address = db.Address;
 const Transaction = db.Transaction;
-const AnsRecord = db.AnsRecord;
+// const AnsRecord = db.AnsRecord;
 const Contact = db.Contact;
 const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
@@ -275,51 +275,24 @@ async function getAllRewardTransactions(){
  * Address functions
  */
 
-async function addAddress(address, withAns = false, belongsToMe = false){
+async function addAddress(address, belongsToMe = false){
   return new Promise(async (resolve, reject) => {
     await Address
       .findOrCreate({
         where: {
-          address: address.normalAddress
+          address: address
         },
         defaults: {
-          current_balance: address.amount,
-          address: address.normalAddress,
+          current_balance: 0,
+          address: address,
           is_mine: belongsToMe
         }
       })
       .spread(async (newAddress, created) => {
         if(!created){
-          newAddress.current_balance = address.amount
-          newAddress.is_mine = belongsToMe
+          newAddress.current_balance = address.amount;
+          newAddress.is_mine = belongsToMe;
           await newAddress.save()
-        }
-
-        if (withAns){
-          await AnsRecord
-          .findOrCreate({
-            where: {
-              name: address.address,
-              code: address.code,
-            },
-            defaults: {
-              code: address.code,
-              expire_time: address.expiryTime,
-              creation_block: address.currentBlock
-            }
-          }).spread(async (ansRecord, createdAns) => {
-            if(createdAns){
-              newAddress.status = 'ready';
-              await newAddress.save()
-            }
-
-            await ansRecord.setAddress(newAddress).then(result =>{
-              resolve([ansRecord, createdAns]);
-            });
-          }).catch(err => {
-            console.log(err);
-            reject(err);
-          });
         }
         resolve(newAddress);
         return newAddress;
@@ -346,13 +319,7 @@ async function getAddress(a){
 
 async function getAllAddresses() {
   return new Promise(async (resolve, reject) => {
-    await Address.findAll({
-      include: [
-        {
-          model: AnsRecord
-        }
-      ]
-    }).then(addresses => {
+    await Address.findAll().then(addresses => {
       resolve(addresses);
     }).catch(err => {
       reject(err)
@@ -363,14 +330,10 @@ async function getAllAddresses() {
 async function getAllMyAddresses(){
   return new Promise(async (resolve, reject) => {
       await Address.findAll({
-        include: [
-          {
-            model: AnsRecord
-          }
-        ],
         where: {
           is_mine: true
-        }
+        },
+        order: [['createdAt', 'DESC']]
       }).then(addresses => {
         resolve(addresses)
       }).catch(err => {
@@ -401,44 +364,12 @@ async function deleteAddressByName(addressString){
 
 
 /**
- * AnsRecord functions
- */
-
-async function addAnsRecord(ansRecord, addressString){
-
-}
-
-async function deleteAnsRecordById(id){
-  AnsRecord.destroy({
-    where: {
-      id: id
-    }
-  }).then(affectedRows => {
-    return affectedRows > 1;
-  })
-}
-
-async function deleteAnsRecordByName(recordName) {
-  AnsRecord.destroy({
-    where: {
-      name: recordName
-    }
-  }).then(affectedRows => {
-    return affectedRows > 1;
-  })
-}
-
-
-/**
  * Contacts functions
  */
 
-async function addContact(contactObject, withAns = false){
+async function addContact(contactObject){
   return new Promise(async (resolve, reject) => {
     let name = contactObject.name;
-    if(withAns){
-      name += '#' + contactObject.code
-    }
     await Contact
       .findOrCreate({
         where: {
@@ -459,21 +390,8 @@ async function addContact(contactObject, withAns = false){
           }
         });
         newContact.setAddress(address[0]);
-        if (withAns){
-         const ansRecord = await AnsRecord.findOrCreate({
-              where: {
-                name: contactObject.name,
-                code: contactObject.code
-              },
-              defaults: {
-                name: contactObject.name,
-                code: contactObject.code
-              }
-         });
-         newContact.setAnsrecord(ansRecord[0]);
-        }
 
-        await newContact.save()
+        await newContact.save();
         resolve(newContact)
       }).catch(err => {
       console.log(err);
@@ -490,12 +408,6 @@ async function findContact(name){
           model: Address,
           where: {
             id: db.Sequelize.col('contacts.addressId')
-          }
-        },
-        {
-          model: AnsRecord,
-          where: {
-            id: db.Sequelize.col('contacts.ansrecordId')
           }
         }
       ],
@@ -516,9 +428,6 @@ async function getContacts(){
       include: [
         {
           model: Address
-        },
-        {
-          model: AnsRecord
         }
       ]
     }).then(contacts => {
@@ -539,22 +448,33 @@ async function deleteContact(contact) {
   });
 }
 
-async function clearDB(){
+async function clearTransactions () {
   return new Promise(async (resolve, reject) => {
-    await AnsRecord.destroy({
+    let result = await Transaction.destroy({
       where: {},
       truncate: true
-    })
+    }).then( result => {
+      resolve(result);
+    }).catch(err => {
+      reject(err);
+    });
+
+  })
+}
+
+async function clearDB(){
+  return new Promise(async (resolve, reject) => {
 
     await Transaction.destroy({
       where: {},
       truncate: true
-    })
+    });
 
     await Address.destroy({
-      where: {},
-      truncate: true
-    })
+      where: {
+        is_mine: 1
+      }
+    });
 
     resolve(true)
   });
@@ -570,9 +490,6 @@ export {
   addAddress,
   getAddress,
   deleteAddressByName,
-  addAnsRecord,
-  deleteAnsRecordById,
-  deleteAnsRecordByName,
   deleteTransactionById,
   deleteAddressById,
   deleteTransactionByName,
@@ -586,7 +503,6 @@ export {
   deletePendingTransaction,
   getLatestTransaction,
   Address,
-  AnsRecord,
   Transaction,
   getAllAddresses,
   getAllMyAddresses,
@@ -596,6 +512,7 @@ export {
   addContact,
   findContact,
   getContacts,
-  deleteContact
+  deleteContact,
+  clearTransactions
 };
 

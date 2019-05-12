@@ -1,6 +1,6 @@
 {
   "productName": "Sapphire",
-  "appId": "com.github.csmartinsfct.sapphire",
+  "appId": "com.github.project-ecc.sapphire",
   "files": [
     "./app/dist/",
     "./app/node_modules/",
@@ -12,8 +12,8 @@
   "publish": [
     {
       "provider": "github",
-      "owner": "csmartinsfct",
-      "repo": "Sapphire",
+      "owner": "project-ecc",
+      "repo": "sapphire",
       "vPrefixedTagName": "true",
       "protocol": "https"
     }

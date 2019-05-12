@@ -1,25 +1,13 @@
-@import "./themes.scss";
-
-.homePanelTitleTwo{
-  @include themify($themes) { 
-    color: themed('homePanelTitleTwo');  
-  }
-}
-
-#balance{
-  margin-top: 10px;
-}
+@import "themes/themes.scss";
 
 .homeSection{
-  @include themify($themes) { 
-    background-color: themed('homePanelsBackgroundColor');  
-    -webkit-box-shadow: themed('mainElementBoxShadow'); 
+  @include themify($themes) {
+    background-color: themed('cardBackgroundColor');
+    box-shadow: themed('cardBoxShadow');
   }
   min-height: 170px;
-  margin-top: 45px;
-  margin-left: 40px;
-  margin-right: 40px;
-  
+  margin-bottom: 45px;
+
   overflow: hidden;
 }
 
@@ -38,18 +26,6 @@
   margin-top: 7px;
 }
 
-.homePanelTitleOne{
-  @include themify($themes) { 
-    color: themed('homePanelTitleOneColor');  
-  }
-}
-
-.textSelectableHome{
-  @include themify($themes) { 
-    color: themed('homeTextSelectable');  
-  }
-}
-
 .arrowHome {
   display: inline-block;
   position: absolute;
@@ -59,7 +35,7 @@
   margin-top: 10px;
   height: 0px; width: 0px;
   border: 7px solid;
-  border-color: 
+  border-color:
     mediumseagreen
     mediumseagreen
     transparent
@@ -68,25 +44,13 @@
 }
 
 .arrowExpenses {
-  border-color: 
+  border-color:
     #b64500
     #b64500
     transparent
     transparent;
   transform: rotate(135deg);
   top: 1px;
-}
-
-.unconfirmedBalance{
-  padding-top: 58px;
-}
-
-.stakingBalance{
-  padding-top: 40px;
-}
-
-.totalBalance{
-  padding-top: 25px;
 }
 
 .react-toggle {
@@ -129,8 +93,8 @@
 }
 
 .react-toggle-track {
-  @include themify($themes) { 
-    background-color: themed('homePanelToggleFalseBackgroundColor');  
+  @include themify($themes) {
+    background-color: themed('toggleFalseBackgroundColor');
   }
   width: 50px;
   height: 24px;
@@ -142,8 +106,8 @@
 }
 
 .react-toggle--checked .react-toggle-track {
-  @include themify($themes) { 
-    background-color: themed('homePanelToggleTrueBackgroundColor');  
+  @include themify($themes) {
+    background-color: themed('toggleTrueBackgroundColor');
   }
 }
 
@@ -191,8 +155,8 @@
 }
 
 .react-toggle-thumb {
-  @include themify($themes) { 
-    background-color: themed('homePanelToggleThumbBackgroundColor');  
+  @include themify($themes) {
+    background-color: themed('toggleThumbBackgroundColor');
   }
   transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0ms;
   position: absolute;
@@ -218,11 +182,11 @@
 
 
 .earningsFilters{
-  display: inline-block; 
-  cursor: pointer; 
-  padding-left:20px; 
-  position:relative; 
-  font-size: 14px; 
+  display: inline-block;
+  cursor: pointer;
+  padding-left:20px;
+  position:relative;
+  font-size: 14px;
   top: 104px;
   left: 13px;
 }
@@ -230,16 +194,16 @@
 .earningsFiltersDate{
   display: inline-block;
   padding-left: 13px;
-  padding-right: 13px; 
-  cursor: pointer; 
-  position:relative; 
-  font-size: 14px; 
+  padding-right: 13px;
+  cursor: pointer;
+  position:relative;
+  font-size: 14px;
   top: 112px;
 }
 
 .noIcomingPayments{
   font-size: 15px;
-  text-align: center; 
+  text-align: center;
   color: #40424c;
   position: relative;
   top: 26px;
@@ -257,8 +221,8 @@
 .home__ans-payment-time{
   font-size: 14px;
   font-weight: 700;
-  @include themify($themes) { 
-    color: themed('bodySecondaryParagraphColor');  
+  @include themify($themes) {
+    color: themed('bodySecondaryParagraphColor');
   }
   cursor: pointer;
 }

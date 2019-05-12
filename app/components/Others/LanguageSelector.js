@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 
 import * as actions from '../../actions';
-import {language } from '../../lang/lang';
+import {language} from '../../lang/lang';
 
 import $ from 'jquery';
 

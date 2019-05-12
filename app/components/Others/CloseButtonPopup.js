@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 class CloseButtonPopup extends Component {
   constructor(props) {

@@ -1,0 +1,57 @@
+@import "themes/themes.scss";
+
+#loader {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  @include themify($themes) {
+	background-color: themed('bodyBackgroundColor');
+	color: themed('bodyParagraphColor');
+  }
+
+  & > div:first-child {
+	margin: 0 auto;
+  }
+
+  & > .text {
+	margin-top: 15px;
+  }
+}
+
+.fullscreenModal {
+  max-width: 100vw;
+  max-height: calc(100vh);
+  width: 100vw;
+  height: calc(100vh);
+  margin: 0;
+
+  & > .modal-content {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+
+	& > .modal-header {
+	  flex: 0 0 65px;
+
+	  & > .close {
+		margin-top: 10px;
+	  }
+	}
+
+	& > .modal-body {
+	  flex: 1 1 auto;
+	  overflow: auto;
+	}
+
+	& > .modal-footer {
+	  flex: 0 0 50px;
+	}
+  }
+}

@@ -1,20 +1,29 @@
-@import "./styles/themes.scss";
-
-.addContactButton{
-	margin-left: 20px;
-	display: inline-block;
-	width: auto;
-	padding: 0px 20px;
-	top: 29px;
-}
+@import "./themes/themes.scss";
 
 .contactsMessage{
-	  @include themify($themes) { 
-	    color: themed('eccTicker');  
+	  @include themify($themes) {
+	    color: themed('eccTicker');
 	  }
 	position: absolute;
 	width:100%;
 	text-align: center;
 	font-size: 15px;
 	visibility: hidden;
+}
+
+#contactRightSidebar {
+  flex: 0 0 280px;
+  overflow: auto;
+  transition: flex 0.25s ease;
+
+  &.hide {
+	overflow: hidden;
+	flex: 0 0 0px !important;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  #contactRightSidebar {
+	flex: 0 0 400px !important;
+  }
 }

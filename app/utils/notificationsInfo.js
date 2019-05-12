@@ -1,5 +1,6 @@
 import low from 'lowdb';
 import storage from 'lowdb/lib/storages/file-async';
+
 var fs = require('fs');
 
 let remote = require('electron').remote;
@@ -10,7 +11,7 @@ let path = app.getPath('userData') + '/notificationsInfo.json';
 
 try{
   db = low( path, {storage});
-}catch(err){;
+} catch (err) {
   fs.unlinkSync(path);
   db = low( path, {storage});
 }

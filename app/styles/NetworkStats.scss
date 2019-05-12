@@ -1,15 +1,8 @@
-@import "./styles/themes.scss";
+@import "./themes/themes.scss";
 
 .networkStatsChainTitle{
 	font-size: 26px;
 	font-weight: 300;
-	transition: font-size 0.3s;
-}
-
-#headerNetworkText{
-	@include themify($themes) { 
-		color: themed('bigPanelTimeColor');
-	}
 	transition: font-size 0.3s;
 }
 .percentageSyncedNetworkVal{
@@ -21,8 +14,8 @@
 }
 
 .syncedTextNetwork{
-	@include themify($themes) { 
-    	fill: themed('bodySecondaryParagraphColor');  
+	@include themify($themes) {
+    	fill: themed('bodySecondaryParagraphColor');
   	}
 	font: 700 36px "Muli";
 }
@@ -32,38 +25,26 @@
 }
 
 .networkStatsCounter{
-	@include themify($themes) { 
-    	color: themed('bodyParagraphColor');  
+	@include themify($themes) {
+    	color: themed('bodyParagraphColor');
   	}
 }
 
 .chainInfo p{
-	@include themify($themes) { 
-    	color: themed('bodySecondaryParagraphColor');  
+	@include themify($themes) {
+    	color: themed('bodySecondaryParagraphColor');
   	}
 }
 
 .score-empty{
-	@include themify($themes) { 
-    	stroke: themed('circleTrackColor');  
+	@include themify($themes) {
+    	stroke: themed('circleTrackColor');
   	}
 }
 
 #paymentChainCircle{
-	@include themify($themes) { 
-    	stroke: themed('paymentChainCircleColor');  
-  	}
-}
-
-#messagingChainCircle{
-	@include themify($themes) { 
-    	stroke: themed('messagingChainCircleColor');  
-  	}
-}
-
-#fileStorageChainCircle{
-	@include themify($themes) { 
-    	stroke: themed('fileStorageChainCircleColor');  
+	@include themify($themes) {
+    	stroke: themed('paymentChainCircleColor');
   	}
 }
 
@@ -71,10 +52,6 @@
 	.networkStatsChainTitle{
 		font-size: 23px;
 		font-weight: 300;
-	}
-
-	#headerNetworkText{
-		font-size: 60px !important;
 	}
 
 	.networkStatsImage{

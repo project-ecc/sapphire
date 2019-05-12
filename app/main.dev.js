@@ -12,11 +12,11 @@
  */
 
 import MenuBuilder from './menu';
-import DaemonManager from './Managers/DaemonManager';
 import GUIManager from './Managers/GUIManager';
-import {getDebugUri, grabEccoinDir, grabWalletDir} from "./utils/platform.service";
-import { traduction } from './lang/lang';
+import {getDebugUri, grabEccoinDir} from './utils/platform.service';
+import {traduction} from './lang/lang';
 import {version} from './../package.json';
+
 const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote } = require('electron');
 const dialog = require('electron').dialog;
 const settings = require('electron-settings');
@@ -24,17 +24,17 @@ const event = require('./utils/eventhandler');
 const opn = require('opn');
 const Tail = require('tail').Tail;
 
-let arch = require('arch');
-var fs = require('fs');
-var AutoLaunch = require('auto-launch');
-let autoECCLauncher = new AutoLaunch({
-	name: 'Sapphire'
+const fs = require('fs');
+const AutoLaunch = require('auto-launch');
+
+const { autoUpdater } = require('electron-updater')
+const autoECCLauncher = new AutoLaunch({
+  name: 'Sapphire'
 });
 let walletPath;
 let tray = null;
-let daemonManager = null;
+// let daemonManager = null;
 let guiManager = null;
-let maximized = false;
 let ds = null;
 let mainWindow = null;
 let guiUpdate = false;
@@ -45,15 +45,15 @@ let fullScreen = false;
 
 
 try {
-    fs.mkdirSync(grabEccoinDir());
-} catch(e){
-  //console.log(e)
+  fs.mkdirSync(grabEccoinDir());
+} catch (e) {
+  // console.log(e)
 }
 
 try {
   fs.writeFileSync(getDebugUri(), '\n');
-} catch(e){
-  //console.log(e)
+} catch (e) {
+  // console.log(e)
 }
 const tail = new Tail(getDebugUri());
 
@@ -87,9 +87,9 @@ const installExtensions = async () => {
 };
 
 
-var myWindow = null;
+const myWindow = null;
 
-var shouldQuit = app.makeSingleInstance(function(commandLine, workingDirectory) {
+const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
   // Someone tried to run a second instance, we should focus our window.
   if (myWindow) {
     if (myWindow.isMinimized()) myWindow.restore();
@@ -102,31 +102,15 @@ if (shouldQuit) {
 }
 
 app.on('ready', async () => {
-
   ds = settings.get('settings.display');
-  const walletDir = grabWalletDir();
-  const fileName = 'sapphire';
-  let fullPath = ''
-  //delete downloaded update if it exists.
-  if (process.platform === 'linux') {
 
-    const architecture = arch() === 'x86' ? 'linux32' : 'linux64';
-    fullPath = walletDir + fileName + '-v' + version + '-' + architecture;
-
-  }
-  else if(process.platform === 'darwin'){
-
-    fullPath = walletDir + fileName + '-v' + version + '-mac.dmg';
-  }
-  else if (process.platform.indexOf('win') > -1) {
-
-    const architecture = arch() === 'x86' ? 'win32' : 'win64';
-    fullPath = walletDir + fileName + '-v' + version + '-' + architecture + '.exe';
-
-  }
-
-  if(fs.existsSync(fullPath)){
-    fs.unlink(fullPath)
+  const log = require("electron-log")
+  log.transports.file.level = "debug"
+  autoUpdater.logger = log
+  try {
+    autoUpdater.checkForUpdatesAndNotify()
+  }catch (e){
+    console.log(e)
   }
 
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
@@ -136,63 +120,63 @@ app.on('ready', async () => {
   const selectedTheme = settings.get('settings.display.theme');
 
   const getBackgroundColor = () => {
-    if(!selectedTheme || selectedTheme === "theme-darkEcc")
-      return "#1c1c23";
-    else if(selectedTheme && selectedTheme === "theme-defaultEcc")
-      return "#181e35";
-  }
+    if (!selectedTheme || selectedTheme === 'theme-darkEcc') { return '#1c1c23'; } else if (selectedTheme && selectedTheme === 'theme-defaultEcc') { return '#181e35'; }
+  };
 
-  app.setAppUserModelId("com.github.csmartinsfct.sapphire");
+  app.setAppUserModelId('com.github.project-ecc.sapphire');
 
   mainWindow = new BrowserWindow({
-    show: false,
+    show: true,
     width: 1367,
     height: 768,
-    minWidth: 800,
-    minHeight: 600,
-    title: "Sapphire",
+    minWidth: 1024,
+    minHeight: 800,
+    title: 'Sapphire',
     backgroundColor: getBackgroundColor(),
     frame: false,
-    webPreferences: {backgroundThrottling: false}
+    webPreferences: {
+      backgroundThrottling: false,
+      experimentalFeatures: true
+    }
   });
 
   mainWindow.loadURL(`file://${__dirname}/version.html#v${app.getVersion()}`);
   mainWindow.loadURL(`file://${__dirname}/app.html`);
 
-  mainWindow.on('show', function (event) {
+  mainWindow.on('show', (event) => {
     mainWindow.setSkipTaskbar(false);
   });
 
-  mainWindow.on('focus', function (event) {
-  	sendMessage("focused");
+  mainWindow.on('focus', (event) => {
+  	sendMessage('focused');
   });
 
-  mainWindow.on('blur', function (event) {
-    sendMessage("unfocused");
+  mainWindow.on('blur', (event) => {
+    sendMessage('unfocused');
   });
 
-  mainWindow.on('leave-full-screen', function(event){
-  if (process.platform === 'darwin'){
-  		sendMessage("full-screen");
-  		fullScreen = false
+  mainWindow.on('leave-full-screen', (event) => {
+    if (process.platform === 'darwin') {
+  		sendMessage('full-screen');
+  		fullScreen = false;
   	}
   });
 
-  mainWindow.on('enter-full-screen', function(event){
-  	if (process.platform === 'darwin'){
-  		sendMessage("full-screen");
+  mainWindow.on('enter-full-screen', (event) => {
+  	if (process.platform === 'darwin') {
+  		sendMessage('full-screen');
   		fullScreen = true;
   	}
   });
 
-	mainWindow.webContents.on('before-input-event', async function (event, input) {
-		if ((input.key.toLowerCase() === 'q' || input.key.toLowerCase() === "w") && input.control) {
-			event.preventDefault();
-			app.quit();
-		}
-	});
+  mainWindow.webContents.on('before-input-event', async (event, input) => {
+    if ((input.key.toLowerCase() === 'q' || input.key.toLowerCase() === 'w') && input.control) {
+      event.preventDefault();
+      app.quit();
+    }
+  });
 
-  mainWindow.webContents.on('new-window', function(event, url){
+  mainWindow.webContents.on('new-window', (event, url) => {
     event.preventDefault();
     opn(url);
   });
@@ -200,7 +184,7 @@ app.on('ready', async () => {
   mainWindow.on('close', async (e) => {
     e.preventDefault();
     await closeApplication();
-  })
+  });
 
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
@@ -218,8 +202,8 @@ app.on('ready', async () => {
   setupEventHandlers();
 });
 
-async function closeApplication(){
-  console.log("closeApplication()")
+async function closeApplication() {
+  console.log('closeApplication()');
   if (ds !== undefined && ds.minimise_on_close !== undefined && ds.minimise_on_close) {
     if (!ds.minimise_to_tray) {
       mainWindow.minimize();
@@ -227,37 +211,34 @@ async function closeApplication(){
       mainWindow.hide();
     }
   } else {
-    console.log("Herererere", mainWindow)
-    if(mainWindow){
+    // console.log('Herererere', mainWindow);
+    if (mainWindow) {
       mainWindow.show();
       mainWindow.focus();
     }
-    sendMessage("closing_daemon");
-    let closedDaemon = false;
-    console.log(daemonManager)
-    do{
-      closedDaemon = await daemonManager.stopDaemon();
-      //console.log("closedDaemon: ", closedDaemon);
-    }while(!closedDaemon);
-    console.log("shutdown");
+    sendMessage('stop');
+    const closedDaemon = false;
+
+    console.log('shutdown');
     app.exit();
   }
 }
 
-app.on('before-quit', async function (e) {
+app.on('before-quit', async (e) => {
   e.preventDefault();
+  sendMessage('stop');
   await closeApplication();
- });
+});
 
 function setupTrayIcon() {
-  var trayImage;
-  var imageFolder = __dirname + '/dist/assets';
+  let trayImage;
+  const imageFolder = `${__dirname}/dist/assets`;
 
   // Determine appropriate icon for platform
-  if (process.platform === "darwin" || process.platform === "linux") {
-    trayImage = imageFolder + '/trayIconTemplate.png';
+  if (process.platform === 'darwin' || process.platform === 'linux') {
+    trayImage = `${imageFolder}/trayIconTemplate.png`;
   } else {
-    trayImage = imageFolder + '/icon.ico';
+    trayImage = `${imageFolder}/icon.ico`;
   }
   tray = new Tray(nativeImage.createFromPath(trayImage));
 
@@ -265,52 +246,46 @@ function setupTrayIcon() {
 
   tray.on('click', () => {
     mainWindow.show();
-		mainWindow.focus();
+    mainWindow.focus();
   });
 }
 
 function setupEventHandlers() {
+  ipcMain.on('messagingView', (e, args) => {
+    if (args) {
+      mainWindow.setMinimumSize(400, 600);
+    }		else {
+      if (mainWindow.getSize()[0] < 800) {
+        mainWindow.setSize(800, mainWindow.getSize()[1]);
+      }
+      mainWindow.setMinimumSize(800, 600);
+    }
+  });
 
-	ipcMain.on('messagingView', (e, args) => {
-		if(args){
-			mainWindow.setMinimumSize(400,600);
-		}
-		else{
-			if(mainWindow.getSize()[0] < 800){
-				mainWindow.setSize(800, mainWindow.getSize()[1]);
-			}
-			mainWindow.setMinimumSize(800,600);
-		}
-	});
+  ipcMain.on('autoStart', (e, autoStart) => {
+    if (autoStart) { autoECCLauncher.enable(); } else autoECCLauncher.disable();
+  });
 
-	ipcMain.on('autoStart', (e, autoStart) => {
-		if(autoStart)
-			autoECCLauncher.enable();
-		else autoECCLauncher.disable();
-	});
-
-	ipcMain.on('show', (e, args) => {
+  ipcMain.on('show', (e, args) => {
     mainWindow.show();
-		mainWindow.focus();
-	});
+    mainWindow.focus();
+  });
 
   ipcMain.on('app:ready', (e, args) => {
-    console.log("ELECTRON GOT READY MESSAGE");
+    console.log('ELECTRON GOT READY MESSAGE');
     guiManager = new GUIManager();
-    daemonManager = new DaemonManager();
+    // daemonManager = new DaemonManager();
     mainWindow.once('ready-to-show', () => {
-      mainWindow.show()
+      mainWindow.show();
     });
   });
 
   ipcMain.on('autoStart', (e, autoStart) => {
-    if(autoStart)
-      autoECCLauncher.enable();
-    else autoECCLauncher.disable();
+    if (autoStart) { autoECCLauncher.enable(); } else autoECCLauncher.disable();
   });
 
   ipcMain.on('minimize', (e, args) => {
-    if(ds !== undefined && ds.minimise_to_tray !== undefined && ds.minimise_to_tray){
+    if (ds !== undefined && ds.minimise_to_tray !== undefined && ds.minimise_to_tray) {
       mainWindow.setSkipTaskbar(true);
       mainWindow.hide();
       return;
@@ -319,23 +294,22 @@ function setupEventHandlers() {
   });
 
   ipcMain.on('full-screen', (e, args) => {
-    if(fullScreen)
-      mainWindow.setFullScreen(false);
-    else
-      mainWindow.setFullScreen(true);
+    if (fullScreen) { mainWindow.setFullScreen(false); } else { mainWindow.setFullScreen(true); }
 
     fullScreen = !fullScreen;
   });
 
-	ipcMain.on('quit', () => {
+  ipcMain.on('quit', () => {
+    sendMessage('stop');
     app.quit();
   });
 
+  ipcMain.on('start', (args) => {
+    sendMessage('start', args);
+  });
+
   ipcMain.on('hideTray', (e, hideTray) => {
-    if(!hideTray)
-      setupTrayIcon();
-    else
-      tray.destroy()
+    if (!hideTray) { setupTrayIcon(); } else { tray.destroy(); }
   });
 
   ipcMain.on('reloadSettings', () => {
@@ -343,96 +317,102 @@ function setupEventHandlers() {
   });
 
   ipcMain.on('maximize', (e, args) => {
-    if(!maximized)
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize();
+    } else {
       mainWindow.maximize();
-    else mainWindow.unmaximize();
-
-    maximized = !maximized;
+    }
   });
 
-  //done with initial setup tell DaemonManager to start
+  // done with initial setup tell DaemonManager to start
   ipcMain.on('refresh-complete', (e, args) => {
-    sendMessage('refresh-complete')
+    sendMessage('refresh-complete');
   });
 
-  //done with initial setup tell DaemonManager to start
-  ipcMain.on('initialSetup', (e, args) => {
-    settings.set('settings.initialSetup', true);
-    daemonManager.startDaemonChecker();
-  });
+  // done with initial setup tell DaemonManager to start
+  // ipcMain.on('initialSetup', (e, args) => {
+  //   // settings.set('settings.initialSetup', true);
+  //   daemonManager.startDaemonChecker();
+  // });
 
   event.on('wallet', (exists, daemonCredentials) => {
-    var initialSetup = settings.has('settings.initialSetup');
+    // exists: does wallet.dat exist
+    // deamonCredentials: object of username and password
+    // var initialSetup = settings.has('settings.initialSetup');
+    // console.log('GOT MESSAGE', exists, daemonCredentials);
 
-    sendMessage("daemonCredentials", daemonCredentials)
-
-    if(initialSetup && exists){
-      sendMessage("setup_done");
-    }
-    else if(initialSetup && !exists){
-      sendMessage("import_wallet");
-    }
-    else if(!initialSetup && exists){
-      sendMessage("partial_initial_setup");
-    }
-    else if(!initialSetup && !exists){
-      sendMessage("initial_setup");
-    }
+    sendMessage('daemonCredentials', {
+      credentials: daemonCredentials
+    });
+    //
+    // if(initialSetup && exists){
+    //   sendMessage("setup_done");
+    // }
+    // else if(initialSetup && !exists){
+    //   sendMessage("import_wallet");
+    // }
+    // else if(!initialSetup && exists){
+    //   sendMessage("partial_initial_setup");
+    // }
+    // else if(!initialSetup && !exists){
+    //   sendMessage("initial_setup");
+    // }
   });
 
   event.on('daemonUpdate', () => {
-    console.log("electron got daemon update message, sending to GUI");
+    console.log('electron got daemon update message, sending to GUI');
     daemonUpdate = true;
     sendMessage('daemonUpdate');
   });
 
   event.on('guiUpdate', () => {
-    console.log("electron got gui update message, sending to GUI");
+    console.log('electron got gui update message, sending to GUI');
     guiUpdate = true;
     sendMessage('guiUpdate');
   });
 
-  event.on('close', () => {
-    closeApplication();
-  })
+  event.on('close', async () => {
+    sendMessage('stop');
+    await closeApplication();
+  });
 
   event.on('updatedDaemon', () => {
-    sendMessage("daemonUpdated");
+    sendMessage('daemonUpdated');
     daemonUpdate = false;
-    if(guiUpdate){
+    if (guiUpdate) {
       event.emit('updateGui');
     }
   });
 
   event.on('daemonStarted', () => {
-    sendMessage("importedWallet");
+    sendMessage('importedWallet');
   });
 
 
-  //downloader events.
-  event.on('downloading-file', (payload) => {
-    sendMessage('downloading-file', payload)
-  });
-
-  event.on('downloaded-file', () => {
-    sendMessage('downloaded-file');
-  });
-
-  event.on('verifying-file', () => {
-    sendMessage('verifying-file');
-  });
-
-  event.on('unzipping-file', () => {
-    sendMessage('unzipping-file');
-  });
-
-  event.on('file-download-complete', () => {
-    sendMessage('file-download-complete');
-  });
-
-  event.on('download-error', (payload) => {
-    sendMessage('download-error', payload);
-  });
+  // // downloader events.
+  // event.on('downloading-file', (payload) => {
+  //   sendMessage('downloading-file', payload);
+  // });
+  //
+  // event.on('downloaded-file', () => {
+  //   sendMessage('downloaded-file');
+  // });
+  //
+  // event.on('verifying-file', () => {
+  //   sendMessage('verifying-file');
+  // });
+  //
+  // event.on('unzipping-file', () => {
+  //   sendMessage('unzipping-file');
+  // });
+  //
+  // event.on('file-download-complete', () => {
+  //   sendMessage('file-download-complete');
+  // });
+  //
+  // event.on('download-error', (payload) => {
+  //   sendMessage('download-error', payload);
+  // });
 
   event.on('loading-error', (payload) => {
     sendMessage('loading-error', payload);
@@ -451,76 +431,77 @@ function setupEventHandlers() {
   });
 
   ipcMain.on('update', (e, args) => {
-    console.log("electron got update signal, sending to daemon");
+    console.log('electron got update signal, sending to daemon');
     console.log(guiUpdate);
     console.log(daemonUpdate);
 
-    if(guiUpdate){
+    if (guiUpdate) {
       event.emit('updateGui');
-    }
-    else {
+    } else {
       event.emit('updateDaemon');
     }
   });
 }
 
 function sendMessage(type, argument = undefined) {
-	console.log("sending message: ", type);
+  console.log('sending message: ', type);
   mainWindow.webContents.send(type, argument);
 }
 
 
-function openFile () {
-  console.log("called open file");
-  var lang = traduction();
- dialog.showOpenDialog({ title: lang.selectAFileName, filters: [
+function openFile() {
+  console.log('called open file');
+  const lang = traduction();
+  dialog.showOpenDialog({ title: lang.selectAFileName,
+    filters: [
 
    { name: 'wallet', extensions: ['dat'] }
 
-  ]}, function (fileNames) {
-  if (fileNames === undefined){
-  	sendMessage("importCancelled");
+    ] }, (fileNames) => {
+    if (fileNames === undefined) {
+  	sendMessage('importCancelled');
   	return;
-  }
-  var fileName = fileNames[0];
-  if(fileName.indexOf("wallet.dat") == -1)
-  	 dialog.showMessageBox({ title: lang.wrongFileSelected, message: lang.pleaseSelectAFileNamed, type: "error",
-        buttons: ["OK"] }, function(){
+    }
+    const fileName = fileNames[0];
+    if (fileName.indexOf('wallet.dat') == -1)  	 {
+      dialog.showMessageBox({ title: lang.wrongFileSelected,
+        message: lang.pleaseSelectAFileNamed,
+        type: 'error',
+        buttons: ['OK'] }, () => {
         	openFile();
-        });
-   else{
-   	sendMessage("importStarted");
-    walletPath = `${grabEccoinDir()}wallet.dat`;
-	console.log(walletPath);
+      });
+    } else {
+   	sendMessage('importStarted');
+      walletPath = `${grabEccoinDir()}wallet.dat`;
+      console.log(walletPath);
 
-   	copyFile(fileName, walletPath, function(err){
-		if(err){
-			console.log("error copying wallet: ", err);
-		}
-		else{
-			sendMessage('importedWallet');
-			event.emit('start');
-		}
-   	})
-   }
- });
+   	copyFile(fileName, walletPath, (err) => {
+     if (err) {
+       console.log('error copying wallet: ', err);
+     }		else {
+       sendMessage('importedWallet');
+       event.emit('start');
+     }
+   	});
+    }
+  });
 }
 
 function copyFile(source, target, cb) {
-  var cbCalled = false;
+  let cbCalled = false;
 
-  var rd = fs.createReadStream(source);
-  rd.on("error", function(err) {
+  const rd = fs.createReadStream(source);
+  rd.on('error', (err) => {
     done(err);
   });
-  var wr = fs.createWriteStream(target);
-  wr.on("error", function(err) {
-  	if(err.indexOf("ENOENT") > -1){
+  const wr = fs.createWriteStream(target);
+  wr.on('error', (err) => {
+  	if (err.indexOf('ENOENT') > -1) {
   		done(err);
   	}
     done(err);
   });
-  wr.on("close", function(ex) {
+  wr.on('close', (ex) => {
     done();
   });
   rd.pipe(wr);
@@ -533,6 +514,18 @@ function copyFile(source, target, cb) {
   }
 }
 
-tail.on("line", (data) => {
-  sendMessage('message-from-log', data);
+tail.on('line', (data) => {
+  const ignoreStrings = [
+    'UpdateTip:',
+    'sending getdata',
+    'sending getheaders',
+    'LoadExternalBlockFile',
+    ''
+  ];
+  const castedArg = String(data);
+  if (castedArg != null && (!ignoreStrings.some((v) => { return castedArg.indexOf(v) > -1; }))) {
+    console.log(castedArg, 'in here');
+
+    sendMessage('message-from-log', data);
+  }
 });

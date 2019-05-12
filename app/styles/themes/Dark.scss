@@ -1,0 +1,60 @@
+$darkTheme: (
+  // BODY
+  bodyBackgroundColor: #1c1c23,
+  bodyParagraphColor: #cecece,
+  bodySecondaryParagraphColor: #464b5a,
+  hrefColor: #e2e2e2,
+
+  // CARDS
+  cardBackgroundColor: #22252d,
+  cardDarkBackgroundColor: #171717,
+  cardItemSelectedBackgroundColor: #1a1d23,
+  cardBoxShadow: 0px 2px 5px rgba(0,0,0,0.2),
+
+  // CONTENT
+  headerRadialBackground: radial-gradient(ellipse at 50% -3%, rgba(0, 0, 0, 0.3), rgba(97, 97, 97, 0) 70%),
+
+  // TOGGLES
+  toggleTrueBackgroundColor: #c39c59,
+  toggleFalseBackgroundColor: #4D4D4D,
+  toggleThumbBackgroundColor: #FAFAFA,
+
+  // PROGRESS BAR
+  progressBarBackgroundColor: #c39c59,
+  progressBarBoxShadow: 0px 0px 9px -2px #c39c59,
+
+  //SIDEBAR
+  sidebarBackgroundColor: #22252d,
+  sidebarSelectedItemColor: #c39c59,
+  sidebarItemColor: #cecece,
+  sidebarHoverBackgroundColor: #1a1c23,
+
+  // SIDEBAR SECTIONS
+  sectionsBackground: #0f0f13,
+  sectionsHrefColor: #4a4a54,
+  sectionsHrefHoverColor: #6e6e79,
+  sectionsActiveColor: #fff,
+
+  // RIGHT SIDEBAR
+  rightSidebarBackgroundColor: #0f0f13,
+
+  // MODAL
+  modalBackgroundColor: #15161b,
+  modalBoxShadow: 0px 0px 13px -2px #000,
+
+  //NETWORK STATS
+  circleTrackColor: #16181d,
+  paymentChainCircleColor: #c39c59,
+
+  //MISC
+  textSelected: #59aac3,
+  eccTicker: #c39c59,
+
+  //SCROLLBAR
+  scrollbarTrackBoxShadow: inset 0 0 0px rgba(0,0,0,0),
+  scrollbarTrackBackgroundColor: rgba(0,0,0,0),
+  scrollbarThumbBackgroundColor: #14161b,
+
+  // TITLEBAR
+  titlebarButtonFilter: invert(0%)
+);

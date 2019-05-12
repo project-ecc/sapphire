@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-var classNames = require('classnames');
+import React, {Component} from 'react';
+
+const classNames = require('classnames');
 
 class Input extends Component {
   constructor(props) {
@@ -7,50 +8,49 @@ class Input extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleOnFocus = this.handleOnFocus.bind(this);
     this.handleOnBlur = this.handleOnBlur.bind(this);
-    this.placeholderId = "#" + this.props.placeholderId;
+    this.placeholderId = `#${this.props.placeholderId}`;
     this.handleKeyPressed = this.handleKeyPressed.bind(this);
-    this.state={focus: false}
+    this.state = { focus: false };
   }
 
-  handleOnFocus(){
-    this.setState({focus: true})
+  handleOnFocus() {
+    this.setState({ focus: true });
   }
 
-  handleOnBlur(event){
+  handleOnBlur(event) {
     const value = event.target.value;
-    this.setState({focus: false})
+    this.setState({ focus: false });
   }
 
-  handleChange(event){
-    let value = event.target.value;
-    this.props.handleChange(value)
-    this.setState({focus: true})
+  handleChange(event) {
+    const value = event.target.value;
+    this.props.handleChange(value);
+    this.setState({ focus: true });
   }
 
-  handleKeyPressed(event, callback){
-    if(!this.props.onSubmit) return;
+  handleKeyPressed(event, callback) {
+    if (!this.props.onSubmit) return;
     if (event.key === 'Enter') {
       this.props.onSubmit();
-      const value = event.target.value
-      if(value === ""){
-        this.setState({focus: false})
+      const value = event.target.value;
+      if (value === '') {
+        this.setState({ focus: false });
       }
     }
-
   }
 
   render() {
-    var inputClass = classNames({
-      'inputDiv': true,
+    const inputClass = classNames({
+      inputDiv: true,
       'inputDiv--is-left': this.props.isLeft,
-      'inputDiv--is-disabled': this.props.isDisabled,
-      'inputDiv--is-active': this.props.value !== "" || this.state.focus
+      'inputDiv--is-disabled': this.props.isDisabled || false,
+      'inputDiv--is-active': this.props.value !== '' || this.state.focus
     });
 
     return (
-      <div className={inputClass} id={this.props.divId ? this.props.divId : ""} style={this.props.style}>
+      <div className={inputClass} id={this.props.divId ? this.props.divId : ''} style={this.props.style}>
         <p id={this.props.placeholderId}>{this.props.placeholder}</p>
-        <input onKeyPress={this.handleKeyPressed} onFocus={this.handleOnFocus} onBlur={this.handleOnBlur} id={this.props.inputId ? this.props.inputId : ""} className="inputCustom" type={this.props.type} value={this.props.value} onChange={this.handleChange}  autoFocus={this.props.autoFocus}></input>
+        <input onKeyPress={this.handleKeyPressed} onFocus={this.handleOnFocus} onBlur={this.handleOnBlur} id={this.props.inputId || ''} className="inputCustom" type={this.props.type} value={this.props.value} onChange={this.handleChange} autoFocus={this.props.autoFocus} />
       </div>
     );
   }

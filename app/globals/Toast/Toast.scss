@@ -1,0 +1,46 @@
+#sapphire-toasts {
+  pointer-events: none;
+  position: fixed;
+  top: 40px;
+  right: 10px;
+  z-index: 1051;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  /* Individual toasts */
+  & > div {
+	display: inline-block;
+	color: white;
+	margin-top: 0px;
+	padding: 0px 14px;
+	max-width: 300px;
+	width: auto;
+	font-size: 0.9em;
+	line-height: 1.2em;
+	pointer-events: all;
+	max-height: 0px;
+	transition: max-height 0.75s ease, padding 0.75s ease, margin-bottom 0.25s ease;
+	overflow: hidden;
+
+	h5 {
+	  opacity: 0;
+	  transition: opacity 0.5s ease;
+	}
+
+	&.show {
+	  max-height: 300px;
+	  padding: 7px 14px;
+	  margin-bottom: 10px;
+
+	  h5 {
+		opacity: 1;
+	  }
+	}
+
+	& > .buttons {
+	  display: flex;
+	  justify-content: flex-end;
+	}
+  }
+}
