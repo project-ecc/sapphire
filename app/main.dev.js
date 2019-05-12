@@ -24,7 +24,6 @@ const event = require('./utils/eventhandler');
 const opn = require('opn');
 const Tail = require('tail').Tail;
 
-const arch = require('arch');
 const fs = require('fs');
 const AutoLaunch = require('auto-launch');
 
