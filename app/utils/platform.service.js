@@ -1,10 +1,9 @@
-import daemonConfig from '../../daemon-data.json';
 import sapphireConfig from '../../gui-data.json';
 
 const homedir = require('os').homedir();
 let arch = require('arch');
 
-let serverUrl = process.env.NODE_ENV === 'production' ? daemonConfig.live_server_address : daemonConfig.dev_server_address;
+let serverUrl = process.env.UPDATE_SERVER_URL;
 
 
 export function getPlatformName(){
@@ -39,16 +38,16 @@ export function getPlatformFileName() {
 
 export function getDaemonDownloadUrl() {
 
-  let url = serverUrl + daemonConfig.daemon_url;
+  let url = serverUrl + '/v1/products/eccoind/';
 
   if (process.platform === 'linux') {
-    url += arch() === 'x86' ? daemonConfig.linux32 : daemonConfig.linux64;
+    url += arch() === 'x86' ? 'linux32' : 'linux64';
 
   } else if (process.platform === 'darwin') {
-    url += daemonConfig.osx;
+    url += 'mac';
 
   } else if (process.platform.indexOf('win') > -1) {
-    url += arch() === 'x86' ? daemonConfig.win32 : daemonConfig.win64;
+    url += arch() === 'x86' ? 'win32' : 'win64';
   }
 
   return url + "/versions.json";

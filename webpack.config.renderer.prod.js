@@ -145,8 +145,11 @@ export default merge.smart(baseConfig, {
      * NODE_ENV should be production so that modules do not perform certain
      * development checks
      */
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production')
+
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'production', // use 'development' unless process.env.NODE_ENV is defined
+      DEBUG: false,
+      UPDATE_SERVER_URL: 'https://dev-api-r.ecc.network'
     }),
 
     /**
