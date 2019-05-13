@@ -89,8 +89,8 @@ class Connector extends Component {
       await this.updateDaemon();
     });
 
-    event.on('initial_setup', async () => {
-      await this.initialSetup();
+    event.on('initial_setup', async (withUpdateCheck) => {
+      await this.initialSetup(withUpdateCheck);
     });
 
     event.on('downloadDaemon', async () => {
@@ -179,7 +179,7 @@ class Connector extends Component {
     });
   }
 
-  async initialSetup() {
+  async initialSetup(withUpdateCheck = true) {
     const iVersion = await this.checkIfDaemonExists();
     const walletFile = await this.checkIfWalletExists();
     console.log(iVersion)
@@ -188,13 +188,16 @@ class Connector extends Component {
       walletDat: walletFile
     });
 
-    await this.getLatestVersion().catch((err)=> {
-      console.log(err.message);
-      this.props.setLoading({
-        isLoading: true,
-        loadingMessage: err.message
+    if(withUpdateCheck == true){
+      await this.getLatestVersion().catch((err)=> {
+        console.log(err.message);
+        this.props.settellUserUpdateFailed({
+          updateFailed: true,
+          downloadMessage: err.message
+        });
       });
-    });
+    }
+
 
     console.log("server version: ", this.state.currentVersion);
     const version = this.state.installedVersion === -1 ? this.state.installedVersion : parseInt(this.state.installedVersion.replace(/\D/g, ''));
@@ -205,6 +208,7 @@ class Connector extends Component {
         this.setState({
           downloadingDaemon: false
         });
+        this.props.setUpdatingApplication(false);
         this.startDaemonChecker();
         event.emit('startConnectorChildren');
       }).catch((err) => {
@@ -243,6 +247,8 @@ class Connector extends Component {
         } else if (list && list.length == 0) {
           console.log('daemon not running');
           this.props.setDaemonRunning(false);
+          console.log(!self.state.downloadingDaemon)
+          console.log(self.props.daemonErrorPopup)
           if (!self.state.downloadingDaemon && self.props.daemonErrorPopup !== true)
           { event.emit('start'); }
         }

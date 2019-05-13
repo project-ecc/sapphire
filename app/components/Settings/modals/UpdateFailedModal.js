@@ -22,7 +22,7 @@ class FullscreenModal extends Component {
   handleDismissUpdateFailed() {
     this.props.settellUserUpdateFailed(false);
     this.props.setUpdatingApplication(false);
-    event.emit('initial_setup');
+    event.emit('initial_setup', false);
   }
 
   retryDownload() {
@@ -35,10 +35,16 @@ class FullscreenModal extends Component {
       const unzipped = await unzipFile(fileName, walletDir);
       if (!unzipped) reject(unzipped);
       const latestDaemonVersion = fileName.split('-')[1];
-      fs.renameSync(walletDir + "eccoin-"+ latestDaemonVersion +"/bin/eccoind", walletDir + getPlatformFileName(), function (err) {
+      let fileLocation =  '/bin/eccoind';
+      if(getPlatformName() === 'win32' || getPlatformName() === 'win64'){
+        fileLocation = '\\bin\\eccoind.exe';
+      }
+      console.log(fileLocation);
+      console.log(getPlatformName());
+      fs.renameSync(walletDir + "eccoin-"+ latestDaemonVersion + fileLocation, walletDir + getPlatformFileName(), function (err) {
         if (err) reject(err)
-        resolve(true);
         console.log('Successfully renamed - AKA moved!')
+        resolve(true);
       });
     });
 
@@ -59,8 +65,8 @@ class FullscreenModal extends Component {
       const fileName = fileNames[0];
       if (fileName.indexOf('eccoin') == -1) {
         dialog.showMessageBox({
-          title: lang.wrongFileSelected,
-          message: lang.pleaseSelectAFileNamed,
+          title: this.props.lang.wrongFileSelected,
+          message: this.props.lang.pleaseSelectAFileNamed,
           type: 'error',
           buttons: ['OK']
         }, () => {
@@ -80,6 +86,7 @@ class FullscreenModal extends Component {
             downloadMessage: ''
           });
         }).catch((err) => {
+          console.log(err)
           Toast({
             title: this.props.lang.error,
             message: err.message,
@@ -97,7 +104,8 @@ class FullscreenModal extends Component {
           Daemon Update Failed
         </ModalHeader>
         <ModalBody>
-          { this.props.downloadMessage }
+          <h4>The Daemon was unable to update</h4>
+          <p> { this.props.downloadMessage }</p>
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={this.manualDaemonUpdate}>Manual Update</Button>
@@ -115,7 +123,7 @@ const mapStateToProps = state => {
     loading: state.startup.loading,
     downloadMessage: state.application.downloadMessage,
     wallet: state.application.wallet,
-    guiUpdate: state.startup.guiUpdate
+    guiUpdate: state.startup.guiUpdate,
   };
 };
 

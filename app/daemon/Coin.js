@@ -673,8 +673,8 @@ class Coin extends Component {
       });
     }
     if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT' || err.body === 'Work queue depth exceeded')) {
-      clearInterval(this.state.checkStartupStatusInterval);
-      clearInterval(this.state.blockInterval);
+      // clearInterval(this.state.checkStartupStatusInterval);
+      // clearInterval(this.state.blockInterval);
     }
     if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
       this.props.setDaemonRunning(false);

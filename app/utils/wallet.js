@@ -331,17 +331,25 @@ export default class Wallet {
             reject(err);
           });
       } else if (process.platform.indexOf('win') > -1) {
-        // TODO: uncomment this when package is fixed
-        path = `& start-process "${path}" -ArgumentList "${options}" -verb runAs -WindowStyle Hidden`;
-        // path = `& "${path}" `;
+        let command = ''
+
+        if(options.includes('version') > -1){
+          command = `${path} -version`;
+          console.log(command)
+        } else {
+          command = `& start-process "${path}" -ArgumentList "${options}" -verb runAs -WindowStyle Hidden`;
+          console.log(command)
+        }
+
         const ps = new Shell({
           executionPolicy: 'Bypass',
           noProfile: true
         });
-        ps.addCommand(path);
+        ps.addCommand(command);
         ps.invoke()
-          .then(() => {
-            return resolve(true);
+          .then(data => {
+            console.log(data)
+            return resolve(data);
           })
           .catch(err => {
             console.log(err);
@@ -374,6 +382,7 @@ export default class Wallet {
       let path = getPlatformWalletUri();
       this.runWalletWithOptions(path, ['-version']).then((data)=>{
         // Eccoind version v0.2.5.15-06804e7
+        console.log(data)
         let firstLine = data.split(/\r?\n/)[0];
         let splitOnSpace = firstLine.split(" ")[2];
         let cleaned = splitOnSpace.split("-")[0];
