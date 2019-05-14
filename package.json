@@ -2,7 +2,7 @@
   "name": "sapphire",
   "productName": "Sapphire",
   "maintainer ": "Project ECC",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Electron application providing the graphical user interface for the ECC Wallet",
   "scripts": {
     "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js",
@@ -35,28 +35,19 @@
     "package-osx": "npm run build && build --mac --x64 -c ./os/osx.json -p always",
     "package-linux": "npm run build && build --linux -c ./os/lin64.json -p always",
     "package-linux-32": "npm run build && build --linux --ia32 -c ./os/lin32.json -p always",
-    "package-all": "npm run package-win && npm run package-win-32 && npm run package-linux && npm run package-linux-32"
+    "package-all": "npm run package-win && npm run package-win-32 && npm run package-linux && npm run package-linux-32",
+    "publish-win": "build --win -p always"
   },
   "browserslist": "electron 1.8",
   "build": {
     "productName": "Sapphire",
-    "appId": "com.github.project-ecc.sapphire",
-    "files": [
-      "dist/",
-      "node_modules/",
-      "app.html",
-      "main.prod.js",
-      "main.prod.js.map",
-      "package.json"
-    ],
+    "appId": "com.github.gl3nda85.sapphire",
     "publish": [
       {
         "provider": "github",
-        "owner": "project-ecc",
+        "owner": "gl3nda85",
         "repo": "sapphire",
-        "vPrefixedTagName": "true",
-        "protocol": "https",
-        "host": "github.com"
+        "vPrefixedTagName": "true"
       }
     ],
     "dmg": {
@@ -74,6 +65,9 @@
       ]
     },
     "win": {
+      "publish": [
+        "github"
+      ],
       "target": [
         "nsis"
       ]
@@ -91,7 +85,7 @@
       "buildResources": "resources"
     }
   },
-  "repository": "git+https://github.com/project-ecc/sapphire.git",
+  "repository": "git+https://github.com/gl3nda85/sapphire.git",
   "author": "Project ECC <dev@ecc.network>",
   "license": "MIT",
   "keywords": [
