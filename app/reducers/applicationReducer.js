@@ -32,7 +32,7 @@ import {
   TOLD_USER_UPDATE_FAILED,
   TRANSACTIONS_PAGE,
   TRAY,
-  UPDATE_APPLICATION,
+  UPDATE_APPLICATION, UPDATE_FAILED_MESSAGE,
   USER_ADDRESSES,
   WAS_STAKING
 } from '../actions/types';
@@ -44,7 +44,7 @@ const Queue = require('../utils/queue');
 
 let moment = require('moment');
 
-const INITIAL_STATE = {wallet: null, daemonRunning: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, friends: [], userAddresses: [], creatingAddress: false, newContactAddress:"", settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, locationToExport: "", backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, pendingTransactions: [], wasStaking: false, daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], coinMarketCapStats: {}, coinMarketLastUpdated: 0, updateApplication:false, closingApplication: false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false, downloadMessage: undefined, downloadPercentage: undefined, downloadRemainingTime: undefined, updateFailed:false, popupLoading: false, contactToAdd: undefined, showZeroBalance: true, filteringTransactions: false, debugLog: new Queue(), selectedCurrency: "usd", donationGoals: {}, donationGoalsLastUpdated: 0, daemonErrorPopup:false, daemonError: ''};
+const INITIAL_STATE = {wallet: null, daemonRunning: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, friends: [], userAddresses: [], creatingAddress: false, newContactAddress:"", settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, locationToExport: "", backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, pendingTransactions: [], wasStaking: false, daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], coinMarketCapStats: {}, coinMarketLastUpdated: 0, updateApplication:false, closingApplication: false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false, downloadMessage: undefined, downloadPercentage: undefined, downloadRemainingTime: undefined, updateFailed:false, popupLoading: false, contactToAdd: undefined, showZeroBalance: true, filteringTransactions: false, debugLog: new Queue(), selectedCurrency: "usd", donationGoals: {}, donationGoalsLastUpdated: 0, daemonErrorPopup:false, daemonError: '' , updateFailedMessage: ''};
 
 
 export default(state = INITIAL_STATE, action) => {
@@ -63,6 +63,9 @@ export default(state = INITIAL_STATE, action) => {
 	else if(action.type == SELECTED_THEME_BACKUP){
 		return {...state, backupTheme: action.payload}
 	}
+	else if(action.type == UPDATE_FAILED_MESSAGE){
+	  return {...state, updateFailedMessage: action.payload}
+  }
 	else if(action.type == SELECTED_THEME){
 		return {...state, theme: action.payload}
 	}
@@ -202,6 +205,7 @@ export default(state = INITIAL_STATE, action) => {
     return {...state, downloadMessage: action.payload.downloadMessage, downloadPercentage: action.payload.downloadPercentage, downloadRemainingTime: action.payload.downloadRemainingTime}
   }
   else if(action.type == TOLD_USER_UPDATE_FAILED){
+    console.log(action.payload)
 	  return {...state, updateFailed: action.payload.updateFailed, downloadMessage: action.payload.message}
 	}
 	else if(action.type == IS_FILTERING_TRANSACTIONS){

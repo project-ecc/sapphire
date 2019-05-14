@@ -89,12 +89,8 @@ class Connector extends Component {
       await this.updateDaemon();
     });
 
-    event.on('initial_setup', async (withUpdateCheck) => {
-      await this.initialSetup(withUpdateCheck);
-    });
-
-    event.on('downloadDaemon', async () => {
-      await this.downloadDaemon();
+    event.on('initial_setup', async () => {
+      await this.initialSetup();
     });
 
     this.listenForDownloadEvents();
@@ -170,16 +166,22 @@ class Connector extends Component {
       });
     });
     event.on('download-error', (arg) => {
+      this.props.setFileDownloadStatus({
+        downloadMessage: '',
+        downloadPercentage: undefined,
+        downloadRemainingTime: 0.0
+      });
       console.log(arg)
       console.log(`Download failure: ${arg.message}`);
       this.props.settellUserUpdateFailed({
         updateFailed: true,
-        downloadMessage: arg.message
+        downloadMessage: arg.message + '\n Sapphire Cannot run with version ' + this.state.installedVersion + " Please manually update"
       });
     });
   }
 
-  async initialSetup(withUpdateCheck = true) {
+  async initialSetup() {
+    let canGetVersion = true;
     const iVersion = await this.checkIfDaemonExists();
     const walletFile = await this.checkIfWalletExists();
     console.log(iVersion)
@@ -188,21 +190,17 @@ class Connector extends Component {
       walletDat: walletFile
     });
 
-    if(withUpdateCheck == true){
-      await this.getLatestVersion().catch((err)=> {
-        console.log(err.message);
-        this.props.settellUserUpdateFailed({
-          updateFailed: true,
-          downloadMessage: err.message
-        });
-      });
-    }
+
+    await this.getLatestVersion().catch((err)=> {
+      console.log(err.message);
+      canGetVersion = false
+    });
 
 
     console.log("server version: ", this.state.currentVersion);
     const version = this.state.installedVersion === -1 ? this.state.installedVersion : parseInt(this.state.installedVersion.replace(/\D/g, ''));
     console.log('LOCAL VERSION INT: ', version);
-    if (this.state.installedVersion === -1 || version < REQUIRED_DAEMON_VERSION) {
+    if ((this.state.installedVersion === -1 || version < REQUIRED_DAEMON_VERSION) && canGetVersion === true) {
       await this.downloadDaemon().then((data) => {
         console.log('downloaded')
         this.setState({
@@ -215,7 +213,14 @@ class Connector extends Component {
         console.log(err)
         console.log('download daemon failed')
         event.emit('download-error', { message: err.message });
+
       });
+    } else if(version < REQUIRED_DAEMON_VERSION) {
+      this.props.settellUserUpdateFailed({
+        updateFailed: true,
+        downloadMessage: ''
+      });
+      this.props.setUpdateFailedMessage("Sapphire is unable to auto update please download the daemon and update manually!");
     } else {
       event.emit('startConnectorChildren');
       this.startDaemonChecker();

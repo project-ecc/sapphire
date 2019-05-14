@@ -58,7 +58,8 @@ import {
   WAS_STAKING,
   INITIAL_BLOCK_DOWNLOAD,
   BLOCKS_AND_HEADERS,
-  SIZE_ON_DISK
+  SIZE_ON_DISK,
+  UPDATE_FAILED_MESSAGE
 } from './types';
 
 export const setWalletCredentials = (args) => {
@@ -73,6 +74,13 @@ export const setDaemonRunning = (args) => {
     type: DAEMON_RUNNING,
     payload: args
   };
+};
+
+export const setUpdateFailedMessage = (val) => {
+  return {
+    type: UPDATE_FAILED_MESSAGE,
+    payload: val
+  }
 };
 
 export const getSetup = () => dispatch => {

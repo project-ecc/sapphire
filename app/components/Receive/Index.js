@@ -26,8 +26,7 @@ class Index extends Component {
     this.unlocktoggle = this.unlocktoggle.bind(this);
 
     this.state = {
-      address: null,
-      allAddresses: {}
+      address: null
     };
 
     event.on('reloadAddresses', async() => {
@@ -44,8 +43,13 @@ class Index extends Component {
   }
 
   async componentDidMount() {
-    this.unlockModal.getWrappedInstance().toggle();
+
     await this.loadAddresses();
+
+    if(this.props.userAddresses.length < 1){
+      this.unlockModal.getWrappedInstance().toggle();
+    }
+
   }
 
   selectAddressForReceive (address) {
@@ -74,9 +78,7 @@ class Index extends Component {
 
   async loadAddresses(){
     let data = await getAllMyAddresses();
-    this.setState({
-      allAddresses: data
-    });
+    this.props.setUserAddresses(data)
   }
 
   render() {
@@ -89,13 +91,14 @@ class Index extends Component {
           <div className="row">
             <div className="col-xl-8">
               <h4 className="mb-3">Addresses available in this wallet
-                <Button size="sm" outline color="warning" onClick={() => { this.unlocktoggle() }}>
+                <Button size="sm" outline color="warning" onClick={() => { this.unlocktoggle() }} className="ml-2">
                 Reload
                 </Button>
               </h4>
 
               <ListGroup style={{backgroundColor: null, maxHeight: '400px', overflowY:'scroll'}}>
-                { this.state && this.state.allAddresses !== null && Object.entries(this.state.allAddresses).map((result) => {
+                { this.props.userAddresses && this.props.userAddresses !== null && Object.entries(this.props.userAddresses).map((result) => {
+                  console.log(result)
                   let data = result[1];
                   let index = result[0];
                   return (
@@ -135,8 +138,7 @@ class Index extends Component {
 const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
-    userAddresses: state.application.userAddresses,
-    showZeroBalance: state.application.showZeroBalance
+    userAddresses: state.application.userAddresses
   };
 };
 

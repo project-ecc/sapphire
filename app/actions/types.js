@@ -67,3 +67,4 @@ export const DAEMON_RUNNING = 'daemon_running';
 export const INITIAL_BLOCK_DOWNLOAD = 'initial_block_download';
 export const BLOCKS_AND_HEADERS = 'blocks_and_headers';
 export const SIZE_ON_DISK = 'size_on_disk';
+export const UPDATE_FAILED_MESSAGE = 'update_failed_message'

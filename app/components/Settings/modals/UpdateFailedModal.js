@@ -20,13 +20,16 @@ class FullscreenModal extends Component {
   }
 
   handleDismissUpdateFailed() {
-    this.props.settellUserUpdateFailed(false);
+    this.props.settellUserUpdateFailed({
+      updateFailed: false,
+      downloadMessage: ''
+    });
     this.props.setUpdatingApplication(false);
     event.emit('initial_setup', false);
   }
 
   retryDownload() {
-    event.emit('downloadDaemon');
+    event.emit('initial_setup');
   }
 
   async unzipAndCopyDaemon(fileName){
@@ -41,7 +44,7 @@ class FullscreenModal extends Component {
       }
       console.log(fileLocation);
       console.log(getPlatformName());
-      fs.renameSync(walletDir + "eccoin-"+ latestDaemonVersion + fileLocation, walletDir + getPlatformFileName(), function (err) {
+      await fs.rename(walletDir + "eccoin-"+ latestDaemonVersion + fileLocation, walletDir + getPlatformFileName(), function (err) {
         if (err) reject(err)
         console.log('Successfully renamed - AKA moved!')
         resolve(true);
@@ -58,7 +61,7 @@ class FullscreenModal extends Component {
 
         { extensions: [extension] }
 
-      ] }, (fileNames) => {
+      ] }, async (fileNames) => {
       if (fileNames === undefined) {
         return;
       }
@@ -74,17 +77,19 @@ class FullscreenModal extends Component {
         });
       } else {
         console.log(fileName)
-        this.unzipAndCopyDaemon(fileName).then((result) => {
-          Toast({
-            title: this.props.lang.success,
-            message: 'Imported! starting wallet',
-            color: 'red'
-          });
-          event.emit('initial_setup')
+        await this.unzipAndCopyDaemon(fileName).then((result) => {
+          console.log('ready to load')
           this.props.settellUserUpdateFailed({
             updateFailed: false,
             downloadMessage: ''
           });
+          Toast({
+            title: this.props.lang.success,
+            message: 'Imported! starting wallet',
+            color: 'green'
+          });
+          event.emit('initial_setup')
+
         }).catch((err) => {
           console.log(err)
           Toast({
@@ -105,7 +110,7 @@ class FullscreenModal extends Component {
         </ModalHeader>
         <ModalBody>
           <h4>The Daemon was unable to update</h4>
-          <p> { this.props.downloadMessage }</p>
+          <p> { this.props.updateFailedMessage }</p>
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={this.manualDaemonUpdate}>Manual Update</Button>
@@ -121,7 +126,7 @@ const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
     loading: state.startup.loading,
-    downloadMessage: state.application.downloadMessage,
+    updateFailedMessage: state.application.updateFailedMessage,
     wallet: state.application.wallet,
     guiUpdate: state.startup.guiUpdate,
   };

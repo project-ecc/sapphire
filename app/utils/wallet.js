@@ -323,7 +323,6 @@ export default class Wallet {
             runExecFile(path, options).then((data)=>{
               return resolve(data);
             }).catch((err)=>{
-              console.log('in here')
               reject(err);
             })
           })
@@ -382,7 +381,6 @@ export default class Wallet {
       let path = getPlatformWalletUri();
       this.runWalletWithOptions(path, ['-version']).then((data)=>{
         // Eccoind version v0.2.5.15-06804e7
-        console.log(data)
         let firstLine = data.split(/\r?\n/)[0];
         let splitOnSpace = firstLine.split(" ")[2];
         let cleaned = splitOnSpace.split("-")[0];

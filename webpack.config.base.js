@@ -49,6 +49,9 @@ export default {
       path.join(__dirname, 'app'),
       'node_modules',
     ],
+    alias: {
+      assets: path.join(__dirname, 'resources')
+    }
   },
 
   plugins: [
