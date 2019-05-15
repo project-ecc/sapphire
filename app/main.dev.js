@@ -55,7 +55,7 @@ try {
 } catch (e) {
   // console.log(e)
 }
-const tail = new Tail(getDebugUri());
+const tail = new Tail(getDebugUri(), {useWatchFile: true});
 
 function sendStatusToWindow(text) {
   mainWindow.webContents.send('message', text);
@@ -519,8 +519,7 @@ tail.on('line', (data) => {
     'UpdateTip:',
     'sending getdata',
     'sending getheaders',
-    'LoadExternalBlockFile',
-    ''
+    'LoadExternalBlockFile'
   ];
   const castedArg = String(data);
   if (castedArg != null && (!ignoreStrings.some((v) => { return castedArg.indexOf(v) > -1; }))) {

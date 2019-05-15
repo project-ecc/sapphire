@@ -76,6 +76,9 @@
       "perMachine": true
     },
     "linux": {
+      "publish": [
+        "github"
+      ],
       "target": [
         "deb",
         "AppImage"
