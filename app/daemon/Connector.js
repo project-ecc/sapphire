@@ -207,6 +207,7 @@ class Connector extends Component {
           downloadingDaemon: false
         });
         this.props.setUpdatingApplication(false);
+        event.emit('start');
         this.startDaemonChecker();
         event.emit('startConnectorChildren');
       }).catch((err) => {
@@ -401,21 +402,32 @@ class Connector extends Component {
         const latestDaemonVersion = latestDaemon.name.substring(1);
         const zipChecksum = latestDaemon.checksum;
         const downloadUrl = latestDaemon.download_url;
-        const downloadFileName = getPlatformName() === ('win32' || 'win64') ? 'Eccoind.zip' : 'Eccoind.tar.gz';
+        let downloadFileName = 'Eccoind.tar.gz';
+        if(getPlatformName() === 'win32' || getPlatformName() === 'win64'){
+          downloadFileName = 'Eccoind.zip';
+        }
+
         console.log(getPlatformName())
         const downloaded = await downloadFile(downloadUrl, walletDirectory, downloadFileName, zipChecksum, true);
 
         if (downloaded === true) {
           const platFileName = getPlatformFileName();
-          fs.rename(walletDirectory + "eccoin-"+ latestDaemonVersion +"/bin/eccoind", walletDirectory + platFileName, function (err) {
+          let fileLocation =  '/bin/eccoind';
+          if(getPlatformName() === 'win32' || getPlatformName() === 'win64'){
+            fileLocation = '\\bin\\eccoind.exe';
+          }
+          console.log(fileLocation);
+          console.log(getPlatformName());
+          await fs.rename(walletDirectory + "eccoin-"+ latestDaemonVersion + fileLocation, walletDirectory + getPlatformFileName(), async (err) => {
             if (err) reject(err)
             console.log('Successfully renamed - AKA moved!')
+            self.setState({
+              installedVersion: await this.checkIfDaemonExists(),
+              downloading: false
+            });
+            resolve(true);
           });
-          self.setState({
-            installedVersion: await this.checkIfDaemonExists(),
-            downloading: false
-          });
-          resolve(true);
+          reject(false);
         } else {
           console.log(downloaded);
           reject(downloaded);
