@@ -27,7 +27,7 @@ const Tail = require('tail').Tail;
 const fs = require('fs');
 const AutoLaunch = require('auto-launch');
 
-
+const { autoUpdater } = require('electron-updater')
 const autoECCLauncher = new AutoLaunch({
   name: 'Sapphire'
 });
@@ -103,6 +103,15 @@ if (shouldQuit) {
 
 app.on('ready', async () => {
   ds = settings.get('settings.display');
+
+  const log = require("electron-log")
+  log.transports.file.level = "debug"
+  autoUpdater.logger = log
+  try {
+    autoUpdater.checkForUpdatesAndNotify()
+  }catch (e){
+    console.log(e)
+  }
 
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
     await installExtensions();

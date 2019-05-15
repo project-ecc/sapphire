@@ -12,7 +12,7 @@ import DownloadingUpdateModal from './components/Settings/modals/DownloadingUpda
 import * as actions from './actions/index';
 import DaemonConnector from './daemon/Connector';
 import Tools from "./utils/tools";
-const { autoUpdater } = require('electron-updater')
+
 const event = require('./utils/eventhandler');
 const settings = require('electron').remote.require('electron-settings');
 
@@ -26,15 +26,6 @@ class App extends Component {
   componentDidMount() {
     // this.props.getSetup();
     this.startUp();
-
-    const log = require("electron-log")
-    log.transports.file.level = "debug"
-    autoUpdater.logger = log
-    try {
-      autoUpdater.checkForUpdatesAndNotify()
-    }catch (e){
-      console.log(e)
-    }
 
     ipcRenderer.on('closing_daemon', () => {
       this.props.setClosingApplication();
