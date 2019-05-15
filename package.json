@@ -2,7 +2,7 @@
   "name": "sapphire",
   "productName": "Sapphire",
   "maintainer ": "Project ECC",
-  "version": "1.1.1",
+  "version": "1.1.0",
   "description": "Electron application providing the graphical user interface for the ECC Wallet",
   "scripts": {
     "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js",
