@@ -12,10 +12,8 @@
  */
 
 import MenuBuilder from './menu';
-import GUIManager from './Managers/GUIManager';
 import {getDebugUri, grabEccoinDir} from './utils/platform.service';
 import {traduction} from './lang/lang';
-import {version} from './../package.json';
 
 const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote } = require('electron');
 const dialog = require('electron').dialog;
@@ -33,8 +31,6 @@ const autoECCLauncher = new AutoLaunch({
 });
 let walletPath;
 let tray = null;
-// let daemonManager = null;
-let guiManager = null;
 let ds = null;
 let mainWindow = null;
 let guiUpdate = false;
@@ -216,17 +212,13 @@ async function closeApplication() {
       mainWindow.show();
       mainWindow.focus();
     }
-    sendMessage('stop');
-    const closedDaemon = false;
-
-    console.log('shutdown');
-    app.exit();
+    sendMessage('stop', {restart: false, closeApplication: true});
+    console.log('shutting down daemon');
   }
 }
 
 app.on('before-quit', async (e) => {
   e.preventDefault();
-  sendMessage('stop');
   await closeApplication();
 });
 
@@ -273,8 +265,6 @@ function setupEventHandlers() {
 
   ipcMain.on('app:ready', (e, args) => {
     console.log('ELECTRON GOT READY MESSAGE');
-    guiManager = new GUIManager();
-    // daemonManager = new DaemonManager();
     mainWindow.once('ready-to-show', () => {
       mainWindow.show();
     });
@@ -299,9 +289,9 @@ function setupEventHandlers() {
     fullScreen = !fullScreen;
   });
 
-  ipcMain.on('quit', () => {
-    sendMessage('stop');
+  ipcMain.on('quit', async () => {
     app.quit();
+    await closeApplication();
   });
 
   ipcMain.on('start', (args) => {
@@ -329,11 +319,10 @@ function setupEventHandlers() {
     sendMessage('refresh-complete');
   });
 
-  // done with initial setup tell DaemonManager to start
-  // ipcMain.on('initialSetup', (e, args) => {
-  //   // settings.set('settings.initialSetup', true);
-  //   daemonManager.startDaemonChecker();
-  // });
+  ipcMain.on('closeApplication', () => {
+    console.log('closing application ipc')
+    app.exit();
+  });
 
   event.on('wallet', (exists, daemonCredentials) => {
     // exists: does wallet.dat exist
@@ -372,7 +361,6 @@ function setupEventHandlers() {
   });
 
   event.on('close', async () => {
-    sendMessage('stop');
     await closeApplication();
   });
 
@@ -387,32 +375,6 @@ function setupEventHandlers() {
   event.on('daemonStarted', () => {
     sendMessage('importedWallet');
   });
-
-
-  // // downloader events.
-  // event.on('downloading-file', (payload) => {
-  //   sendMessage('downloading-file', payload);
-  // });
-  //
-  // event.on('downloaded-file', () => {
-  //   sendMessage('downloaded-file');
-  // });
-  //
-  // event.on('verifying-file', () => {
-  //   sendMessage('verifying-file');
-  // });
-  //
-  // event.on('unzipping-file', () => {
-  //   sendMessage('unzipping-file');
-  // });
-  //
-  // event.on('file-download-complete', () => {
-  //   sendMessage('file-download-complete');
-  // });
-  //
-  // event.on('download-error', (payload) => {
-  //   sendMessage('download-error', payload);
-  // });
 
   event.on('loading-error', (payload) => {
     sendMessage('loading-error', payload);
@@ -523,7 +485,6 @@ tail.on('line', (data) => {
   ];
   const castedArg = String(data);
   if (castedArg != null && (!ignoreStrings.some((v) => { return castedArg.indexOf(v) > -1; }))) {
-    console.log(castedArg, 'in here');
 
     sendMessage('message-from-log', data);
   }

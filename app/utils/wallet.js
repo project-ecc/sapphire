@@ -336,7 +336,7 @@ export default class Wallet {
           command = `${path} -version`;
           console.log(command)
         } else {
-          command = `& start-process "${path}" -ArgumentList "${options}" -verb runAs -WindowStyle Hidden`;
+          command = `& start-process "${path}" -ArgumentList "${options.join(' ')}" -verb runAs -WindowStyle Hidden`;
           console.log(command)
         }
 
