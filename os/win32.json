@@ -1,23 +1,6 @@
 {
   "productName": "Sapphire",
-  "appId": "com.github.project-ecc.sapphire",
-  "files": [
-    "./app/dist/",
-    "./app/node_modules/",
-    "./app/app.html",
-    "./app/main.prod.js",
-    "./app/main.prod.js.map",
-    "./package.json"
-  ],
-  "publish": [
-    {
-      "provider": "github",
-      "owner": "project-ecc",
-      "repo": "sapphire",
-      "vPrefixedTagName": "true",
-      "protocol": "https"
-    }
-  ],
+  "appId": "com.github.gl3nda85.sapphire",
   "win": {
     "target": [
       "nsis"

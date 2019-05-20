@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+const { app } = require('electron');
 
 import {
   getDaemonDownloadUrl, getPlatformFileName, getPlatformName, getPlatformWalletUri, grabEccoinDir,
@@ -12,6 +13,7 @@ import ConnectorCoin from './Coin';
 import ConnectorMarket from './Market';
 import Tools from '../utils/tools';
 import {downloadFile} from '../utils/downloader';
+import {ipcRenderer} from "electron";
 
 const find = require('find-process');
 const request = require('request-promise-native');
@@ -61,14 +63,43 @@ class Connector extends Component {
       await this.startDaemon(args);
     });
 
-    // Stop Daemon
-    event.on('stop', async (restart) => {
-      await this.stopDaemon((err) => {
-        if (err) console.log('error stopping daemon: ', err);
+    ipcRenderer.on('stop', async (e, args) => {
+      await this.stopDaemon().then((data) => {
         console.log('stopped daemon');
-        if(restart){
+        if(args.restart != null && args.restart === true){
           event.emit('start')
         }
+        if(args.closeApplication != null && args.closeApplication === true){
+          console.log('in here')
+          setTimeout(()=>{
+            ipcRenderer.send('closeApplication');
+          },3000)
+        }
+      }).catch((err) => {
+        // Work around while re indexing deadlock exists
+        if(args.closeApplication != null && args.closeApplication === true){
+          console.log('in here')
+          setTimeout(()=>{
+            ipcRenderer.send('closeApplication');
+          },3000)
+        }
+        console.log(err)
+      });
+    });
+
+    // Stop Daemon
+    event.on('stop', async (args) => {
+      await this.stopDaemon().then((data) => {
+        if (err) console.log('error stopping daemon: ', err);
+        console.log('stopped daemon');
+        if(args.restart === true){
+          event.emit('start')
+        }
+        if(args.closeApplication === true){
+          event.emit('closeApplication');
+        }
+      }).catch((err) => {
+        console.log(err)
       });
     });
 
@@ -207,6 +238,7 @@ class Connector extends Component {
           downloadingDaemon: false
         });
         this.props.setUpdatingApplication(false);
+        event.emit('start');
         this.startDaemonChecker();
         event.emit('startConnectorChildren');
       }).catch((err) => {
@@ -297,7 +329,7 @@ class Connector extends Component {
         downloading: true
       });
       const r = await this.stopDaemon();
-      if (r) {
+      if (r === true) {
         setTimeout(async () => {
           let downloaded = false;
           try {
@@ -383,7 +415,6 @@ class Connector extends Component {
     this.setState({
       downloadingDaemon: true
     });
-    const self = this;
 
     return new Promise((resolve, reject) => {
       console.log('downloading latest daemon');
@@ -401,21 +432,34 @@ class Connector extends Component {
         const latestDaemonVersion = latestDaemon.name.substring(1);
         const zipChecksum = latestDaemon.checksum;
         const downloadUrl = latestDaemon.download_url;
-        const downloadFileName = getPlatformName() === ('win32' || 'win64') ? 'Eccoind.zip' : 'Eccoind.tar.gz';
+        let downloadFileName = 'Eccoind.tar.gz';
+        if(getPlatformName() === 'win32' || getPlatformName() === 'win64'){
+          downloadFileName = 'Eccoind.zip';
+        }
+
         console.log(getPlatformName())
         const downloaded = await downloadFile(downloadUrl, walletDirectory, downloadFileName, zipChecksum, true);
 
         if (downloaded === true) {
           const platFileName = getPlatformFileName();
-          fs.rename(walletDirectory + "eccoin-"+ latestDaemonVersion +"/bin/eccoind", walletDirectory + platFileName, function (err) {
-            if (err) reject(err)
+          let fileLocation =  '/bin/eccoind';
+          if(getPlatformName() === 'win32' || getPlatformName() === 'win64'){
+            fileLocation = '\\bin\\eccoind.exe';
+          }
+          console.log(fileLocation);
+          console.log(getPlatformName());
+          try {
+            fs.renameSync(walletDirectory + "eccoin-"+ latestDaemonVersion + fileLocation, walletDirectory + getPlatformFileName());
             console.log('Successfully renamed - AKA moved!')
-          });
-          self.setState({
-            installedVersion: await this.checkIfDaemonExists(),
-            downloading: false
-          });
-          resolve(true);
+            this.setState({
+              installedVersion: await this.checkIfDaemonExists(),
+              downloading: false
+            });
+            resolve(true);
+          } catch (e) {
+            console.log(e)
+            reject({message: 'Cannot move daemon file'})
+          }
         } else {
           console.log(downloaded);
           reject(downloaded);
@@ -454,23 +498,23 @@ class Connector extends Component {
    */
 
   async stopDaemon() {
-    return new Promise((resolve, reject) => {
-      this.props.wallet.walletstop()
+    return new Promise(async (resolve, reject) => {
+      await this.props.wallet.walletstop()
         .then((data) => {
           console.log(data);
-          if (data && data === 'ECC server stopping') {
+          if (data && data === 'Eccoind server stopping') {
             console.log('stopping daemon');
             this.props.setDaemonRunning(false);
             resolve(true);
           }	else if (data && data.code === 'ECONNREFUSED') {
             resolve(true);
           } else {
-            resolve(false);
+            reject(data);
           }
         })
         .catch(err => {
           console.log('failed to stop daemon:', err);
-          resolve(false);
+          resolve(err);
         });
     });
   }

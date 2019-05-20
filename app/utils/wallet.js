@@ -332,11 +332,11 @@ export default class Wallet {
       } else if (process.platform.indexOf('win') > -1) {
         let command = ''
 
-        if(options.includes('version') > -1){
+        if(options.join(' ').indexOf('version') > -1){
           command = `${path} -version`;
           console.log(command)
         } else {
-          command = `& start-process "${path}" -ArgumentList "${options}" -verb runAs -WindowStyle Hidden`;
+          command = `& start-process "${path}" -ArgumentList "${options.join(' ')}" -verb runAs -WindowStyle Hidden`;
           console.log(command)
         }
 

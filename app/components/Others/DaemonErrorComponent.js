@@ -41,6 +41,8 @@ class DaemonErrorComponent extends Component {
   }
 
   rebootDaemonWithReIndex(){
+    this.props.setDaemonError('');
+    this.props.setDaemonErrorPopup(false);
     console.log('in here')
     event.emit('start', true);
   }

@@ -33,7 +33,7 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    event.emit('stop');
+    ipcRenderer.emit('stop', {restart: false, closeApplication: true});
   }
 
   /**
