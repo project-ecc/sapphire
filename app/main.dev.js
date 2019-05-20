@@ -523,9 +523,11 @@ tail.on('line', (data) => {
     ''
   ];
   const castedArg = String(data);
-  if (castedArg != null && (!ignoreStrings.some((v) => { return castedArg.indexOf(v) > -1; }))) {
+  if (castedArg != null && mainWindow != null && (!ignoreStrings.some((v) => { return castedArg.indexOf(v) > -1; }))) {
     console.log(castedArg, 'in here');
 
     sendMessage('message-from-log', data);
+
+
   }
 });
