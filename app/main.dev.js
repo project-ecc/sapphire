@@ -408,8 +408,10 @@ function setupEventHandlers() {
 }
 
 function sendMessage(type, argument = undefined) {
-  console.log('sending message: ', type);
-  mainWindow.webContents.send(type, argument);
+  if(mainWindow != null){
+    console.log('sending message: ', type);
+    mainWindow.webContents.send(type, argument);
+  }
 }
 
 
@@ -486,7 +488,7 @@ tail.on('line', (data) => {
     'LoadExternalBlockFile'
   ];
   const castedArg = String(data);
-  if (castedArg != null && mainWindow != null && (!ignoreStrings.some((v) => { return castedArg.indexOf(v) > -1; }))) {
+  if (castedArg != null && (!ignoreStrings.some((v) => { return castedArg.indexOf(v) > -1; }))) {
 
     sendMessage('message-from-log', data);
 
