@@ -59,7 +59,7 @@ import {
   INITIAL_BLOCK_DOWNLOAD,
   BLOCKS_AND_HEADERS,
   SIZE_ON_DISK,
-  UPDATE_FAILED_MESSAGE
+  UPDATE_FAILED_MESSAGE, SERVER_DAEMON_VERSION, LOCAL_DAEMON_VERSION
 } from './types';
 
 export const setWalletCredentials = (args) => {
@@ -500,6 +500,20 @@ export const setNewsNotification = (val) => {
 export const setCoinMarketCapStats = (val) => {
   return {
     type: COIN_MARKET_CAP,
+    payload: val
+  };
+};
+
+export const setServerDaemonVersion = (val) => {
+  return {
+    type: SERVER_DAEMON_VERSION,
+    payload: val
+  };
+};
+
+export const setLocalDaemonVersion = (val) => {
+  return {
+    type: LOCAL_DAEMON_VERSION,
     payload: val
   };
 };

@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import * as actions from '../../../actions/index';
 import {getPlatformFileName, getPlatformName, grabWalletDir} from "../../../utils/platform.service";
-import {unzipFile} from "../../../utils/downloader";
+import {moveFile, unzipFile} from "../../../utils/downloader";
 import Toast from '../../../globals/Toast/Toast';
 
 const dialog = require('electron').remote.dialog;
@@ -21,11 +21,20 @@ class FullscreenModal extends Component {
 
   handleDismissUpdateFailed() {
     this.props.settellUserUpdateFailed({
-      updateFailed: false,
+      updateFailed: true,
       downloadMessage: ''
     });
-    this.props.setUpdatingApplication(false);
-    event.emit('initial_setup', false);
+
+    const version = this.props.installedDaemonVersion === -1 ? this.props.installedDaemonVersion : parseInt(this.props.installedDaemonVersion.replace(/\D/g, ''));
+
+    if (version === -1){
+      this.props.setUpdateFailedMessage("Sapphire is unable to start without a daemon installed please manually update");
+    } else if (version < this.props.requiredDaemonVersion){
+      this.props.setUpdateFailedMessage("Sapphire is unable to start with this version of the blockchain daemon, please update manually");
+    } else {
+      this.props.setUpdatingApplication(false);
+      event.emit('initial_setup', false);
+    }
   }
 
   retryDownload() {
@@ -34,21 +43,27 @@ class FullscreenModal extends Component {
 
   async unzipAndCopyDaemon(fileName){
     return new Promise(async (resolve, reject) => {
-      const walletDir = grabWalletDir();
-      const unzipped = await unzipFile(fileName, walletDir);
+      const walletDirectory = grabWalletDir();
+      const unzipped = await unzipFile(fileName, walletDirectory);
       if (!unzipped) reject(unzipped);
       const latestDaemonVersion = fileName.split('-')[1];
-      let fileLocation =  '/bin/eccoind';
-      if(getPlatformName() === 'win32' || getPlatformName() === 'win64'){
+
+
+      const platFileName = getPlatformFileName();
+      let fileLocation = '/bin/eccoind';
+      if (getPlatformName() === 'win32' || getPlatformName() === 'win64') {
         fileLocation = '\\bin\\eccoind.exe';
       }
-      console.log(fileLocation);
-      console.log(getPlatformName());
-      await fs.rename(walletDir + "eccoin-"+ latestDaemonVersion + fileLocation, walletDir + getPlatformFileName(), function (err) {
-        if (err) reject(err)
-        console.log('Successfully renamed - AKA moved!')
+      const oldLocation = `${walletDirectory}eccoin-${latestDaemonVersion}${fileLocation}`;
+      const newLocation = walletDirectory + platFileName;
+      console.log(oldLocation);
+      console.log(newLocation);
+      const moved = await moveFile(oldLocation, newLocation);
+
+      if (moved === true){
         resolve(true);
-      });
+      }
+      reject({message: 'Cannot move daemon file'});
     });
 
   }
@@ -129,6 +144,9 @@ const mapStateToProps = state => {
     updateFailedMessage: state.application.updateFailedMessage,
     wallet: state.application.wallet,
     guiUpdate: state.startup.guiUpdate,
+    daemonServerVersion: state.application.daemonServerVersion,
+    installedDaemonVersion: state.application.installedDaemonVersion,
+    requiredDaemonVersion: state.application.requiredDaemonVersion
   };
 };
 

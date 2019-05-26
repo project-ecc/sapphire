@@ -12,10 +12,8 @@
  */
 
 import MenuBuilder from './menu';
-import GUIManager from './Managers/GUIManager';
 import {getDebugUri, grabEccoinDir} from './utils/platform.service';
 import {traduction} from './lang/lang';
-import {version} from './../package.json';
 
 const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote } = require('electron');
 const dialog = require('electron').dialog;
@@ -26,8 +24,9 @@ const Tail = require('tail').Tail;
 
 const fs = require('fs');
 const AutoLaunch = require('auto-launch');
+const log = require('electron-log');
+const { autoUpdater } = require('electron-updater');
 
-const { autoUpdater } = require('electron-updater')
 const autoECCLauncher = new AutoLaunch({
   name: 'Sapphire'
 });
@@ -45,15 +44,15 @@ let fullScreen = false;
 try {
   fs.mkdirSync(grabEccoinDir());
 } catch (e) {
-  // console.log(e)
+  console.log(e);
 }
 
 try {
   fs.writeFileSync(getDebugUri(), '\n');
 } catch (e) {
-  // console.log(e)
+  console.log(e);
 }
-const tail = new Tail(getDebugUri(), {useWatchFile: true});
+const tail = new Tail(getDebugUri(), { useWatchFile: true });
 
 function sendStatusToWindow(text) {
   mainWindow.webContents.send('message', text);
@@ -102,13 +101,13 @@ if (shouldQuit) {
 app.on('ready', async () => {
   ds = settings.get('settings.display');
 
-  const log = require("electron-log")
-  log.transports.file.level = "debug"
-  autoUpdater.logger = log
+
+  log.transports.file.level = 'debug';
+  autoUpdater.logger = log;
   try {
-    autoUpdater.checkForUpdatesAndNotify()
-  }catch (e){
-    console.log(e)
+    await autoUpdater.checkForUpdatesAndNotify();
+  } catch (e) {
+    console.log(e);
   }
 
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
@@ -198,6 +197,30 @@ app.on('ready', async () => {
   }
 
   setupEventHandlers();
+
+  // define a new console
+  // override the old console to use it in the logger too
+  mainWindow.console = ((oldCons => ({
+    log: ((text) => {
+      oldCons.log(text);
+      log.debug(text);
+    }),
+    info: ((text) => {
+      oldCons.info(text);
+      log.info(text);
+      // Your code
+    }),
+    warn: ((text) => {
+      oldCons.warn(text);
+      log.warn(text);
+      // Your code
+    }),
+    error: ((text) => {
+      oldCons.error(text);
+      log.error(text);
+      // Your code
+    })
+  }))(mainWindow.console));
 });
 
 async function closeApplication() {
@@ -214,7 +237,7 @@ async function closeApplication() {
       mainWindow.show();
       mainWindow.focus();
     }
-    sendMessage('stop', {restart: false, closeApplication: true});
+    sendMessage('stop', { restart: false, closeApplication: true });
     console.log('shutting down daemon');
   }
 }
@@ -322,7 +345,7 @@ function setupEventHandlers() {
   });
 
   ipcMain.on('closeApplication', () => {
-    console.log('closing application ipc')
+    console.log('closing application ipc');
     app.exit();
   });
 
@@ -408,7 +431,7 @@ function setupEventHandlers() {
 }
 
 function sendMessage(type, argument = undefined) {
-  if(mainWindow != null){
+  if (mainWindow != null) {
     console.log('sending message: ', type);
     mainWindow.webContents.send(type, argument);
   }
@@ -489,9 +512,8 @@ tail.on('line', (data) => {
   ];
   const castedArg = String(data);
   if (castedArg != null && (!ignoreStrings.some((v) => { return castedArg.indexOf(v) > -1; }))) {
-
     sendMessage('message-from-log', data);
-
-
   }
 });
+
+
