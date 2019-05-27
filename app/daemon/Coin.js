@@ -505,7 +505,7 @@ class Coin extends Component {
     });
 
     this.props.wallet.getWalletInfo().then(async (data) => {
-      console.log(data);
+      // console.log(data);
       this.props.walletInfoSec(data);
     }).catch((err) => {
       this.processError(err)

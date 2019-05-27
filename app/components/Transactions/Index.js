@@ -10,8 +10,9 @@ import Body from './../../components/Others/Body';
 
 import $ from 'jquery';
 import {Button, Dropdown, DropdownItem, DropdownMenu, DropdownToggle} from 'reactstrap';
-
 const event = require('../../utils/eventhandler');
+
+import TransactionModal from './partials/TransactionModal';
 const moment = require('moment');
 
 moment.locale('en');
@@ -34,6 +35,7 @@ class Index extends Component {
       transactionData: props.data,
       isRefreshing: false,
       transactionDropdownOpen: false,
+      selectedTransaction: ''
     };
 
     this.availableSelections = [
@@ -213,6 +215,13 @@ class Index extends Component {
     await this.getAllTransactions(this.props.page, type);
   }
 
+  async onTransactionClick(txId){
+    this.setState({
+      selectedTransaction: txId
+    })
+    this.transactionModal.getWrappedInstance().toggle();
+  }
+
   toggle() {
     this.setState(prevState => ({
       transactionDropdownOpen: !prevState.transactionDropdownOpen
@@ -334,7 +343,7 @@ class Index extends Component {
 
                         <div style={{ padding: '0 15px' }}>
                           <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionId}</span></p>
-                          <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">{t.transaction_id}</span></p>
+                          <p style={{ margin: '0px 0px 5px 0px' }}><span onClick={(e) => this.onTransactionClick(t.transaction_id)} className="desc3 small-text selectableText">{t.transaction_id}</span></p>
                         </div>
                       </div>
                     </div>
@@ -367,6 +376,7 @@ class Index extends Component {
         <Body noPadding>
         {this.renderTransactionTable()}
         </Body>
+        <TransactionModal transactionId={this.state.selectedTransaction} ref={(e) => { this.transactionModal = e; }} />
       </div>
     );
   }
