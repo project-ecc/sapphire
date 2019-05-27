@@ -9,6 +9,7 @@ import Header from './../../components/Others/Header';
 import Body from './../../components/Others/Body';
 
 import $ from 'jquery';
+import {Button, Dropdown, DropdownItem, DropdownMenu, DropdownToggle} from 'reactstrap';
 
 const event = require('../../utils/eventhandler');
 const moment = require('moment');
@@ -27,39 +28,48 @@ class Index extends Component {
     this.handleNextClicked = this.handleNextClicked.bind(this);
     this.handlePreviousClicked = this.handlePreviousClicked.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.toggle = this.toggle.bind(this);
     this.state = {
       searchValue: '',
       transactionData: props.data,
-      isRefreshing: false
+      isRefreshing: false,
+      transactionDropdownOpen: false,
     };
 
+    this.availableSelections = [
+      {key: 'all', value: this.props.lang.all},
+      {key: 'receive', value: this.props.lang.received},
+      {key: 'send', value: this.props.lang.sent},
+      {key: 'generate', value: this.props.lang.earned},
+      {key: 'confirmed', value: this.props.lang.confirmed},
+      {key: 'pending', value: this.props.lang.pending},
+      {key: 'orphaned', value: this.props.lang.orphaned}
+    ];
+
     event.on('reloadTransactions', async() => {
-      await getAllTransactions()
+      await this.getAllTransactions(0, this.props.type);
+      this.setState({
+        isRefreshing: false
+      });
     })
   }
 
   async componentDidMount() {
-    this.props.setPopupLoading(true);
-    console.log(this.props.type);
-    console.log(this.props.isFilteringTransactions);
-    // if(!this.props.isFilteringTransactions){
-    await this.getAllTransactions(0, this.props.type);
-    // }
+    if(!this.props.initialDownload){
+      this.props.setPopupLoading(true);
+      await this.getAllTransactions(0, this.props.type);
 
-    $(window).on('resize', () => {
-      this.updateTable();
-    });
-    $('.extraInfoTransaction').hide();
+      $(window).on('resize', () => {
+        this.updateTable();
+      });
+      $('.extraInfoTransaction').hide();
+    }
+
     this.props.setEarningsChecked(new Date().getTime());
   }
 
   componentWillUnmount() {
     $(window).off('resize');
-  }
-
-  componentDidUpdate(lastProps, nextProps) {
-    // console.log(lastProps);
-    // console.log(nextProps);
   }
 
   handleChange(e) {
@@ -94,12 +104,17 @@ class Index extends Component {
   }
 
 
-  async getAllTransactions(page, type = 'all') {
-
-    event.emit('loadTransactions');
+  async reloadTransactions() {
     this.setState({
       isRefreshing: true
     });
+    event.emit('loadTransactions');
+  }
+  async getAllTransactions(page, type = 'all') {
+    this.setState({
+      isRefreshing: true
+    });
+
     const where = {
       is_main: 1
     };
@@ -177,11 +192,6 @@ class Index extends Component {
   rowClickedFixMisSlideUp(event) {
     event.stopPropagation();
   }
-
-  shouldComponentUpdate(state) {
-    // if(this.props.page === state.page && this.props.page > 0 && this.props.type === state.type) return false;
-    return true;
-  }
   componentWillReceiveProps() {
     this.updateTable();
   }
@@ -197,22 +207,16 @@ class Index extends Component {
     $('.dropdownFilterSelector').find('.dropdown-menuFilterSelector').slideUp(300);
   }
 
-  async onItemClick(event) {
-    const type = event.currentTarget.dataset.id;
+  async onItemClick(ev) {
+    const type = ev.currentTarget.dataset.id;
 
     await this.getAllTransactions(this.props.page, type);
   }
 
-  getValue(val) {
-    switch (val) {
-      case 'confirmed' : return this.props.lang.confirmed;
-      case 'orphaned' : return this.props.lang.orphaned;
-      case 'pending' : return this.props.lang.pending;
-      case 'all': return this.props.lang.all;
-      case 'send' : return this.props.lang.sent;
-      case 'generate':return this.props.lang.earned;
-      case 'receive': return this.props.lang.received;
-    }
+  toggle() {
+    this.setState(prevState => ({
+      transactionDropdownOpen: !prevState.transactionDropdownOpen
+    }));
   }
 
   renderTransactionTable(){
@@ -224,7 +228,6 @@ class Index extends Component {
         </div>
       );
     } else {
-      // const data = this.orderTransactions(this.props.data);
       const data = this.state.transactionData;
       const today = new Date();
       let counter = -1;
@@ -237,7 +240,7 @@ class Index extends Component {
           <div className="tableHeaderNormal" style={{ display: 'flex', alignItems: 'center' }}>
 
             <div className="d-flex justify-content-end w-100">
-              <button style={{ cursor: 'pointer', borderStyle: 'none', background: 'none' }} onClick={(e) => this.getAllTransactions(this.props.page, this.props.type)}><span className="icon" style={{ marginTop: '5px', top: '0' }}><i style={{ color: '#b9b9b9' }} className={`fa fa-refresh ${spinClass}`} /></span></button>
+              <button style={{ cursor: 'pointer', borderStyle: 'none', background: 'none' }} onClick={(e) => this.reloadTransactions()}><span className="icon" style={{ marginTop: '5px', top: '0' }}><i style={{ color: '#b9b9b9' }} className={`fa fa-refresh ${spinClass}`} /></span></button>
               <div className="col-sm-6" style={{ display: 'flex', alignItems: 'center', maxWidth: '300px' }}>
                 <div className="box" style={{ width: '100%' }}>
                   <div className="container-1" style={{ width: '100%', maxWidth: '300px', display: 'flex', alignItems: 'center' }}>
@@ -247,24 +250,16 @@ class Index extends Component {
                 </div>
               </div>
               <div className="col-sm-3" style={{ textAlign: 'right', maxWidth: '150px', display: 'flex', alignItems: 'center' }}>
-                {
-                  <div className="dropdownFilterSelector" style={{/* width: "100px", marginLeft: "100px", top: "6px", */ height: '35px', padding: '0 0', textAlign: 'center' }} onBlur={this.handleDrowDownUnfocus} onClick={this.handleDropDownClicked}>
-                    <div className="selectFilterSelector" style={{ border: 'none', position: 'relative', top: '-1px', height: '30px' }}>
-                      <p className="normalWeight">{this.getValue(this.props.type)}</p>
-                      <i className="fa fa-chevron-down" />
-                    </div>
-                    <input type="hidden" name="gender" />
-                    <ul className="dropdown-menuFilterSelector normalWeight" style={{ margin: '0 0' }}>
-                      <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="all">{ this.props.lang.all }</li>
-                      <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="receive">{ this.props.lang.received }</li>
-                      <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="send">{ this.props.lang.sent }</li>
-                      <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="generate">{ this.props.lang.earned }</li>
-                      <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="confirmed">{ this.props.lang.confirmed }</li>
-                      <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="pending">{ this.props.lang.pending }</li>
-                      <li style={{ padding: '5px' }} onClick={this.onItemClick} data-id="orphaned">{ this.props.lang.orphaned }</li>
-                    </ul>
-                  </div>
-                }
+                <Dropdown isOpen={this.state.transactionDropdownOpen} toggle={this.toggle} className="mt-1">
+                  <DropdownToggle caret>
+                    <small>Sort:</small> { this.props.type }
+                  </DropdownToggle>
+                  <DropdownMenu>
+                    { this.availableSelections.map(obj => (
+                      <DropdownItem onClick={this.onItemClick} key={obj.key} data-id={obj.key} active={this.props.type === obj.value}>{ obj.value }</DropdownItem>
+                    ))}
+                  </DropdownMenu>
+                </Dropdown>
               </div>
             </div>
 

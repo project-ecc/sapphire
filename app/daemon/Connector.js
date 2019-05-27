@@ -67,12 +67,16 @@ class Connector extends Component {
         }
         if(args.closeApplication != null && args.closeApplication === true){
           console.log('in here')
+          this.props.setLoading({
+            isLoading: true,
+            loadingMessage: 'Stopping Daemon and closing sapphire'
+          });
           setTimeout(()=>{
             ipcRenderer.send('closeApplication');
           },3000)
         }
       }).catch((err) => {
-        // Work around while re indexing deadlock exists
+        // TODO : remove Work around while re indexing deadlock exists
         if(args.closeApplication != null && args.closeApplication === true){
           console.log('in here')
           setTimeout(()=>{

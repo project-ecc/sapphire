@@ -88,6 +88,7 @@ class Coin extends Component {
   async stateCheckerInitialStartupCycle() {
 
     this.props.wallet.getInfo().then(async (data) => {
+      this.props.setDaemonRunning(true);
 
       // process block height in here.
       let syncedPercentage = (data.blocks * 100) / data.headers;
@@ -104,7 +105,6 @@ class Coin extends Component {
       this.props.chainInfo(data);
       this.props.walletInfo(data);
 
-      console.log(data);
       if (!data.encrypted) {
         this.props.setUnencryptedWallet(true);
       } else {
@@ -454,6 +454,7 @@ class Coin extends Component {
    */
   blockCycle() {
     this.props.wallet.getBlockChainInfo().then(async (data) => {
+      this.props.setDaemonRunning(true);
       // process block height in here.
       let syncedPercentage = (data.blocks * 100) / data.headers;
       syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
