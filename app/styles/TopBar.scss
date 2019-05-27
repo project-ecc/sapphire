@@ -44,27 +44,27 @@
 		width: 25px;
 
 		&.close {
-		  background-image: url('/resources/images/mac-close-inactive.png');
+		  background-image: url('~assets/images/mac-close-inactive.png');
 		}
 
 		&.close:hover {
-		  background-image: url('/resources/images/mac-close-active.png');
+		  background-image: url('~assets/images/mac-close-active.png');
 		}
 
 		&.minimize {
-		  background-image: url('/resources/images/mac-minimize-inactive.png');
+		  background-image: url('~assets/images/mac-minimize-inactive.png');
 		}
 
 		&.minimize:hover {
-		  background-image: url('/resources/images/mac-minimize-active.png');
+		  background-image: url('~assets/images/mac-minimize-active.png');
 		}
 
 		&.fullscreen {
-		  background-image: url('/resources/images/mac-fullscreen-inactive.png');
+		  background-image: url('~assets/images/mac-fullscreen-inactive.png');
 		}
 
 		&.fullscreen:hover {
-		  background-image: url('/resources/images/mac-fullscreen-active.png');
+		  background-image: url('~assets/images/mac-fullscreen-active.png');
 		}
 
 		&.maximize {
@@ -92,7 +92,7 @@
 		}
 
 		&.close {
-		  background-image: url('/resources/images/close.png');
+		  background-image: url('~assets/images/close.png');
 		}
 
 		&.close:hover {
@@ -106,11 +106,11 @@
 		}
 
 		&.minimize {
-		  background-image: url('/resources/images/minimize.png');
+		  background-image: url('~assets/images/minimize.png');
 		}
 
 		&.maximize {
-		  background-image: url('/resources/images/maximize.png');
+		  background-image: url('~assets/images/maximize.png');
 		}
 
 		&.minimize:hover, &.maximize:hover {

@@ -323,7 +323,6 @@ export default class Wallet {
             runExecFile(path, options).then((data)=>{
               return resolve(data);
             }).catch((err)=>{
-              console.log('in here')
               reject(err);
             })
           })
@@ -331,17 +330,25 @@ export default class Wallet {
             reject(err);
           });
       } else if (process.platform.indexOf('win') > -1) {
-        // TODO: uncomment this when package is fixed
-        path = `& start-process "${path}" -ArgumentList "${options}" -verb runAs -WindowStyle Hidden`;
-        // path = `& "${path}" `;
+        let command = ''
+
+        if(options.join(' ').indexOf('version') > -1){
+          command = `${path} -version`;
+          console.log(command)
+        } else {
+          command = `& start-process "${path}" -ArgumentList "${options.join(' ')}" -verb runAs -WindowStyle Hidden`;
+          console.log(command)
+        }
+
         const ps = new Shell({
           executionPolicy: 'Bypass',
           noProfile: true
         });
-        ps.addCommand(path);
+        ps.addCommand(command);
         ps.invoke()
-          .then(() => {
-            return resolve(true);
+          .then(data => {
+            console.log(data)
+            return resolve(data);
           })
           .catch(err => {
             console.log(err);

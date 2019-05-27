@@ -170,3 +170,16 @@ export function validateChecksum (fileName, toValidateAgainst) {
     });
   });
 }
+
+export function moveFile(oldLocation, newLocation){
+  return new Promise((resolve, reject) => {
+    try {
+      fs.renameSync(oldLocation, newLocation);
+      console.log('Successfully renamed - AKA moved!')
+      resolve(true);
+    } catch (e) {
+      console.log(e)
+      reject(e);
+    }
+  });
+}

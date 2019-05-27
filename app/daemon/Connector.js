@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+const { app } = require('electron');
 
 import {
   getDaemonDownloadUrl, getPlatformFileName, getPlatformName, getPlatformWalletUri, grabEccoinDir,
@@ -11,7 +12,8 @@ import ConnectorNews from './News';
 import ConnectorCoin from './Coin';
 import ConnectorMarket from './Market';
 import Tools from '../utils/tools';
-import {downloadFile} from '../utils/downloader';
+import {downloadFile, moveFile} from '../utils/downloader';
+import {ipcRenderer} from "electron";
 
 const find = require('find-process');
 const request = require('request-promise-native');
@@ -21,8 +23,6 @@ const settings = require('electron-settings');
 const zmq = require('zeromq');
 const socket = zmq.socket('sub');
 
-const REQUIRED_DAEMON_VERSION = 2515;
-
 class Connector extends Component {
   constructor(props) {
     super(props);
@@ -31,12 +31,10 @@ class Connector extends Component {
       interval: 5000,
       downloadingDaemon: false,
       shouldRestart: false,
-      installedVersion: -1,
-      currentVersion: -1,
       walletDat: false,
       toldUserAboutUpdate: false,
       daemonCheckerTimer: null,
-      daemonUpdateTimer: null
+      daemonUpdateTimer: null,
     };
 
     this.bindListeners();
@@ -61,14 +59,47 @@ class Connector extends Component {
       await this.startDaemon(args);
     });
 
-    // Stop Daemon
-    event.on('stop', async (restart) => {
-      await this.stopDaemon((err) => {
-        if (err) console.log('error stopping daemon: ', err);
+    ipcRenderer.on('stop', async (e, args) => {
+      await this.stopDaemon().then((data) => {
         console.log('stopped daemon');
-        if(restart){
+        if(args.restart != null && args.restart === true){
           event.emit('start')
         }
+        if(args.closeApplication != null && args.closeApplication === true){
+          console.log('in here')
+          this.props.setLoading({
+            isLoading: true,
+            loadingMessage: 'Stopping Daemon and closing sapphire'
+          });
+          setTimeout(()=>{
+            ipcRenderer.send('closeApplication');
+          },3000)
+        }
+      }).catch((err) => {
+        // TODO : remove Work around while re indexing deadlock exists
+        if(args.closeApplication != null && args.closeApplication === true){
+          console.log('in here')
+          setTimeout(()=>{
+            ipcRenderer.send('closeApplication');
+          },3000)
+        }
+        console.log(err)
+      });
+    });
+
+    // Stop Daemon
+    event.on('stop', async (args) => {
+      await this.stopDaemon().then((data) => {
+        if (err) console.log('error stopping daemon: ', err);
+        console.log('stopped daemon');
+        if(args.restart === true){
+          event.emit('start')
+        }
+        if(args.closeApplication === true){
+          event.emit('closeApplication');
+        }
+      }).catch((err) => {
+        console.log(err)
       });
     });
 
@@ -89,12 +120,8 @@ class Connector extends Component {
       await this.updateDaemon();
     });
 
-    event.on('initial_setup', async () => {
-      await this.initialSetup();
-    });
-
-    event.on('downloadDaemon', async () => {
-      await this.downloadDaemon();
+    event.on('initial_setup', async (checkForUpdates) => {
+      await this.initialSetup(checkForUpdates);
     });
 
     this.listenForDownloadEvents();
@@ -170,48 +197,65 @@ class Connector extends Component {
       });
     });
     event.on('download-error', (arg) => {
+      this.props.setFileDownloadStatus({
+        downloadMessage: '',
+        downloadPercentage: undefined,
+        downloadRemainingTime: 0.0
+      });
       console.log(arg)
       console.log(`Download failure: ${arg.message}`);
       this.props.settellUserUpdateFailed({
         updateFailed: true,
-        downloadMessage: arg.message
+        downloadMessage: arg.message + '\n Sapphire Cannot run with version ' + this.state.installedVersion + " Please manually update"
       });
     });
   }
 
   async initialSetup() {
+    let canGetVersion = true;
     const iVersion = await this.checkIfDaemonExists();
     const walletFile = await this.checkIfWalletExists();
     console.log(iVersion)
+    this.props.setLocalDaemonVersion(iVersion);
     this.setState({
-      installedVersion: iVersion,
       walletDat: walletFile
     });
 
+
     await this.getLatestVersion().catch((err)=> {
       console.log(err.message);
-      this.props.setLoading({
-        isLoading: true,
-        loadingMessage: err.message
-      });
+      canGetVersion = false
     });
 
-    console.log("server version: ", this.state.currentVersion);
-    const version = this.state.installedVersion === -1 ? this.state.installedVersion : parseInt(this.state.installedVersion.replace(/\D/g, ''));
+
+    console.log("server version: ", this.props.serverDaemonVersion);
+    const serverVersion = parseInt(this.props.serverDaemonVersion.replace(/\D/g, ''));
+    console.log("server version: ", serverVersion);
+    const version = this.props.installedDaemonVersion === -1 ? this.props.installedDaemonVersion : parseInt(this.props.installedDaemonVersion.replace(/\D/g, ''));
     console.log('LOCAL VERSION INT: ', version);
-    if (this.state.installedVersion === -1 || version < REQUIRED_DAEMON_VERSION) {
+
+
+    if (version < this.props.requiredDaemonVersion && canGetVersion === true && (serverVersion > version)) {
       await this.downloadDaemon().then((data) => {
         console.log('downloaded')
         this.setState({
           downloadingDaemon: false
         });
+        this.props.setUpdatingApplication(false);
         this.startDaemonChecker();
         event.emit('startConnectorChildren');
       }).catch((err) => {
         console.log(err)
         console.log('download daemon failed')
         event.emit('download-error', { message: err.message });
+
       });
+    } else if(version < this.props.requiredDaemonVersion) {
+      this.props.settellUserUpdateFailed({
+        updateFailed: true,
+        downloadMessage: ''
+      });
+      this.props.setUpdateFailedMessage("Sapphire is unable to start with this daemon version please download the daemon and update manually!");
     } else {
       event.emit('startConnectorChildren');
       this.startDaemonChecker();
@@ -243,6 +287,8 @@ class Connector extends Component {
         } else if (list && list.length == 0) {
           console.log('daemon not running');
           this.props.setDaemonRunning(false);
+          console.log(!self.state.downloadingDaemon)
+          console.log(self.props.daemonErrorPopup)
           if (!self.state.downloadingDaemon && self.props.daemonErrorPopup !== true)
           { event.emit('start'); }
         }
@@ -286,7 +332,7 @@ class Connector extends Component {
         downloading: true
       });
       const r = await this.stopDaemon();
-      if (r) {
+      if (r === true) {
         setTimeout(async () => {
           let downloaded = false;
           try {
@@ -330,11 +376,9 @@ class Connector extends Component {
       await request(opts).then(async (data) => {
         if (data) {
           const parsed = JSON.parse(data);
-          this.setState({
-            currentVersion: parsed.versions[0].name
-          });
-          console.log(this.state.currentVersion);
-          if (this.state.currentVersion === -1) {
+          this.props.setServerDaemonVersion(parsed.versions[0].name);
+          console.log(this.props.serverDaemonVersion);
+          if (this.props.serverDaemonVersion === -1) {
             event.emit('download-error', { message: 'Error Checking for latest version' });
             reject({ message: 'Error Checking for latest version' });
           } else {
@@ -354,8 +398,8 @@ class Connector extends Component {
   checkForUpdates() {
     // check that version value has been set and
     // the user has not yet been told about an update
-    if (this.state.installedVersion !== -1 && !this.state.toldUserAboutUpdate) {
-      if (Tools.compareVersion(this.state.installedVersion, this.state.currentVersion) === -1 && this.state.currentVersion.replace(/\D/g, '') > REQUIRED_DAEMON_VERSION) {
+    if (this.props.installedDaemonVersion !== -1 && !this.state.toldUserAboutUpdate) {
+      if (Tools.compareVersion(this.props.installedDaemonVersion, this.props.serverDaemonVersion) === -1 && this.props.serverDaemonVersion.replace(/\D/g, '') > this.props.requiredDaemonVersion) {
         this.setState({
           toldUserAboutUpdate: true
         });
@@ -372,7 +416,6 @@ class Connector extends Component {
     this.setState({
       downloadingDaemon: true
     });
-    const self = this;
 
     return new Promise((resolve, reject) => {
       console.log('downloading latest daemon');
@@ -390,21 +433,34 @@ class Connector extends Component {
         const latestDaemonVersion = latestDaemon.name.substring(1);
         const zipChecksum = latestDaemon.checksum;
         const downloadUrl = latestDaemon.download_url;
-        const downloadFileName = getPlatformName() === ('win32' || 'win64') ? 'Eccoind.zip' : 'Eccoind.tar.gz';
+        let downloadFileName = 'Eccoind.tar.gz';
+        if(getPlatformName() === 'win32' || getPlatformName() === 'win64'){
+          downloadFileName = 'Eccoind.zip';
+        }
+
         console.log(getPlatformName())
         const downloaded = await downloadFile(downloadUrl, walletDirectory, downloadFileName, zipChecksum, true);
 
         if (downloaded === true) {
           const platFileName = getPlatformFileName();
-          fs.rename(walletDirectory + "eccoin-"+ latestDaemonVersion +"/bin/eccoind", walletDirectory + platFileName, function (err) {
-            if (err) reject(err)
-            console.log('Successfully renamed - AKA moved!')
-          });
-          self.setState({
-            installedVersion: await this.checkIfDaemonExists(),
-            downloading: false
-          });
-          resolve(true);
+          let fileLocation =  '/bin/eccoind';
+          if(getPlatformName() === 'win32' || getPlatformName() === 'win64'){
+            fileLocation = '\\bin\\eccoind.exe';
+          }
+          const oldLocation = `${walletDirectory}eccoin-${latestDaemonVersion}${fileLocation}`;
+          const newLocation = walletDirectory + platFileName;
+          console.log(oldLocation);
+          console.log(newLocation);
+          const moved = await moveFile(oldLocation, newLocation);
+
+          if (moved === true){
+            this.setState({
+              installedVersion: await this.checkIfDaemonExists(),
+              downloading: false
+            });
+            resolve(true);
+          }
+          reject({message: 'Cannot move daemon file'});
         } else {
           console.log(downloaded);
           reject(downloaded);
@@ -443,23 +499,23 @@ class Connector extends Component {
    */
 
   async stopDaemon() {
-    return new Promise((resolve, reject) => {
-      this.props.wallet.walletstop()
+    return new Promise(async (resolve, reject) => {
+      await this.props.wallet.walletstop()
         .then((data) => {
           console.log(data);
-          if (data && data === 'ECC server stopping') {
+          if (data && data === 'Eccoind server stopping') {
             console.log('stopping daemon');
             this.props.setDaemonRunning(false);
             resolve(true);
           }	else if (data && data.code === 'ECONNREFUSED') {
             resolve(true);
           } else {
-            resolve(false);
+            reject(data);
           }
         })
         .catch(err => {
           console.log('failed to stop daemon:', err);
-          resolve(false);
+          resolve(err);
         });
     });
   }
@@ -481,6 +537,10 @@ const mapStateToProps = state => {
     wallet: state.application.wallet,
     daemonError: state.application.daemonError,
     daemonErrorPopup: state.application.daemonErrorPopup,
+    serverDaemonVersion: state.application.serverDaemonVersion,
+    installedDaemonVersion: state.application.installedDaemonVersion,
+    requiredDaemonVersion: state.application.requiredDaemonVersion,
+    log: state.application.log
   };
 };
 

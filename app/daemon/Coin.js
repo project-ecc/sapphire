@@ -88,6 +88,7 @@ class Coin extends Component {
   async stateCheckerInitialStartupCycle() {
 
     this.props.wallet.getInfo().then(async (data) => {
+      this.props.setDaemonRunning(true);
 
       // process block height in here.
       let syncedPercentage = (data.blocks * 100) / data.headers;
@@ -104,7 +105,6 @@ class Coin extends Component {
       this.props.chainInfo(data);
       this.props.walletInfo(data);
 
-      console.log(data);
       if (!data.encrypted) {
         this.props.setUnencryptedWallet(true);
       } else {
@@ -159,17 +159,30 @@ class Coin extends Component {
     ipcRenderer.on('message-from-log', (e, arg) => {
       this.props.setAppendToDebugLog(arg);
       const castedArg = String(arg);
-      const captureStrings = [
-        'init message',
-        'Still rescanning',
+      const captureErrorStrings = [
+
         'Corrupted block database detected',
         'Aborted block database rebuild. Exiting.',
         'initError: Cannot obtain a lock on data directory ',
-        'ERROR: VerifyDB():'
+        'ERROR: VerifyDB():',
+
       ];
 
-      if (captureStrings.some((v) => { return castedArg.indexOf(v) > -1; })) {
+      const captureLoadingStrings = [
+        'Block Import: already had block',
+        'init message',
+        'Still rescanning',
+      ];
+
+      if (captureErrorStrings.some((v) => { return castedArg.indexOf(v) > -1; })) {
         ipcRenderer.send('loading-error', { message: castedArg});
+      }
+
+      if (captureLoadingStrings.some((v) => { return castedArg.indexOf(v) > -1; })) {
+        this.props.setLoading({
+          isLoading: true,
+          loadingMessage: castedArg
+        });
       }
     });
   }
@@ -441,6 +454,7 @@ class Coin extends Component {
    */
   blockCycle() {
     this.props.wallet.getBlockChainInfo().then(async (data) => {
+      this.props.setDaemonRunning(true);
       // process block height in here.
       let syncedPercentage = (data.blocks * 100) / data.headers;
       syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
@@ -673,8 +687,14 @@ class Coin extends Component {
       });
     }
     if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT' || err.body === 'Work queue depth exceeded')) {
-      clearInterval(this.state.checkStartupStatusInterval);
-      clearInterval(this.state.blockInterval);
+      // clearInterval(this.state.checkStartupStatusInterval);
+      // clearInterval(this.state.blockInterval);
+      const errorMessage = this.props.rescanningLogInfo.peekEnd();
+      console.log(errorMessage)
+      this.props.setLoading({
+        isLoading: true,
+        loadingMessage: errorMessage
+      });
     }
     if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
       this.props.setDaemonRunning(false);
