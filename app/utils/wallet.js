@@ -249,6 +249,11 @@ export default class Wallet {
     return result;
   }
 
+  async getTransaction(txid) {
+      const data = await client.getTransaction(txid);
+      return data;
+  }
+
   async getblockcount() {
     const result = await client.getBlockCount();
     return result;

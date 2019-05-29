@@ -21,13 +21,13 @@ class TransactionModal extends Component {
 
   async componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
-    if (this.props.transactionId !== prevProps.trasactionId) {
+    if (this.props.transactionId !== prevProps.transactionId) {
      await this.loadTransactionData(this.props.transactionId);
     }
   }
 
   async loadTransactionData(txid){
-    const data = await this.props.wallet.getRawTransaction(txid);
+    const data = await this.props.wallet.getTransaction(txid);
     console.log(data);
   }
 

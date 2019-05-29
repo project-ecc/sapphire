@@ -9,7 +9,7 @@ import {
   getAllMyAddresses,
   getAllRewardTransactions,
   getAllTransactions,
-  getLatestTransaction,
+  getLatestTransaction, getUnconfirmedTransactions,
   updateTransactionsConfirmations
 } from '../Managers/SQLManager';
 import * as tools from '../utils/tools';
@@ -559,10 +559,6 @@ class Coin extends Component {
    * This function should also notify if there is new transactions.
    */
   async transactionLoader() {
-    this.props.setLoading({
-      isLoading: true,
-      loadingMessage: 'Loading Transactions... '
-    });
     // compare the latest transaction time stored in memory against the latest 10 transactions.
     const latestTransaction = await getLatestTransaction();
     console.log(latestTransaction)
@@ -605,11 +601,10 @@ class Coin extends Component {
       await this.loadTransactionsForProcessing();
 
     } else{
-      this.props.setLoading({
-        isLoading: true,
-        loadingMessage: 'Updating confirmations!'
-      });
-      await this.updateConfirmations();
+      if(!this.props.initialDownload){
+        await this.updateConfirmations();
+      }
+
     }
     //emit globally to update transaction list
     this.props.setLoading({
@@ -626,12 +621,13 @@ class Coin extends Component {
    * transactions when its done. SHOULD NOT BE CALLED WHEN USER IS USING A TRANSACTION FILTER.
    */
   async updateConfirmations() {
-    await getAllTransactions()
+    await getUnconfirmedTransactions()
       .then(async (transactionData) => {
-        const walletTransactions = await this.props.wallet.getTransactions('*', transactionData.length, 0);
-        await Promise.all(walletTransactions.map(async (transactions) => {
+        await Promise.all(transactionData.map(async (transaction) => {
           try {
-            return await updateTransactionsConfirmations(transactions.txid, transactions.confirmations);
+            console.log(transaction)
+            const walletTransaction = await this.props.wallet.getTransaction(transaction['transaction_id']);
+            return await updateTransactionsConfirmations(walletTransaction.txid, walletTransaction.confirmations);
           } catch (err) {
             console.log(err);
           }
@@ -727,7 +723,8 @@ const mapStateToProps = state => {
     notifications: state.notifications,
     rescanningLogInfo: state.application.debugLog,
     daemonRunning: state.application.daemonRunning,
-    userAddresses: state.application.userAddresses
+    userAddresses: state.application.userAddresses,
+    initialDownload: state.chains.initialDownload
   };
 };
 

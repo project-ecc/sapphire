@@ -165,6 +165,24 @@ async function getAllTransactions(limit = null, offset = 0, where = null){
   });
 }
 
+async function getUnconfirmedTransactions(){
+  return new Promise((resolve, reject) => {
+    Transaction.findAll({
+      include: [{ all: true, nested: true }],
+        where: {
+          status: 'pending'
+        },
+      raw: true,
+      order: [
+        ['time', 'DESC'],
+      ]
+    }).then(transactions => {
+      resolve(transactions);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
 async function searchAllTransactions(searchTerm) {
   return new Promise((resolve, reject) => {
     const term = searchTerm.toLowerCase();
@@ -513,6 +531,7 @@ export {
   findContact,
   getContacts,
   deleteContact,
-  clearTransactions
+  clearTransactions,
+  getUnconfirmedTransactions
 };
 
