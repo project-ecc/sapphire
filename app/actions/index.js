@@ -59,7 +59,7 @@ import {
   INITIAL_BLOCK_DOWNLOAD,
   BLOCKS_AND_HEADERS,
   SIZE_ON_DISK,
-  UPDATE_FAILED_MESSAGE, SERVER_DAEMON_VERSION, LOCAL_DAEMON_VERSION
+  UPDATE_FAILED_MESSAGE, SERVER_DAEMON_VERSION, LOCAL_DAEMON_VERSION, MINING_INFO
 } from './types';
 
 export const setWalletCredentials = (args) => {
@@ -292,10 +292,10 @@ export const setUpdatingApplication = (val) => {
   };
 };
 
-export const setUpdateAvailable = () => {
+export const setUpdateAvailable = (val) => {
   return {
     type: UPDATE_AVAILABLE,
-    payload: { guiUpdate: false, daemonUpdate: false }
+    payload: { daemonUpdate: val.daemonUpdate }
   };
 };
 
@@ -478,7 +478,16 @@ export const chainInfo = (val) => {
   return {
     type: CHAIN_INFO,
     payload: {
-      staking: val.staking, unlocked_until: val.unlocked_until, connections: val.connections, blocks: val.blocks, headers: val.headers
+      staking: val.stake, unlocked_until: val.unlocked_until, connections: val.connections, blocks: val.blocks, headers: val.headers
+    }
+  };
+};
+
+export const miningInfo = (val) => {
+  return {
+    type: MINING_INFO,
+    payload: {
+      generatepos: val.generatepos
     }
   };
 };

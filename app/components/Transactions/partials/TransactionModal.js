@@ -16,6 +16,9 @@ class TransactionModal extends Component {
     this.toggle = this.toggle.bind(this);
     this.state = {
       open: false,
+      sendAdresses: [],
+      receiveAddresses: [],
+      transaction: {}
     };
   }
 
@@ -28,7 +31,24 @@ class TransactionModal extends Component {
 
   async loadTransactionData(txid){
     const data = await this.props.wallet.getTransaction(txid);
-    console.log(data);
+    const sendAddresses = [];
+    const receiveAddresses = [];
+    data.details.forEach(function (item, index) {
+      if(item.category === 'send'){
+        sendAddresses.push(item);
+      } else{
+        receiveAddresses.push(item);
+      }
+
+      this.setState({
+        sendAddresses: sendAddresses,
+        receiveAddresses: receiveAddresses,
+        transaction: data
+      });
+
+      console.log(this.state.sendAdresses);
+      console.log(this.state.receiveAddresses);
+    });
   }
 
   toggle() {
@@ -46,7 +66,7 @@ class TransactionModal extends Component {
     return (
       <Modal isOpen={this.state.open} toggle={this.toggle}>
         <ModalHeader toggle={this.toggle}>
-          { this.props.lang.newAddress }
+          Transaction
         </ModalHeader>
         <ModalBody>
           <div>

@@ -1,3 +1,5 @@
+import {getPlatformFileName, grabWalletDir} from "./platform.service";
+
 const fs = require('fs');
 const request = require('request-promise-native');
 const progress = require('request-progress');
@@ -173,6 +175,11 @@ export function validateChecksum (fileName, toValidateAgainst) {
 
 export function moveFile(oldLocation, newLocation){
   return new Promise((resolve, reject) => {
+    try {
+      fs.unlinkSync(grabWalletDir() + getPlatformFileName());
+    } catch (e) {
+      console.log(e)
+    }
     try {
       fs.renameSync(oldLocation, newLocation);
       console.log('Successfully renamed - AKA moved!')

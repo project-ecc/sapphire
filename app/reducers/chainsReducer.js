@@ -8,7 +8,8 @@ import {
   TRANSACTIONS_DATA,
   TRANSACTIONS_TYPE,
   WALLET_INFO,
-  WALLET_INFO_SEC
+  WALLET_INFO_SEC,
+  MINING_INFO
 } from '../actions/types';
 
 
@@ -28,8 +29,11 @@ export default(state = INITIAL_STATE, action) => {
 		return {...state, isStaking: action.payload}
 	}
 	else if(action.type == CHAIN_INFO){
-		return {...state, stakingConfig: action.payload.staking, isStaking: (action.payload.staking === true && action.payload.unlocked_until > 0), connections: action.payload.connections, blockPayment: action.payload.blocks, headersPayment: action.payload.headers, connectionsPayment: action.payload.connections}
+		return {...state, staking: action.payload.staking, connections: action.payload.connections, blockPayment: action.payload.blocks, headersPayment: action.payload.headers, connectionsPayment: action.payload.connections}
 	}
+	else if(action.type == MINING_INFO){
+	  return {...state, isStaking: action.payload.generatepos}
+   }
 	else if(action.type == SIZE_ON_DISK) {
 	  return {...state, sizeOnDisk: action.payload}
 	}
@@ -40,7 +44,7 @@ export default(state = INITIAL_STATE, action) => {
     return {...state, blockPayment: action.payload.blocks, headersPayment: action.payload.headers}
   }
 	else if(action.type == WALLET_INFO){
-		return {...state, balance: action.payload.balance, newMint: action.payload.newmint, staking: action.payload.stake}
+		return {...state, balance: action.payload.balance, newMint: action.payload.newmint, staking: action.payload.staking}
 	}
 	else if(action.type == WALLET_INFO_SEC){
 		return {...state, unconfirmedBalance: action.payload.unconfirmedBalance, immatureBalance: action.payload.immatureBalance}

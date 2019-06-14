@@ -144,7 +144,7 @@ const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
     wallet: state.application.wallet,
-    staking: state.chains.isStaking,
+    isStaking: state.chains.isStaking,
     addresses: state.application.userAddresses
   };
 };

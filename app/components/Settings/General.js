@@ -38,7 +38,7 @@ class General extends Component {
     if (!this.props.updateAvailable) {
       return;
     }
-    this.props.setUpdateApplication(true);
+    event.emit('updateDaemon', true);
   }
 
   checkForUpdates(){
@@ -162,9 +162,8 @@ class General extends Component {
               <p id="applicationVersion">v{guiVersion}g & v{this.props.daemonVersion}d</p>
             </div>
             <div className="col-sm-6 text-right removePadding">
-              <p id={this.props.updateAvailable ? 'updateAvailable' : 'updateUnavailable'}>{this.props.updateAvailable ? this.props.lang.installUpdate : this.props.lang.noUpdateAvailable }</p>
               {this.props.updateAvailable && (
-                <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.handleUpdateApplication()}>{ this.props.lang.accessConsole }</Button>
+                <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.handleUpdateApplication()}>Update Now</Button>
               )}
               <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.checkForUpdates()}>Check for updates</Button>
             </div>
@@ -200,7 +199,7 @@ const mapStateToProps = state => {
     minimizeToTray: state.application.minimizeToTray,
     minimizeOnClose: state.application.minimizeOnClose,
     daemonVersion: state.chains.daemonVersion,
-    updateAvailable: state.startup.guiUpdate || state.startup.daemonUpdate,
+    updateAvailable: state.startup.daemonUpdate,
     debugLog: state.application.debugLog
   };
 };

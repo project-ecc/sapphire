@@ -11,7 +11,7 @@ import {
 var lang = traduction();
 
 
-const INITIAL_STATE = {lang: lang, loader: true, loading: true, loadingMessage: '', updatingApp: false, guiUpdate: false, daemonUpdate:false, unencryptedWallet: false, toldUserAboutUpdate: false };
+const INITIAL_STATE = {lang: lang, loader: true, loading: true, loadingMessage: '', updatingApp: false, daemonUpdate:false, unencryptedWallet: false, toldUserAboutUpdate: false };
 
 export default(state = INITIAL_STATE, action) => {
 	if(action.type == SET_LANGUAGE){
@@ -25,13 +25,7 @@ export default(state = INITIAL_STATE, action) => {
 		return {...state, toldUserAboutUpdate: true}
 	}
 	else if(action.type == UPDATE_AVAILABLE){
-    let daemonUpdate = state.daemonUpdate;
-    let guiUpdate = state.guiUpdate;
-    if(action.payload){
-      daemonUpdate = action.payload.daemonUpdate;
-      guiUpdate = action.payload.guiUpdate;
-    }
-		return {...state, daemonUpdate: daemonUpdate, guiUpdate: guiUpdate}
+		return {...state, daemonUpdate: action.payload.daemonUpdate}
 	}
 	else if(action.type == UPDATING_APP){
 		return {...state, updatingApp: action.payload, toldUserAboutUpdate: true}

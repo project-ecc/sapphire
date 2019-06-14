@@ -143,7 +143,6 @@ const mapStateToProps = state => {
     loading: state.startup.loading,
     updateFailedMessage: state.application.updateFailedMessage,
     wallet: state.application.wallet,
-    guiUpdate: state.startup.guiUpdate,
     daemonServerVersion: state.application.daemonServerVersion,
     installedDaemonVersion: state.application.installedDaemonVersion,
     requiredDaemonVersion: state.application.requiredDaemonVersion

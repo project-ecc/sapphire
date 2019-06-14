@@ -3,6 +3,8 @@ import {connect} from 'react-redux';
 const { app } = require('electron');
 
 import {
+  extractChecksum,
+  formatDownloadURL,
   getDaemonDownloadUrl, getPlatformFileName, getPlatformName, getPlatformWalletUri, grabEccoinDir,
   grabWalletDir
 } from '../utils/platform.service';
@@ -366,17 +368,19 @@ class Connector extends Component {
   async getLatestVersion() {
     return new Promise(async (resolve, reject) => {
       console.log('checking for latest daemon version');
-      const daemonDownloadURL = getDaemonDownloadUrl();
       const self = this;
-      // download latest daemon info from server
+
       const opts = {
-        url: daemonDownloadURL
+        url: process.env.UPDATE_SERVER_URL,
+        headers: {
+          'User-Agent': 'request'
+        },
       };
 
       await request(opts).then(async (data) => {
         if (data) {
           const parsed = JSON.parse(data);
-          this.props.setServerDaemonVersion(parsed.versions[0].name);
+          this.props.setServerDaemonVersion(parsed[0].name.split(' ')[1]);
           console.log(this.props.serverDaemonVersion);
           if (this.props.serverDaemonVersion === -1) {
             event.emit('download-error', { message: 'Error Checking for latest version' });
@@ -403,14 +407,16 @@ class Connector extends Component {
         this.setState({
           toldUserAboutUpdate: true
         });
-        event.emit('daemonUpdate');
+        this.props.setUpdateAvailable({daemonUpdate: true});
+      } else {
+        console.log('in here for some reason')
       }
     }
   }
 
   async downloadDaemon() {
     const walletDirectory = grabWalletDir();
-    const daemonDownloadURL = getDaemonDownloadUrl();
+    const daemonDownloadURL = process.env.UPDATE_SERVER_URL;
     console.log(daemonDownloadURL);
 
     this.setState({
@@ -422,19 +428,22 @@ class Connector extends Component {
 
       // download latest daemon info from server
       const opts = {
-        url: daemonDownloadURL
+        url: daemonDownloadURL,
+        headers: {
+          'User-Agent': 'request'
+        }
       };
       console.log(opts);
 
       request(opts).then(async (data) => {
         console.log(data);
         const parsed = JSON.parse(data);
-        const latestDaemon = parsed.versions[0];
-        const latestDaemonVersion = latestDaemon.name.substring(1);
-        const zipChecksum = latestDaemon.checksum;
-        const downloadUrl = latestDaemon.download_url;
+        const latestDaemon = parsed[0].name.split(' ')[1];
+        const zipChecksum = extractChecksum(getPlatformName(), parsed[0].body);
+        const downloadUrl = formatDownloadURL('eccoin', latestDaemon, getPlatformName());
+
         let downloadFileName = 'Eccoind.tar.gz';
-        if(getPlatformName() === 'win32' || getPlatformName() === 'win64'){
+        if (getPlatformName() === 'win32' || getPlatformName() === 'win64'){
           downloadFileName = 'Eccoind.zip';
         }
 
@@ -443,11 +452,11 @@ class Connector extends Component {
 
         if (downloaded === true) {
           const platFileName = getPlatformFileName();
-          let fileLocation =  '/bin/eccoind';
+          let fileLocation = '/bin/eccoind';
           if(getPlatformName() === 'win32' || getPlatformName() === 'win64'){
             fileLocation = '\\bin\\eccoind.exe';
           }
-          const oldLocation = `${walletDirectory}eccoin-${latestDaemonVersion}${fileLocation}`;
+          const oldLocation = `${walletDirectory}eccoin-${latestDaemon}${fileLocation}`;
           const newLocation = walletDirectory + platFileName;
           console.log(oldLocation);
           console.log(newLocation);

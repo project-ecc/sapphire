@@ -4,6 +4,7 @@ const homedir = require('os').homedir();
 let arch = require('arch');
 
 let serverUrl = process.env.UPDATE_SERVER_URL;
+let humanURL = process.env.HUMAN_READABLE_UPDATE_URL;
 
 
 export function getPlatformName(){
@@ -135,5 +136,35 @@ export function getConfUri() {
 
 export function getDebugUri() {
   return `${grabEccoinDir()}debug.log`;
+}
+
+/**
+ * This function forwards the daemon zip download url given the inputted parameters.
+ * @param product
+ * @param version
+ * @param platform
+ * @returns {string}
+ */
+
+export function formatDownloadURL(product, version, platform) {
+  if (platform === 'win32' || platform === 'win64'){
+    return humanURL + `/download/${product}${version}/${product}-${version}-${platform}.zip`;
+  }
+  return humanURL + `/download/${product}${version}/${product}-${version}-${platform}.tar.gz`;
+}
+
+
+/**
+ * Extracts the platform zip checksum from the body of text on the github release page.
+ * @param platform
+ * @param text
+ * @returns {string}
+ */
+
+export function extractChecksum (platform, text) {
+  // kinda shitty...node doesn't have dotall (s flag) as of this code...whitespace/not whitespace is a hack...
+  const checksumMatches = text.match(new RegExp(`[\\s\\S]*checksum-${platform}: (\\w+)[\\s\\S]*`));
+
+  return (checksumMatches && checksumMatches.length > 1) ? checksumMatches[1] : '';
 }
 

@@ -333,10 +333,6 @@ class Index extends Component {
                           <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{(new Date(t.time * 1000).toDateString()).toString()}</span></p>
                         </div>
                         <div style={{ padding: '0 15px' }}>
-                          <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.confirmations}</span></p>
-                          <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{t.confirmations}</span></p>
-                        </div>
-                        <div style={{ padding: '0 15px' }}>
                           <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionFee}</span></p>
                           <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{t.fee}</span></p>
                         </div>

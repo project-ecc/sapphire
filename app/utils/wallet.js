@@ -169,6 +169,16 @@ export default class Wallet {
     })
   }
 
+  getMiningInfo() {
+    return new Promise((resolve, reject) =>{
+      client.getMiningInfo().then((data) => {
+        return resolve(data);
+      }).catch((err) => {
+        return reject(err);
+      });
+    })
+  }
+
 
   getTransactions(account, count, skip) {
     return new Promise((resolve, reject) => {

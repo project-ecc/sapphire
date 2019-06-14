@@ -34,7 +34,6 @@ let walletPath;
 let tray = null;
 let ds = null;
 let mainWindow = null;
-let guiUpdate = false;
 let daemonUpdate = false;
 let fullScreen = false;
 
@@ -237,7 +236,9 @@ async function closeApplication() {
       mainWindow.show();
       mainWindow.focus();
     }
-    sendMessage('stop', { restart: false, closeApplication: true });
+
+    //TODO UNCOMMENT THIUS
+    // sendMessage('stop', { restart: false, closeApplication: true });
     console.log('shutting down daemon');
   }
 }
@@ -358,31 +359,13 @@ function setupEventHandlers() {
     sendMessage('daemonCredentials', {
       credentials: daemonCredentials
     });
-    //
-    // if(initialSetup && exists){
-    //   sendMessage("setup_done");
-    // }
-    // else if(initialSetup && !exists){
-    //   sendMessage("import_wallet");
-    // }
-    // else if(!initialSetup && exists){
-    //   sendMessage("partial_initial_setup");
-    // }
-    // else if(!initialSetup && !exists){
-    //   sendMessage("initial_setup");
-    // }
+
   });
 
   event.on('daemonUpdate', () => {
     console.log('electron got daemon update message, sending to GUI');
     daemonUpdate = true;
     sendMessage('daemonUpdate');
-  });
-
-  event.on('guiUpdate', () => {
-    console.log('electron got gui update message, sending to GUI');
-    guiUpdate = true;
-    sendMessage('guiUpdate');
   });
 
   event.on('close', async () => {
@@ -392,9 +375,6 @@ function setupEventHandlers() {
   event.on('updatedDaemon', () => {
     sendMessage('daemonUpdated');
     daemonUpdate = false;
-    if (guiUpdate) {
-      event.emit('updateGui');
-    }
   });
 
   event.on('daemonStarted', () => {
@@ -419,14 +399,7 @@ function setupEventHandlers() {
 
   ipcMain.on('update', (e, args) => {
     console.log('electron got update signal, sending to daemon');
-    console.log(guiUpdate);
-    console.log(daemonUpdate);
-
-    if (guiUpdate) {
-      event.emit('updateGui');
-    } else {
-      event.emit('updateDaemon');
-    }
+    event.emit('updateDaemon', args);
   });
 }
 

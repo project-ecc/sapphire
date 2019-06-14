@@ -43,7 +43,7 @@ import notificationsInfo from '../utils/notificationsInfo';
 const Queue = require('../utils/queue');
 
 const moment = require('moment');
-const REQUIRED_DAEMON_VERSION = 2515;
+const REQUIRED_DAEMON_VERSION = 2516;
 
 
 const INITIAL_STATE = {wallet: null, requiredDaemonVersion: REQUIRED_DAEMON_VERSION, daemonRunning: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, friends: [], userAddresses: [], creatingAddress: false, newContactAddress:"", settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, locationToExport: "", backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, pendingTransactions: [], wasStaking: false, daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], coinMarketCapStats: {}, coinMarketLastUpdated: 0, updateApplication:false, closingApplication: false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false, downloadMessage: undefined, downloadPercentage: undefined, downloadRemainingTime: undefined, updateFailed:false, popupLoading: false, contactToAdd: undefined, showZeroBalance: true, filteringTransactions: false, debugLog: new Queue(), selectedCurrency: "usd", donationGoals: {}, donationGoalsLastUpdated: 0, daemonErrorPopup: false, daemonError: '' , updateFailedMessage: '', serverDaemonVersion: -1, installedDaemonVersion: -1 };

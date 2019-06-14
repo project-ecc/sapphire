@@ -114,7 +114,8 @@ const mapStateToProps = state => {
 
   return {
     lang: state.startup.lang,
-    staking: state.chains.isStaking,
+    isStaking: state.chains.isStaking,
+    staking: state.chains.staking,
     balance: Tools.formatNumber(balance),
     // temporary fix...
     total: Tools.formatNumber(parseFloat(balance) + parseFloat(staking) + parseFloat(newMint) + parseFloat(unconfirmedBalance) + parseFloat(immatureBalance)),

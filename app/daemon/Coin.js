@@ -103,6 +103,7 @@ class Coin extends Component {
       this.props.updatePaymentChainSync(data.blocks === 0 || data.headers === 0 ? 0 : syncedPercentage);
       this.props.setDaemonVersion(tools.formatVersion(data.version));
       this.props.chainInfo(data);
+      console.log(data)
       this.props.walletInfo(data);
 
       if (!data.encrypted) {
@@ -223,7 +224,7 @@ class Coin extends Component {
     for (let i = 0; i < transactions.length; i++) {
       time = transactions[i].time;
       if (time > this.state.lastTransactionTime) {
-        console.log(transactions[i])
+        // console.log(transactions[i])
         this.setState({
           shouldRequestMoreTransactions: true
         });
@@ -476,6 +477,13 @@ class Coin extends Component {
     .catch((err) => {
       this.processError(err)
     });
+
+    this.props.wallet.getMiningInfo().then(async (data) => {
+      this.props.miningInfo(data)
+    })
+    .catch((err) => {
+      this.processError(err)
+    });
   }
 
   coinCycle() {
@@ -493,6 +501,7 @@ class Coin extends Component {
       this.props.updatePaymentChainSync(data.blocks === 0 || data.headers === 0 ? 0 : syncedPercentage);
       this.props.setDaemonVersion(tools.formatVersion(data.version));
       this.props.chainInfo(data);
+      console.log(data)
       this.props.walletInfo(data);
 
       if(!this.state.isIndexingTransactions){
@@ -685,24 +694,15 @@ class Coin extends Component {
     if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT' || err.body === 'Work queue depth exceeded')) {
       // clearInterval(this.state.checkStartupStatusInterval);
       // clearInterval(this.state.blockInterval);
-      const errorMessage = this.props.rescanningLogInfo.peekEnd();
-      console.log(errorMessage)
-      this.props.setLoading({
-        isLoading: true,
-        loadingMessage: errorMessage
-      });
+      // this.props.setDaemonRunning(false);
     }
     if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
-      this.props.setDaemonRunning(false);
+      // this.props.setDaemonRunning(false);
       this.setState({
         running: false
       });
       const errorMessage = this.props.rescanningLogInfo.peekEnd();
       console.log(errorMessage)
-      this.props.setLoading({
-        isLoading: true,
-        loadingMessage: errorMessage
-      });
     }
   }
 
