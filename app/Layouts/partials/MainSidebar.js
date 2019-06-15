@@ -12,21 +12,17 @@ import * as actions from '../../actions/index';
 class MainSidebar extends Component {
   constructor(props) {
     super(props);
-    this.state = { staking: this.props.staking };
     this.processStakingClicked = this.processStakingClicked.bind(this);
     this.lockWallet = this.lockWallet.bind(this);
     this.startStaking = this.startStaking.bind(this);
   }
 
   processStakingClicked() {
-    if (!this.props.staking) {
+    if (!this.props.isStaking) {
       this.unlockModal.getWrappedInstance().toggle();
     } else {
       this.lockWallet().then(() => {
         this.props.wallet.setGenerate().then(() => {
-          this.setState({
-            staking: false
-          });
           this.props.setStaking(false);
         });
       });
@@ -55,9 +51,6 @@ class MainSidebar extends Component {
 
   startStaking () {
     this.props.wallet.setGenerate().then(() => {
-      this.setState({
-        staking: true
-      });
       setTimeout(() => this.props.setStaking(true), 1000);
     });
   }
@@ -143,7 +136,7 @@ class MainSidebar extends Component {
                   <li>
                     <Row className="bg-dark" style={{paddingBottom: '5px'}}>
                       <Col style={{marginLeft: '25px'}}>Staking</Col>
-                      <Col ><Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.processStakingClicked()} active={this.state.staking === true}>{this.state.staking ? "On" : "Off"}</Button></Col>
+                      <Col ><Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.processStakingClicked()} active={this.props.isStaking === true}>{this.props.isStaking ? "On" : "Off"}</Button></Col>
                     </Row>
                   </li>
                 )}
@@ -168,7 +161,8 @@ const mapStateToProps = state => {
     daemonRunning: state.application.daemonRunning,
     wallet: state.application.wallet,
     initialDownload: state.chains.initialDownload,
-    balance: state.chains.balance
+    balance: state.chains.balance,
+    isStaking: state.chains.isStaking
   };
 };
 

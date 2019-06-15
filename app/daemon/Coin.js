@@ -214,7 +214,7 @@ class Coin extends Component {
     let transactions = null;
     console.log('transactions', transactions);
     while (transactions == null && attempts <= maxAttempts) {
-      transactions = await this.props.wallet.getTransactions('*', this.state.transactionsToRequest, this.state.transactionsToRequest * this.state.transactionsPage);
+      transactions = await this.props.wallet.getTransactions(this.state.transactionsToRequest, this.state.transactionsToRequest * this.state.transactionsPage);
       console.log(transactions);
     }
 
@@ -572,16 +572,25 @@ class Coin extends Component {
     const latestTransaction = await getLatestTransaction();
     console.log(latestTransaction)
     const latestTransactionTime = latestTransaction != null ? latestTransaction.time : 0;
+    console.log(latestTransactionTime)
     this.setState({
       lastTransactionTime : latestTransactionTime
     })
 
 
-    let transactions = await this.props.wallet.getTransactions('*', 10000, 0);
+    let transactions = [];
+    try{
+      transactions = await this.props.wallet.getTransactions(10000, 0);
+      transactions = this.orderTransactions(transactions);
+    } catch (e) {
+      console.log(e)
+    }
+
+    console.log(transactions)
     if(latestTransactionTime !== 0 && transactions !== null && transactions.length > 0 ){
-      transactions = this.orderTransactions(transactions)
       console.log(transactions[0].time)
       console.log(this.state.lastTransactionTime)
+      console.log('in first statement')
       if(transactions[0].time > this.state.lastTransactionTime){
         console.log('in here')
         await this.loadTransactionsForProcessing();

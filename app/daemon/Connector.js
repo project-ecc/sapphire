@@ -508,25 +508,25 @@ class Connector extends Component {
    */
 
   async stopDaemon() {
-    return new Promise(async (resolve, reject) => {
-      await this.props.wallet.walletstop()
-        .then((data) => {
-          console.log(data);
-          if (data && data === 'Eccoind server stopping') {
-            console.log('stopping daemon');
-            this.props.setDaemonRunning(false);
-            resolve(true);
-          }	else if (data && data.code === 'ECONNREFUSED') {
-            resolve(true);
-          } else {
-            reject(data);
-          }
-        })
-        .catch(err => {
-          console.log('failed to stop daemon:', err);
-          resolve(err);
-        });
-    });
+    // return new Promise(async (resolve, reject) => {
+    //   await this.props.wallet.walletstop()
+    //     .then((data) => {
+    //       console.log(data);
+    //       if (data && data === 'Eccoind server stopping') {
+    //         console.log('stopping daemon');
+    //         this.props.setDaemonRunning(false);
+    //         resolve(true);
+    //       }	else if (data && data.code === 'ECONNREFUSED') {
+    //         resolve(true);
+    //       } else {
+    //         reject(data);
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.log('failed to stop daemon:', err);
+    //       resolve(err);
+    //     });
+    // });
   }
 
   render() {

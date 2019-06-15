@@ -180,13 +180,10 @@ export default class Wallet {
   }
 
 
-  getTransactions(account, count, skip) {
+  getTransactions(count, skip) {
     return new Promise((resolve, reject) => {
-      let a = account;
-      if (a === null) {
-        a = '*';
-      }
-      client.listTransactions(a, count, skip).then((transactions) => {
+
+      client.listTransactions(count, skip).then((transactions) => {
         return resolve(transactions);
       }).catch((err) => {
         return reject(null);

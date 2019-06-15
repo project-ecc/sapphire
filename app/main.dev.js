@@ -238,7 +238,7 @@ async function closeApplication() {
     }
 
     //TODO UNCOMMENT THIUS
-    sendMessage('stop', { restart: false, closeApplication: true });
+    // sendMessage('stop', { restart: false, closeApplication: true });
     console.log('shutting down daemon');
   }
 }
