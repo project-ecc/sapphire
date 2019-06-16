@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {ipcRenderer} from 'electron';
 import {connect} from 'react-redux';
+import hash from './../router/hash';
 
 import * as actions from '../actions/index';
 import {
@@ -8,7 +9,6 @@ import {
   addTransaction,
   getAllMyAddresses,
   getAllRewardTransactions,
-  getAllTransactions,
   getLatestTransaction, getUnconfirmedTransactions,
   updateTransactionsConfirmations
 } from '../Managers/SQLManager';
@@ -29,6 +29,7 @@ class Coin extends Component {
     this.addressLoader = this.addressLoader.bind(this);
     this.orderTransactions = this.orderTransactions.bind(this);
     this.stateCheckerInitialStartupCycle = this.stateCheckerInitialStartupCycle.bind(this);
+    this.newTransactionChecker = this.newTransactionChecker.bind(this);
 
 
     // Misc functions
@@ -191,7 +192,8 @@ class Coin extends Component {
   async startCycles() {
     // we can starting syncing the block data with redux now
     this.setState({
-      walletRunningInterval: setInterval(async () => { await this.walletCycle(); }, this.state.blockInterval)
+      walletRunningInterval: setInterval(async () => { await this.walletCycle(); }, this.state.blockInterval),
+      newTransactionInterval: setInterval(async() => { await this.newTransactionChecker(); }, 30000)
     });
   }
   async loadTransactionsForProcessing() {
@@ -409,21 +411,22 @@ class Coin extends Component {
    * Notification based stuff, should be moved into its own file maybe?
    * @param callback
    * @param body
+   * @param title
    */
 
 
-  queueOrSendNotification(callback, body) {
-    if (this.props.startup.loading || this.props.startup.loader) {
-      this.state.queuedNotifications.push({ callback, body });
+  async queueOrSendNotification(callback, body, title = null) {
+    if (this.props.loading) {
+      this.state.queuedNotifications.push({ callback, body, title });
     } else {
-      tools.sendOSNotification(body, callback);
+      await tools.sendOSNotification(body, callback, title);
     }
   }
 
   checkQueuedNotifications() {
-    if (!this.props.startup.loading && !this.props.startup.loader && this.state.queuedNotifications.length >= 0) {
+    if (!this.props.loading && this.state.queuedNotifications.length >= 0) {
       if (this.state.queuedNotifications.length === 0) {
-        clearInterval(this.checkQueuedNotificationsInterval);
+        clearInterval(1000);
       } else {
         const notification = this.state.queuedNotifications[0];
         this.state.queuedNotifications.splice(0, 1);
@@ -471,6 +474,7 @@ class Coin extends Component {
         blocks: data.blocks,
         headers: data.headers
       });
+
       this.props.setInitialBlockDownload(data.initialblockdownload);
       this.props.setSizeOnDisk(data.size_on_disk);
     })
@@ -561,6 +565,30 @@ class Coin extends Component {
     });
   }
 
+  async newTransactionChecker(){
+    const latestTransaction = await getLatestTransaction();
+    const latestTransactionTime = latestTransaction != null ? latestTransaction.time : 0;
+    this.setState({
+      lastTransactionTime : latestTransactionTime
+    })
+    let transactions = [];
+    try{
+      transactions = await this.props.wallet.getTransactions(1, 0);
+    } catch (e) {
+      console.log(e)
+    }
+
+    if(transactions !== null && transactions.length > 0 ){
+      console.log(this.state.lastTransactionTime)
+      if(transactions[0].time > this.state.lastTransactionTime){
+        await this.queueOrSendNotification( () => {
+          hash.push('/transactions');
+        }, `Received Amount: ${transactions[0].amount}`, 'New Transaction Received!');
+        await this.transactionLoader()
+      }
+    }
+  }
+
 
   /**
    * This transaction cycle function should pull down any transactions not stored in the DB and process them using the
@@ -586,13 +614,11 @@ class Coin extends Component {
       console.log(e)
     }
 
-    console.log(transactions)
     if(latestTransactionTime !== 0 && transactions !== null && transactions.length > 0 ){
       console.log(transactions[0].time)
       console.log(this.state.lastTransactionTime)
       console.log('in first statement')
       if(transactions[0].time > this.state.lastTransactionTime){
-        console.log('in here')
         await this.loadTransactionsForProcessing();
         this.setState({
           transactionsIndexed: false
@@ -643,7 +669,6 @@ class Coin extends Component {
       .then(async (transactionData) => {
         await Promise.all(transactionData.map(async (transaction) => {
           try {
-            console.log(transaction)
             const walletTransaction = await this.props.wallet.getTransaction(transaction['transaction_id']);
             return await updateTransactionsConfirmations(walletTransaction.txid, walletTransaction.confirmations);
           } catch (err) {
@@ -729,6 +754,7 @@ const mapStateToProps = state => {
     updatingApp: state.startup.updatingApp,
     initialSetup: state.startup.initialSetup,
     daemonUpdate: state.startup.daemonUpdate,
+    loading: state.startup.loading,
     notifications: state.notifications,
     rescanningLogInfo: state.application.debugLog,
     daemonRunning: state.application.daemonRunning,

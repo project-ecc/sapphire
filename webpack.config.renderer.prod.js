@@ -149,7 +149,8 @@ export default merge.smart(baseConfig, {
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production', // use 'development' unless process.env.NODE_ENV is defined
       DEBUG: false,
-      UPDATE_SERVER_URL: 'https://dev-api-r.ecc.network'
+      UPDATE_SERVER_URL: 'https://api.github.com/repos/project-ecc/eccoin/releases',
+      HUMAN_READABLE_UPDATE_URL: 'https://github.com/project-ecc/eccoin/releases'
     }),
 
     /**

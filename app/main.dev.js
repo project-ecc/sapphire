@@ -197,6 +197,8 @@ app.on('ready', async () => {
 
   setupEventHandlers();
 
+  app.setAppUserModelId(process.execPath)
+
   // define a new console
   // override the old console to use it in the logger too
   mainWindow.console = ((oldCons => ({
@@ -238,7 +240,7 @@ async function closeApplication() {
     }
 
     //TODO UNCOMMENT THIUS
-    // sendMessage('stop', { restart: false, closeApplication: true });
+    sendMessage('stop', { restart: false, closeApplication: true });
     console.log('shutting down daemon');
   }
 }
