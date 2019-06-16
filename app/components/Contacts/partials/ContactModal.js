@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
+import {Button, Modal, ModalBody, ModalFooter, ModalHeader, Input} from 'reactstrap';
 import * as actions from '../../../actions/index';
-import Input from '../../Others/Input';
 import {addContact, findContact, getContacts} from '../../../Managers/SQLManager';
 import Toast from '../../../globals/Toast/Toast';
 
@@ -39,7 +38,7 @@ class ContactModal extends Component {
 
 
   onTextFieldChange(key, e) {
-    const value = e;
+    const value = e.target.value;
     const payload = {};
     payload[key] = value;
     this.setState(payload);
@@ -100,18 +99,16 @@ class ContactModal extends Component {
           <Input
             placeholder={this.props.lang.name}
             value={this.state.name}
-            handleChange={e => this.onTextFieldChange('name', e)}
+            onChange={e => this.onTextFieldChange('name', e)}
             type="text"
-            autoFocus
-            isLeft
+            className="mt-4"
           />
           <Input
             placeholder={this.props.lang.address}
             value={this.state.address}
-            handleChange={e => this.onTextFieldChange('address', e)}
+            onChange={e => this.onTextFieldChange('address', e)}
             type="text"
-            autoFocus
-            isLeft
+            className="mt-4"
           />
           <hr />
         </ModalBody>

@@ -98,7 +98,7 @@ class Index extends Component {
 
               <ListGroup style={{backgroundColor: null, maxHeight: '400px', overflowY:'scroll'}}>
                 { this.props.userAddresses && this.props.userAddresses !== null && Object.entries(this.props.userAddresses).map((result) => {
-                  console.log(result)
+                  // console.log(result)
                   let data = result[1];
                   let index = result[0];
                   return (

@@ -40,15 +40,15 @@ class AddressBook extends Component {
     const clickContact = this.props.onContactClick || this.clickContact;
 
     return (
-      <div className="tableCustom">
+      <div className="tableCustom" >
         { this.props.children }
         <Table responsive hover borderless>
-          <tbody>
+          <tbody style={{color: 'white'}}>
             { this.props.friends.length > 0 ?
               this.props.friends.map((friend, index) => {
                 const selected = this.props.selected === friend.id;
                 return (
-                  <tr key={index} className={`${selected ? 'selected' : ''} cursor-pointer`} onClick={() => clickContact(friend)}>
+                  <tr key={index} className={`${selected ? 'selected tableRowCustom' : 'tableRowCustom'} cursor-pointer`} onClick={() => clickContact(friend)}>
                     <td>
                       {friend.name}
                       <br/>

@@ -35,7 +35,8 @@ class Index extends Component {
       transactionData: props.data,
       isRefreshing: false,
       transactionDropdownOpen: false,
-      selectedTransaction: ''
+      selectedTransaction: '',
+      selectedDropDown: 'All'
     };
 
     this.availableSelections = [
@@ -211,6 +212,10 @@ class Index extends Component {
 
   async onItemClick(ev) {
     const type = ev.currentTarget.dataset.id;
+    const name = ev.currentTarget.name;
+    this.setState({
+      selectedDropDown: name
+    })
 
     await this.getAllTransactions(this.props.page, type);
   }
@@ -261,11 +266,11 @@ class Index extends Component {
               <div className="col-sm-3" style={{ textAlign: 'right', maxWidth: '150px', display: 'flex', alignItems: 'center' }}>
                 <Dropdown isOpen={this.state.transactionDropdownOpen} toggle={this.toggle} className="mt-1">
                   <DropdownToggle caret>
-                    <small>Sort:</small> { this.props.type }
+                    <small>Sort:</small> { this.state.selectedDropDown}
                   </DropdownToggle>
                   <DropdownMenu>
                     { this.availableSelections.map(obj => (
-                      <DropdownItem onClick={this.onItemClick} key={obj.key} data-id={obj.key} active={this.props.type === obj.value}>{ obj.value }</DropdownItem>
+                      <DropdownItem onClick={this.onItemClick} name={obj.value} key={obj.key} data-id={obj.key} active={this.props.type === obj.key}>{ obj.value }</DropdownItem>
                     ))}
                   </DropdownMenu>
                 </Dropdown>

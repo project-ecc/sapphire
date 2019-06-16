@@ -387,8 +387,8 @@ class Coin extends Component {
       earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
       const title = `Staking reward - ${earningsTotalNotif} ECC`;
       const body = earningsCountNotif === 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`;
-      const callback = () => { this.goToEarningsPanel(); };
-      this.queueOrSendNotification(callback, body);
+      const callback = () => { hash.push('/coin/transactions');};
+      await this.queueOrSendNotification(callback, body);
     }
 
     // no more transactions to process, mark as done to avoid spamming the daemon
@@ -477,6 +477,11 @@ class Coin extends Component {
 
       this.props.setInitialBlockDownload(data.initialblockdownload);
       this.props.setSizeOnDisk(data.size_on_disk);
+      if(!this.state.isIndexingTransactions && this.props.daemonRunning){
+        this.props.setLoading({
+          isLoading: false
+        });
+      }
     })
     .catch((err) => {
       this.processError(err)
@@ -582,7 +587,7 @@ class Coin extends Component {
       console.log(this.state.lastTransactionTime)
       if(transactions[0].time > this.state.lastTransactionTime){
         await this.queueOrSendNotification( () => {
-          hash.push('/transactions');
+          hash.push('/coin/transactions');
         }, `Received Amount: ${transactions[0].amount}`, 'New Transaction Received!');
         await this.transactionLoader()
       }
