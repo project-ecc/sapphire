@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {NavLink} from 'react-router-dom';
-import {FacebookIcon, MediumIcon, RedditIcon, SlackIcon, TwitterIcon} from 'mdi-react';
+import {FacebookIcon, MediumIcon, RedditIcon, SlackIcon, TwitterIcon, DiscordIcon} from 'mdi-react';
 
 import * as actions from '../../actions/index';
 
@@ -77,7 +77,7 @@ class SettingSidebar extends Component {
                     <FacebookIcon onClick={this.goToUrl.bind(this, "https://www.facebook.com/projectECC/")} size={20} />
                     <MediumIcon onClick={this.goToUrl.bind(this, "https://medium.com/@project_ecc")} size={20} />
                     <RedditIcon onClick={this.goToUrl.bind(this, "https://www.reddit.com/r/ecc/")} size={20} />
-                    <SlackIcon onClick={this.goToUrl.bind(this, "https://ecc.network/#join-slack")} size={20} />
+                    <DiscordIcon onClick={this.goToUrl.bind(this, "https://discord.gg/v8XvRyW")} size={20} />
                   </div>
                 </li>
               </ul>
