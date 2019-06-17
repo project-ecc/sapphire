@@ -89,7 +89,7 @@ class Coin extends Component {
   async stateCheckerInitialStartupCycle() {
 
     this.props.wallet.getInfo().then(async (data) => {
-      this.props.setDaemonRunning(true);
+      this.props.setBlockChainConnected(true);
 
       // process block height in here.
       let syncedPercentage = (data.blocks * 100) / data.headers;
@@ -104,7 +104,6 @@ class Coin extends Component {
       this.props.updatePaymentChainSync(data.blocks === 0 || data.headers === 0 ? 0 : syncedPercentage);
       this.props.setDaemonVersion(tools.formatVersion(data.version));
       this.props.chainInfo(data);
-      console.log(data)
       this.props.walletInfo(data);
 
       if (!data.encrypted) {
@@ -162,12 +161,10 @@ class Coin extends Component {
       this.props.setAppendToDebugLog(arg);
       const castedArg = String(arg);
       const captureErrorStrings = [
-
         'Corrupted block database detected',
         'Aborted block database rebuild. Exiting.',
         'initError: Cannot obtain a lock on data directory ',
         'ERROR: VerifyDB():',
-
       ];
 
       const captureLoadingStrings = [
@@ -458,7 +455,7 @@ class Coin extends Component {
    */
   blockCycle() {
     this.props.wallet.getBlockChainInfo().then(async (data) => {
-      this.props.setDaemonRunning(true);
+      this.props.setBlockChainConnected(true);
       // process block height in here.
       let syncedPercentage = (data.blocks * 100) / data.headers;
       syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
@@ -477,7 +474,7 @@ class Coin extends Component {
 
       this.props.setInitialBlockDownload(data.initialblockdownload);
       this.props.setSizeOnDisk(data.size_on_disk);
-      if(!this.state.isIndexingTransactions && this.props.daemonRunning){
+      if(!this.state.isIndexingTransactions && this.props.daemonRunning && this.props.blockChainConnected){
         this.props.setLoading({
           isLoading: false
         });
@@ -538,11 +535,6 @@ class Coin extends Component {
   async addressLoader() {
     this.props.wallet.listAddresses().then(async (data) => {
 
-      this.props.setLoading({
-        isLoading: true,
-        loadingMessage: 'Loading Addresses...'
-      });
-
       let addresses = data;
 
       for (const [index, address] of addresses.entries()) {
@@ -559,11 +551,6 @@ class Coin extends Component {
         await this.loadTransactionsForProcessing();
         this.props.setIndexingTransactions(true);
       }
-
-
-      this.props.setLoading({
-        isLoading: false
-      });
       event.emit('reloadAddresses');
     }).catch((err) => {
       this.processError(err)
@@ -731,15 +718,10 @@ class Coin extends Component {
       });
     }
     if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT' || err.body === 'Work queue depth exceeded')) {
-      // clearInterval(this.state.checkStartupStatusInterval);
-      // clearInterval(this.state.blockInterval);
-      // this.props.setDaemonRunning(false);
+      this.props.setBlockChainConnected(false);
     }
     if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
-      // this.props.setDaemonRunning(false);
-      this.setState({
-        running: false
-      });
+      this.props.setDaemonRunning(false);
       const errorMessage = this.props.rescanningLogInfo.peekEnd();
       console.log(errorMessage)
     }
@@ -764,7 +746,8 @@ const mapStateToProps = state => {
     rescanningLogInfo: state.application.debugLog,
     daemonRunning: state.application.daemonRunning,
     userAddresses: state.application.userAddresses,
-    initialDownload: state.chains.initialDownload
+    initialDownload: state.chains.initialDownload,
+    blockChainConnected: state.application.blockChainConnected
   };
 };
 

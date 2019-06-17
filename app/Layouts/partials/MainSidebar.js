@@ -116,11 +116,11 @@ class MainSidebar extends Component {
               <div style={{ fontSize: '13px' }}>{`${this.props.lang.activeConnections}: ${this.props.connections}`}</div>
             </NavLink>
             <div className="menu mt-0 mb-2 pl-2 pr-2 text-center">
-              <Dot size={10} color={this.props.daemonRunning ? 'success' : 'danger'} />
-              { this.props.daemonRunning && (<small className="text-success">
+              <Dot size={10} color={this.props.blockChainConnected ? 'success' : 'danger'} />
+              { this.props.blockChainConnected && (<small className="text-success">
                 { this.props.lang.blockchainConnected}
               </small>) }
-              { !this.props.daemonRunning && (<small className="text-danger">
+              { !this.props.blockChainConnected && (<small className="text-danger">
                 { this.props.lang.blockchainDisconnected }
               </small>) }
             </div>
@@ -132,7 +132,7 @@ class MainSidebar extends Component {
                     { this.props.lang.donate }
                   </NavLink>
                 </li>
-                { this.props.balance > 0 && this.props.initialDownload == false && (
+                { this.props.balance > 0 && this.props.initialDownload === false && (
                   <li>
                     <Row className="bg-dark" style={{paddingBottom: '5px'}}>
                       <Col style={{marginLeft: '25px'}}>Staking</Col>
@@ -162,7 +162,8 @@ const mapStateToProps = state => {
     wallet: state.application.wallet,
     initialDownload: state.chains.initialDownload,
     balance: state.chains.balance,
-    isStaking: state.chains.isStaking
+    isStaking: state.chains.isStaking,
+    blockChainConnected: state.application.blockChainConnected
   };
 };
 

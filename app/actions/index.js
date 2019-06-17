@@ -59,7 +59,7 @@ import {
   INITIAL_BLOCK_DOWNLOAD,
   BLOCKS_AND_HEADERS,
   SIZE_ON_DISK,
-  UPDATE_FAILED_MESSAGE, SERVER_DAEMON_VERSION, LOCAL_DAEMON_VERSION, MINING_INFO
+  UPDATE_FAILED_MESSAGE, SERVER_DAEMON_VERSION, LOCAL_DAEMON_VERSION, MINING_INFO, BLOCK_CHAIN_CONNECTED
 } from './types';
 
 export const setWalletCredentials = (args) => {
@@ -502,6 +502,13 @@ export const setEccPosts = (val) => {
 export const setNewsNotification = (val) => {
   return {
     type: NEWS_NOTIFICATION,
+    payload: val
+  };
+};
+
+export const setBlockChainConnected = (val) => {
+  return {
+    type: BLOCK_CHAIN_CONNECTED,
     payload: val
   };
 };

@@ -14,19 +14,13 @@ class TransactionModal extends Component {
 
     this.handleConfirm = this.handleConfirm.bind(this);
     this.toggle = this.toggle.bind(this);
+    this.loadTransactionData = this.loadTransactionData.bind(this);
     this.state = {
       open: false,
-      sendAdresses: [],
+      sendAddresses: [],
       receiveAddresses: [],
       transaction: {}
     };
-  }
-
-  async componentDidUpdate(prevProps) {
-    // Typical usage (don't forget to compare props):
-    if (this.props.transactionId !== prevProps.transactionId) {
-     await this.loadTransactionData(this.props.transactionId);
-    }
   }
 
   async loadTransactionData(txid){
@@ -39,22 +33,24 @@ class TransactionModal extends Component {
       } else{
         receiveAddresses.push(item);
       }
+    });
+    console.log(this.state.sendAddresses);
+    console.log(this.state.receiveAddresses);
 
-      this.setState({
-        sendAddresses: sendAddresses,
-        receiveAddresses: receiveAddresses,
-        transaction: data
-      });
-
-      console.log(this.state.sendAdresses);
-      console.log(this.state.receiveAddresses);
+    this.setState({
+      sendAddresses: sendAddresses,
+      receiveAddresses: receiveAddresses,
+      transaction: data
     });
   }
 
-  toggle() {
+  async toggle() {
     this.setState({
       open: !this.state.open
     });
+    if(this.state.open){
+      await this.loadTransactionData(this.props.transactionId);
+    }
   }
 
 
