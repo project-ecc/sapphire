@@ -16,6 +16,7 @@ import UnlockModal from "../Others/UnlockModal";
 
 const remote = require('electron').remote;
 const dialog = remote.require('electron').dialog;
+const event = require('./../../utils/eventhandler');
 
 class Wallet extends Component {
   constructor(props) {
@@ -73,6 +74,7 @@ class Wallet extends Component {
   }
 
   handleExportPrivateKeys(){
+    event.emit('loadAddresses');
     this.exportPrivateKeysModel.getWrappedInstance().toggle();
   }
 

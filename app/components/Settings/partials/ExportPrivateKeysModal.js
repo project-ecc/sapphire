@@ -67,7 +67,7 @@ class ExportPrivateKeysModal extends Component {
           counter = 1;
         }
       }
-
+      console.log(this.toPrint)
       const doc = new jsPDF();
       doc.setFontSize(10);
       doc.text(this.toPrint[0], 10, 10);
