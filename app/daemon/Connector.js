@@ -63,47 +63,39 @@ class Connector extends Component {
     });
 
     ipcRenderer.on('stop', async (e, args) => {
-      await this.stopDaemon().then((data) => {
+      let shouldQuit = false
+      if(args.closeApplication != null && args.closeApplication === true){
+        console.log('in here')
+        this.props.setLoading({
+          isLoading: true,
+          loadingMessage: 'Stopping Daemon and closing sapphire'
+        });
+        shouldQuit = true
+      }
+      await this.stopDaemon(shouldQuit).then((data) => {
         console.log('stopped daemon');
         if(args.restart != null && args.restart === true){
           event.emit('start')
         }
-        if(args.closeApplication != null && args.closeApplication === true){
-          console.log('in here')
-          this.props.setLoading({
-            isLoading: true,
-            loadingMessage: 'Stopping Daemon and closing sapphire'
-          });
-          setTimeout(()=>{
-            ipcRenderer.send('closeApplication');
-          },3000)
-        }
       }).catch((err) => {
-        // TODO : remove Work around while re indexing deadlock exists
-        if(args.closeApplication != null && args.closeApplication === true){
-          console.log('in here')
-          setTimeout(()=>{
-            ipcRenderer.send('closeApplication');
-          },3000)
-        }
         console.log(err)
       });
     });
 
-    // Stop Daemon
-    event.on('stop', async (args) => {
-      await this.stopDaemon().then((data) => {
-        console.log('stopped daemon');
-        if(args.restart === true){
-          event.emit('start')
-        }
-        if(args.closeApplication === true){
-          event.emit('closeApplication');
-        }
-      }).catch((err) => {
-        console.log(err)
-      });
-    });
+    // // Stop Daemon
+    // event.on('stop', async (args) => {
+    //   await this.stopDaemon().then((data) => {
+    //     console.log('stopped daemon');
+    //     if(args.restart === true){
+    //       event.emit('start')
+    //     }
+    //     if(args.closeApplication === true){
+    //       event.emit('closeApplication');
+    //     }
+    //   }).catch((err) => {
+    //     console.log(err)
+    //   });
+    // });
 
     // Check for daemon update
     event.on('checkForDaemonUpdates', async () =>{
@@ -513,20 +505,24 @@ class Connector extends Component {
    * @returns {*}
    */
 
-  async stopDaemon() {
+  async stopDaemon(quit = false) {
     return new Promise(async (resolve, reject) => {
       await this.props.wallet.walletstop()
         .then((data) => {
           console.log(data);
-          if (data && data === 'Eccoind server stopping') {
+          if (data && (data === 'Eccoind server stopping' || data.code === 'ECONNREFUSED')) {
             console.log('stopping daemon');
             this.props.setDaemonRunning(false);
             Toast({
               title: this.props.lang.success,
               message: data
             });
-            resolve(true);
-          }	else if (data && data.code === 'ECONNREFUSED') {
+            console.log('shouldQuit', quit)
+            if(quit === true){
+              setTimeout(()=>{
+                ipcRenderer.send('quit');
+              },3000)
+            }
             resolve(true);
           } else {
             Toast({

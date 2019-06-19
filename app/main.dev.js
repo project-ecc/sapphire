@@ -177,10 +177,10 @@ app.on('ready', async () => {
     opn(url);
   });
 
-  mainWindow.on('close', async (e) => {
-    e.preventDefault();
-    await closeApplication();
-  });
+  // mainWindow.on('close', async (e) => {
+  //   e.preventDefault();
+  //   await closeApplication();
+  // });
 
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
@@ -245,10 +245,10 @@ async function closeApplication() {
   }
 }
 
-app.on('before-quit', async (e) => {
-  e.preventDefault();
-  await closeApplication();
-});
+// app.on('before-quit', async (e) => {
+//   e.preventDefault();
+//   await closeApplication();
+// });
 
 function setupTrayIcon() {
   let trayImage;
@@ -319,7 +319,6 @@ function setupEventHandlers() {
 
   ipcMain.on('quit', async () => {
     app.quit();
-    await closeApplication();
   });
 
   ipcMain.on('start', (args) => {
@@ -347,9 +346,9 @@ function setupEventHandlers() {
     sendMessage('refresh-complete');
   });
 
-  ipcMain.on('closeApplication', () => {
+  ipcMain.on('closeApplication', async () => {
+    await closeApplication();
     console.log('closing application ipc');
-    app.exit();
   });
 
   event.on('wallet', (exists, daemonCredentials) => {
@@ -368,10 +367,6 @@ function setupEventHandlers() {
     console.log('electron got daemon update message, sending to GUI');
     daemonUpdate = true;
     sendMessage('daemonUpdate');
-  });
-
-  event.on('close', async () => {
-    await closeApplication();
   });
 
   event.on('updatedDaemon', () => {
