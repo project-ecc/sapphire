@@ -67,7 +67,7 @@ class ExportPrivateKeysModal extends Component {
           counter = 1;
         }
       }
-
+      console.log(this.toPrint)
       const doc = new jsPDF();
       doc.setFontSize(10);
       doc.text(this.toPrint[0], 10, 10);
@@ -144,7 +144,7 @@ const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
     wallet: state.application.wallet,
-    staking: state.chains.isStaking,
+    isStaking: state.chains.isStaking,
     addresses: state.application.userAddresses
   };
 };

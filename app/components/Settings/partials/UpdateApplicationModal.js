@@ -28,16 +28,11 @@ class UpdateApplicationModal extends Component {
   }
 
   getCorrectHtml(){
-    if(this.props.guiUpdate || (this.props.guiUpdate && this.props.daemonUpdate)){
-      return(
-        <p className="updateApplicationMessage">{ this.props.lang.updateRequiresRestart }</p>
-      )
-    }
-    else {
-      return(
-        <p className="updateApplicationMessage">{ this.props.lang.updateDoesNotRequireRestart }</p>
-      )
-    }
+
+    return(
+      <p className="updateApplicationMessage">{ this.props.lang.updateDoesNotRequireRestart }</p>
+    )
+
   }
 
   render() {
@@ -55,7 +50,6 @@ class UpdateApplicationModal extends Component {
 const mapStateToProps = state => {
   return{
     lang: state.startup.lang,
-    guiUpdate: state.startup.guiUpdate,
     daemonUpdate: state.startup.daemonUpdate
   };
 };

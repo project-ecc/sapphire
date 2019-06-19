@@ -169,14 +169,21 @@ export default class Wallet {
     })
   }
 
+  getMiningInfo() {
+    return new Promise((resolve, reject) =>{
+      client.getMiningInfo().then((data) => {
+        return resolve(data);
+      }).catch((err) => {
+        return reject(err);
+      });
+    })
+  }
 
-  getTransactions(account, count, skip) {
+
+  getTransactions(count, skip) {
     return new Promise((resolve, reject) => {
-      let a = account;
-      if (a === null) {
-        a = '*';
-      }
-      client.listTransactions(a, count, skip).then((transactions) => {
+
+      client.listTransactions(count, skip).then((transactions) => {
         return resolve(transactions);
       }).catch((err) => {
         return reject(null);
@@ -247,6 +254,11 @@ export default class Wallet {
   async validate(address) {
     const result = await client.validateAddress(address);
     return result;
+  }
+
+  async getTransaction(txid) {
+      const data = await client.getTransaction(txid);
+      return data;
   }
 
   async getblockcount() {

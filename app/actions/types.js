@@ -70,3 +70,5 @@ export const SIZE_ON_DISK = 'size_on_disk';
 export const UPDATE_FAILED_MESSAGE = 'update_failed_message';
 export const SERVER_DAEMON_VERSION = 'server_daemon_version';
 export const LOCAL_DAEMON_VERSION = 'local_daemon_version';
+export const MINING_INFO = 'mining_info';
+export const BLOCK_CHAIN_CONNECTED = 'block_chain_connected'

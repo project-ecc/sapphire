@@ -165,6 +165,24 @@ async function getAllTransactions(limit = null, offset = 0, where = null){
   });
 }
 
+async function getUnconfirmedTransactions(){
+  return new Promise((resolve, reject) => {
+    Transaction.findAll({
+      include: [{ all: true, nested: true }],
+        where: {
+          status: 'pending'
+        },
+      raw: true,
+      order: [
+        ['time', 'DESC'],
+      ]
+    }).then(transactions => {
+      resolve(transactions);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
 async function searchAllTransactions(searchTerm) {
   return new Promise((resolve, reject) => {
     const term = searchTerm.toLowerCase();
@@ -462,6 +480,20 @@ async function clearTransactions () {
   })
 }
 
+async function clearAddresses () {
+  return new Promise(async (resolve, reject) => {
+    let result = await Address.destroy({
+      where: {},
+      truncate: true
+    }).then( result => {
+      resolve(result);
+    }).catch(err => {
+      reject(err);
+    });
+
+  })
+}
+
 async function clearDB(){
   return new Promise(async (resolve, reject) => {
 
@@ -513,6 +545,8 @@ export {
   findContact,
   getContacts,
   deleteContact,
-  clearTransactions
+  clearTransactions,
+  clearAddresses,
+  getUnconfirmedTransactions
 };
 

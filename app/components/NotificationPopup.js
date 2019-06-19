@@ -168,7 +168,7 @@ const mapStateToProps = state => {
     notifications: state.notifications.entries,
     transactions: state.chains.transactionsData,
     last: state.notifications.entries.last,
-    updateAvailable: state.startup.guiUpdate || state.startup.daemonUpdate,
+    updateAvailable: state.startup.daemonUpdate,
   };
 };
 

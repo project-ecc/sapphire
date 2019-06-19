@@ -3,6 +3,8 @@ import {connect} from 'react-redux';
 const { app } = require('electron');
 
 import {
+  extractChecksum,
+  formatDownloadURL,
   getDaemonDownloadUrl, getPlatformFileName, getPlatformName, getPlatformWalletUri, grabEccoinDir,
   grabWalletDir
 } from '../utils/platform.service';
@@ -14,14 +16,15 @@ import ConnectorMarket from './Market';
 import Tools from '../utils/tools';
 import {downloadFile, moveFile} from '../utils/downloader';
 import {ipcRenderer} from "electron";
+import Toast from "../globals/Toast/Toast";
 
 const find = require('find-process');
 const request = require('request-promise-native');
 const fs = require('fs');
 const event = require('../utils/eventhandler');
 const settings = require('electron-settings');
-const zmq = require('zeromq');
-const socket = zmq.socket('sub');
+// const zmq = require('zeromq');
+// const socket = zmq.socket('sub');
 
 class Connector extends Component {
   constructor(props) {
@@ -90,7 +93,6 @@ class Connector extends Component {
     // Stop Daemon
     event.on('stop', async (args) => {
       await this.stopDaemon().then((data) => {
-        if (err) console.log('error stopping daemon: ', err);
         console.log('stopped daemon');
         if(args.restart === true){
           event.emit('start')
@@ -129,26 +131,26 @@ class Connector extends Component {
     // subber.js
 
 
-    socket.connect('tcp://127.0.0.1:30000');
-    socket.subscribe('hashblock');
-    socket.subscribe('hashtx');
-    console.log('Subscriber connected to port 30000');
-
-    socket.on('message', function(topic, message) {
-      console.log('received a message related to:', topic, 'containing message:', message);
-    });
-
-    // Register to monitoring events
-    socket.on('connect', function(fd, ep) {console.log('connect, endpoint:', ep);});
-    socket.on('connect_delay', function(fd, ep) {console.log('connect_delay, endpoint:', ep);});
-    socket.on('connect_retry', function(fd, ep) {console.log('connect_retry, endpoint:', ep);});
-    socket.on('listen', function(fd, ep) {console.log('listen, endpoint:', ep);});
-    socket.on('bind_error', function(fd, ep) {console.log('bind_error, endpoint:', ep);});
-    socket.on('accept', function(fd, ep) {console.log('accept, endpoint:', ep);});
-    socket.on('accept_error', function(fd, ep) {console.log('accept_error, endpoint:', ep);});
-    socket.on('close', function(fd, ep) {console.log('close, endpoint:', ep);});
-    socket.on('close_error', function(fd, ep) {console.log('close_error, endpoint:', ep);});
-    socket.on('disconnect', function(fd, ep) {console.log('disconnect, endpoint:', ep);});
+    // socket.connect('tcp://127.0.0.1:30000');
+    // socket.subscribe('hashblock');
+    // socket.subscribe('hashtx');
+    // console.log('Subscriber connected to port 30000');
+    //
+    // socket.on('message', function(topic, message) {
+    //   console.log('received a message related to:', topic, 'containing message:', message);
+    // });
+    //
+    // // Register to monitoring events
+    // socket.on('connect', function(fd, ep) {console.log('connect, endpoint:', ep);});
+    // socket.on('connect_delay', function(fd, ep) {console.log('connect_delay, endpoint:', ep);});
+    // socket.on('connect_retry', function(fd, ep) {console.log('connect_retry, endpoint:', ep);});
+    // socket.on('listen', function(fd, ep) {console.log('listen, endpoint:', ep);});
+    // socket.on('bind_error', function(fd, ep) {console.log('bind_error, endpoint:', ep);});
+    // socket.on('accept', function(fd, ep) {console.log('accept, endpoint:', ep);});
+    // socket.on('accept_error', function(fd, ep) {console.log('accept_error, endpoint:', ep);});
+    // socket.on('close', function(fd, ep) {console.log('close, endpoint:', ep);});
+    // socket.on('close_error', function(fd, ep) {console.log('close_error, endpoint:', ep);});
+    // socket.on('disconnect', function(fd, ep) {console.log('disconnect, endpoint:', ep);});
 
   }
 
@@ -257,6 +259,7 @@ class Connector extends Component {
       });
       this.props.setUpdateFailedMessage("Sapphire is unable to start with this daemon version please download the daemon and update manually!");
     } else {
+      event.emit('start');
       event.emit('startConnectorChildren');
       this.startDaemonChecker();
     }
@@ -287,10 +290,6 @@ class Connector extends Component {
         } else if (list && list.length == 0) {
           console.log('daemon not running');
           this.props.setDaemonRunning(false);
-          console.log(!self.state.downloadingDaemon)
-          console.log(self.props.daemonErrorPopup)
-          if (!self.state.downloadingDaemon && self.props.daemonErrorPopup !== true)
-          { event.emit('start'); }
         }
       });
     }
@@ -366,17 +365,19 @@ class Connector extends Component {
   async getLatestVersion() {
     return new Promise(async (resolve, reject) => {
       console.log('checking for latest daemon version');
-      const daemonDownloadURL = getDaemonDownloadUrl();
       const self = this;
-      // download latest daemon info from server
+
       const opts = {
-        url: daemonDownloadURL
+        url: process.env.UPDATE_SERVER_URL,
+        headers: {
+          'User-Agent': 'request'
+        },
       };
 
       await request(opts).then(async (data) => {
         if (data) {
           const parsed = JSON.parse(data);
-          this.props.setServerDaemonVersion(parsed.versions[0].name);
+          this.props.setServerDaemonVersion(parsed[0].name.split(' ')[1]);
           console.log(this.props.serverDaemonVersion);
           if (this.props.serverDaemonVersion === -1) {
             event.emit('download-error', { message: 'Error Checking for latest version' });
@@ -403,14 +404,16 @@ class Connector extends Component {
         this.setState({
           toldUserAboutUpdate: true
         });
-        event.emit('daemonUpdate');
+        this.props.setUpdateAvailable({daemonUpdate: true});
+      } else {
+        console.log('in here for some reason')
       }
     }
   }
 
   async downloadDaemon() {
     const walletDirectory = grabWalletDir();
-    const daemonDownloadURL = getDaemonDownloadUrl();
+    const daemonDownloadURL = process.env.UPDATE_SERVER_URL;
     console.log(daemonDownloadURL);
 
     this.setState({
@@ -422,19 +425,22 @@ class Connector extends Component {
 
       // download latest daemon info from server
       const opts = {
-        url: daemonDownloadURL
+        url: daemonDownloadURL,
+        headers: {
+          'User-Agent': 'request'
+        }
       };
       console.log(opts);
 
       request(opts).then(async (data) => {
         console.log(data);
         const parsed = JSON.parse(data);
-        const latestDaemon = parsed.versions[0];
-        const latestDaemonVersion = latestDaemon.name.substring(1);
-        const zipChecksum = latestDaemon.checksum;
-        const downloadUrl = latestDaemon.download_url;
+        const latestDaemon = parsed[0].name.split(' ')[1];
+        const zipChecksum = extractChecksum(getPlatformName(), parsed[0].body);
+        const downloadUrl = formatDownloadURL('eccoin', latestDaemon, getPlatformName());
+
         let downloadFileName = 'Eccoind.tar.gz';
-        if(getPlatformName() === 'win32' || getPlatformName() === 'win64'){
+        if (getPlatformName() === 'win32' || getPlatformName() === 'win64'){
           downloadFileName = 'Eccoind.zip';
         }
 
@@ -443,11 +449,11 @@ class Connector extends Component {
 
         if (downloaded === true) {
           const platFileName = getPlatformFileName();
-          let fileLocation =  '/bin/eccoind';
+          let fileLocation = '/bin/eccoind';
           if(getPlatformName() === 'win32' || getPlatformName() === 'win64'){
             fileLocation = '\\bin\\eccoind.exe';
           }
-          const oldLocation = `${walletDirectory}eccoin-${latestDaemonVersion}${fileLocation}`;
+          const oldLocation = `${walletDirectory}eccoin-${latestDaemon}${fileLocation}`;
           const newLocation = walletDirectory + platFileName;
           console.log(oldLocation);
           console.log(newLocation);
@@ -480,6 +486,10 @@ class Connector extends Component {
     console.log('starting daemon...');
     this.props.wallet.walletstart(args).then((result) => {
       if (result) {
+        Toast({
+          title: this.props.lang.success,
+          message: result
+        });
         event.emit('daemonStarted');
         this.props.setDaemonRunning(true);
       } else {
@@ -487,6 +497,11 @@ class Connector extends Component {
         event.emit('daemonFailed');
       }
     }).catch(err => {
+      Toast({
+        title: this.props.lang.error,
+        message: err.message,
+        color: 'red'
+      });
       console.log('Error starting daemon');
       console.log(err);
       event.emit('loading-error', { message: err.message });
@@ -506,10 +521,19 @@ class Connector extends Component {
           if (data && data === 'Eccoind server stopping') {
             console.log('stopping daemon');
             this.props.setDaemonRunning(false);
+            Toast({
+              title: this.props.lang.success,
+              message: data
+            });
             resolve(true);
           }	else if (data && data.code === 'ECONNREFUSED') {
             resolve(true);
           } else {
+            Toast({
+              title: this.props.lang.error,
+              message: data,
+              color: 'red'
+            });
             reject(data);
           }
         })

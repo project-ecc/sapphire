@@ -49,7 +49,7 @@ class Sections extends Component {
 const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
-    updateAvailable: state.startup.guiUpdate || state.startup.daemonUpdate,
+    updateAvailable: state.startup.daemonUpdate,
     notifications: state.notifications.entries
   };
 };

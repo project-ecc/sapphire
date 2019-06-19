@@ -9,30 +9,33 @@ const settings = require('electron-settings');
 module.exports = {
 
   // MISC
-  sendOSNotification(body, callback) {
+  async sendOSNotification(body, callback, title = null) {
+    console.log('trying to send notification', Notification.permission)
+    if(title == null){
+      title = ''
+    }
     if (Notification.permission !== 'granted') {
-      Notification.requestPermission((permission) => {
+      await Notification.requestPermission().then((permission) => {
         if (permission === 'granted') {
-          const myNotification = new Notification('', {
+          const myNotification = new window.Notification(title, {
             body,
             icon: require('../../resources/icons/128x128.png')
           });
 
           myNotification.onclick = () => {
             callback();
-            ipcRenderer.send('show');
+            // ipcRenderer.send('show');
           };
-        }
-      });
+        }});
     } else {
-      const myNotification = new Notification('', {
+      const myNotification = new window.Notification(title, {
         body,
         icon: require('../../resources/icons/128x128.png')
       });
 
       myNotification.onclick = () => {
         callback();
-        ipcRenderer.send('show');
+        // ipcRenderer.send('show');
       };
     }
   },

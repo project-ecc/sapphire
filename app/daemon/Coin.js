@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {ipcRenderer} from 'electron';
 import {connect} from 'react-redux';
+import hash from './../router/hash';
 
 import * as actions from '../actions/index';
 import {
@@ -8,8 +9,7 @@ import {
   addTransaction,
   getAllMyAddresses,
   getAllRewardTransactions,
-  getAllTransactions,
-  getLatestTransaction,
+  getLatestTransaction, getUnconfirmedTransactions,
   updateTransactionsConfirmations
 } from '../Managers/SQLManager';
 import * as tools from '../utils/tools';
@@ -29,6 +29,7 @@ class Coin extends Component {
     this.addressLoader = this.addressLoader.bind(this);
     this.orderTransactions = this.orderTransactions.bind(this);
     this.stateCheckerInitialStartupCycle = this.stateCheckerInitialStartupCycle.bind(this);
+    this.newTransactionChecker = this.newTransactionChecker.bind(this);
 
 
     // Misc functions
@@ -88,6 +89,7 @@ class Coin extends Component {
   async stateCheckerInitialStartupCycle() {
 
     this.props.wallet.getInfo().then(async (data) => {
+      this.props.setBlockChainConnected(true);
       this.props.setDaemonRunning(true);
 
       // process block height in here.
@@ -160,12 +162,10 @@ class Coin extends Component {
       this.props.setAppendToDebugLog(arg);
       const castedArg = String(arg);
       const captureErrorStrings = [
-
         'Corrupted block database detected',
         'Aborted block database rebuild. Exiting.',
         'initError: Cannot obtain a lock on data directory ',
         'ERROR: VerifyDB():',
-
       ];
 
       const captureLoadingStrings = [
@@ -190,7 +190,8 @@ class Coin extends Component {
   async startCycles() {
     // we can starting syncing the block data with redux now
     this.setState({
-      walletRunningInterval: setInterval(async () => { await this.walletCycle(); }, this.state.blockInterval)
+      walletRunningInterval: setInterval(async () => { await this.walletCycle(); }, this.state.blockInterval),
+      newTransactionInterval: setInterval(async() => { await this.newTransactionChecker(); }, 30000)
     });
   }
   async loadTransactionsForProcessing() {
@@ -213,7 +214,7 @@ class Coin extends Component {
     let transactions = null;
     console.log('transactions', transactions);
     while (transactions == null && attempts <= maxAttempts) {
-      transactions = await this.props.wallet.getTransactions('*', this.state.transactionsToRequest, this.state.transactionsToRequest * this.state.transactionsPage);
+      transactions = await this.props.wallet.getTransactions(this.state.transactionsToRequest, this.state.transactionsToRequest * this.state.transactionsPage);
       console.log(transactions);
     }
 
@@ -223,7 +224,7 @@ class Coin extends Component {
     for (let i = 0; i < transactions.length; i++) {
       time = transactions[i].time;
       if (time > this.state.lastTransactionTime) {
-        console.log(transactions[i])
+        // console.log(transactions[i])
         this.setState({
           shouldRequestMoreTransactions: true
         });
@@ -384,8 +385,8 @@ class Coin extends Component {
       earningsTotalNotif = tools.formatNumber(earningsTotalNotif);
       const title = `Staking reward - ${earningsTotalNotif} ECC`;
       const body = earningsCountNotif === 1 ? title : `${earningsCountNotif} Staking rewards - ${earningsTotalNotif} ECC`;
-      const callback = () => { this.goToEarningsPanel(); };
-      this.queueOrSendNotification(callback, body);
+      const callback = () => { hash.push('/coin/transactions');};
+      await this.queueOrSendNotification(callback, body);
     }
 
     // no more transactions to process, mark as done to avoid spamming the daemon
@@ -408,21 +409,22 @@ class Coin extends Component {
    * Notification based stuff, should be moved into its own file maybe?
    * @param callback
    * @param body
+   * @param title
    */
 
 
-  queueOrSendNotification(callback, body) {
-    if (this.props.startup.loading || this.props.startup.loader) {
-      this.state.queuedNotifications.push({ callback, body });
+  async queueOrSendNotification(callback, body, title = null) {
+    if (this.props.loading) {
+      this.state.queuedNotifications.push({ callback, body, title });
     } else {
-      tools.sendOSNotification(body, callback);
+      await tools.sendOSNotification(body, callback, title);
     }
   }
 
   checkQueuedNotifications() {
-    if (!this.props.startup.loading && !this.props.startup.loader && this.state.queuedNotifications.length >= 0) {
+    if (!this.props.loading && this.state.queuedNotifications.length >= 0) {
       if (this.state.queuedNotifications.length === 0) {
-        clearInterval(this.checkQueuedNotificationsInterval);
+        clearInterval(1000);
       } else {
         const notification = this.state.queuedNotifications[0];
         this.state.queuedNotifications.splice(0, 1);
@@ -436,9 +438,6 @@ class Coin extends Component {
    * Wallet Cycle Function: this function checks if the block index is loaded and the wallet is functioning normally
    */
   async walletCycle() {
-    if (!this.props.daemonRunning) {
-      return;
-    }
 
     // start all the other intervals
     this.setState({
@@ -454,7 +453,7 @@ class Coin extends Component {
    */
   blockCycle() {
     this.props.wallet.getBlockChainInfo().then(async (data) => {
-      this.props.setDaemonRunning(true);
+      this.props.setBlockChainConnected(true);
       // process block height in here.
       let syncedPercentage = (data.blocks * 100) / data.headers;
       syncedPercentage = Math.floor(syncedPercentage * 100) / 100;
@@ -470,8 +469,21 @@ class Coin extends Component {
         blocks: data.blocks,
         headers: data.headers
       });
+
       this.props.setInitialBlockDownload(data.initialblockdownload);
       this.props.setSizeOnDisk(data.size_on_disk);
+      if(!this.state.isIndexingTransactions && this.props.daemonRunning && this.props.blockChainConnected){
+        this.props.setLoading({
+          isLoading: false
+        });
+      }
+    })
+    .catch((err) => {
+      this.processError(err)
+    });
+
+    this.props.wallet.getMiningInfo().then(async (data) => {
+      this.props.miningInfo(data)
     })
     .catch((err) => {
       this.processError(err)
@@ -493,6 +505,7 @@ class Coin extends Component {
       this.props.updatePaymentChainSync(data.blocks === 0 || data.headers === 0 ? 0 : syncedPercentage);
       this.props.setDaemonVersion(tools.formatVersion(data.version));
       this.props.chainInfo(data);
+      console.log(data)
       this.props.walletInfo(data);
 
       if(!this.state.isIndexingTransactions){
@@ -505,7 +518,7 @@ class Coin extends Component {
     });
 
     this.props.wallet.getWalletInfo().then(async (data) => {
-      console.log(data);
+      // console.log(data);
       this.props.walletInfoSec(data);
     }).catch((err) => {
       this.processError(err)
@@ -519,11 +532,6 @@ class Coin extends Component {
    */
   async addressLoader() {
     this.props.wallet.listAddresses().then(async (data) => {
-
-      this.props.setLoading({
-        isLoading: true,
-        loadingMessage: 'Loading Addresses...'
-      });
 
       let addresses = data;
 
@@ -541,15 +549,58 @@ class Coin extends Component {
         await this.loadTransactionsForProcessing();
         this.props.setIndexingTransactions(true);
       }
-
-
-      this.props.setLoading({
-        isLoading: false
-      });
       event.emit('reloadAddresses');
     }).catch((err) => {
       this.processError(err)
     });
+  }
+
+  async newTransactionChecker(){
+    const latestTransaction = await getLatestTransaction();
+    const latestTransactionTime = latestTransaction != null ? latestTransaction.time : 0;
+    this.setState({
+      lastTransactionTime : latestTransactionTime
+    })
+    let transactions = [];
+    try{
+      transactions = await this.props.wallet.getTransactions(1, 0);
+    } catch (e) {
+      console.log(e)
+    }
+
+    if(transactions !== null && transactions.length > 0 ){
+      console.log(this.state.lastTransactionTime)
+      let newTransaction = false
+
+      let arrayLength = transactions.length;
+      for (let i = 0; i < arrayLength; i++) {
+        if(transactions[0].time > this.state.lastTransactionTime){
+          newTransaction = true
+          let title = ''
+          let message = ''
+          switch(transactions[i].category){
+            case "send":
+              title = 'Transaction sent successfully!'
+              message = `Sent Amount: ${transactions[i].amount}`
+              break;
+            case "receive":
+              title = 'New Transaction Received!'
+              message = `Received Amount: ${transactions[i].amount}`
+              break;
+            case "generate":
+              title = 'Stake Reward Received!'
+              message = `Reward Amount: ${transactions[i].amount}`
+              break;
+          }
+          await this.queueOrSendNotification( () => {
+            hash.push('/coin/transactions');
+          }, message , title);
+        }
+      }
+      if(newTransaction === true){
+        await this.transactionLoader()
+      }
+    }
   }
 
 
@@ -559,26 +610,29 @@ class Coin extends Component {
    * This function should also notify if there is new transactions.
    */
   async transactionLoader() {
-    this.props.setLoading({
-      isLoading: true,
-      loadingMessage: 'Loading Transactions... '
-    });
     // compare the latest transaction time stored in memory against the latest 10 transactions.
     const latestTransaction = await getLatestTransaction();
     console.log(latestTransaction)
     const latestTransactionTime = latestTransaction != null ? latestTransaction.time : 0;
+    console.log(latestTransactionTime)
     this.setState({
       lastTransactionTime : latestTransactionTime
     })
 
 
-    let transactions = await this.props.wallet.getTransactions('*', 10000, 0);
+    let transactions = [];
+    try{
+      transactions = await this.props.wallet.getTransactions(10000, 0);
+      transactions = this.orderTransactions(transactions);
+    } catch (e) {
+      console.log(e)
+    }
+
     if(latestTransactionTime !== 0 && transactions !== null && transactions.length > 0 ){
-      transactions = this.orderTransactions(transactions)
       console.log(transactions[0].time)
       console.log(this.state.lastTransactionTime)
+      console.log('in first statement')
       if(transactions[0].time > this.state.lastTransactionTime){
-        console.log('in here')
         await this.loadTransactionsForProcessing();
         this.setState({
           transactionsIndexed: false
@@ -605,11 +659,10 @@ class Coin extends Component {
       await this.loadTransactionsForProcessing();
 
     } else{
-      this.props.setLoading({
-        isLoading: true,
-        loadingMessage: 'Updating confirmations!'
-      });
-      await this.updateConfirmations();
+      if(!this.props.initialDownload){
+        await this.updateConfirmations();
+      }
+
     }
     //emit globally to update transaction list
     this.props.setLoading({
@@ -626,12 +679,12 @@ class Coin extends Component {
    * transactions when its done. SHOULD NOT BE CALLED WHEN USER IS USING A TRANSACTION FILTER.
    */
   async updateConfirmations() {
-    await getAllTransactions()
+    await getUnconfirmedTransactions()
       .then(async (transactionData) => {
-        const walletTransactions = await this.props.wallet.getTransactions('*', transactionData.length, 0);
-        await Promise.all(walletTransactions.map(async (transactions) => {
+        await Promise.all(transactionData.map(async (transaction) => {
           try {
-            return await updateTransactionsConfirmations(transactions.txid, transactions.confirmations);
+            const walletTransaction = await this.props.wallet.getTransaction(transaction['transaction_id']);
+            return await updateTransactionsConfirmations(walletTransaction.txid, walletTransaction.confirmations);
           } catch (err) {
             console.log(err);
           }
@@ -687,26 +740,13 @@ class Coin extends Component {
       });
     }
     if ((err.message === 'Internal Server Error' || err.message === 'ESOCKETTIMEDOUT' || err.body === 'Work queue depth exceeded')) {
-      // clearInterval(this.state.checkStartupStatusInterval);
-      // clearInterval(this.state.blockInterval);
-      const errorMessage = this.props.rescanningLogInfo.peekEnd();
-      console.log(errorMessage)
-      this.props.setLoading({
-        isLoading: true,
-        loadingMessage: errorMessage
-      });
+      this.props.setBlockChainConnected(false);
     }
     if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
       this.props.setDaemonRunning(false);
-      this.setState({
-        running: false
-      });
+      this.props.setBlockChainConnected(false);
       const errorMessage = this.props.rescanningLogInfo.peekEnd();
       console.log(errorMessage)
-      this.props.setLoading({
-        isLoading: true,
-        loadingMessage: errorMessage
-      });
     }
   }
 
@@ -724,10 +764,13 @@ const mapStateToProps = state => {
     updatingApp: state.startup.updatingApp,
     initialSetup: state.startup.initialSetup,
     daemonUpdate: state.startup.daemonUpdate,
+    loading: state.startup.loading,
     notifications: state.notifications,
     rescanningLogInfo: state.application.debugLog,
     daemonRunning: state.application.daemonRunning,
-    userAddresses: state.application.userAddresses
+    userAddresses: state.application.userAddresses,
+    initialDownload: state.chains.initialDownload,
+    blockChainConnected: state.application.blockChainConnected
   };
 };
 

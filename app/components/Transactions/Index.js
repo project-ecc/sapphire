@@ -10,8 +10,9 @@ import Body from './../../components/Others/Body';
 
 import $ from 'jquery';
 import {Button, Dropdown, DropdownItem, DropdownMenu, DropdownToggle} from 'reactstrap';
-
 const event = require('../../utils/eventhandler');
+
+import TransactionModal from './partials/TransactionModal';
 const moment = require('moment');
 
 moment.locale('en');
@@ -34,6 +35,8 @@ class Index extends Component {
       transactionData: props.data,
       isRefreshing: false,
       transactionDropdownOpen: false,
+      selectedTransaction: '',
+      selectedDropDown: 'All'
     };
 
     this.availableSelections = [
@@ -209,8 +212,19 @@ class Index extends Component {
 
   async onItemClick(ev) {
     const type = ev.currentTarget.dataset.id;
+    const name = ev.currentTarget.name;
+    this.setState({
+      selectedDropDown: name
+    })
 
     await this.getAllTransactions(this.props.page, type);
+  }
+
+  async onTransactionClick(txId){
+    this.setState({
+      selectedTransaction: txId
+    })
+    this.transactionModal.getWrappedInstance().toggle();
   }
 
   toggle() {
@@ -252,11 +266,11 @@ class Index extends Component {
               <div className="col-sm-3" style={{ textAlign: 'right', maxWidth: '150px', display: 'flex', alignItems: 'center' }}>
                 <Dropdown isOpen={this.state.transactionDropdownOpen} toggle={this.toggle} className="mt-1">
                   <DropdownToggle caret>
-                    <small>Sort:</small> { this.props.type }
+                    <small>Sort:</small> { this.state.selectedDropDown}
                   </DropdownToggle>
                   <DropdownMenu>
                     { this.availableSelections.map(obj => (
-                      <DropdownItem onClick={this.onItemClick} key={obj.key} data-id={obj.key} active={this.props.type === obj.value}>{ obj.value }</DropdownItem>
+                      <DropdownItem onClick={this.onItemClick} name={obj.value} key={obj.key} data-id={obj.key} active={this.props.type === obj.key}>{ obj.value }</DropdownItem>
                     ))}
                   </DropdownMenu>
                 </Dropdown>
@@ -324,17 +338,13 @@ class Index extends Component {
                           <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{(new Date(t.time * 1000).toDateString()).toString()}</span></p>
                         </div>
                         <div style={{ padding: '0 15px' }}>
-                          <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.confirmations}</span></p>
-                          <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{t.confirmations}</span></p>
-                        </div>
-                        <div style={{ padding: '0 15px' }}>
                           <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionFee}</span></p>
                           <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text">{t.fee}</span></p>
                         </div>
 
                         <div style={{ padding: '0 15px' }}>
                           <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionId}</span></p>
-                          <p style={{ margin: '0px 0px 5px 0px' }}><span className="desc3 small-text selectableText">{t.transaction_id}</span></p>
+                          <p style={{ margin: '0px 0px 5px 0px' }}><span onClick={(e) => this.onTransactionClick(t.transaction_id)} className="desc3 small-text selectableText">{t.transaction_id}</span></p>
                         </div>
                       </div>
                     </div>
@@ -367,6 +377,7 @@ class Index extends Component {
         <Body noPadding>
         {this.renderTransactionTable()}
         </Body>
+        <TransactionModal transactionId={this.state.selectedTransaction} ref={(e) => { this.transactionModal = e; }} />
       </div>
     );
   }

@@ -3,12 +3,11 @@ import {Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import {connect} from 'react-redux';
 
 import {traduction} from '../../../lang/lang';
-import {getConfUri, getDebugUri} from '../../../utils/platform.service';
 
 
 import * as actions from '../../../actions/index';
 
-const shell = require('electron').remote.shell;
+
 
 const lang = traduction();
 
@@ -55,15 +54,7 @@ class Console extends Component {
     });
   }
 
-  openDebugFile() {
-    console.log(getDebugUri());
-    shell.openItem(getDebugUri());
-  }
 
-  openConfigFile() {
-    console.log(getConfUri());
-    shell.openItem(getConfUri());
-  }
 
   renderHelpMsg() {
     if (this.state.commandList.length === 0) {
@@ -204,7 +195,7 @@ class Console extends Component {
   renderBody() {
     return (
       <div className="console_body">
-        <div id="console" className="console_wrapper text-white">
+        <div id="console" style={{userSelect: "text", cursor: "text"}} className="console_wrapper text-white">
           {this.renderHelpMsg()}
           {this.state.commandList.map((cmd, index) => {
             let res = cmd.res;

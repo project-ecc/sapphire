@@ -235,7 +235,7 @@
     "unlockWalletExplanation1": "This process unlocks your wallet for staking.",
     "unlockWalletExplanation2": "You will still be required to enter your password to send",
     "walletLocked": "Wallet Locked",
-    "walletLockedDescription": "Your wallet is currently locked for staking. Disable staking to send coins.",
+    "walletLockedDescription": "Your wallet is currently unlocked for staking. Disable staking to send coins.",
 
     "unlockWalletForSend": "Unlock your wallet to continue with this transaction.",
 
