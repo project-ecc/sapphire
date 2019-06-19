@@ -90,6 +90,7 @@ class Coin extends Component {
 
     this.props.wallet.getInfo().then(async (data) => {
       this.props.setBlockChainConnected(true);
+      this.props.setDaemonRunning(true);
 
       // process block height in here.
       let syncedPercentage = (data.blocks * 100) / data.headers;
@@ -437,9 +438,6 @@ class Coin extends Component {
    * Wallet Cycle Function: this function checks if the block index is loaded and the wallet is functioning normally
    */
   async walletCycle() {
-    if (!this.props.daemonRunning) {
-      return;
-    }
 
     // start all the other intervals
     this.setState({
@@ -572,10 +570,34 @@ class Coin extends Component {
 
     if(transactions !== null && transactions.length > 0 ){
       console.log(this.state.lastTransactionTime)
-      if(transactions[0].time > this.state.lastTransactionTime){
-        await this.queueOrSendNotification( () => {
-          hash.push('/coin/transactions');
-        }, `Received Amount: ${transactions[0].amount}`, 'New Transaction Received!');
+      let newTransaction = false
+
+      let arrayLength = transactions.length;
+      for (let i = 0; i < arrayLength; i++) {
+        if(transactions[0].time > this.state.lastTransactionTime){
+          newTransaction = true
+          let title = ''
+          let message = ''
+          switch(transactions[i].category){
+            case "send":
+              title = 'Transaction sent successfully!'
+              message = `Sent Amount: ${transactions[i].amount}`
+              break;
+            case "receive":
+              title = 'New Transaction Received!'
+              message = `Received Amount: ${transactions[i].amount}`
+              break;
+            case "generate":
+              title = 'Stake Reward Received!'
+              message = `Reward Amount: ${transactions[i].amount}`
+              break;
+          }
+          await this.queueOrSendNotification( () => {
+            hash.push('/coin/transactions');
+          }, message , title);
+        }
+      }
+      if(newTransaction === true){
         await this.transactionLoader()
       }
     }
@@ -722,6 +744,7 @@ class Coin extends Component {
     }
     if (err.message === 'connect ECONNREFUSED 127.0.0.1:19119') {
       this.props.setDaemonRunning(false);
+      this.props.setBlockChainConnected(false);
       const errorMessage = this.props.rescanningLogInfo.peekEnd();
       console.log(errorMessage)
     }

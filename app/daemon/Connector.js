@@ -16,6 +16,7 @@ import ConnectorMarket from './Market';
 import Tools from '../utils/tools';
 import {downloadFile, moveFile} from '../utils/downloader';
 import {ipcRenderer} from "electron";
+import Toast from "../globals/Toast/Toast";
 
 const find = require('find-process');
 const request = require('request-promise-native');
@@ -92,7 +93,6 @@ class Connector extends Component {
     // Stop Daemon
     event.on('stop', async (args) => {
       await this.stopDaemon().then((data) => {
-        if (err) console.log('error stopping daemon: ', err);
         console.log('stopped daemon');
         if(args.restart === true){
           event.emit('start')
@@ -259,6 +259,7 @@ class Connector extends Component {
       });
       this.props.setUpdateFailedMessage("Sapphire is unable to start with this daemon version please download the daemon and update manually!");
     } else {
+      event.emit('start');
       event.emit('startConnectorChildren');
       this.startDaemonChecker();
     }
@@ -289,10 +290,6 @@ class Connector extends Component {
         } else if (list && list.length == 0) {
           console.log('daemon not running');
           this.props.setDaemonRunning(false);
-          console.log(!self.state.downloadingDaemon)
-          console.log(self.props.daemonErrorPopup)
-          if (!self.state.downloadingDaemon && self.props.daemonErrorPopup !== true)
-          { event.emit('start'); }
         }
       });
     }
@@ -489,6 +486,10 @@ class Connector extends Component {
     console.log('starting daemon...');
     this.props.wallet.walletstart(args).then((result) => {
       if (result) {
+        Toast({
+          title: this.props.lang.success,
+          message: result
+        });
         event.emit('daemonStarted');
         this.props.setDaemonRunning(true);
       } else {
@@ -496,6 +497,11 @@ class Connector extends Component {
         event.emit('daemonFailed');
       }
     }).catch(err => {
+      Toast({
+        title: this.props.lang.error,
+        message: err.message,
+        color: 'red'
+      });
       console.log('Error starting daemon');
       console.log(err);
       event.emit('loading-error', { message: err.message });
@@ -515,10 +521,19 @@ class Connector extends Component {
           if (data && data === 'Eccoind server stopping') {
             console.log('stopping daemon');
             this.props.setDaemonRunning(false);
+            Toast({
+              title: this.props.lang.success,
+              message: data
+            });
             resolve(true);
           }	else if (data && data.code === 'ECONNREFUSED') {
             resolve(true);
           } else {
+            Toast({
+              title: this.props.lang.error,
+              message: data,
+              color: 'red'
+            });
             reject(data);
           }
         })

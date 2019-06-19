@@ -121,7 +121,7 @@ class Wallet extends Component {
                   <p className="walletBackupOptions">{ this.props.lang.password }</p>
                 </div>
                 <div className="col-sm-2 text-right removePadding">
-                  <Button color="link" onClick={this.handleChangePasswordClicked}>{ this.props.lang.change }</Button>
+                  <Button size="sm" outline color="warning" onClick={this.handleChangePasswordClicked}>{ this.props.lang.change }</Button>
                 </div>
               </div>
             )}
@@ -130,7 +130,7 @@ class Wallet extends Component {
                 <p className="walletBackupOptions">{ this.props.lang.privateKey }</p>
               </div>
               <div className="col-sm-2 text-right removePadding">
-                <Button color="link" onClick={this.handleImportPrivateKey}>{ this.props.lang.import }</Button>
+                <Button  size="sm" outline color="warning" onClick={this.handleImportPrivateKey}>{ this.props.lang.import }</Button>
               </div>
             </div>
           </div>

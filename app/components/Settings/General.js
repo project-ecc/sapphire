@@ -173,7 +173,7 @@ class General extends Component {
               <p className="walletBackupOptions" style={{ fontSize: '14px', fontWeight: '700' }}>{this.props.lang.sapphireInfoDesc}.</p>
             </div>
             <div className="col-sm-2 text-right removePadding">
-              <p onClick={this.handleHelpFile.bind(this)} style={{ cursor: 'pointer' }}>Generate</p>
+              <Button size="sm" outline color="warning" onClick={this.handleHelpFile.bind(this)} style={{ cursor: 'pointer' }}>Generate</Button>
             </div>
           </div>
         </Body>

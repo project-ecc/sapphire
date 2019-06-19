@@ -32,6 +32,15 @@ class Index extends Component {
 
 
   async confirmSend() {
+
+    if (this.props.initialBlockDownload === true) {
+      Toast({
+        color: 'red',
+        message: 'You cannot send ECC until you are fully Synced'
+      });
+      return;
+    }
+
     if (this.state.amount < 1 || isNaN(this.state.amount) === 1) {
       Toast({
         color: 'red',
@@ -231,7 +240,8 @@ const mapStateToProps = state => {
     lang: state.startup.lang,
     wallet: state.application.wallet,
     selectedCurrency: state.application.selectedCurrency,
-    selectedCurrencyValue: state.application.coinMarketCapStats.price
+    selectedCurrencyValue: state.application.coinMarketCapStats.price,
+    initialBlockDownload: state.chains.initialDownload
   };
 };
 

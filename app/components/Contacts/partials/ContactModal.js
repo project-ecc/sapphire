@@ -14,7 +14,8 @@ class ContactModal extends Component {
     this.state = {
       open: false,
       name: '',
-      address: ''
+      address: '',
+      loading: false
     };
   }
 
@@ -53,6 +54,9 @@ class ContactModal extends Component {
     if (this.state.name.length === 0 || this.state.name.length === 0) {
       return;
     }
+    this.setState({
+      loading: true
+    })
     const checkContact = await findContact(this.state.name);
 
     // User is already a contact
@@ -62,6 +66,24 @@ class ContactModal extends Component {
         message: this.props.lang.contactAlreadyExists,
         color: 'red'
       });
+      this.setState({
+        loading: false
+      })
+      return;
+    }
+
+    try {
+      await this.props.wallet.validate(this.state.address);
+    } catch (err) {
+      console.log('err: ', err);
+      Toast({
+        title: this.props.lang.error,
+        message: err,
+        color: 'red'
+      });
+      this.setState({
+        loading: false
+      })
       return;
     }
 
@@ -86,7 +108,8 @@ class ContactModal extends Component {
     this.setState({
       newContact: {
         name: null,
-        address: null
+        address: null,
+        loading: false
       }
     })
   }
@@ -113,7 +136,7 @@ class ContactModal extends Component {
           <hr />
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" disabled={this.state.address.length === 0 || this.state.length === 0} onClick={this.addContact}>Add Contact</Button>
+          <Button color="primary" disabled={this.state.loading} onClick={this.addContact}>Add Contact</Button>
         </ModalFooter>
       </Modal>
     );

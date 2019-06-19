@@ -108,6 +108,9 @@ class App extends Component {
     } else {
       this.props.setStepInitialSetup('start');
     }
+    this.props.setLoading({
+      isLoading: false,
+    });
     event.emit('initial_setup');
   }
 
@@ -135,7 +138,6 @@ class App extends Component {
     })
     /* Add the theme class to body */
     this.checkThemeClass();
-    console.log('in here')
     return (
       <div>
         <DaemonConnector />

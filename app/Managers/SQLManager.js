@@ -480,6 +480,20 @@ async function clearTransactions () {
   })
 }
 
+async function clearAddresses () {
+  return new Promise(async (resolve, reject) => {
+    let result = await Address.destroy({
+      where: {},
+      truncate: true
+    }).then( result => {
+      resolve(result);
+    }).catch(err => {
+      reject(err);
+    });
+
+  })
+}
+
 async function clearDB(){
   return new Promise(async (resolve, reject) => {
 
@@ -532,6 +546,7 @@ export {
   getContacts,
   deleteContact,
   clearTransactions,
+  clearAddresses,
   getUnconfirmedTransactions
 };
 
