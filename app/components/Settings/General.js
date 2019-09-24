@@ -32,6 +32,11 @@ class General extends Component {
     this.handleMinimizeOnClose = this.handleMinimizeOnClose.bind(this);
     this.handleHelpFile = this.handleHelpFile.bind(this);
     this.checkForUpdates = this.checkForUpdates.bind(this);
+
+    //when daemon is updated
+    event.on('updatedDaemon', function(){
+      event.emit('start');
+    });
   }
 
   handleUpdateApplication() {
