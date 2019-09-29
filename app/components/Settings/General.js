@@ -11,6 +11,8 @@ import SettingsToggle from './partials/SettingsToggle';
 import Header from '../Others/Header';
 import Body from '../Others/Body';
 import ActionModal from '../Others/ActionModal';
+import {toggleBetaMode} from "../../utils/tools";
+import Toast from '../../globals/Toast/Toast';
 
 const settings = require('electron').remote.require('electron-settings');
 const remote = require('electron').remote;
@@ -32,6 +34,7 @@ class General extends Component {
     this.handleMinimizeOnClose = this.handleMinimizeOnClose.bind(this);
     this.handleHelpFile = this.handleHelpFile.bind(this);
     this.checkForUpdates = this.checkForUpdates.bind(this);
+    this.toggleBetaMode = this.toggleBetaMode.bind(this);
 
     //when daemon is updated
     event.on('updatedDaemon', function(){
@@ -85,6 +88,20 @@ class General extends Component {
   reloadSettings(settingPath, value) {
     settings.set(`settings.${settingPath}`, value);
     ipcRenderer.send('reloadSettings');
+  }
+
+  async toggleBetaMode() {
+    let toggled = await toggleBetaMode(!this.props.betaMode)
+    if(toggled){
+      this.reloadSettings('application.beta_mode', !this.props.betaMode);
+      this.props.setBetaMode(!this.props.betaMode);
+      ipcRenderer.send('stop', { restart: true, closeApplication: false })
+    } else {
+      Toast({
+        title: this.props.lang.fail,
+        message: this.props.lang.unableToToggleBetaMode
+      });
+    }
   }
 
   handleHelpFile() {
@@ -161,6 +178,14 @@ class General extends Component {
             handleChange={this.handleMinimizeOnClose}
             checked={this.props.minimizeOnClose}
           />
+
+          <SettingsToggle
+            keyVal={8}
+            text={this.props.lang.toggleBetaMode}
+            handleChange={this.toggleBetaMode}
+            checked={this.props.betaMode}
+          />
+
           <div className="row settingsToggle">
             <div className="col-sm-6 text-left removePadding">
               <p>{ this.props.lang.applicationVersion }</p>
@@ -205,7 +230,8 @@ const mapStateToProps = state => {
     minimizeOnClose: state.application.minimizeOnClose,
     daemonVersion: state.chains.daemonVersion,
     updateAvailable: state.startup.daemonUpdate,
-    debugLog: state.application.debugLog
+    debugLog: state.application.debugLog,
+    betaMode: state.application.betaMode
   };
 };
 

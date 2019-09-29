@@ -21,6 +21,7 @@ import BasicLayout from './../Layouts/Basic';
 // Sidebars
 import MainSidebar from '../Layouts/partials/MainSidebar';
 import SettingSidebar from '../Layouts/partials/SettingSidebar';
+import MessagingSidebar from '../Layouts/partials/MessagingSidebar';
 // Setup
 import SetupStart from './../components/Setup/partials/Start';
 import SetupTheme from './../components/Setup/partials/Theme';
@@ -28,6 +29,10 @@ import SetupImportWallet from '../components/Setup/partials/ImportWallet';
 import SetupEncrypt from './../components/Setup/partials/Encrypt';
 import SetupImportPrivateKeys from './../components/Setup/partials/ImportPrivateKeys';
 import SetupComplete from './../components/Setup/partials/Complete';
+
+//Social
+import MessagingHome from '../components/Social/MessagingHome'
+import MessagingNew from "../components/Social/MessagingNew";
 
 export default [
   {
@@ -136,6 +141,26 @@ export default [
       {
         path: '/news',
         component: NewsPage
+      },
+      {
+        component: MainLayout,
+        sidebar: MessagingSidebar,
+        path: '/friends',
+        routes: [
+          {
+            path: '/friends',
+            exact: true,
+            component: MessagingHome
+          },
+          {
+            path: '/friends/:id',
+            component: MessagingHome
+          },
+          {
+            path: "friends/newMessage",
+            component : MessagingNew
+          }
+        ]
       }
     ]
   }

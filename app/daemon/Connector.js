@@ -63,6 +63,7 @@ class Connector extends Component {
     });
 
     ipcRenderer.on('stop', async (e, args) => {
+      console.log('in stop function')
       let shouldQuit = false
       if(args.closeApplication != null && args.closeApplication === true){
         console.log('in here')
@@ -397,6 +398,7 @@ class Connector extends Component {
           toldUserAboutUpdate: true
         });
         this.props.setUpdateAvailable({daemonUpdate: true});
+        console.log('in here')
       } else {
         console.log('in here for some reason')
       }

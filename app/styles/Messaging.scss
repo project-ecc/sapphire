@@ -1,0 +1,12 @@
+@import "themes/themes.scss";
+
+.messaging-body {
+  position: relative;
+  padding-bottom: 50px;
+}
+
+.messaging-body .bottom {
+  position: absolute;
+  bottom: 0px;
+  height: 50px;
+}

@@ -100,6 +100,9 @@ class App extends Component {
     console.log(daemonCredentials);
     this.props.setWalletCredentials(daemonCredentials);
 
+    let betaMode = await Tools.readBetaMode();
+    this.props.setBetaMode(betaMode)
+
     // alert('credentials');
     const key = 'settings.initialSetup';
     if (settings.has(key)) {

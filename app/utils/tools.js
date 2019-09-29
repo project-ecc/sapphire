@@ -335,6 +335,73 @@ module.exports = {
     });
   },
 
+  toggleBetaMode(result) {
+    return new Promise((resolve, reject) => {
+      var toggle = result | 0;
+      const confFile = getConfUri();
+      console.log(confFile);
+
+      if (fs.existsSync(confFile)) {
+        fs.readFile(confFile, 'utf8', (err, data) => {
+          if (err) {
+            console.log('readFile error: ', err);
+            reject(false);
+          }
+          if (/beta=[0-9]/g.test(data)) {
+            const result = data.replace(/beta=[0-9]/g, `beta=${toggle}`);
+
+
+            fs.writeFile(confFile, result, 'utf8', (error) => {
+              console.log('in the writer');
+              if (error) {
+                console.log('writeFileSync error: ', error);
+                reject(false);
+              } else {
+                console.log('done');
+                console.log('done updating config');
+                resolve(true);
+              }
+            });
+          } else {
+            fs.appendFile(confFile, `${os.EOL}beta=${toggle}`, 'utf8', (err) => {
+              if (err) {
+                console.log('appendFile error: ', err);
+                reject(false);
+              }
+              resolve(true);
+            });
+          }
+        });
+      }
+    });
+  },
+
+  readBetaMode() {
+    let toReturn = null;
+    return new Promise((resolve, reject) => {
+      fs.exists(getConfUri(), (exists) => {
+        if (!exists) {
+          resolve(toReturn);
+          return;
+        }
+        fs.readFile(getConfUri(), 'utf8', (err, data) => {
+          if (err) {
+            console.log('readFile error: ', err);
+            resolve(toReturn);
+            return;
+          }
+          toReturn = 0;
+          let patt = /(beta=(.*))/g;
+          let myArray = patt.exec(data);
+          if (myArray && myArray.length > 2) {
+            toReturn = myArray[2];
+          }
+          resolve(toReturn);
+        });
+      });
+    });
+  },
+
   generateId(length) {
     let text = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
