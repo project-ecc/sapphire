@@ -11,6 +11,7 @@ import * as actions from '../../actions';
 import Messages from './partials/Messages';
 import ChatInput from './partials/ChatInput';
 import Footer from "../Others/Footer";
+import SearchForFriend from "../Others/SearchForFriend";
 
 const event = require('./../../utils/eventhandler');
 
@@ -19,8 +20,7 @@ class MessagingHome extends Component {
     super(props);
     this.loadUser = this.loadUser.bind(this);
     this.openContact = this.openContact.bind(this);
-    console.log(props.location.state)
-    console.log(props.match)
+    console.log(props)
     this.state = {
       viewingContact:         {
         name: "Dylan",
@@ -55,10 +55,6 @@ class MessagingHome extends Component {
     //   this.addMessage(message);
     // });
     this.loadUser()
-  }
-
-  async addContact() {
-    this.modal.getWrappedInstance().toggle(true);
   }
 
 
@@ -100,7 +96,7 @@ class MessagingHome extends Component {
   render() {
 
     const friend = this.state.viewingContact;
-    console.log(friend)
+    // console.log(friend)
 
     return (
       <div className="d-flex flex-row">

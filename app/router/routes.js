@@ -157,7 +157,7 @@ export default [
             component: MessagingHome
           },
           {
-            path: "friends/newMessage",
+            path: "/friends/newMessage",
             component : MessagingNew
           }
         ]
