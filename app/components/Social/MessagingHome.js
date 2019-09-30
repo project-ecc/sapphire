@@ -10,6 +10,7 @@ import RightSidebar from './../Others/RightSidebar';
 import * as actions from '../../actions';
 import Messages from './partials/Messages';
 import ChatInput from './partials/ChatInput';
+import Footer from "../Others/Footer";
 
 const event = require('./../../utils/eventhandler');
 
@@ -109,8 +110,11 @@ class MessagingHome extends Component {
           </Header>
           <Body noPadding className="scrollable messaging-body">
             <Messages messages={this.state.messages} />
-            <ChatInput onSend={this.sendHandler} />
+
           </Body>
+          <Footer>
+            <ChatInput onSend={this.sendHandler} />
+          </Footer>
         </div>
 
         <RightSidebar id="contactRightSidebar" className={friend === null ? 'hide' : ''}>

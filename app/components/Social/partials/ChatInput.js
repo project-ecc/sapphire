@@ -31,6 +31,7 @@ class ChatInput extends React.Component {
 
         <form className="chat-input" onSubmit={this.submitHandler}>
           <input type="text"
+                 className="command_input"
                  onChange={this.textChangeHandler}
                  value={this.state.chatInput}
                  placeholder="Write a message..."
