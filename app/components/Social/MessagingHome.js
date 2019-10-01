@@ -23,8 +23,8 @@ class MessagingHome extends Component {
     console.log(props)
     this.state = {
       viewingContact:         {
-        name: "Dylan",
-        id: "1",
+        name: "Nick",
+        id: "2",
         routingId: "jankjnwdokmawd"
       },
       users : [
@@ -41,7 +41,10 @@ class MessagingHome extends Component {
       ],
       messages: [
         {
-
+          message: "Hello how are you! :wave:",
+          username: "nick",
+          fromMe: false,
+          timeStamp: moment().subtract(1, 'days').fromNow()
         }
       ]
     };
@@ -83,6 +86,7 @@ class MessagingHome extends Component {
     // this.socket.emit('client:message', messageObject);
 
     messageObject.fromMe = true;
+    console.log(messageObject)
     this.addMessage(messageObject);
   }
 
@@ -123,8 +127,15 @@ class MessagingHome extends Component {
           { friend && (
             <div className="p-3">
               { friend.name }
-              <div className="small-text transactionInfoTitle">
-                Routing Public Key: {friend.routingId !== null ? friend.routingId : 'Unknown Route'}
+              <div className="mt-4">
+                <p className="transactionInfoTitle"><span className="desc2 small-header">Routing Identifier</span></p>
+                <p><span className="desc3 small-text selectableText">AodysrxdVvEZ69SXe0cdQm7YAl8Yu4dHV2rcRO2J7R3y</span></p>
+              </div>
+              <div className="mt-4">
+                <p className="transactionInfoTitle"><span className="desc2 small-header">Public Receive Address</span></p>
+                <p><span className="desc3 small-text selectableText">EZtKAozRyjvFyE98XSPcVuyno8UZQTSx8Z</span>                 <Button size="sm" outline color="warning" onClick={() => { this.unlocktoggle() }} className="ml-2">
+                  Send Now
+                </Button></p>
               </div>
               <div className="mt-4">
                 <p className="transactionInfoTitle"><span className="desc2 small-header">Friend since</span></p>
@@ -132,7 +143,7 @@ class MessagingHome extends Component {
               </div>
               <div className="d-flex justify-content-end mt-5">
                 <Button color="danger" size="sm">
-                  Delete Contact
+                  Delete Conversation
                 </Button>
               </div>
             </div>

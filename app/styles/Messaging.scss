@@ -3,6 +3,7 @@
 .messaging-body {
   position: relative;
   padding-bottom: 50px;
+  z-index: 100;
 }
 
 .messaging-body .bottom {
@@ -11,4 +12,15 @@
   height: 50px;
 }
 
+.from-me {
+  display: flex;
+  justify-content: flex-end;
+}
 
+.username {
+  font-weight: 200;
+}
+
+.emoji-picker {
+  z-index: 500;
+}

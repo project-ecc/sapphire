@@ -126,7 +126,7 @@ app.on('ready', async () => {
     width: 1367,
     height: 768,
     minWidth: 1024,
-    minHeight: 800,
+    minHeight: 600,
     title: 'Sapphire',
     backgroundColor: getBackgroundColor(),
     frame: false,
