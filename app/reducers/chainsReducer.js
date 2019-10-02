@@ -13,7 +13,7 @@ import {
 } from '../actions/types';
 
 
-const INITIAL_STATE = {paymentChainSync: 0, loadingBlockIndexPayment: false, blockPayment: 0, headersPayment:0, connectionsPayment: 0, isStaking: false, stakingConfig: false, staking: 0, balance: 0, transactionsData: [], connections: 0, transactionsType: "all", unconfirmedBalance: 0, daemonVersion: '', newMint: 0, immatureBalance: 0, initialDownload: false, sizeOnDisk: 0 };
+const INITIAL_STATE = {paymentChainSync: 0, loadingBlockIndexPayment: false, blockPayment: 0, headersPayment:0, connectionsPayment: 0, isStaking: false, stakingConfig: false, staking: 0, balance: 0, transactionsData: [], connections: 0, transactionsType: "all", unconfirmedBalance: 0, daemonVersion: '', newMint: 0, immatureBalance: 0, initialDownload: false, sizeOnDisk: 0, unlockedUntil:0 };
 
 export default(state = INITIAL_STATE, action) => {
    if(action.type == BLOCK_INDEX_PAYMENT){
@@ -29,7 +29,7 @@ export default(state = INITIAL_STATE, action) => {
 		return {...state, isStaking: action.payload}
 	}
 	else if(action.type == CHAIN_INFO){
-		return {...state, staking: action.payload.staking, connections: action.payload.connections, blockPayment: action.payload.blocks, headersPayment: action.payload.headers, connectionsPayment: action.payload.connections}
+		return {...state, staking: action.payload.staking, connections: action.payload.connections, blockPayment: action.payload.blocks, headersPayment: action.payload.headers, connectionsPayment: action.payload.connections, unlockedUntil: action.payload.unlocked_until}
 	}
 	else if(action.type == MINING_INFO){
 	  return {...state, isStaking: action.payload.generatepos}

@@ -136,7 +136,7 @@ class MainSidebar extends Component {
                   <li>
                     <Row className="bg-dark" style={{paddingBottom: '5px'}}>
                       <Col style={{marginLeft: '25px'}}>Staking</Col>
-                      <Col ><Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.processStakingClicked()} active={this.props.isStaking === true}>{this.props.isStaking ? "On" : "Off"}</Button></Col>
+                      <Col ><Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.processStakingClicked()} active={this.props.isStaking && this.props.isUnlocked === true}>{this.props.isStaking ? "On" : "Off"}</Button></Col>
                     </Row>
                   </li>
                 )}
@@ -163,7 +163,8 @@ const mapStateToProps = state => {
     initialDownload: state.chains.initialDownload,
     balance: state.chains.balance,
     isStaking: state.chains.isStaking,
-    blockChainConnected: state.application.blockChainConnected
+    blockChainConnected: state.application.blockChainConnected,
+    isUnlocked: state.chains.unlockedUntil > 0
   };
 };
 
