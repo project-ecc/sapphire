@@ -12,17 +12,21 @@ import ActionModal from '../Others/ActionModal';
 import {clearTransactions, clearAddresses} from '../../Managers/SQLManager'
 import UnlockModal from "../Others/UnlockModal";
 import Toast from "../../globals/Toast/Toast";
+import SettingsToggle from "./partials/SettingsToggle";
+import {toggleBetaMode} from "../../utils/tools";
+import {ipcRenderer} from "electron";
 const shell = require('electron').remote.shell;
 
 const remote = require('electron').remote;
 const dialog = remote.require('electron').dialog;
 const app = remote.app;
 const event = require('../../utils/eventhandler');
+const settings = require('electron').remote.require('electron-settings');
 
 class Advanced extends Component {
   constructor(props) {
     super(props);
-
+    this.toggleBetaMode = this.toggleBetaMode.bind(this);
     this.deleteAndReIndex = this.deleteAndReIndex.bind(this);
     this.clearBanlist = this.clearBanlist.bind(this);
     this.openDebugFile = this.openDebugFile.bind(this);
@@ -49,6 +53,11 @@ class Advanced extends Component {
   openConfigFile() {
     console.log(getConfUri());
     shell.openItem(getConfUri());
+  }
+
+  reloadSettings(settingPath, value) {
+    settings.set(`settings.${settingPath}`, value);
+    ipcRenderer.send('reloadSettings');
   }
 
   unlocktoggle(){
@@ -78,6 +87,20 @@ class Advanced extends Component {
         });
       }
     });
+  }
+
+  async toggleBetaMode() {
+    let toggled = await toggleBetaMode(!this.props.betaMode)
+    if(toggled){
+      this.reloadSettings('application.beta_mode', !this.props.betaMode);
+      this.props.setBetaMode(!this.props.betaMode);
+      ipcRenderer.send('stop', { restart: true, closeApplication: false })
+    } else {
+      Toast({
+        title: this.props.lang.fail,
+        message: this.props.lang.unableToToggleBetaMode
+      });
+    }
   }
 
   async clearBanlist() {
@@ -159,6 +182,13 @@ class Advanced extends Component {
             </div>
           </div>
 
+          <SettingsToggle
+            keyVal={1}
+            text={this.props.lang.toggleBetaMode}
+            handleChange={this.toggleBetaMode}
+            checked={this.props.betaMode}
+          />
+
         </Body>
         <UnlockModal ref={(e) => { this.unlockModal = e; }} onUnlock={async(e) => { await this.deleteAndReIndex()}} forStaking={false}>
           <p> Please unlock your wallet to reindex your ECC Addresses and Transactions.</p>
@@ -174,7 +204,8 @@ const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
     wallet: state.application.wallet,
-    daemonRunning: state.application.daemonRunning
+    daemonRunning: state.application.daemonRunning,
+    betaMode: state.application.betaMode
   };
 };
 

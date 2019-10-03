@@ -11,8 +11,6 @@ import SettingsToggle from './partials/SettingsToggle';
 import Header from '../Others/Header';
 import Body from '../Others/Body';
 import ActionModal from '../Others/ActionModal';
-import {toggleBetaMode} from "../../utils/tools";
-import Toast from '../../globals/Toast/Toast';
 
 const settings = require('electron').remote.require('electron-settings');
 const remote = require('electron').remote;
@@ -34,12 +32,16 @@ class General extends Component {
     this.handleMinimizeOnClose = this.handleMinimizeOnClose.bind(this);
     this.handleHelpFile = this.handleHelpFile.bind(this);
     this.checkForUpdates = this.checkForUpdates.bind(this);
-    this.toggleBetaMode = this.toggleBetaMode.bind(this);
+
 
     //when daemon is updated
-    event.on('updatedDaemon', function(){
+    event.on('updatedDaemon', () =>{
       event.emit('start');
     });
+
+    event.on('noUpdateAvailable', () =>{
+      this.noUpdateAvailable.getWrappedInstance().toggle();
+    })
   }
 
   handleUpdateApplication() {
@@ -90,19 +92,7 @@ class General extends Component {
     ipcRenderer.send('reloadSettings');
   }
 
-  async toggleBetaMode() {
-    let toggled = await toggleBetaMode(!this.props.betaMode)
-    if(toggled){
-      this.reloadSettings('application.beta_mode', !this.props.betaMode);
-      this.props.setBetaMode(!this.props.betaMode);
-      ipcRenderer.send('stop', { restart: true, closeApplication: false })
-    } else {
-      Toast({
-        title: this.props.lang.fail,
-        message: this.props.lang.unableToToggleBetaMode
-      });
-    }
-  }
+
 
   handleHelpFile() {
     const queries = [];
@@ -179,12 +169,7 @@ class General extends Component {
             checked={this.props.minimizeOnClose}
           />
 
-          <SettingsToggle
-            keyVal={8}
-            text={this.props.lang.toggleBetaMode}
-            handleChange={this.toggleBetaMode}
-            checked={this.props.betaMode}
-          />
+
 
           <div className="row settingsToggle">
             <div className="col-sm-6 text-left removePadding">
@@ -215,6 +200,7 @@ class General extends Component {
             <span>{ this.props.lang.exportedSapphireInfo1 } <b>Sapphire-info.json</b> { this.props.lang.exportedSapphireInfo2 }</span>
           )}
         />
+        <ActionModal ref={(e) => { this.noUpdateAvailable = e; }} body={this.props.lang.noUpdateAvailable} />
       </div>
     );
   }
@@ -231,7 +217,7 @@ const mapStateToProps = state => {
     daemonVersion: state.chains.daemonVersion,
     updateAvailable: state.startup.daemonUpdate,
     debugLog: state.application.debugLog,
-    betaMode: state.application.betaMode
+
   };
 };
 

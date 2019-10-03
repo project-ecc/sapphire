@@ -310,5 +310,7 @@
     "social": "Social",
     "directMessages": "Direct Messaging",
     "groupMessaging": "Groups",
-    "noFriendsAvailable": "No friends available"
+    "noFriendsAvailable": "No friends available",
+    "daemonStarted" : "Daemon Started",
+    "daemonStopped": "Daemon Stopped"
 }

@@ -83,20 +83,20 @@ class Connector extends Component {
       });
     });
 
-    // // Stop Daemon
-    // event.on('stop', async (args) => {
-    //   await this.stopDaemon().then((data) => {
-    //     console.log('stopped daemon');
-    //     if(args.restart === true){
-    //       event.emit('start')
-    //     }
-    //     if(args.closeApplication === true){
-    //       event.emit('closeApplication');
-    //     }
-    //   }).catch((err) => {
-    //     console.log(err)
-    //   });
-    // });
+    // Stop Daemon
+    event.on('stop', async (args) => {
+      await this.stopDaemon().then((data) => {
+        console.log('stopped daemon');
+        if(args.restart === true){
+          event.emit('start')
+        }
+        if(args.closeApplication === true){
+          event.emit('closeApplication');
+        }
+      }).catch((err) => {
+        console.log(err)
+      });
+    });
 
     // Check for daemon update
     event.on('checkForDaemonUpdates', async () =>{
@@ -252,7 +252,11 @@ class Connector extends Component {
       });
       this.props.setUpdateFailedMessage("Sapphire is unable to start with this daemon version please download the daemon and update manually!");
     } else {
-      event.emit('start');
+      if(!this.checkIfDaemonIsRunning()){
+        event.emit('start');
+      }
+
+
       event.emit('startConnectorChildren');
       this.startDaemonChecker();
     }
@@ -277,12 +281,15 @@ class Connector extends Component {
           try {
             await this.props.wallet.getInfo();
             this.props.setDaemonRunning(true);
+            return true;
           } catch (e) {
             this.props.setDaemonRunning(false);
+            return false;
           }
         } else if (list && list.length == 0) {
           console.log('daemon not running');
           this.props.setDaemonRunning(false);
+          return false;
         }
       });
     }
@@ -400,6 +407,7 @@ class Connector extends Component {
         this.props.setUpdateAvailable({daemonUpdate: true});
         console.log('in here')
       } else {
+        event.emit('noUpdateAvailable');
         console.log('in here for some reason')
       }
     }
@@ -482,7 +490,7 @@ class Connector extends Component {
       if (result) {
         Toast({
           title: this.props.lang.success,
-          message: result
+          message: this.props.lang.daemonStarted
         });
         event.emit('daemonStarted');
         this.props.setDaemonRunning(true);
@@ -517,7 +525,7 @@ class Connector extends Component {
             this.props.setDaemonRunning(false);
             Toast({
               title: this.props.lang.success,
-              message: data
+              message: this.props.lang.daemonStopped
             });
             console.log('shouldQuit', quit)
             if(quit === true){
