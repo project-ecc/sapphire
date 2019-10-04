@@ -69,160 +69,167 @@ if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true')
   require('module').globalPaths.push(p);
 }
 
-const installExtensions = async () => {
-  const installer = require('electron-devtools-installer');
-  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = [
-    'REACT_DEVELOPER_TOOLS',
-    'REDUX_DEVTOOLS'
-  ];
-
-  return Promise
-    .all(extensions.map(name => installer.default(installer[name], forceDownload)))
-    .catch(console.log);
-};
+// const installExtensions = async () => {
+//   const installer = require('electron-devtools-installer');
+//   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+//   const extensions = [
+//     'REACT_DEVELOPER_TOOLS',
+//     'REDUX_DEVTOOLS'
+//   ];
+//
+//   return Promise
+//     .all(extensions.map(name => installer.default(installer[name], forceDownload)))
+//     .catch(console.log);
+// };
 
 
 const myWindow = null;
 
-const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
-  // Someone tried to run a second instance, we should focus our window.
-  if (myWindow) {
-    if (myWindow.isMinimized()) myWindow.restore();
-    myWindow.focus();
-  }
-});
 
-if (shouldQuit) {
-  app.quit();
-}
+const gotTheLock = app.requestSingleInstanceLock()
 
-app.on('ready', async () => {
-  ds = settings.get('settings.display');
-
-
-  log.transports.file.level = 'debug';
-  autoUpdater.logger = log;
-  try {
-    await autoUpdater.checkForUpdatesAndNotify();
-  } catch (e) {
-    console.log(e);
-  }
-
-  if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
-    await installExtensions();
-  }
-
-  const selectedTheme = settings.get('settings.display.theme');
-
-  const getBackgroundColor = () => {
-    if (!selectedTheme || selectedTheme === 'theme-darkEcc') { return '#1c1c23'; } else if (selectedTheme && selectedTheme === 'theme-defaultEcc') { return '#181e35'; }
-  };
-
-  app.setAppUserModelId('com.github.project-ecc.sapphire');
-
-  mainWindow = new BrowserWindow({
-    show: true,
-    width: 1367,
-    height: 768,
-    minWidth: 1024,
-    minHeight: 600,
-    title: 'Sapphire',
-    backgroundColor: getBackgroundColor(),
-    frame: false,
-    webPreferences: {
-      backgroundThrottling: false,
-      experimentalFeatures: true
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (myWindow) {
+      if (myWindow.isMinimized()) myWindow.restore()
+      myWindow.focus()
     }
-  });
+  })
 
-  mainWindow.loadURL(`file://${__dirname}/version.html#v${app.getVersion()}`);
-  mainWindow.loadURL(`file://${__dirname}/app.html`);
+  // // Create myWindow, load the rest of the app, etc...
+  // app.on('ready', () => {
+  // })
+  app.on('ready', async () => {
+    ds = settings.get('settings.display');
 
-  mainWindow.on('show', (event) => {
-    mainWindow.setSkipTaskbar(false);
-  });
+    console.log('here')
+    log.transports.file.level = 'debug';
+    autoUpdater.logger = log;
+    try {
+      await autoUpdater.checkForUpdatesAndNotify();
+    } catch (e) {
+      console.log(e);
+    }
 
-  mainWindow.on('focus', (event) => {
-  	sendMessage('focused');
-  });
+    const selectedTheme = settings.get('settings.display.theme');
 
-  mainWindow.on('blur', (event) => {
-    sendMessage('unfocused');
-  });
+    const getBackgroundColor = () => {
+      if (!selectedTheme || selectedTheme === 'theme-darkEcc') { return '#1c1c23'; } else if (selectedTheme && selectedTheme === 'theme-defaultEcc') { return '#181e35'; }
+    };
 
-  mainWindow.on('leave-full-screen', (event) => {
-    if (process.platform === 'darwin') {
-  		sendMessage('full-screen');
-  		fullScreen = false;
-  	}
-  });
+    app.setAppUserModelId('com.github.project-ecc.sapphire');
 
-  mainWindow.on('enter-full-screen', (event) => {
-  	if (process.platform === 'darwin') {
-  		sendMessage('full-screen');
-  		fullScreen = true;
-  	}
-  });
+    mainWindow = new BrowserWindow({
+      show: true,
+      width: 1367,
+      height: 768,
+      minWidth: 1024,
+      minHeight: 600,
+      title: 'Sapphire',
+      backgroundColor: getBackgroundColor(),
+      frame: false,
+      webPreferences: {
+        backgroundThrottling: false,
+        experimentalFeatures: true,
+        nodeIntegration: true
+      }
+    });
 
-  mainWindow.webContents.on('before-input-event', async (event, input) => {
-    if ((input.key.toLowerCase() === 'q' || input.key.toLowerCase() === 'w') && input.control) {
+    if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+      mainWindow.webContents.openDevTools();
+    }
+
+    mainWindow.loadURL(`file://${__dirname}/version.html#v${app.getVersion()}`);
+    mainWindow.loadURL(`file://${__dirname}/app.html`);
+
+    mainWindow.on('show', (event) => {
+      mainWindow.setSkipTaskbar(false);
+    });
+
+    mainWindow.on('focus', (event) => {
+      sendMessage('focused');
+    });
+
+    mainWindow.on('blur', (event) => {
+      sendMessage('unfocused');
+    });
+
+    mainWindow.on('leave-full-screen', (event) => {
+      if (process.platform === 'darwin') {
+        sendMessage('full-screen');
+        fullScreen = false;
+      }
+    });
+
+    mainWindow.on('enter-full-screen', (event) => {
+      if (process.platform === 'darwin') {
+        sendMessage('full-screen');
+        fullScreen = true;
+      }
+    });
+
+    mainWindow.webContents.on('before-input-event', async (event, input) => {
+      if ((input.key.toLowerCase() === 'q' || input.key.toLowerCase() === 'w') && input.control) {
+        event.preventDefault();
+        app.quit();
+      }
+    });
+
+    mainWindow.webContents.on('new-window', (event, url) => {
       event.preventDefault();
-      app.quit();
+      opn(url);
+    });
+
+    // mainWindow.on('close', async (e) => {
+    //   e.preventDefault();
+    //   await closeApplication();
+    // });
+
+    const menuBuilder = new MenuBuilder(mainWindow);
+    menuBuilder.buildMenu();
+
+    if (ds === undefined || ds.tray_icon === undefined || !ds.tray_icon) {
+      setupTrayIcon();
     }
+
+    if (ds !== undefined && ds.start_at_login !== undefined && ds.start_at_login) {
+      autoECCLauncher.enable();
+    } else {
+      autoECCLauncher.disable();
+    }
+
+    setupEventHandlers();
+
+    app.setAppUserModelId(process.execPath)
+
+    // define a new console
+    // override the old console to use it in the logger too
+    mainWindow.console = ((oldCons => ({
+      log: ((text) => {
+        oldCons.log(text);
+        log.debug(text);
+      }),
+      info: ((text) => {
+        oldCons.info(text);
+        log.info(text);
+        // Your code
+      }),
+      warn: ((text) => {
+        oldCons.warn(text);
+        log.warn(text);
+        // Your code
+      }),
+      error: ((text) => {
+        oldCons.error(text);
+        log.error(text);
+        // Your code
+      })
+    }))(mainWindow.console));
   });
-
-  mainWindow.webContents.on('new-window', (event, url) => {
-    event.preventDefault();
-    opn(url);
-  });
-
-  // mainWindow.on('close', async (e) => {
-  //   e.preventDefault();
-  //   await closeApplication();
-  // });
-
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
-
-  if (ds === undefined || ds.tray_icon === undefined || !ds.tray_icon) {
-    setupTrayIcon();
-  }
-
-  if (ds !== undefined && ds.start_at_login !== undefined && ds.start_at_login) {
-    autoECCLauncher.enable();
-  } else {
-    autoECCLauncher.disable();
-  }
-
-  setupEventHandlers();
-
-  app.setAppUserModelId(process.execPath)
-
-  // define a new console
-  // override the old console to use it in the logger too
-  mainWindow.console = ((oldCons => ({
-    log: ((text) => {
-      oldCons.log(text);
-      log.debug(text);
-    }),
-    info: ((text) => {
-      oldCons.info(text);
-      log.info(text);
-      // Your code
-    }),
-    warn: ((text) => {
-      oldCons.warn(text);
-      log.warn(text);
-      // Your code
-    }),
-    error: ((text) => {
-      oldCons.error(text);
-      log.error(text);
-      // Your code
-    })
-  }))(mainWindow.console));
-});
+}
 
 async function closeApplication() {
   console.log('closeApplication()');
