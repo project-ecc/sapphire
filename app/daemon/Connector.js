@@ -75,6 +75,7 @@ class Connector extends Component {
       }
       await this.stopDaemon(shouldQuit).then((data) => {
         console.log('stopped daemon');
+        event.emit('daemonStopped', args)
         if(args.restart != null && args.restart === true){
           event.emit('start')
         }
@@ -87,11 +88,12 @@ class Connector extends Component {
     event.on('stop', async (args) => {
       await this.stopDaemon().then((data) => {
         console.log('stopped daemon');
+        event.emit('daemonStopped', args)
         if(args.restart === true){
           event.emit('start')
         }
         if(args.closeApplication === true){
-          event.emit('closeApplication');
+          event.emit('closeApplication', args);
         }
       }).catch((err) => {
         console.log(err)

@@ -21,7 +21,7 @@ class FullscreenModal extends Component {
 
   handleDismissUpdateFailed() {
     this.props.settellUserUpdateFailed({
-      updateFailed: true,
+      updateFailed: false,
       downloadMessage: ''
     });
 

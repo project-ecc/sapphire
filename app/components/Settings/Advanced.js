@@ -1,6 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {getConfUri, getDebugUri, getSapphireDirectory} from '../../utils/platform.service';
+import {
+  getConfUri,
+  getDebugUri,
+  getSapphireDirectory,
+  grabEccoinDir,
+  grabWalletDir
+} from '../../utils/platform.service';
 import * as actions from '../../actions/index';
 import Console from './partials/Console';
 import fs from 'fs-extra';
@@ -16,6 +22,7 @@ import SettingsToggle from "./partials/SettingsToggle";
 import {toggleBetaMode} from "../../utils/tools";
 import {ipcRenderer} from "electron";
 const shell = require('electron').remote.shell;
+
 
 const remote = require('electron').remote;
 const dialog = remote.require('electron').dialog;
@@ -34,6 +41,21 @@ class Advanced extends Component {
     this.openConfigFile = this.openConfigFile.bind(this);
     this.openConsole = this.openConsole.bind(this);
     this.unlocktoggle = this.unlocktoggle.bind(this);
+    this.deleteAndRedownloadDaemon = this.deleteAndRedownloadDaemon.bind(this);
+    this.deleteBlockChain = this.deleteBlockChain.bind(this);
+    this.onClickBackupLocation = this.onClickBackupLocation.bind(this);
+
+    event.on('daemonStopped', async (args) => {
+
+      if(args.clearBlockchain) {
+        await this.deleteBlockChain()
+      }
+
+      if(args.clearDaemon) {
+        await this.deleteAndRedownloadDaemon()
+      }
+      console.log(args)
+    });
   }
 
   async deleteAndReIndex() {
@@ -62,6 +84,89 @@ class Advanced extends Component {
 
   unlocktoggle(){
     this.unlockModal.getWrappedInstance().toggle();
+  }
+
+  async deleteAndRedownloadDaemon(){
+    setTimeout(async () => {
+      try {
+        await fs.remove(grabWalletDir());
+        Toast({
+          title: "Daemon Deleted",
+          color: 'green'
+        });
+        event.emit('initial_setup');
+      } catch (err) {
+        Toast({
+          title: "Deletion Failed",
+          message: "error deleting daemon, restarting daemon now" + err,
+          color: 'red'
+        });
+        console.error(err)
+        event.emit('start')
+      }
+    }, 5000);
+
+  }
+
+  async deleteBlockChain() {
+    try {
+      await fs.remove(`${grabEccoinDir()}blocks`);
+      await fs.remove(`${grabEccoinDir()}chainstate`);
+      Toast({
+        title: "Blockchain Deleted",
+        color: 'green'
+      });
+    } catch (err) {
+      Toast({
+        title: this.props.lang.exportFailed,
+        message: "error deleting blockchain files, restarting daemon" + err,
+        color: 'red'
+      });
+      console.error(err)
+    }
+    event.emit('start')
+  }
+
+  async backupWallet(location, args) {
+    try {
+      await fs.copyFile(`${grabEccoinDir()}wallet.dat`, location)
+      Toast({
+        title: this.props.lang.exportedWallet,
+        message: location,
+        color: 'green'
+      });
+      this.props.setBackupOperationInProgress(false);
+
+      if(args.clearDaemon) {
+        event.emit('stop', { restart: false, closeApplication: false, clearDaemon: true })
+      }
+      if(args.clearBlockchain){
+        event.emit('stop', { restart: false, closeApplication: false, clearBlockchain: true })
+      }
+    } catch (err) {
+      Toast({
+        title: this.props.lang.exportFailed,
+        message: "error backing up wallet: " + err,
+        color: 'red'
+      });
+      this.props.setBackupOperationInProgress(false);
+      console.error(err)
+    }
+  }
+
+  onClickBackupLocation(args) {
+    if(this.props.backingUpWallet) return;
+    this.props.setBackupOperationInProgress(true);
+    dialog.showOpenDialog({
+      properties: ['openDirectory']
+    }, async (folderPaths) => {
+      if (folderPaths === undefined) {
+        this.props.setBackupOperationInProgress(false);
+        return;
+      }
+
+      await this.backupWallet(`${folderPaths}/walletBackup.dat`, args);
+    });
   }
 
   exportDebugLog() {
@@ -138,7 +243,25 @@ class Advanced extends Component {
               <p className="walletBackupOptions" style={{ fontSize: '14px', fontWeight: '700' }}>Delete Indexed Transactions and Addresses database, useful when swapping a wallet.dat file</p>
             </div>
             <div className="col-sm-3 text-right removePadding">
-              <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.unlocktoggle()}>Reindex</Button>
+              <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.unlocktoggle()}>Run Now</Button>
+            </div>
+          </div>
+          <div className="row settingsToggle" >
+            <div className="col-sm-9 text-left removePadding">
+              <p>Clear blockchain</p>
+              <p className="walletBackupOptions" style={{ fontSize: '14px', fontWeight: '700' }}>Delete Blockchain and resync, useful when forked and syncing has stopped</p>
+            </div>
+            <div className="col-sm-3 text-right removePadding">
+              <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.onClickBackupLocation({clearBlockchain:true})}>Run Now</Button>
+            </div>
+          </div>
+          <div className="row settingsToggle" >
+            <div className="col-sm-9 text-left removePadding">
+              <p>Delete and re-download daemon</p>
+              <p className="walletBackupOptions" style={{ fontSize: '14px', fontWeight: '700' }}>Delete Blockchain daemon and download latest version, useful when having daemon issues</p>
+            </div>
+            <div className="col-sm-3 text-right removePadding">
+              <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.onClickBackupLocation({clearDaemon:true})}>Run Now</Button>
             </div>
           </div>
           <div className="row settingsToggle">
@@ -204,6 +327,7 @@ const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
     wallet: state.application.wallet,
+    backingUpWallet: state.application.backingUpWallet,
     daemonRunning: state.application.daemonRunning,
     betaMode: state.application.betaMode
   };
