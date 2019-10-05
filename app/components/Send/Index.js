@@ -165,7 +165,7 @@ class Index extends Component {
           </div>
         </Header>
         <Body noPadding>
-          { this.props.staking && (
+          { this.props.staking && this.props.isUnlocked && (
             <StakingPartial />
           )}
           <div className="row flex-row-reverse">
@@ -241,7 +241,8 @@ const mapStateToProps = state => {
     wallet: state.application.wallet,
     selectedCurrency: state.application.selectedCurrency,
     selectedCurrencyValue: state.application.coinMarketCapStats.price,
-    initialBlockDownload: state.chains.initialDownload
+    initialBlockDownload: state.chains.initialDownload,
+    isUnlocked: state.chains.unlockedUntil > 0
   };
 };
 
