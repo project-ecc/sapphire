@@ -326,6 +326,29 @@ export default class Wallet {
     }
   }
 
+  async reconsiderBlock(){
+    try {
+      return await client.reconsiderBlock();
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async invalidateBlock(){
+    try {
+      return await client.invalidateBlock();
+    } catch (err) {
+      return err;
+    }
+  }
+  async getBestBlockHash(){
+    try {
+      return await client.getBestBlockHash();
+    } catch (err) {
+      return err;
+    }
+  }
+
   async runWalletWithOptions(path, options){
     // options = options.join(" ");
     return new Promise(async (resolve, reject) => {

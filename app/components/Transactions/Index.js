@@ -195,9 +195,9 @@ class Index extends Component {
   rowClickedFixMisSlideUp(event) {
     event.stopPropagation();
   }
-  componentWillReceiveProps() {
-    this.updateTable();
-  }
+  // componentWillReceiveProps() {
+  //   this.updateTable();
+  // }
 
   handleDropDownClicked() {
     $('.dropdownFilterSelector').attr('tabindex', 1).focus();

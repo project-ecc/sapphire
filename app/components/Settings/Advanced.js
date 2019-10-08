@@ -67,6 +67,28 @@ class Advanced extends Component {
         console.error('no access!', err);
       }
   }
+
+  async revalidateLastBlock(){
+    const bestBlockHash = await this.props.wallet.getBestBlockHash();
+    if (bestBlockHash !== null) {
+      const invalidateBlock = await this.props.wallet.invalidateBlock();
+      if(invalidateBlock === null){
+        const reconsiderBlock = await this.props.wallet.reconsiderBlock();
+        if(reconsiderBlock === null){
+          Toast({
+            title: "Last Block revalidated",
+            color: 'green'
+          });
+        } else {
+          Toast({
+            title: "unable to revalidate last block",
+            color: 'red'
+          });
+        }
+      }
+    }
+
+  }
   openDebugFile() {
     console.log(getDebugUri());
     shell.openItem(getDebugUri());
@@ -155,6 +177,7 @@ class Advanced extends Component {
   }
 
   onClickBackupLocation(args) {
+    console.log('in here')
     if(this.props.backingUpWallet) return;
     this.props.setBackupOperationInProgress(true);
     dialog.showOpenDialog({
@@ -243,7 +266,7 @@ class Advanced extends Component {
               <p className="walletBackupOptions" style={{ fontSize: '14px', fontWeight: '700' }}>Delete Indexed Transactions and Addresses database, useful when swapping a wallet.dat file</p>
             </div>
             <div className="col-sm-3 text-right removePadding">
-              <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.unlocktoggle()}>Run Now</Button>
+              <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.clearIndexedData.getWrappedInstance().toggle()}>Run Now</Button>
             </div>
           </div>
           <div className="row settingsToggle" >
@@ -252,7 +275,7 @@ class Advanced extends Component {
               <p className="walletBackupOptions" style={{ fontSize: '14px', fontWeight: '700' }}>Delete Blockchain and resync, useful when forked and syncing has stopped</p>
             </div>
             <div className="col-sm-3 text-right removePadding">
-              <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.onClickBackupLocation({clearBlockchain:true})}>Run Now</Button>
+              <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.clearBlockchain.getWrappedInstance().toggle()}>Run Now</Button>
             </div>
           </div>
           <div className="row settingsToggle" >
@@ -261,7 +284,16 @@ class Advanced extends Component {
               <p className="walletBackupOptions" style={{ fontSize: '14px', fontWeight: '700' }}>Delete Blockchain daemon and download latest version, useful when having daemon issues</p>
             </div>
             <div className="col-sm-3 text-right removePadding">
-              <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.onClickBackupLocation({clearDaemon:true})}>Run Now</Button>
+              <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.reinstallDaemon.getWrappedInstance().toggle()}>Run Now</Button>
+            </div>
+          </div>
+          <div className="row settingsToggle" >
+            <div className="col-sm-9 text-left removePadding">
+              <p>Revalidate Last Block</p>
+              <p className="walletBackupOptions" style={{ fontSize: '14px', fontWeight: '700' }}>Revalidate last block, useful when forked</p>
+            </div>
+            <div className="col-sm-3 text-right removePadding">
+              <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.invalidateLastBlock.getWrappedInstance().toggle()}>Run Now</Button>
             </div>
           </div>
           <div className="row settingsToggle">
@@ -317,6 +349,12 @@ class Advanced extends Component {
           <p> Please unlock your wallet to reindex your ECC Addresses and Transactions.</p>
         </UnlockModal>
         <ActionModal ref={(e) => { this.clearedBanlist = e; }} body={this.props.lang.banlistCleared} />
+
+        {/*Confirmation action modals*/}
+        <ActionModal header={this.props.lang.areyousure} cancelText={this.props.lang.no} okText={this.props.lang.yes} ok={() => {this.onClickBackupLocation({clearBlockchain:true})}} ref={(e) => { this.clearBlockchain = e; }} body="Clearing the blockchain data will require a full resync from the internet, resync time is completely dependant on your hardware and network connection" />
+        <ActionModal header={this.props.lang.areyousure} cancelText={this.props.lang.no} okText={this.props.lang.yes}ok={() => {this.onClickBackupLocation({clearDaemon:true})}} ref={(e) => { this.reinstallDaemon = e; }} body="Reinstalling the latest daemon requires an active internet connection" />
+        <ActionModal header={this.props.lang.areyousure} cancelText={this.props.lang.no} okText={this.props.lang.yes} ok={() => {this.revalidateLastBlock()}} ref={(e) => { this.invalidateLastBlock = e; }} body="Are you sure you want to revalidate the last block?" />
+        <ActionModal header={this.props.lang.areyousure} cancelText={this.props.lang.no} okText={this.props.lang.yes} ok={() => {this.unlocktoggle()}} ref={(e) => { this.clearIndexedData = e; }} body="Are you sure you want to clear indexed transaction and address data?"/>
         <Console ref={(e) => { this.consoleModal = e; }} />
       </div>
     );

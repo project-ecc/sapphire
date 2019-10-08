@@ -1,4 +1,7 @@
 {
+    "no": "No",
+    "yes": "Yes",
+    "areyousure": "Are you sure?",
     "close": "Close",
     "disable": "Disable",
     "error": "Error",

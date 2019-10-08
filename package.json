@@ -154,7 +154,7 @@
     "eslint-plugin-jest": "^20.0.3",
     "eslint-plugin-jsx-a11y": "5.0.3",
     "eslint-plugin-promise": "^3.8.0",
-    "eslint-plugin-react": "^7.15.1",
+    "eslint-plugin-react": "^7.16.0",
     "express": "^4.17.1",
     "extract-text-webpack-plugin": "^2.1.2",
     "fbjs-scripts": "^0.8.3",
@@ -260,7 +260,8 @@
     "sqlite3": "^4.1.0",
     "tail": "^1.4.0",
     "tar": "^4.4.13",
-    "twemoji-awesome": "^1.0.6"
+    "twemoji-awesome": "^1.0.6",
+    "zeromq": "^5.1.0"
   },
   "devEngines": {
     "node": ">=8.x",
