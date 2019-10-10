@@ -76,7 +76,7 @@ class MessagingHome extends Component {
     });
   }
 
-  sendHandler(message) {
+  async sendHandler(message) {
     const messageObject = {
       username: "Dylan",
       message
@@ -87,6 +87,9 @@ class MessagingHome extends Component {
 
     messageObject.fromMe = true;
     console.log(messageObject)
+    let data = await this.props.wallet.sendPacket({key: "AodysrxdVvEZ69SXe0cdQm7YAl8Yu4dHV2rcRO2J7R3y",protocolId: 1,protocolVersion :1, message: "Test"})
+    console.log(data)
+
     this.addMessage(messageObject);
   }
 

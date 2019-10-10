@@ -349,6 +349,14 @@ export default class Wallet {
     }
   }
 
+  async sendPacket(params){
+    try {
+      return await client.sendpacket(params.key, params.protocolId, params.protocolVersion, params.message);
+    } catch (err) {
+      return err;
+    }
+  }
+
   async runWalletWithOptions(path, options){
     // options = options.join(" ");
     return new Promise(async (resolve, reject) => {
