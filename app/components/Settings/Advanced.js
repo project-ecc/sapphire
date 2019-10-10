@@ -352,7 +352,7 @@ class Advanced extends Component {
 
         {/*Confirmation action modals*/}
         <ActionModal header={this.props.lang.areyousure} cancelText={this.props.lang.no} okText={this.props.lang.yes} ok={() => {this.onClickBackupLocation({clearBlockchain:true})}} ref={(e) => { this.clearBlockchain = e; }} body="Clearing the blockchain data will require a full resync from the internet, resync time is completely dependant on your hardware and network connection" />
-        <ActionModal header={this.props.lang.areyousure} cancelText={this.props.lang.no} okText={this.props.lang.yes}ok={() => {this.onClickBackupLocation({clearDaemon:true})}} ref={(e) => { this.reinstallDaemon = e; }} body="Reinstalling the latest daemon requires an active internet connection" />
+        <ActionModal header={this.props.lang.areyousure} cancelText={this.props.lang.no} okText={this.props.lang.yes} ok={() => {this.onClickBackupLocation({clearDaemon:true})}} ref={(e) => { this.reinstallDaemon = e; }} body="Reinstalling the latest daemon requires an active internet connection" />
         <ActionModal header={this.props.lang.areyousure} cancelText={this.props.lang.no} okText={this.props.lang.yes} ok={() => {this.revalidateLastBlock()}} ref={(e) => { this.invalidateLastBlock = e; }} body="Are you sure you want to revalidate the last block?" />
         <ActionModal header={this.props.lang.areyousure} cancelText={this.props.lang.no} okText={this.props.lang.yes} ok={() => {this.unlocktoggle()}} ref={(e) => { this.clearIndexedData = e; }} body="Are you sure you want to clear indexed transaction and address data?"/>
         <Console ref={(e) => { this.consoleModal = e; }} />

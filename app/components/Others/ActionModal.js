@@ -16,23 +16,24 @@ class ActionModal extends Component {
     this.ok = this.ok.bind(this);
   }
 
-  ok() {}
-  cancel() {}
+  ok() {
+    if (this.props.ok) {
+      this.props.ok();
+    }
+    this.toggle()
+  }
 
-  toggle(wasOk = false) {
+  cancel() {
+    if (this.props.cancel) {
+      this.props.cancel();
+    }
+    this.toggle()
+  }
+
+  toggle() {
     this.setState({
       open: !this.state.open
     });
-
-    if (!this.state.open) {
-      const okFunc = this.props.ok || this.ok;
-      const cancelFunc = this.props.cancel || this.cancel;
-      if (wasOk) {
-        okFunc();
-      } else {
-        cancelFunc();
-      }
-    }
   }
 
   render() {
@@ -46,11 +47,11 @@ class ActionModal extends Component {
         </ModalBody>
         <ModalFooter>
           { this.props.ok && (
-            <Button color="primary" onClick={() => this.toggle(true)}>
+            <Button color="primary" onClick={this.ok}>
               { this.props.okText || this.props.lang.close }
             </Button>
           )}
-          <Button color="link" onClick={() => this.toggle((!this.props.ok))}>
+          <Button color="link" onClick={this.cancel}>
             { this.props.cancelText || (this.props.ok ? this.props.lang.cancel : this.props.lang.close) }
           </Button>
         </ModalFooter>
