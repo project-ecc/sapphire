@@ -19,35 +19,10 @@ class MessagingSidebar extends Component {
         {
           name: "Dylan",
           id: "1",
-          routingId: "jankjnwdokmawd"
-        },
-        {
-          name: "Nick",
-          id: "2",
-          routingId: "omaiknwuniwiund"
+          routingId: "AuFYObBTfSghNXvlNxzqUFeRWNqoL714i5BWWAgi0KqD"
         }
       ],
-      messages: [
-        {
-          fromUser:{
-            name: "Dylan",
-            id: "1",
-            routingId: "jankjnwdokmawd"
-          },
-          toUser: {
-              name: "Nick",
-              id: "2",
-              routingId: "omaiknwuniwiund"
-          },
-          contents: "hello",
-          timeStamp: moment.now().toString()
-
-        }
-      ]
     };
-
-
-
   }
 
   isUserSelected(match, location) {

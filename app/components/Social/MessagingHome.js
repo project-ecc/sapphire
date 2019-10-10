@@ -23,29 +23,18 @@ class MessagingHome extends Component {
     console.log(props)
     this.state = {
       viewingContact:         {
-        name: "Nick",
-        id: "2",
-        routingId: "jankjnwdokmawd"
+        name: "Dylan",
+        id: "1",
+        routingId: "AuFYObBTfSghNXvlNxzqUFeRWNqoL714i5BWWAgi0KqD"
       },
       users : [
         {
           name: "Dylan",
           id: "1",
-          routingId: "jankjnwdokmawd"
+          routingId: "AuFYObBTfSghNXvlNxzqUFeRWNqoL714i5BWWAgi0KqD"
         },
-        {
-          name: "Nick",
-          id: "2",
-          routingId: "omaiknwuniwiund"
-        }
       ],
       messages: [
-        {
-          message: "Hello how are you! :wave:",
-          username: "nick",
-          fromMe: false,
-          timeStamp: moment().subtract(1, 'days').fromNow()
-        }
       ]
     };
     this.sendHandler = this.sendHandler.bind(this);
@@ -75,7 +64,8 @@ class MessagingHome extends Component {
 
   async checkForMessages(){
     let lastMessage = await this.props.wallet.readLastPacket({protocolId: 1,protocolVersion: 1})
-    if(lastMessage != null){
+    if(lastMessage != null && lastMessage.length > 0){
+      console.log(lastMessage)
       let messageObj = JSON.parse(lastMessage.toString('hex'))
       this.addMessage(messageObj)
     }
@@ -101,7 +91,7 @@ class MessagingHome extends Component {
 
 
     console.log(messageObject)
-    let data = await this.props.wallet.sendPacket({key: "AuFYObBTfSghNXvlNxzqUFeRWNqoL714i5BWWAgi0KqD",protocolId: 1,protocolVersion :1, message: JSON.stringify(messageObject)})
+    let data = await this.props.wallet.sendPacket({key: this.state.viewingContact.routingId ,protocolId: 1,protocolVersion :1, message: JSON.stringify(messageObject)})
     messageObject.fromMe = true;
     console.log(data)
 

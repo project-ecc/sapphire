@@ -142,7 +142,7 @@ class Connector extends Component {
     //socket.on('connect_delay', function(fd, ep) {console.log('connect_delay, endpoint:', ep);});
     //socket.on('connect_retry', function(fd, ep) {console.log('connect_retry, endpoint:', ep);});
    // socket.on('listen', function(fd, ep) {console.log('listen, endpoint:', ep);});
-    socket.on('bind_error', function(fd, ep) {console.log('bind_error, endpoint:', ep);});
+   // socket.on('bind_error', function(fd, ep) {console.log('bind_error, endpoint:', ep);});
    /// socket.on('accept', function(fd, ep) {console.log('accept, endpoint:', ep);});
     //socket.on('accept_error', function(fd, ep) {console.log('accept_error, endpoint:', ep);});
     //socket.on('close', function(fd, ep) {console.log('close, endpoint:', ep);});
