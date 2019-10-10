@@ -239,7 +239,7 @@
     "react-dom": "^16.10.2",
     "react-hot-loader": "3.0.0-beta.6",
     "react-loading": "^0.1.4",
-    "react-redux": "^5.1.1",
+    "react-redux": "^5.1.2",
     "react-render-html": "^0.6.0",
     "react-router": "^4.3.1",
     "react-router-config": "^4.4.0-beta.6",
@@ -260,8 +260,7 @@
     "sqlite3": "^4.1.0",
     "tail": "^1.4.0",
     "tar": "^4.4.13",
-    "twemoji-awesome": "^1.0.6",
-    "zeromq": "^5.1.0"
+    "twemoji-awesome": "^1.0.6"
   },
   "devEngines": {
     "node": ">=8.x",

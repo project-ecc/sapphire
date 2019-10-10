@@ -357,6 +357,22 @@ export default class Wallet {
     }
   }
 
+  async readLastPacket(params){
+    try {
+      return await client.readlastpacket(params.protocolId, params.protocolVersion);
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async getRoutingPubKey(){
+    try {
+      return await client.getroutingpubkey();
+    } catch (err) {
+      return err;
+    }
+  }
+
   async runWalletWithOptions(path, options){
     // options = options.join(" ");
     return new Promise(async (resolve, reject) => {

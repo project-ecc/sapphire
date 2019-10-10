@@ -58,6 +58,8 @@ class MessagingHome extends Component {
     //   this.addMessage(message);
     // });
     this.loadUser()
+
+    setInterval(async () =>{this.checkForMessages()}, 3000);
   }
 
 
@@ -70,6 +72,15 @@ class MessagingHome extends Component {
       }
     })
   }
+
+  async checkForMessages(){
+    let lastMessage = await this.props.wallet.readLastPacket({protocolId: 1,protocolVersion: 1})
+    if(lastMessage != null){
+      let messageObj = JSON.parse(lastMessage.toString('hex'))
+      this.addMessage(messageObj)
+    }
+    console.log(lastMessage)
+  }
   openContact(contact) {
     this.setState({
       viewingContact: contact
@@ -77,17 +88,21 @@ class MessagingHome extends Component {
   }
 
   async sendHandler(message) {
+    let myKey = await this.props.wallet.getRoutingPubKey();
     const messageObject = {
+      pubKey: myKey,
       username: "Dylan",
+      timeStamp: moment.now(),
       message
     };
 
     // Emit the message to the server
     // this.socket.emit('client:message', messageObject);
 
-    messageObject.fromMe = true;
+
     console.log(messageObject)
-    let data = await this.props.wallet.sendPacket({key: "AodysrxdVvEZ69SXe0cdQm7YAl8Yu4dHV2rcRO2J7R3y",protocolId: 1,protocolVersion :1, message: "Test"})
+    let data = await this.props.wallet.sendPacket({key: "AuFYObBTfSghNXvlNxzqUFeRWNqoL714i5BWWAgi0KqD",protocolId: 1,protocolVersion :1, message: JSON.stringify(messageObject)})
+    messageObject.fromMe = true;
     console.log(data)
 
     this.addMessage(messageObject);

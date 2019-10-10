@@ -23,8 +23,8 @@ const request = require('request-promise-native');
 const fs = require('fs');
 const event = require('../utils/eventhandler');
 const settings = require('electron-settings');
-const zmq = require('zeromq');
-const socket = zmq.socket('sub');
+//const zmq = require('zeromq');
+//const socket = zmq.socket('sub');
 
 class Connector extends Component {
   constructor(props) {
@@ -126,28 +126,28 @@ class Connector extends Component {
     // subber.js
 
 
-    socket.connect('tcp://127.0.0.1:30000');
-    socket.subscribe('hashblock');
-    socket.subscribe('hashtx');
-    socket.subscribe('rawblock');
-    socket.subscribe('rawtx');
+    //socket.connect('tcp://127.0.0.1:30000');
+    //socket.subscribe('hashblock');
+    //socket.subscribe('hashtx');
+    //socket.subscribe('rawblock');
+    //socket.subscribe('rawtx');
     console.log('Subscriber connected to port 30000');
 
-    socket.on('message', function(topic, message) {
-      console.log('received a message related to:', topic.toString(), 'containing message:', message.toString('hex'));
-    });
+    //socket.on('message', function(topic, message) {
+     // console.log('received a message related to:', topic.toString(), 'containing message:', message.toString('hex'));
+   // });
 
     // Register to monitoring events
-    socket.on('connect', function(fd, ep) {console.log('connect, endpoint:', ep);});
-    socket.on('connect_delay', function(fd, ep) {console.log('connect_delay, endpoint:', ep);});
-    socket.on('connect_retry', function(fd, ep) {console.log('connect_retry, endpoint:', ep);});
-    socket.on('listen', function(fd, ep) {console.log('listen, endpoint:', ep);});
+    //socket.on('connect', function(fd, ep) {console.log('connect, endpoint:', ep);});
+    //socket.on('connect_delay', function(fd, ep) {console.log('connect_delay, endpoint:', ep);});
+    //socket.on('connect_retry', function(fd, ep) {console.log('connect_retry, endpoint:', ep);});
+   // socket.on('listen', function(fd, ep) {console.log('listen, endpoint:', ep);});
     socket.on('bind_error', function(fd, ep) {console.log('bind_error, endpoint:', ep);});
-    socket.on('accept', function(fd, ep) {console.log('accept, endpoint:', ep);});
-    socket.on('accept_error', function(fd, ep) {console.log('accept_error, endpoint:', ep);});
-    socket.on('close', function(fd, ep) {console.log('close, endpoint:', ep);});
-    socket.on('close_error', function(fd, ep) {console.log('close_error, endpoint:', ep);});
-    socket.on('disconnect', function(fd, ep) {console.log('disconnect, endpoint:', ep);});
+   /// socket.on('accept', function(fd, ep) {console.log('accept, endpoint:', ep);});
+    //socket.on('accept_error', function(fd, ep) {console.log('accept_error, endpoint:', ep);});
+    //socket.on('close', function(fd, ep) {console.log('close, endpoint:', ep);});
+    //socket.on('close_error', function(fd, ep) {console.log('close_error, endpoint:', ep);});
+    //socket.on('disconnect', function(fd, ep) {console.log('disconnect, endpoint:', ep);});
 
   }
 
