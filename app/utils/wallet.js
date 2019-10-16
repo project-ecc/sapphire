@@ -326,6 +326,53 @@ export default class Wallet {
     }
   }
 
+  async reconsiderBlock(){
+    try {
+      return await client.reconsiderBlock();
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async invalidateBlock(){
+    try {
+      return await client.invalidateBlock();
+    } catch (err) {
+      return err;
+    }
+  }
+  async getBestBlockHash(){
+    try {
+      return await client.getBestBlockHash();
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async sendPacket(params){
+    try {
+      return await client.sendpacket(params.key, params.protocolId, params.protocolVersion, params.message);
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async readLastPacket(params){
+    try {
+      return await client.readlastpacket(params.protocolId, params.protocolVersion);
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async getRoutingPubKey(){
+    try {
+      return await client.getroutingpubkey();
+    } catch (err) {
+      return err;
+    }
+  }
+
   async runWalletWithOptions(path, options){
     // options = options.join(" ");
     return new Promise(async (resolve, reject) => {
@@ -404,4 +451,3 @@ export default class Wallet {
     });
   }
 }
-

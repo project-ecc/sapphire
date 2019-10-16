@@ -335,6 +335,73 @@ module.exports = {
     });
   },
 
+  toggleBetaMode(result) {
+    return new Promise((resolve, reject) => {
+      var toggle = result | 0;
+      const confFile = getConfUri();
+      console.log(confFile);
+
+      if (fs.existsSync(confFile)) {
+        fs.readFile(confFile, 'utf8', (err, data) => {
+          if (err) {
+            console.log('readFile error: ', err);
+            reject(false);
+          }
+          if (/beta=[0-9]/g.test(data)) {
+            const result = data.replace(/beta=[0-9]/g, `beta=${toggle}`);
+
+
+            fs.writeFile(confFile, result, 'utf8', (error) => {
+              console.log('in the writer');
+              if (error) {
+                console.log('writeFileSync error: ', error);
+                reject(false);
+              } else {
+                console.log('done');
+                console.log('done updating config');
+                resolve(true);
+              }
+            });
+          } else {
+            fs.appendFile(confFile, `${os.EOL}beta=${toggle}`, 'utf8', (err) => {
+              if (err) {
+                console.log('appendFile error: ', err);
+                reject(false);
+              }
+              resolve(true);
+            });
+          }
+        });
+      }
+    });
+  },
+
+  readBetaMode() {
+    let toReturn = null;
+    return new Promise((resolve, reject) => {
+      fs.exists(getConfUri(), (exists) => {
+        if (!exists) {
+          resolve(toReturn);
+          return;
+        }
+        fs.readFile(getConfUri(), 'utf8', (err, data) => {
+          if (err) {
+            console.log('readFile error: ', err);
+            resolve(toReturn);
+            return;
+          }
+          toReturn = 0;
+          let patt = /(beta=(.*))/g;
+          let myArray = patt.exec(data);
+          if (myArray && myArray.length > 2) {
+            toReturn = myArray[2];
+          }
+          resolve(toReturn);
+        });
+      });
+    });
+  },
+
   generateId(length) {
     let text = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -344,9 +411,9 @@ module.exports = {
     return text;
   },
 
-  updateOrCreateConfig(username, password) {
-    return new Promise((resolve, reject) => {
-      fs.exists(getConfUri(), (exists) => {
+  async updateOrCreateConfig(username, password) {
+    return new Promise(async (resolve, reject) => {
+      await fs.exists(getConfUri(), async (exists) => {
         if (!exists) {
            // create
           const toWrite = `maxconnections=100${os.EOL}rpcuser=${username}${os.EOL}rpcpassword=${password}${os.EOL}addnode=www.cryptounited.io${os.EOL}rpcport=19119${os.EOL}rpcconnect=127.0.0.1${os.EOL}staking=0${os.EOL}zapwallettxes=0`;
@@ -359,7 +426,7 @@ module.exports = {
             resolve(true);
           });
         } else {
-          fs.readFile(getConfUri(), 'utf8', (err, data) => {
+          await fs.readFile(getConfUri(), 'utf8', async (err, data) => {
             if (err) {
               console.log('readFile error: ', err);
               resolve(false);
@@ -382,7 +449,7 @@ module.exports = {
               result += `${os.EOL}rpcpassword=${password}`;
             }
 
-            fs.writeFile(getConfUri(), result, 'utf8', (err) => {
+            await fs.writeFile(getConfUri(), result, 'utf8', (err) => {
               if (!err) { resolve(true); } else resolve(false);
             });
           });
@@ -532,4 +599,3 @@ module.exports = {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 };
-

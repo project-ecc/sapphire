@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {NavLink, withRouter} from 'react-router-dom';
-import {BellOutlineIcon, BitcoinIcon, NewspaperIcon, SettingsIcon} from 'mdi-react';
+import {BellOutlineIcon, BitcoinIcon, NewspaperIcon, SettingsIcon, PeopleIcon} from 'mdi-react';
 import ReactTooltip from 'react-tooltip';
 import {connect} from 'react-redux';
 import * as actions from '../../actions/index';
@@ -25,8 +25,13 @@ class Sections extends Component {
       <div className="sections">
         <div>
           <NavLink to="/coin" activeClassName="active" data-tip={this.props.lang.default}>
-            <BitcoinIcon size={35} />
-          </NavLink>
+          <BitcoinIcon size={35} />
+        </NavLink>
+          {this.props.betaMode == true && (
+            <NavLink to="/friends" activeClassName="active" data-tip={this.props.lang.social}>
+              <PeopleIcon size={35} />
+            </NavLink>
+          )}
         </div>
         <div>
           <a data-tip={`${this.props.lang.notifications} ${numberOfNotifications > 0 ? `(${numberOfNotifications})` : ''}`} onClick={this.openNotifications} className={numberOfNotifications > 0 ? 'highlight' : ''}>
@@ -50,7 +55,8 @@ const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
     updateAvailable: state.startup.daemonUpdate,
-    notifications: state.notifications.entries
+    notifications: state.notifications.entries,
+    betaMode: state.application.betaMode
   };
 };
 

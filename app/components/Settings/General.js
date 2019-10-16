@@ -32,6 +32,16 @@ class General extends Component {
     this.handleMinimizeOnClose = this.handleMinimizeOnClose.bind(this);
     this.handleHelpFile = this.handleHelpFile.bind(this);
     this.checkForUpdates = this.checkForUpdates.bind(this);
+
+
+    //when daemon is updated
+    event.on('updatedDaemon', () =>{
+      event.emit('start');
+    });
+
+    event.on('noUpdateAvailable', () =>{
+      this.noUpdateAvailable.getWrappedInstance().toggle();
+    })
   }
 
   handleUpdateApplication() {
@@ -81,6 +91,8 @@ class General extends Component {
     settings.set(`settings.${settingPath}`, value);
     ipcRenderer.send('reloadSettings');
   }
+
+
 
   handleHelpFile() {
     const queries = [];
@@ -156,6 +168,9 @@ class General extends Component {
             handleChange={this.handleMinimizeOnClose}
             checked={this.props.minimizeOnClose}
           />
+
+
+
           <div className="row settingsToggle">
             <div className="col-sm-6 text-left removePadding">
               <p>{ this.props.lang.applicationVersion }</p>
@@ -185,6 +200,7 @@ class General extends Component {
             <span>{ this.props.lang.exportedSapphireInfo1 } <b>Sapphire-info.json</b> { this.props.lang.exportedSapphireInfo2 }</span>
           )}
         />
+        <ActionModal ref={(e) => { this.noUpdateAvailable = e; }} body={this.props.lang.noUpdateAvailable} />
       </div>
     );
   }
@@ -200,7 +216,8 @@ const mapStateToProps = state => {
     minimizeOnClose: state.application.minimizeOnClose,
     daemonVersion: state.chains.daemonVersion,
     updateAvailable: state.startup.daemonUpdate,
-    debugLog: state.application.debugLog
+    debugLog: state.application.debugLog,
+
   };
 };
 

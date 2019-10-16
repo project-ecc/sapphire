@@ -11,7 +11,7 @@ import UpdateFailedModal from './components/Settings/modals/UpdateFailedModal';
 import DownloadingUpdateModal from './components/Settings/modals/DownloadingUpdateModal';
 import * as actions from './actions/index';
 import DaemonConnector from './daemon/Connector';
-import Tools from "./utils/tools";
+import * as tools from './utils/tools';
 
 const event = require('./utils/eventhandler');
 const settings = require('electron').remote.require('electron-settings');
@@ -87,18 +87,20 @@ class App extends Component {
    */
   async createWallet() {
 
-    let daemonCredentials = await Tools.readRpcCredentials();
+    let daemonCredentials = await tools.readRpcCredentials();
 
     if (!daemonCredentials || daemonCredentials.username === 'yourusername' || daemonCredentials.password === 'yourpassword') {
       daemonCredentials = {
-        username: Tools.generateId(5),
-        password: Tools.generateId(5)
+        username: tools.generateId(5),
+        password: tools.generateId(5)
       };
-      await Tools.updateOrCreateConfig(daemonCredentials.username, daemonCredentials.password);
+      await tools.updateOrCreateConfig(daemonCredentials.username, daemonCredentials.password);
     }
 
     console.log(daemonCredentials);
     this.props.setWalletCredentials(daemonCredentials);
+
+
 
     // alert('credentials');
     const key = 'settings.initialSetup';

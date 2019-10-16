@@ -9,7 +9,7 @@ import * as actions from '../../../actions';
 class Theme extends Component {
   constructor(props) {
     super(props);
-
+    
     this.nextStep = this.nextStep.bind(this);
   }
 

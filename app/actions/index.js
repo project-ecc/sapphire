@@ -59,7 +59,7 @@ import {
   INITIAL_BLOCK_DOWNLOAD,
   BLOCKS_AND_HEADERS,
   SIZE_ON_DISK,
-  UPDATE_FAILED_MESSAGE, SERVER_DAEMON_VERSION, LOCAL_DAEMON_VERSION, MINING_INFO, BLOCK_CHAIN_CONNECTED
+  UPDATE_FAILED_MESSAGE, SERVER_DAEMON_VERSION, LOCAL_DAEMON_VERSION, MINING_INFO, BLOCK_CHAIN_CONNECTED, BETA_MODE
 } from './types';
 
 export const setWalletCredentials = (args) => {
@@ -530,6 +530,13 @@ export const setServerDaemonVersion = (val) => {
 export const setLocalDaemonVersion = (val) => {
   return {
     type: LOCAL_DAEMON_VERSION,
+    payload: val
+  };
+};
+
+export const setBetaMode = (val) => {
+  return {
+    type: BETA_MODE,
     payload: val
   };
 };

@@ -21,7 +21,7 @@ class TopBar extends Component {
   }
 
   close() {
-    ipcRenderer.send('quit');
+    ipcRenderer.send('closeApplication');
   }
 
   render() {

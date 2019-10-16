@@ -13,7 +13,7 @@ const os = require('os');
 const { clipboard } = require('electron');
 
 const fs = require('fs');
-const jsPDF = require('jspdf');
+import jsPDF from 'jspdf'
 
 class ExportPrivateKeysModal extends Component {
   constructor(props) {

@@ -12,7 +12,7 @@
   "publish": [
     {
       "provider": "github",
-      "owner": "project-ecc",
+      "owner": "gl3nda85",
       "repo": "sapphire",
       "vPrefixedTagName": "true",
       "protocol": "https"

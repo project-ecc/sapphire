@@ -13,6 +13,7 @@ import {
   updateTransactionsConfirmations
 } from '../Managers/SQLManager';
 import * as tools from '../utils/tools';
+import Toast from "../globals/Toast/Toast";
 
 const event = require('../utils/eventhandler');
 const db = require('../utils/database/db');
@@ -746,6 +747,12 @@ class Coin extends Component {
       this.props.setDaemonRunning(false);
       this.props.setBlockChainConnected(false);
       const errorMessage = this.props.rescanningLogInfo.peekEnd();
+      if(this.props.betaMode){
+        Toast({
+          color: 'red',
+          message: errorMessage
+        });
+      }
       console.log(errorMessage)
     }
   }
@@ -770,7 +777,8 @@ const mapStateToProps = state => {
     daemonRunning: state.application.daemonRunning,
     userAddresses: state.application.userAddresses,
     initialDownload: state.chains.initialDownload,
-    blockChainConnected: state.application.blockChainConnected
+    blockChainConnected: state.application.blockChainConnected,
+    betaMode: state.application.betaMode
   };
 };
 

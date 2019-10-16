@@ -1,4 +1,4 @@
-import settings from 'electron-settings';
+const settings = require('electron').remote.require('electron-settings');
 
 import {STEP_INITIAL_SETUP,} from '../actions/types';
 

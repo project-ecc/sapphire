@@ -23,8 +23,8 @@ const request = require('request-promise-native');
 const fs = require('fs');
 const event = require('../utils/eventhandler');
 const settings = require('electron-settings');
-// const zmq = require('zeromq');
-// const socket = zmq.socket('sub');
+//const zmq = require('zeromq');
+//const socket = zmq.socket('sub');
 
 class Connector extends Component {
   constructor(props) {
@@ -63,29 +63,23 @@ class Connector extends Component {
     });
 
     ipcRenderer.on('stop', async (e, args) => {
-      await this.stopDaemon().then((data) => {
+      console.log('in stop function')
+      let shouldQuit = false
+      if(args.closeApplication != null && args.closeApplication === true){
+        console.log('in here')
+        this.props.setLoading({
+          isLoading: true,
+          loadingMessage: 'Stopping Daemon and closing sapphire'
+        });
+        shouldQuit = true
+      }
+      await this.stopDaemon(shouldQuit).then((data) => {
         console.log('stopped daemon');
+        event.emit('daemonStopped', args)
         if(args.restart != null && args.restart === true){
           event.emit('start')
         }
-        if(args.closeApplication != null && args.closeApplication === true){
-          console.log('in here')
-          this.props.setLoading({
-            isLoading: true,
-            loadingMessage: 'Stopping Daemon and closing sapphire'
-          });
-          setTimeout(()=>{
-            ipcRenderer.send('closeApplication');
-          },3000)
-        }
       }).catch((err) => {
-        // TODO : remove Work around while re indexing deadlock exists
-        if(args.closeApplication != null && args.closeApplication === true){
-          console.log('in here')
-          setTimeout(()=>{
-            ipcRenderer.send('closeApplication');
-          },3000)
-        }
         console.log(err)
       });
     });
@@ -94,11 +88,12 @@ class Connector extends Component {
     event.on('stop', async (args) => {
       await this.stopDaemon().then((data) => {
         console.log('stopped daemon');
+        event.emit('daemonStopped', args)
         if(args.restart === true){
           event.emit('start')
         }
         if(args.closeApplication === true){
-          event.emit('closeApplication');
+          event.emit('closeApplication', args);
         }
       }).catch((err) => {
         console.log(err)
@@ -131,26 +126,28 @@ class Connector extends Component {
     // subber.js
 
 
-    // socket.connect('tcp://127.0.0.1:30000');
-    // socket.subscribe('hashblock');
-    // socket.subscribe('hashtx');
-    // console.log('Subscriber connected to port 30000');
-    //
-    // socket.on('message', function(topic, message) {
-    //   console.log('received a message related to:', topic, 'containing message:', message);
-    // });
-    //
-    // // Register to monitoring events
-    // socket.on('connect', function(fd, ep) {console.log('connect, endpoint:', ep);});
-    // socket.on('connect_delay', function(fd, ep) {console.log('connect_delay, endpoint:', ep);});
-    // socket.on('connect_retry', function(fd, ep) {console.log('connect_retry, endpoint:', ep);});
-    // socket.on('listen', function(fd, ep) {console.log('listen, endpoint:', ep);});
-    // socket.on('bind_error', function(fd, ep) {console.log('bind_error, endpoint:', ep);});
-    // socket.on('accept', function(fd, ep) {console.log('accept, endpoint:', ep);});
-    // socket.on('accept_error', function(fd, ep) {console.log('accept_error, endpoint:', ep);});
-    // socket.on('close', function(fd, ep) {console.log('close, endpoint:', ep);});
-    // socket.on('close_error', function(fd, ep) {console.log('close_error, endpoint:', ep);});
-    // socket.on('disconnect', function(fd, ep) {console.log('disconnect, endpoint:', ep);});
+    //socket.connect('tcp://127.0.0.1:30000');
+    //socket.subscribe('hashblock');
+    //socket.subscribe('hashtx');
+    //socket.subscribe('rawblock');
+    //socket.subscribe('rawtx');
+    console.log('Subscriber connected to port 30000');
+
+    //socket.on('message', function(topic, message) {
+     // console.log('received a message related to:', topic.toString(), 'containing message:', message.toString('hex'));
+   // });
+
+    // Register to monitoring events
+    //socket.on('connect', function(fd, ep) {console.log('connect, endpoint:', ep);});
+    //socket.on('connect_delay', function(fd, ep) {console.log('connect_delay, endpoint:', ep);});
+    //socket.on('connect_retry', function(fd, ep) {console.log('connect_retry, endpoint:', ep);});
+   // socket.on('listen', function(fd, ep) {console.log('listen, endpoint:', ep);});
+   // socket.on('bind_error', function(fd, ep) {console.log('bind_error, endpoint:', ep);});
+   /// socket.on('accept', function(fd, ep) {console.log('accept, endpoint:', ep);});
+    //socket.on('accept_error', function(fd, ep) {console.log('accept_error, endpoint:', ep);});
+    //socket.on('close', function(fd, ep) {console.log('close, endpoint:', ep);});
+    //socket.on('close_error', function(fd, ep) {console.log('close_error, endpoint:', ep);});
+    //socket.on('disconnect', function(fd, ep) {console.log('disconnect, endpoint:', ep);});
 
   }
 
@@ -259,7 +256,11 @@ class Connector extends Component {
       });
       this.props.setUpdateFailedMessage("Sapphire is unable to start with this daemon version please download the daemon and update manually!");
     } else {
-      event.emit('start');
+      if(!this.checkIfDaemonIsRunning()){
+        event.emit('start');
+      }
+
+
       event.emit('startConnectorChildren');
       this.startDaemonChecker();
     }
@@ -284,12 +285,15 @@ class Connector extends Component {
           try {
             await this.props.wallet.getInfo();
             this.props.setDaemonRunning(true);
+            return true;
           } catch (e) {
             this.props.setDaemonRunning(false);
+            return false;
           }
         } else if (list && list.length == 0) {
           console.log('daemon not running');
           this.props.setDaemonRunning(false);
+          return false;
         }
       });
     }
@@ -405,7 +409,9 @@ class Connector extends Component {
           toldUserAboutUpdate: true
         });
         this.props.setUpdateAvailable({daemonUpdate: true});
+        console.log('in here')
       } else {
+        event.emit('noUpdateAvailable');
         console.log('in here for some reason')
       }
     }
@@ -488,7 +494,7 @@ class Connector extends Component {
       if (result) {
         Toast({
           title: this.props.lang.success,
-          message: result
+          message: this.props.lang.daemonStarted
         });
         event.emit('daemonStarted');
         this.props.setDaemonRunning(true);
@@ -513,20 +519,24 @@ class Connector extends Component {
    * @returns {*}
    */
 
-  async stopDaemon() {
+  async stopDaemon(quit = false) {
     return new Promise(async (resolve, reject) => {
       await this.props.wallet.walletstop()
         .then((data) => {
           console.log(data);
-          if (data && data === 'Eccoind server stopping') {
+          if (data && (data === 'Eccoind server stopping' || data.code === 'ECONNREFUSED')) {
             console.log('stopping daemon');
             this.props.setDaemonRunning(false);
             Toast({
               title: this.props.lang.success,
-              message: data
+              message: this.props.lang.daemonStopped
             });
-            resolve(true);
-          }	else if (data && data.code === 'ECONNREFUSED') {
+            console.log('shouldQuit', quit)
+            if(quit === true){
+              setTimeout(()=>{
+                ipcRenderer.send('quit');
+              },3000)
+            }
             resolve(true);
           } else {
             Toast({

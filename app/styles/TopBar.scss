@@ -17,9 +17,6 @@
 	display: flex;
 	-webkit-app-region: no-drag;
 	-webkit-user-select: none;
-	@include themify($themes) {
-	  background-color: themed('bodyBackgroundColor');
-	}
 
 	& > a {
 	  cursor: pointer;
@@ -37,7 +34,7 @@
 
 	.buttons {
 	  flex-direction: row-reverse;
-	  margin-left: 20px;
+	  margin-left: 10px;
 
 	  & > a {
 		background-size: 15px;
@@ -80,6 +77,9 @@
 
 	.buttons {
 	  flex-direction: row;
+	  @include themify($themes) {
+		background-color: themed('bodyBackgroundColor');
+	  }
 
 	  & > a {
 		height: 35px;

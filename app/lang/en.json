@@ -1,4 +1,7 @@
 {
+    "no": "No",
+    "yes": "Yes",
+    "areyousure": "Are you sure?",
     "close": "Close",
     "disable": "Disable",
     "error": "Error",
@@ -304,5 +307,13 @@
     "activatingBestChain": "Activating best chain...",
     "loadingBlockIndex": "Loading block index...",
     "rescanning": "Rescanning...",
-    "restartYourWalletMessage": "Please wait while we try to restart your wallet. You may also try closing and reopening Sapphire."
+    "restartYourWalletMessage": "Please wait while we try to restart your wallet. You may also try closing and reopening Sapphire.",
+    "toggleBetaMode": "Toggle Beta Mode",
+    "unableToToggleBetaMode": "Unable to toggle beta mode",
+    "social": "Social",
+    "directMessages": "Direct Messaging",
+    "groupMessaging": "Groups",
+    "noFriendsAvailable": "No friends available",
+    "daemonStarted" : "Daemon Started",
+    "daemonStopped": "Daemon Stopped"
 }
