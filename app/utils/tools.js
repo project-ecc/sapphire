@@ -411,9 +411,9 @@ module.exports = {
     return text;
   },
 
-  updateOrCreateConfig(username, password) {
-    return new Promise((resolve, reject) => {
-      fs.exists(getConfUri(), (exists) => {
+  async updateOrCreateConfig(username, password) {
+    return new Promise(async (resolve, reject) => {
+      await fs.exists(getConfUri(), async (exists) => {
         if (!exists) {
            // create
           const toWrite = `maxconnections=100${os.EOL}rpcuser=${username}${os.EOL}rpcpassword=${password}${os.EOL}addnode=www.cryptounited.io${os.EOL}rpcport=19119${os.EOL}rpcconnect=127.0.0.1${os.EOL}staking=0${os.EOL}zapwallettxes=0`;
@@ -426,7 +426,7 @@ module.exports = {
             resolve(true);
           });
         } else {
-          fs.readFile(getConfUri(), 'utf8', (err, data) => {
+          await fs.readFile(getConfUri(), 'utf8', async (err, data) => {
             if (err) {
               console.log('readFile error: ', err);
               resolve(false);
@@ -449,7 +449,7 @@ module.exports = {
               result += `${os.EOL}rpcpassword=${password}`;
             }
 
-            fs.writeFile(getConfUri(), result, 'utf8', (err) => {
+            await fs.writeFile(getConfUri(), result, 'utf8', (err) => {
               if (!err) { resolve(true); } else resolve(false);
             });
           });
@@ -599,4 +599,3 @@ module.exports = {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 };
-

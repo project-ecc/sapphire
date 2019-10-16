@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-``
 import {connect} from "react-redux";
 import {ArrowRightIcon} from 'mdi-react';
+import {Button} from 'reactstrap';
 import * as actions from "../../../actions";
 
 class Start extends Component {
@@ -16,6 +16,7 @@ class Start extends Component {
   }
 
   render() {
+
     return (
       <div>
         <p id="welcome">

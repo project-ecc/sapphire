@@ -451,4 +451,3 @@ export default class Wallet {
     });
   }
 }
-
