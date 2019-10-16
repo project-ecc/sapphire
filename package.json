@@ -2,7 +2,7 @@
   "name": "sapphire",
   "productName": "Sapphire",
   "maintainer ": "Project ECC",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "description": "Electron application providing the graphical user interface for the ECC Wallet",
   "scripts": {
     "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 node --trace-warnings ./test/runTests.js",
@@ -30,7 +30,7 @@
     "package-aa-win-32": "npm run build && build --win -c ./os/win32.json -p always",
     "package-aa-win-64": "npm run build && build --win --x64 -c ./os/win64.json -p always",
     "package-aa-all": "npm run package-aa-win-32 && npm run package-aa-win-64",
-    "package-win": "npm run build && build --win --x64 -c ./os/win64.json GH_TOKEN=950ad26269d066297a9084b3f16a591a2c4446f2 -p always",
+    "package-win": "npm run build && build --win --x64 -c ./os/win64.json -p always",
     "package-win-32": "npm run build && build --win --ia32 -c ./os/win32.json -p always",
     "package-osx": "npm run build && node_modules/.bin/electron-builder --mac --x64 -c ./os/osx.json -p always",
     "package-linux": "npm run build && node_modules/.bin/electron-builder --linux -c ./os/lin64.json -p always",
@@ -45,7 +45,7 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "gl3nda85",
+        "owner": "project-ecc",
         "repo": "sapphire",
         "vPrefixedTagName": "true"
       }
@@ -88,7 +88,7 @@
       "buildResources": "resources"
     }
   },
-  "repository": "git+https://github.com/gl3nda85/sapphire.git",
+  "repository": "git+https://github.com/project-ecc/sapphire.git",
   "author": "Project ECC <dev@ecc.network>",
   "license": "MIT",
   "keywords": [
