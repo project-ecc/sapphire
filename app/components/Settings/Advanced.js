@@ -337,12 +337,12 @@ class Advanced extends Component {
             </div>
           </div>
 
-          <SettingsToggle
-            keyVal={1}
-            text={this.props.lang.toggleBetaMode}
-            handleChange={this.toggleBetaMode}
-            checked={this.props.betaMode}
-          />
+          {/*<SettingsToggle*/}
+          {/*  keyVal={1}*/}
+          {/*  text={this.props.lang.toggleBetaMode}*/}
+          {/*  handleChange={this.toggleBetaMode}*/}
+          {/*  checked={this.props.betaMode}*/}
+          {/*/>*/}
 
         </Body>
         <UnlockModal ref={(e) => { this.unlockModal = e; }} onUnlock={async(e) => { await this.deleteAndReIndex()}} forStaking={false}>
