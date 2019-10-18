@@ -116,7 +116,7 @@ class Advanced extends Component {
           title: "Daemon Deleted",
           color: 'green'
         });
-        event.emit('start');
+        event.emit('initial_setup', true);
       } catch (err) {
         Toast({
           title: "Deletion Failed",
