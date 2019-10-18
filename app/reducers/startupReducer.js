@@ -6,12 +6,13 @@ import {
   UNENCRYPTED_WALLET,
   UPDATE_AVAILABLE,
   UPDATING_APP,
+  INITIAL_SETUP
 } from '../actions/types';
 
 var lang = traduction();
 
 
-const INITIAL_STATE = {lang: lang, loader: true, loading: true, loadingMessage: '', updatingApp: false, daemonUpdate:false, unencryptedWallet: false, toldUserAboutUpdate: false };
+const INITIAL_STATE = {lang: lang, loader: true, loading: true, loadingMessage: '', updatingApp: false, daemonUpdate:false, unencryptedWallet: false, toldUserAboutUpdate: false , initialSetup: false};
 
 export default(state = INITIAL_STATE, action) => {
 	if(action.type == SET_LANGUAGE){
@@ -36,6 +37,8 @@ export default(state = INITIAL_STATE, action) => {
     } else{
       return {...state, loading: action.payload.isLoading, loader: action.payload.isLoading, loadingMessage: action.payload.loadingMessage}
     }
-	}
+	} else if(action.type == INITIAL_SETUP){
+    return {...state, initialSetup: action.payload}
+  }
 	return state;
 }

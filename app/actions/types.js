@@ -73,3 +73,4 @@ export const LOCAL_DAEMON_VERSION = 'local_daemon_version';
 export const MINING_INFO = 'mining_info';
 export const BLOCK_CHAIN_CONNECTED = 'block_chain_connected';
 export const BETA_MODE = 'beta_mode';
+export const INITIAL_SETUP = 'intial_setup';
