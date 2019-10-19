@@ -268,7 +268,7 @@ function setupTrayIcon() {
     trayImage = `${imageFolder}/icon.ico`;
   }
   tray = new Tray(nativeImage.createFromPath(trayImage));
-
+  console.log(tray)
   tray.setToolTip('Sapphire');
 
   tray.on('click', () => {

@@ -13,6 +13,7 @@ class Complete extends Component {
   }
 
   completeSetup() {
+    this.props.setInitialSetup(false);
     hash.push('/coin');
   }
 

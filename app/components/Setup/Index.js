@@ -6,6 +6,7 @@ import * as actions from '../../actions';
 
 class Index extends Component {
   redirectIfIncomplete () {
+    this.props.setInitialSetup(true);
     switch (this.props.step) {
       default:
       case 'start':

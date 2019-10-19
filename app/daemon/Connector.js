@@ -76,7 +76,7 @@ class Connector extends Component {
       await this.stopDaemon(shouldQuit).then((data) => {
         console.log('stopped daemon');
         event.emit('daemonStopped', args)
-        if(args.restart != null && args.restart === true){
+        if(args.restart !== null && args.restart === true){
           event.emit('start')
         }
       }).catch((err) => {
@@ -256,13 +256,9 @@ class Connector extends Component {
       });
       this.props.setUpdateFailedMessage("Sapphire is unable to start with this daemon version please download the daemon and update manually!");
     } else {
-      if(!this.checkIfDaemonIsRunning()){
-        event.emit('start');
-      }
-
-
-      event.emit('startConnectorChildren');
-      this.startDaemonChecker();
+     event.emit('start');
+     event.emit('startConnectorChildren');
+     this.startDaemonChecker();
     }
   }
 
@@ -296,6 +292,8 @@ class Connector extends Component {
           return false;
         }
       });
+    } else {
+      console.log('in here')
     }
   }
 
@@ -526,18 +524,26 @@ class Connector extends Component {
           console.log(data);
           if (data && (data === 'Eccoind server stopping' || data.code === 'ECONNREFUSED')) {
             console.log('stopping daemon');
-            this.props.setDaemonRunning(false);
-            Toast({
-              title: this.props.lang.success,
-              message: this.props.lang.daemonStopped
-            });
-            console.log('shouldQuit', quit)
-            if(quit === true){
-              setTimeout(()=>{
-                ipcRenderer.send('quit');
-              },3000)
-            }
-            resolve(true);
+
+            let timeoutID = setInterval( () => {
+
+              if (this.props.daemonRunning === false) {
+                clearInterval(timeoutID);
+
+                Toast({
+                  title: this.props.lang.success,
+                  message: this.props.lang.daemonStopped
+                });
+                if(quit === true){
+                  setTimeout(()=>{
+                    ipcRenderer.send('quit');
+                  },3000)
+                }
+                resolve(true);
+              } else {
+                this.checkIfDaemonIsRunning()
+              }
+            }, 1000)
           } else {
             Toast({
               title: this.props.lang.error,
@@ -574,7 +580,8 @@ const mapStateToProps = state => {
     serverDaemonVersion: state.application.serverDaemonVersion,
     installedDaemonVersion: state.application.installedDaemonVersion,
     requiredDaemonVersion: state.application.requiredDaemonVersion,
-    log: state.application.log
+    log: state.application.log,
+    daemonRunning: state.application.daemonRunning
   };
 };
 

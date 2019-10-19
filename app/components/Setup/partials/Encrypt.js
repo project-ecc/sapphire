@@ -30,6 +30,7 @@ class Encrypt extends Component {
       encrypting: 0
     };
     this.checkIfWalletRunning()
+    this.checkIfEncrypted()
 
   }
 
