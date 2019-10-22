@@ -6,12 +6,13 @@ import {renderRoutes} from 'react-router-config';
 import {ipcRenderer, remote} from 'electron';
 import TopBar from './Layouts/partials/TopBar';
 import routes from './router/routes';
-import BlockIndexModal from './components/Settings/modals/BlockIndexModal';
+
 import UpdateFailedModal from './components/Settings/modals/UpdateFailedModal';
 import DownloadingUpdateModal from './components/Settings/modals/DownloadingUpdateModal';
 import * as actions from './actions/index';
 import DaemonConnector from './daemon/Connector';
 import * as tools from './utils/tools';
+import DaemonErrorModal from "./components/Others/DaemonErrorModal";
 
 const event = require('./utils/eventhandler');
 const settings = require('electron').remote.require('electron-settings');
@@ -147,9 +148,9 @@ class App extends Component {
         <TopBar />
         <div>{renderRoutes(routes)}</div>
 
-        { this.props.loading && <BlockIndexModal /> }
         { this.props.updateFailed && <UpdateFailedModal /> }
         { this.props.downloadMessage && <DownloadingUpdateModal /> }
+        { this.props.daemonErrorPopup && <DaemonErrorModal /> }
       </div>
     );
   }

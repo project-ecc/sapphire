@@ -1,4 +1,4 @@
-const db = require('../../app/utils/database/db');
+import db from '../../app/utils/database/db';
 const Address = db.Address;
 const Transaction = db.Transaction;
 // const AnsRecord = db.AnsRecord;

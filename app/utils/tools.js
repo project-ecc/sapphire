@@ -1,8 +1,5 @@
-import {TweenMax} from 'gsap';
-import {getConfUri} from './platform.service';
-import {ipcRenderer} from 'electron';
-
-const fs = require('fs');
+import {getConfUri} from './platform.service.js';
+var fs = require('fs')
 const os = require('os');
 const settings = require('electron-settings');
 
