@@ -113,6 +113,11 @@ class UnlockModal extends Component {
             onChange={this.onFieldChange}
             type="password"
             className="mt-4"
+            onKeyPress={event => {
+              if (event.key === "Enter") {
+                this.handleConfirm();
+              }
+            }}
           />
           <div className="d-flex justify-content-end mt-2">
             <Button onClick={this.handleConfirm} color="primary">

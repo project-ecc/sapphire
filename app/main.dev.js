@@ -15,18 +15,26 @@ import MenuBuilder from './menu';
 import {getDebugUri, grabEccoinDir} from './utils/platform.service';
 import {traduction} from './lang/lang';
 
+
 const { app, Tray, Menu, BrowserWindow, nativeImage, ipcMain, remote } = require('electron');
 const dialog = require('electron').dialog;
 const settings = require('electron-settings');
 const event = require('./utils/eventhandler');
 const opn = require('opn');
-const Tail = require('tail').Tail;
 
+const Tail = require('tail').Tail;
 const fs = require('fs');
 const AutoLaunch = require('auto-launch');
 const log = require('electron-log');
 const { autoUpdater } = require('electron-updater');
-
+import {
+  addAddress,
+  addTransaction,
+  getAllMyAddresses,
+  getAllRewardTransactions,
+  getLatestTransaction, getUnconfirmedTransactions,
+  updateTransactionsConfirmations
+} from './Managers/SQLManager';
 const autoECCLauncher = new AutoLaunch({
   name: 'Sapphire'
 });
@@ -69,43 +77,14 @@ if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true')
   require('module').globalPaths.push(p);
 }
 
-// const installExtensions = async () => {
-//   const installer = require('electron-devtools-installer');
-//   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-//   const extensions = [
-//     'REACT_DEVELOPER_TOOLS',
-//     'REDUX_DEVTOOLS'
-//   ];
-//
-//   return Promise
-//     .all(extensions.map(name => installer.default(installer[name], forceDownload)))
-//     .catch(console.log);
-// };
-
-
-const myWindow = null;
-
-
 const gotTheLock = app.requestSingleInstanceLock()
 
 if (!gotTheLock) {
   app.quit()
 } else {
-  app.on('second-instance', (event, commandLine, workingDirectory) => {
-    // Someone tried to run a second instance, we should focus our window.
-    if (myWindow) {
-      if (myWindow.isMinimized()) myWindow.restore()
-      myWindow.focus()
-    }
-  })
-
-  // // Create myWindow, load the rest of the app, etc...
-  // app.on('ready', () => {
-  // })
   app.on('ready', async () => {
     ds = settings.get('settings.display');
 
-    console.log('here')
     log.transports.file.level = 'debug';
     autoUpdater.logger = log;
     try {
@@ -134,7 +113,16 @@ if (!gotTheLock) {
       webPreferences: {
         backgroundThrottling: false,
         experimentalFeatures: true,
-        nodeIntegration: true
+        nodeIntegration: true,
+        nodeIntegrationInWorker: true
+      }
+    });
+
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+      // Someone tried to run a second instance, we should focus our window.
+      if (mainWindow) {
+        if (mainWindow.isMinimized()) mainWindow.restore()
+        mainWindow.focus()
       }
     });
 
@@ -142,8 +130,8 @@ if (!gotTheLock) {
       mainWindow.webContents.openDevTools();
     }
 
-    mainWindow.loadURL(`file://${__dirname}/version.html#v${app.getVersion()}`);
-    mainWindow.loadURL(`file://${__dirname}/app.html`);
+    // mainWindow.loadURL(`file://${__dirname}/version.html#v${app.getVersion()}`);
+    await mainWindow.loadURL(`file://${__dirname}/app.html`);
 
     mainWindow.on('show', (event) => {
       mainWindow.setSkipTaskbar(false);
@@ -404,6 +392,15 @@ function setupEventHandlers() {
   ipcMain.on('update', (e, args) => {
     console.log('electron got update signal, sending to daemon');
     event.emit('updateDaemon', args);
+  });
+
+  // Reload Addresses
+  ipcMain.on('processAddresses', async (event, arg) => {
+    console.log(arg)
+  });
+  // Toggle Staking State
+  ipcMain.on('processTransactions', async () => {
+
   });
 }
 

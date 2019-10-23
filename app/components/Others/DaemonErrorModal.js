@@ -2,13 +2,13 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import * as actions from '../../actions/index';
 import {getDebugUri} from '../../utils/platform.service';
-import {Button, Col, Row} from 'reactstrap';
+import {Button, Col, Modal, ModalBody, ModalHeader, Row} from 'reactstrap';
 
 const event = require('../../utils/eventhandler');
 const fs = require('fs-extra');
 const dialog = require('electron').remote.require('electron').dialog;
 
-class DaemonErrorComponent extends Component {
+class DaemonErrorModal extends Component {
   constructor() {
     super();
     this.handleCancel = this.handleCancel.bind(this);
@@ -93,23 +93,29 @@ class DaemonErrorComponent extends Component {
       );
     }
   }
-
   render() {
-      return (
-        <div>
-        <div style={{
-          height: '100%',
-          display: 'block',
-          overflow: 'auto',
-          margin: 'auto 0',
-          padding: '10px',
-          minHeight: '400px'
-        }}>
-          {this.renderReIndexWindow()}
+    return (
+      <Modal isOpen className="fullscreenModal" style={{textAlign: 'center'}}>
+        <ModalHeader>
+          { this.props.lang.error }
+        </ModalHeader>
+        <ModalBody>
+          <div>
+            <div style={{
+              height: '100%',
+              display: 'block',
+              overflow: 'auto',
+              margin: 'auto 0',
+              padding: '10px',
+              minHeight: '400px'
+            }}>
+              {this.renderReIndexWindow()}
+            </div>
+            {this.renderDaemonErrorPopup()}
           </div>
-          {this.renderDaemonErrorPopup()}
-          </div>
-      );
+        </ModalBody>
+      </Modal>
+    );
   }
 }
 
@@ -122,4 +128,4 @@ const mapStateToProps = state => {
 };
 
 
-export default connect(mapStateToProps, actions)(DaemonErrorComponent);
+export default connect(mapStateToProps, actions)(DaemonErrorModal);

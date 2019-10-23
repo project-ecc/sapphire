@@ -3,8 +3,6 @@ import Shell from 'node-powershell';
 import {getPlatformWalletUri} from './platform.service';
 import {runExec, runExecFile} from './../globals/runExec';
 
-const { exec, spawn } = require('child_process');
-
 let client;
 
 export default class Wallet {

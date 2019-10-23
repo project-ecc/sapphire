@@ -9,23 +9,25 @@
  will be the job of the main startup code - [project_root]/bin/www by calling
  `models.sequelize.sync()` after importing from this index.js file
  */
+import {getSapphireDirectory} from "../platform.service";
 
-const fs = require('fs'); // file system for grabbing files
-const path = require('path'); // better than '\/..\/' for portability
-const sqlite3 = require('sqlite3').verbose();
 const Sequelize = require('sequelize'); // Sequelize is a constructor
-let remote = require('electron').remote;
-const app = remote.app;
 
+const app = require('electron').app;
+const sapphirePath = getSapphireDirectory();
 const sequelize = new Sequelize({
   // sqlite! now!
+  retry: {
+    max: 5
+  },
   dialect: 'sqlite',
 
   // the storage engine for sqlite
   // - default ':memory:'
-  storage: app.getPath('userData') +'/database.sqlite',
-  logging:false
+  storage: sapphirePath +'database.sqlite',
+  logging: false
 });
+console.log(sequelize)
 // pass your sequelize config here
 
 const Transaction = require("./model/Transaction.model");

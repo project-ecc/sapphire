@@ -4,6 +4,8 @@ import {Switch} from 'react-router-dom';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import {connect} from "react-redux";
 import * as actions from '../actions';
+import Loader from "../components/Others/Loader";
+import UpdateFailedModal from "../components/Settings/modals/UpdateFailedModal";
 
 class Main extends Component {
   /* Sidebar content is dynamic */
@@ -30,6 +32,7 @@ class Main extends Component {
               </Switch>
             </CSSTransition>
           </TransitionGroup>
+          { this.props.loading && <Loader />  }
         </div>
       </div>
     );
@@ -38,7 +41,8 @@ class Main extends Component {
 
 const mapStateToProps = state => {
   return {
-    theme: state.application.theme
+    theme: state.application.theme,
+    loading: state.startup.loading,
   };
 };
 

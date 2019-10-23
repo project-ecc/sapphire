@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import {ipcRenderer} from 'electron';
 import {connect} from 'react-redux';
 import hash from './../router/hash';
-
+import TransactionWorker from '../Workers/Transaction.worker.js';
 import * as actions from '../actions/index';
+import {RpcProvider} from 'worker-rpc';
 import {
   addAddress,
   addTransaction,
@@ -36,6 +37,12 @@ class Coin extends Component {
     // Misc functions
     this.queueOrSendNotification = this.queueOrSendNotification.bind(this);
     this.checkQueuedNotifications = this.checkQueuedNotifications.bind(this);
+    const worker = new TransactionWorker();
+    this.rpcProvider = new RpcProvider(
+      (message, transfer) => worker.postMessage(message, transfer)
+    );
+
+    worker.onmessage = e => this.rpcProvider.dispatch(e.data);
 
     this.state = {
       miscInterval: 15000,
@@ -260,7 +267,18 @@ class Coin extends Component {
       this.transactionsPage++;
       await this.loadTransactionsForProcessing();
     } else {
-      await this.processTransactions();
+      this.rpcProvider
+        .rpc('processTransactions',
+          {
+            transactions: this.state.transactionMap,
+            lastCheckedEarnings: this.props.notifications.lastCheckedEarnings,
+            shouldNotifyEarnings: this.props.notifications.stakingNotificationsEnabled
+          }
+        )
+        .then(async (result) => {
+          console.log(result)
+          await this.insertIntoDb(result);
+        });
     }
   }
 
@@ -272,79 +290,8 @@ class Coin extends Component {
     return aux;
   }
 
-  async processTransactions() {
-    let entries = [];
-    const rewards = [];
-    const staked = [];
-    const change = [];
-
-    // process transactions
-    for (const key of Object.keys(this.state.transactionMap)) {
-      const values = this.state.transactionMap[key];
-      let generatedFound = false;
-
-      // check if current values array contains a staked transaction, if it does flag the rest of them as category staked
-      restartLoop:
-        while (true) {
-          for (let i = 0; i <= values.length - 1; i++) {
-            if ((values[i].category === 'generate' || values[i].category === 'immature') && generatedFound === false) {
-              generatedFound = true;
-              continue restartLoop;
-            }
-            if (generatedFound) {
-              if (values[i].category !== 'generate' && values[i].category !== 'immature') {
-                values[i].category = 'staked';
-              } else {
-                values[i].is_main = true;
-                values[i].category = 'generate';
-              }
-              rewards.push({ ...values[i], txId: key });
-            }
-          }
-          break;
-        }
-
-      // if the above condition doesnt fit calculate the lev
-      if (!generatedFound) {
-        for (let i = 0; i <= values.length - 1; i++) {
-          entries.push({ ...values[i], txId: key });
-
-          for (let j = 0; j < entries.length - 1; j++) {
-            const original = entries[j];
-            const current = values[i];
-            if (current.txId === original.txId) {
-              // console.log('txId match')
-
-              // if original == send
-              if (original.category === 'receive' && current.category === 'send' || original.category === 'send' && current.category === 'receive') {
-                if (tools.similarity(original.amount.toString(), current.amount.toString()) > 0.6) {
-                  current.category = 'change';
-                  original.category = 'change';
-                  change.push({ ...current, txId: key });
-                  change.push({ ...original, txId: key });
-                  entries.splice(entries.indexOf(original), 1);
-                  entries.splice(entries.indexOf(current), 1);
-                }
-              }
-            }
-          }
-        }
-      }
-      generatedFound = false;
-    }
-
-    // Set every transaction still left in entries as the main transaction.
-    for (let j = 0; j <= entries.length - 1; j++) {
-      entries[j].is_main = true;
-    }
-
-    this.setState({
-      transactionsMap: {}
-    });
-    entries = entries.concat(rewards, staked, change);
-    await this.insertIntoDb(entries);
-  }
   async insertIntoDb(entries) {
+    console.log('TRANSACTIONS STARTED INDEXING')
     const lastCheckedEarnings = this.props.notifications.lastCheckedEarnings;
     let earningsCountNotif = 0;
     let earningsTotalNotif = 0;
@@ -396,6 +343,7 @@ class Coin extends Component {
         transactionsIndexed: true
       });
       this.props.setIndexingTransactions(false);
+      console.log('TRANSACTIONS FINISHED INDEXING')
       const rewards = await getAllRewardTransactions();
       this.props.setStakingReward(rewards);
     }
@@ -533,7 +481,7 @@ class Coin extends Component {
    */
   async addressLoader() {
     this.props.wallet.listAddresses().then(async (data) => {
-
+      ipcRenderer.send('processAddresses', data)
       let addresses = data;
 
       for (const [index, address] of addresses.entries()) {
@@ -546,7 +494,7 @@ class Coin extends Component {
       // }
       // We need to have the addresses loaded to be able to index transactions
       // this.currentAddresses = normalAddresses;
-      if (!this.transactionsIndexed && this.firstRun && this.props.userAddresses.length > 0 && !this.state.isIndexingTransactions) {
+      if (!this.state.transactionsIndexed && this.firstRun && this.props.userAddresses.length > 0 && !this.state.isIndexingTransactions) {
         await this.loadTransactionsForProcessing();
         this.props.setIndexingTransactions(true);
       }
