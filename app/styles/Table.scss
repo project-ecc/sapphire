@@ -1,21 +1,22 @@
 @import "themes/themes.scss";
-
+/*
 #rows{
   width: 100%;
   padding: 0 0
  
 }
-/*
+*/
+
 #rows{
   width: 98%;
   padding: 0 15px;
-  border-radius: 15px;
+  border-radius: 10px;
   margin: 3px 0;
   @include themify($themes) {
     background-color: themed('cardBackgroundColor');
   }
 }
-*/
+
 .tableHeaderNormal{
   width: 100%;
   height:46px;
