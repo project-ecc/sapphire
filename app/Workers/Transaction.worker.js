@@ -1,29 +1,25 @@
+import {RpcProvider} from 'worker-rpc';
+
+const rpcProvider = new RpcProvider(
+  (message, transfer) => postMessage(message, transfer)
+);
+
+onmessage = e => rpcProvider.dispatch(e.data);
+
+rpcProvider.registerRpcHandler('processTransactions', processTransactions);
 // import {addTransaction, getAllRewardTransactions} from "../Managers/SQLManager";
 // import hash from "../router/hash";
 // import db from '../../app/utils/database/db';
-self.addEventListener(
-  "message",
-  async (e) => {
-    console.log(e.data)
-    switch (e.data.mode) {
-      case "process":
-        self.toProcess = e.data.toProcess;
-        await processTransactions();
-        break
-    }
-  },
-  false
-);
 
-async function processTransactions() {
+async function processTransactions(toProcess) {
   let entries = [];
   const rewards = [];
   const staked = [];
   const change = [];
 
   // process transactions
-  for (const key of Object.keys(self.toProcess.transactions)) {
-    const values = self.toProcess.transactions[key];
+  for (const key of Object.keys(toProcess.transactions)) {
+    const values = toProcess.transactions[key];
     let generatedFound = false;
 
     // check if current values array contains a staked transaction, if it does flag the rest of them as category staked
@@ -80,8 +76,7 @@ async function processTransactions() {
   for (let j = 0; j <= entries.length - 1; j++) {
     entries[j].is_main = true;
   }
-  entries = entries.concat(rewards, staked, change);
-  self.postMessage(entries)
+  return entries.concat(rewards, staked, change);
   // await this.insertIntoDb(entries);
 }
 // async function insertIntoDb(entries) {

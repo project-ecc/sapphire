@@ -137,7 +137,8 @@ export default merge.smart(baseConfig, {
         use: {
           loader: 'worker-loader',
           options: {
-            fallback: true
+            fallback: true,
+            inline:true
           }
         }
       }

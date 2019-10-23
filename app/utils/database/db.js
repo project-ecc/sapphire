@@ -17,6 +17,9 @@ const app = require('electron').app;
 const sapphirePath = getSapphireDirectory();
 const sequelize = new Sequelize({
   // sqlite! now!
+  retry: {
+    max: 5
+  },
   dialect: 'sqlite',
 
   // the storage engine for sqlite

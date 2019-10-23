@@ -262,7 +262,8 @@
     "sqlite3": "^4.1.0",
     "tail": "^1.4.0",
     "tar": "^4.4.13",
-    "twemoji-awesome": "^1.0.6"
+    "twemoji-awesome": "^1.0.6",
+    "worker-rpc": "^0.2.0"
   },
   "devEngines": {
     "node": ">=8.x",

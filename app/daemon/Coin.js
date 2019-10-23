@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import hash from './../router/hash';
 import TransactionWorker from '../Workers/Transaction.worker.js';
 import * as actions from '../actions/index';
+import {RpcProvider} from 'worker-rpc';
 import {
   addAddress,
   addTransaction,
@@ -36,11 +37,12 @@ class Coin extends Component {
     // Misc functions
     this.queueOrSendNotification = this.queueOrSendNotification.bind(this);
     this.checkQueuedNotifications = this.checkQueuedNotifications.bind(this);
-    this.transactionProcessor = new TransactionWorker();
+    const worker = new TransactionWorker();
+    this.rpcProvider = new RpcProvider(
+      (message, transfer) => worker.postMessage(message, transfer)
+    );
 
-    this.transactionProcessor.addEventListener('message', (e) => {
-      console.log('Message from Worker: ' + e.data);
-    });
+    worker.onmessage = e => this.rpcProvider.dispatch(e.data);
 
     this.state = {
       miscInterval: 15000,
@@ -265,17 +267,18 @@ class Coin extends Component {
       this.transactionsPage++;
       await this.loadTransactionsForProcessing();
     } else {
-      this.transactionProcessor.postMessage({
-        mode: 'process',
-        toProcess: {
-          transactions: this.state.transactionMap,
-          lastCheckedEarnings: this.props.notifications.lastCheckedEarnings,
-          shouldNotifyEarnings: this.props.notifications.stakingNotificationsEnabled
-        }
-      });
-      this.transactionProcessor.onmessage = async (e) =>{
-        await this.insertIntoDb(e.data);
-      }
+      this.rpcProvider
+        .rpc('processTransactions',
+          {
+            transactions: this.state.transactionMap,
+            lastCheckedEarnings: this.props.notifications.lastCheckedEarnings,
+            shouldNotifyEarnings: this.props.notifications.stakingNotificationsEnabled
+          }
+        )
+        .then(async (result) => {
+          console.log(result)
+          await this.insertIntoDb(result);
+        });
     }
   }
 
