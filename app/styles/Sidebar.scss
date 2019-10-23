@@ -241,3 +241,27 @@
   padding: 0 0 !important;
   text-decoration: none !important;
 }
+
+.loader {
+	@include themify($themes) {
+		background-color: themed('sidebarBackgroundColor');
+	}
+	margin: 25px;
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	z-index: 1000000;
+	padding: 5px;
+}
+.loader-content {
+	display: flex;
+	flex-wrap: nowrap
+}
+
+.loader-message {
+	padding: 10px;
+	margin: 10px;
+}
+.loader-message > p {
+	font-weight: lighter
+}

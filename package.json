@@ -30,7 +30,7 @@
     "package-aa-win-32": "npm run build && build --win -c ./os/win32.json -p always",
     "package-aa-win-64": "npm run build && build --win --x64 -c ./os/win64.json -p always",
     "package-aa-all": "npm run package-aa-win-32 && npm run package-aa-win-64",
-    "package-win": "npm run build && build --win --x64 -c ./os/win64.json -p always",
+    "package-win": "npm run build && electron-builder --win --x64 -c ./os/win64.json -p always",
     "package-win-32": "npm run build && build --win --ia32 -c ./os/win32.json -p always",
     "package-osx": "npm run build && node_modules/.bin/electron-builder --mac --x64 -c ./os/osx.json -p always",
     "package-linux": "npm run build && node_modules/.bin/electron-builder --linux -c ./os/lin64.json -p always",
@@ -156,9 +156,9 @@
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-react": "^7.16.0",
     "express": "^4.17.1",
-    "extract-text-webpack-plugin": "^2.1.2",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "fbjs-scripts": "^0.8.3",
-    "file-loader": "^0.11.1",
+    "file-loader": "^4.0.0",
     "flow-bin": "^0.48.0",
     "flow-runtime": "^0.13.0",
     "flow-typed": "^2.6.1",
@@ -182,11 +182,13 @@
     "stylefmt": "^6.0.3",
     "stylelint": "^10.1.0",
     "stylelint-config-standard": "^16.0.0",
-    "url-loader": "^1.1.2",
-    "webpack": "^3.12.0",
+    "url-loader": "^2.0.0",
+    "webpack": "^4.26.1",
     "webpack-bundle-analyzer": "^3.5.2",
-    "webpack-dev-server": "^2.11.3",
-    "webpack-merge": "^4.2.2"
+    "webpack-cli": "^3.1.1",
+    "webpack-dev-server": "^3.1.4",
+    "webpack-merge": "^4.2.2",
+    "worker-loader": "^2.0.0"
   },
   "dependencies": {
     "arch": "^2.1.1",
@@ -214,7 +216,7 @@
     "feedme": "^1.1.2",
     "find-process": "github:project-ecc/find-process",
     "font-awesome": "^4.7.0",
-    "fs-extra": "^7.0.1",
+    "fs-extra": "^8.1.0",
     "funnies": "^2.0.0",
     "glob": "^7.1.3",
     "gsap": "^1.20.6",
@@ -260,7 +262,8 @@
     "sqlite3": "^4.1.0",
     "tail": "^1.4.0",
     "tar": "^4.4.13",
-    "twemoji-awesome": "^1.0.6"
+    "twemoji-awesome": "^1.0.6",
+    "worker-rpc": "^0.2.0"
   },
   "devEngines": {
     "node": ">=8.x",
