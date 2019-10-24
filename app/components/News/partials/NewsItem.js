@@ -11,7 +11,8 @@ class NewsItem extends Component {
 
   async handleOnClick(url){
     // TODO : FIX THIS
-    alert('This function is broken');
+    window.open(url, '_blank', 'nodeIntegration=no')
+    // alert('This function is broken');
     // await open(url);
   }
 

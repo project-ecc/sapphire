@@ -34,7 +34,7 @@ class Donate extends Component {
         <p>The developer fund is used to cover many of the expenses that are incurred while developing ecc.
           Currently all of these expenses are paid for out of pocket by the dev team.<br/>
           These include but are not limited to paying for github services, website hosting, services like blockexplorers, research, and development in general.<br/>
-          We would like to offer the ability to donate directly to the developers and do appreciate any amount you may want to contribute.</p>
+          We would like to offer the ability to donate directly to the developers who do appreciate any amount you may want to contribute.</p>
         <div className="mt-3">
           <p>BTC</p>
           <Input

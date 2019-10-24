@@ -71,9 +71,9 @@ class Advanced extends Component {
   async revalidateLastBlock(){
     const bestBlockHash = await this.props.wallet.getBestBlockHash();
     if (bestBlockHash !== null) {
-      const invalidateBlock = await this.props.wallet.invalidateBlock();
+      const invalidateBlock = await this.props.wallet.invalidateBlock(bestBlockHash);
       if(invalidateBlock === null){
-        const reconsiderBlock = await this.props.wallet.reconsiderBlock();
+        const reconsiderBlock = await this.props.wallet.reconsiderBlock(bestBlockHash);
         if(reconsiderBlock === null){
           Toast({
             title: "Last Block revalidated",

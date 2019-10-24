@@ -27,7 +27,6 @@ const sequelize = new Sequelize({
   storage: sapphirePath +'database.sqlite',
   logging: false
 });
-console.log(sequelize)
 // pass your sequelize config here
 
 const Transaction = require("./model/Transaction.model");

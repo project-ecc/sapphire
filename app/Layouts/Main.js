@@ -24,7 +24,7 @@ class Main extends Component {
     return (
       <div className="d-flex w-100">
         { this.sidebar() }
-        <div className="w-100 position-relative" style={{overflow: 'auto'}}>
+        <div className="w-100 position-relative" style={{overflow: 'hidden'}}>
           <TransitionGroup component="main" id="mainPageWrapper">
             <CSSTransition key={currentKey} timeout={timeout} classNames="pageTransition" appear>
               <Switch location={location}>
