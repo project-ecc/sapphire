@@ -5,7 +5,7 @@ import ReactTooltip from 'react-tooltip';
 import {connect} from 'react-redux';
 import * as actions from '../../actions/index';
 import NotificationPopup from '../../components/NotificationPopup';
-import EccWalletIcon from '../../../resources/icons/ecc_wallet_redux.svg';
+import EccWalletIcon from '../../../resources/icons/ecc_wallet_icon_material.svg';
 
 class Sections extends Component {
   constructor (props) {
@@ -26,7 +26,7 @@ class Sections extends Component {
       <div className="sections">
         <div>
           <NavLink to="/coin" activeClassName="active" data-tip={this.props.lang.default}>
-            <EccWalletIcon preserveAspectRatio="xMidYMid meet" width="100%" height="100%" />
+            <EccWalletIcon />
         </NavLink>
           {this.props.betaMode == true && (
             <NavLink to="/friends" activeClassName="active" data-tip={this.props.lang.social}>
