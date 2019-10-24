@@ -116,17 +116,27 @@ export default merge.smart(baseConfig, {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         use: 'file-loader',
       },
-      // SVG Font
-      {
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            mimetype: 'image/svg+xml',
-          }
-        }
-      },
+       //SVG Icons
+       {
+         test: /\.svg$/,
+         include: /resources(\/|\\)icons/, //(\/|\\) used to handle both linux and windows paths
+         exclude: /node_modules/,
+         use : {
+           loader: 'svg-react-loader'
+         }
+       },
+       // SVG Font
+       {
+         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+         exclude: /resources(\/|\\)icons/, //(\/|\\) used to handle both linux and windows paths
+         use: {
+           loader: 'url-loader',
+           options: {
+             limit: 10000,
+             mimetype: 'image/svg+xml',
+           }
+         }
+       },
       // Common Image Formats
       {
         test: /\.(?:ico|gif|png|jpg|jpeg|webp)$/,
