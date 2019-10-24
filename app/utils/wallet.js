@@ -324,17 +324,17 @@ export default class Wallet {
     }
   }
 
-  async reconsiderBlock(){
+  async reconsiderBlock(hash){
     try {
-      return await client.reconsiderBlock();
+      return await client.reconsiderBlock(hash);
     } catch (err) {
       return err;
     }
   }
 
-  async invalidateBlock(){
+  async invalidateBlock(hash){
     try {
-      return await client.invalidateBlock();
+      return await client.invalidateBlock(hash);
     } catch (err) {
       return err;
     }
