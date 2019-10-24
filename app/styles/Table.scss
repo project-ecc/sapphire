@@ -1,8 +1,20 @@
 @import "themes/themes.scss";
-
+/*
 #rows{
   width: 100%;
   padding: 0 0
+ 
+}
+*/
+
+#rows{
+  width: 98%;
+  padding: 0 15px;
+  border-radius: 10px;
+  margin: 3px 0;
+  @include themify($themes) {
+    background-color: themed('cardBackgroundColor');
+  }
 }
 
 .tableHeaderNormal{
@@ -51,7 +63,7 @@
   margin: 0 0;
   width: 100%;
   min-height: 40px;
-  box-shadow: 0 2px 4px -3px rgba(0, 0, 0, 0.74);
+ /* box-shadow: 0 2px 4px -3px rgba(0, 0, 0, 0.74);*/
 }
 
 .tableRowCustom:active{

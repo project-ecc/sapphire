@@ -112,7 +112,7 @@ class MainSidebar extends Component {
           <div className="pt-5 pb-2">
             <NavLink to="/coin/network" className="text-center pl-4 pr-4" data-tip="View network stats">
               <div style={{ fontSize: '13px' }}>{`${this.props.lang.syncing} ${progressBar}%`}</div>
-              <Progress animated striped value={progressBar} color="success" className="mt-2 mb-2" style={{borderRadius: 0, height: 6}} />
+              <Progress animated striped value={progressBar} color="success" className="mt-2 mb-2" style={{borderRadius: 6, height: 6, width: `80%`, margin:`0 10%`}} />
               <div style={{ fontSize: '13px' }}>{`${this.props.lang.activeConnections}: ${this.props.connections}`}</div>
             </NavLink>
             <div className="menu mt-0 mb-2 pl-2 pr-2 text-center">
