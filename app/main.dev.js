@@ -27,6 +27,9 @@ const fs = require('fs');
 const AutoLaunch = require('auto-launch');
 const log = require('electron-log');
 const { autoUpdater } = require('electron-updater');
+const path = require('path');
+
+
 import {
   addAddress,
   addTransaction,
@@ -72,7 +75,6 @@ if (process.env.NODE_ENV === 'production') {
 
 if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
   require('electron-debug')();
-  const path = require('path');
   const p = path.join(__dirname, '..', 'app', 'node_modules');
   require('module').globalPaths.push(p);
 }
@@ -247,22 +249,32 @@ async function closeApplication() {
 
 function setupTrayIcon() {
   let trayImage;
-  const imageFolder = `${__dirname}/dist/assets`;
-
+  const imageFolder = path.join(__dirname, '..', 'resources');
+  //console.log("Loading tray icons");
+  //console.log(imageFolder);
   // Determine appropriate icon for platform
   if (process.platform === 'darwin' || process.platform === 'linux') {
-    trayImage = `${imageFolder}/trayIconTemplate.png`;
+    trayImage = `${imageFolder}/icon.png`;
   } else {
     trayImage = `${imageFolder}/icon.ico`;
   }
   tray = new Tray(nativeImage.createFromPath(trayImage));
-  console.log(tray)
   tray.setToolTip('Sapphire');
 
-  tray.on('click', () => {
-    mainWindow.show();
-    mainWindow.focus();
-  });
+  var contextMenu = Menu.buildFromTemplate([
+      { label: 'Open Sapphire', click:  function(){
+            ipcMain.emit('show');
+      } },
+      { label: 'Minimize Sapphire', click:  function(){
+          ipcMain.emit('minimize');
+      } },
+      { label: 'Quit Sapphire', click:  function(){
+          ipcMain.emit('closeApplication');
+      } }
+  ]);
+
+  tray.setContextMenu(contextMenu)
+
 }
 
 function setupEventHandlers() {
