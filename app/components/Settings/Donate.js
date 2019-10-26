@@ -36,13 +36,13 @@ class Donate extends Component {
           These include but are not limited to paying for github services, website hosting, services like blockexplorers, research, and development in general.<br/>
           We would like to offer the ability to donate directly to the developers who do appreciate any amount you may want to contribute.</p>
         <div className="mt-3">
-          <p>BTC</p>
+         <p>BTC</p>
           <Input
             readOnly
             style={{ width: '400px' }}
             value="1LC8zhYNXgRQ5d6sCTxDrC8wBq6D1gdQDZ"
             type="test"
-            className="ml-auto mr-auto mb-2"
+            className="mb-4"
           />
           <p>BCH</p>
           <Input
@@ -50,7 +50,7 @@ class Donate extends Component {
             style={{ width: '400px' }}
             value="1LC8zhYNXgRQ5d6sCTxDrC8wBq6D1gdQDZ"
             type="test"
-            className="ml-auto mr-auto mb-2"
+            className=" mb-4"
           />
           <p>ECC</p>
           <Input
@@ -58,7 +58,7 @@ class Donate extends Component {
             style={{ width: '400px' }}
             value="ESnoQdpHH5vLafzj9nvXqRugPSkd2ZNrch"
             type="test"
-            className="ml-auto mr-auto mb-2"
+            className=" mb-4"
           />
           <p>LTC</p>
           <Input
@@ -66,7 +66,7 @@ class Donate extends Component {
             style={{ width: '400px' }}
             value="LPADrS2UjUXjYikZd3y3jv6MeZSHP5HukT"
             type="test"
-            className="ml-auto mr-auto mb-2"
+            className=" mb-4"
           />
         </div>
         </Body>
