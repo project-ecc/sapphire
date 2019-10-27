@@ -111,6 +111,7 @@ if (!gotTheLock) {
       minHeight: 600,
       title: 'Sapphire',
       backgroundColor: getBackgroundColor(),
+      icon: getAppIcon(),
       frame: false,
       webPreferences: {
         backgroundThrottling: false,
@@ -248,16 +249,7 @@ async function closeApplication() {
 // });
 
 function setupTrayIcon() {
-  let trayImage;
-  const imageFolder = path.join(__dirname, '..', 'resources');
-  //console.log("Loading tray icons");
-  //console.log(imageFolder);
-  // Determine appropriate icon for platform
-  if (process.platform === 'darwin' || process.platform === 'linux') {
-    trayImage = `${imageFolder}/icon.png`;
-  } else {
-    trayImage = `${imageFolder}/icon.ico`;
-  }
+  let trayImage = getAppIcon();
   tray = new Tray(nativeImage.createFromPath(trayImage));
   tray.setToolTip('Sapphire');
 
@@ -275,6 +267,20 @@ function setupTrayIcon() {
 
   tray.setContextMenu(contextMenu)
 
+}
+
+export function getAppIcon(){
+  let trayImage;
+  const imageFolder = path.join(__dirname, '..', 'resources');
+  //console.log("Loading tray icons");
+  //console.log(imageFolder);
+  // Determine appropriate icon for platform
+  if (process.platform === 'darwin' || process.platform === 'linux') {
+    trayImage = `${imageFolder}/icon.png`;
+  } else {
+    trayImage = `${imageFolder}/icon.ico`;
+  }
+  return trayImage;
 }
 
 function setupEventHandlers() {
