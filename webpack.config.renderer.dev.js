@@ -21,6 +21,10 @@ const publicPath = `http://localhost:${port}/dist`;
 const dll = path.resolve(process.cwd(), 'dll');
 const manifest = path.resolve(dll, 'vendor.json');
 
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
+
 /**
  * Warn if the DLL is not built
  */
@@ -157,9 +161,19 @@ export default merge.smart(baseConfig, {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         use: 'file-loader',
       },
+      //SVG Icons
+      {
+        test: /\.svg$/,
+        include: /resources(\/|\\)icons/, //(\/|\\) used to handle both linux and windows paths
+        exclude: /node_modules/,
+        use : {
+          loader: 'svg-react-loader'
+        }
+      },
       // SVG Font
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        exclude: /resources(\/|\\)icons/, //(\/|\\) used to handle both linux and windows paths
         use: {
           loader: 'url-loader',
           options: {

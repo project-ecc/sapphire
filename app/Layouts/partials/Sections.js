@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import {NavLink, withRouter} from 'react-router-dom';
-import {BellOutlineIcon, BitcoinIcon, NewspaperIcon, SettingsIcon, PeopleIcon, SvgIcon} from 'mdi-react';
+import {BellOutlineIcon, BitcoinIcon, NewspaperIcon, SettingsIcon, PeopleIcon} from 'mdi-react';
 import ReactTooltip from 'react-tooltip';
 import {connect} from 'react-redux';
 import * as actions from '../../actions/index';
 import NotificationPopup from '../../components/NotificationPopup';
+import EccWalletIcon from '../../../resources/icons/ecc_wallet_icon_material.svg';
 
 class Sections extends Component {
   constructor (props) {
@@ -19,15 +20,13 @@ class Sections extends Component {
 
   render() {
     let numberOfNotifications = this.props.notifications.total;
-    const eccIcon = require('../../../resources/icons/ecc_wallet_redux.svg');
     if (this.props.updateAvailable) { numberOfNotifications += 1; }
 
     return (
       <div className="sections">
         <div>
           <NavLink to="/coin" activeClassName="active" data-tip={this.props.lang.default}>
-            <img style={{height:'50px', width: '50px'}} src={eccIcon} />
-          {/*<BitcoinIcon size={35} />*/}
+            <EccWalletIcon />
         </NavLink>
           {this.props.betaMode == true && (
             <NavLink to="/friends" activeClassName="active" data-tip={this.props.lang.social}>
