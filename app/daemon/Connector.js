@@ -13,6 +13,7 @@ import * as actions from '../actions/index';
 import ConnectorNews from './News';
 import ConnectorCoin from './Coin';
 import ConnectorMarket from './Market';
+import ConnectorMessaging from './Messaging';
 import Tools from '../utils/tools';
 import {downloadFile, moveFile} from '../utils/downloader';
 import {ipcRenderer} from "electron";
@@ -566,6 +567,7 @@ class Connector extends Component {
         <ConnectorCoin />
         <ConnectorNews />
         <ConnectorMarket />
+        <ConnectorMessaging />
       </div>
     );
   }

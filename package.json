@@ -46,7 +46,7 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "project-ecc",
+        "owner": "gl3nda85",
         "repo": "sapphire",
         "vPrefixedTagName": "true"
       }
@@ -89,7 +89,7 @@
       "buildResources": "resources"
     }
   },
-  "repository": "git+https://github.com/project-ecc/sapphire.git",
+  "repository": "git+https://github.com/gl3nda85/sapphire.git",
   "author": "Project ECC <dev@ecc.network>",
   "license": "MIT",
   "keywords": [
@@ -260,13 +260,16 @@
     "request-promise-native": "^1.0.7",
     "rss-to-json": "^1.0.5",
     "sequelize": "^4.44.3",
+    "simple-peer": "^9.6.0",
     "source-map-support": "^0.4.15",
     "sqlite3": "^4.1.0",
     "svg-react-loader": "^0.4.6",
     "tail": "^1.4.0",
     "tar": "^4.4.13",
     "twemoji-awesome": "^1.0.6",
-    "worker-rpc": "^0.2.0"
+    "uuid": "^3.3.3",
+    "worker-rpc": "^0.2.0",
+    "zeromq": "^5.1.1"
   },
   "devEngines": {
     "node": ">=8.x",
