@@ -10,7 +10,7 @@ class Messages extends React.Component {
   }
 
   render() {
-    // Loop through all the messages in the state and create a Message component
+    // Loop through all the messages in the state and create a Packet component
     const messages = this.props.messages.map((message, i) => {
       return (
         <Message

@@ -371,6 +371,14 @@ export default class Wallet {
     }
   }
 
+  async getAodvTable(){
+    try {
+      return await client.getaodvtable();
+    } catch (err) {
+      return err;
+    }
+  }
+
   async runWalletWithOptions(path, options){
     // options = options.join(" ");
     return new Promise(async (resolve, reject) => {
