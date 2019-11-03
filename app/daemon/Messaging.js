@@ -58,11 +58,10 @@ class Messaging extends Component {
 
   async pollMessageReceiver() {
     let lastPacket = await this.props.wallet.readLastPacket({protocolId: 1, protocolVersion: 1});
-    console.log(lastPacket)
-    let encodedPacket = lastPacket.toString('hex');
+    let encodedPacket = this.convert_object(lastPacket)
     console.log(encodedPacket)
     let decodedPacket = Object.assign(new Packet, JSON.parse(encodedPacket))
-    if(this.state.lastReceivedPacket == null || this.state.lastReceivedPacket.id() !== decodedPacket.id()){
+    if(this.state.lastReceivedPacket == null || this.state.lastReceivedPacket.id !== decodedPacket.id){
       this.setState({
         lastReceivedPacket: decodedPacket
       })
@@ -122,6 +121,28 @@ class Messaging extends Component {
       // TODO workout what i should do here?
     }
   }
+
+  unpack(hex) {
+    return new Buffer( hex, 'hex' ).toString();
+  };
+
+  convert_object(data) {
+    if (typeof data === 'string') {
+      return this.unpack(data);
+    } else if (Array.isArray( data )) {
+      return data.map(this.convert_object);
+    } else if (typeof data === 'object') {
+      let parsed = {};
+
+      Object.keys( data ).forEach( ( key, index, keys ) => {
+        parsed[ this.unpack(key) ] = this.convert_object( data[key]);
+      });
+
+      return parsed;
+    } else {
+      throw ("Oops! we don't support type: " + (typeof data));
+    }
+  };
 
   async sendMessageRequest(e, args) {
     let packet = args.packet;
