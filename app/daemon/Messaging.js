@@ -56,8 +56,9 @@ class Messaging extends Component {
 
   }
 
-  pollMessageReceiver() {
-    let lastPacket = this.props.wallet.readLastPacket({protocolId: 1, protocolVersion: 1});
+  async pollMessageReceiver() {
+    let lastPacket = await this.props.wallet.readLastPacket({protocolId: 1, protocolVersion: 1});
+    console.log(lastPacket)
     let encodedPacket = lastPacket.toString('hex');
     console.log(encodedPacket)
     let decodedPacket = Object.assign(new Packet, JSON.parse(encodedPacket))
