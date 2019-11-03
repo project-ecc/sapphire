@@ -58,7 +58,9 @@ class Messaging extends Component {
 
   pollMessageReceiver() {
     let lastPacket = this.props.wallet.readLastPacket({protocolId: 1, protocolVersion: 1});
-    let decodedPacket = Object.assign(new Packet, JSON.parse(lastPacket.toString('hex')))
+    let encodedPacket = lastPacket.toString('hex');
+    console.log(encodedPacket)
+    let decodedPacket = Object.assign(new Packet, JSON.parse(encodedPacket))
     if(this.state.lastReceivedPacket == null || this.state.lastReceivedPacket.id() !== decodedPacket.id()){
       this.setState({
         lastReceivedPacket: decodedPacket
@@ -97,18 +99,20 @@ class Messaging extends Component {
    */
 
   async sendMessageResponse(packet) {
-    this.sendPacket()
+    await this.sendPacket(packet)
   }
 
   async sendPacket(packet) {
-    console.log(packet)
+    let encodedPacket = JSON.stringify(packet)
+    console.log(encodedPacket)
     let data = await this.props.wallet.sendPacket(
       {
         key: packet.to,
         protocolId: packet.protocolId,
         protocolVersion: packet.protocolVersion,
-        message: JSON.stringify(packet)
+        message: encodedPacket
       })
+    console.log(data)
     if (data === null) {
       return true;
     } else {
