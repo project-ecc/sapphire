@@ -13,12 +13,14 @@ class Messaging extends Component {
   constructor(props){
     super(props)
     this.state = {
-      peerIntervalTimer: null
+      peerIntervalTimer: null,
+      packetIntervalTimer: null,
+      lastReceivedPacket: null
     };
     this.registerMessageProcessor = this.registerMessageProcessor.bind(this);
     this.sendMessageResponse = this.sendMessageResponse.bind(this);
     this.sendMessageRequest = this.sendMessageRequest.bind(this);
-    this.processIncomingMessage = this.processIncomingMessage.bind(this);
+    this.processIncomingPacket = this.processIncomingPacket.bind(this);
     this.getPeerInfo = this.getPeerInfo.bind(this);
     this.registerMessageProcessor();
     this.registerMessageReceiver();
@@ -43,7 +45,7 @@ class Messaging extends Component {
      });
 
       // process the last packet received
-      this.processIncomingMessage(packet)
+      this.processIncomingPacket(packet)
     });
 
     //message from sapphire to packup and send
@@ -52,6 +54,17 @@ class Messaging extends Component {
     //sapphire requesting to update peer Data
     event.on('updatePeerInfo', this.getPeerInfo)
 
+  }
+
+  pollMessageReceiver() {
+    let lastPacket = this.props.wallet.readLastPacket({protocolId: 1, protocolVersion: 1});
+    let decodedPacket = Object.assign(new Packet, JSON.parse(lastPacket.toString('hex')))
+    if(this.state.lastReceivedPacket == null || this.state.lastReceivedPacket.id() !== decodedPacket.id()){
+      this.setState({
+        lastReceivedPacket: decodedPacket
+      })
+      this.processIncomingPacket(decodedPacket)
+    }
   }
 
   registerMessageProcessor() {
@@ -64,10 +77,11 @@ class Messaging extends Component {
   }
 
 
-  processIncomingMessage (message) {
+  processIncomingPacket (message) {
     this.rpcProvider
       .rpc('processPacket',
-        message
+        message,
+        this.props.wallet
       )
       .then(async (response) => {
         if(response != null){
@@ -87,6 +101,7 @@ class Messaging extends Component {
   }
 
   async sendPacket(packet) {
+    console.log(packet)
     let data = await this.props.wallet.sendPacket(
       {
         key: packet.to,
@@ -97,6 +112,7 @@ class Messaging extends Component {
     if (data === null) {
       return true;
     } else {
+      console.log(data)
       //something went wrong
       // TODO workout what i should do here?
     }
@@ -104,23 +120,27 @@ class Messaging extends Component {
 
   async sendMessageRequest(e, args) {
     let packet = args.packet;
-    this.sendPacket(packet);
+    await this.sendPacket(packet);
   }
 
   startCheckingForPeerInfo(){
     this.setState({
-      peerIntervalTimer: setInterval(this.getPeerInfo.bind(this), 50000)
+      peerIntervalTimer: setInterval(this.getPeerInfo.bind(this), 50000),
+      packetIntervalTimer: setInterval(this.pollMessageReceiver.bind(this), 50000)
     });
   }
 
   async getPeerInfo(){
     //grab all peers from routing table
-    let peers = await this.props.wallet.getAodvTable();
+    let aodvResponse = await this.props.wallet.getAodvTable();
     let myId = await this.props.wallet.getRoutingPubKey();
-    for (let peer in peers){
+    let peers = aodvResponse.mapkeyid;
+    console.log(peers)
+    for (const [key, value] of Object.entries(peers)) {
+      console.log(key, value);
       //create packet to send for data request and send packet
-      let packet = new Packet(peer.id, myId, 'peerInfoRequest', null)
-      this.sendPacket(packet);
+      let packet = new Packet(key, myId, 'peerInfoRequest', null)
+      await this.sendPacket(packet);
     }
   }
 

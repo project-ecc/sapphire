@@ -13,11 +13,11 @@ rpcProvider.registerRpcHandler('processPacket',  processPacket);
 /**
  *
  * @param {Packet} packet
+ * @param {Wallet} walletInstance
  * @returns {Promise<void>}
  */
-async function processPacket(packet) {
-  let decodedPacket = Object.assign(new Packet, packet.toString('hex'))
-  return parseIncomingPacket(decodedPacket)
+async function processPacket(packet, walletInstance) {
+  return parseIncomingPacket(packet, walletInstance)
 }
 
 async function sendPacket () {

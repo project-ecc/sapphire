@@ -4,15 +4,19 @@ import PeerInfoResponse from "./ProtocolModels/Peers/Responses/PeerInfoResponse"
 /**
  *
  * @param {Packet} packet
+ * @param walletInstance
  * @returns {*}
  */
-export function parseIncomingPacket (packet){
+export function parseIncomingPacket (packet, walletInstance){
   switch (packet.type) {
     case "peerInfoRequest":
-      return new PeerInfoRequest().processData();
+      return new PeerInfoRequest(walletInstance, packet).processData();
+    case "peerInfoRequestProcessed":
       break;
     case "peerInfoResponse":
-      return new PeerInfoResponse(packet.content).processData();
+      return new PeerInfoResponse(walletInstance, packet).processData();
+    case "peerInfoResponseProcessed":
+      break;
     default:
       break;
   }
