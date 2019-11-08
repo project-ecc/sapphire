@@ -1,11 +1,9 @@
-import AbstractResponse from "../../AbstractResponse";
+class PeerInfoResponse {
 
-class PeerInfoResponse extends AbstractResponse {
-
-  constructor(walletInstance, incomingPacket) {
-    super();
+  constructor(walletInstance, incomingPacket, rpcProvider) {
     this.walletInstance = walletInstance;
     this.incomingPacket = incomingPacket;
+    this.rpcProvider = rpcProvider;
   }
 
   processData(){
@@ -16,7 +14,7 @@ class PeerInfoResponse extends AbstractResponse {
   }
 
   returnData (){
-
+    return true
   }
 }
 export default PeerInfoResponse;

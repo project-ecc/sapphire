@@ -48,7 +48,6 @@ class MessagingHome extends Component {
     // });
     this.loadUser()
 
-    setInterval(async () =>{this.checkForMessages()}, 3000);
   }
 
 
@@ -60,16 +59,6 @@ class MessagingHome extends Component {
         this.openContact(object)
       }
     })
-  }
-
-  async checkForMessages(){
-    let lastMessage = await this.props.wallet.readLastPacket({protocolId: 1,protocolVersion: 1})
-    if(lastMessage != null && lastMessage.length > 0){
-      console.log(lastMessage)
-      let messageObj = JSON.parse(lastMessage.toString('hex'))
-      this.addMessage(messageObj)
-    }
-    console.log(lastMessage)
   }
   openContact(contact) {
     this.setState({

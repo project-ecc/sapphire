@@ -1,14 +1,14 @@
-import AbstractRequest from "../../AbstractRequest";
+import UserPeer from './../Models/UserPeer'
 import Packet from "../../../Packet";
 const uuidv4 = require('uuid/v4')
-class PeerInfoRequest extends AbstractRequest {
+class PeerInfoRequest {
 
   /**
    *
    *
    */
   constructor(walletInstance, incomingPacket) {
-    super();
+    // super(walletInstance, incomingPacket);
     this.walletInstance = walletInstance;
     this.incomingPacket = incomingPacket;
   }
@@ -16,15 +16,19 @@ class PeerInfoRequest extends AbstractRequest {
   async processData() {
     this.myKey = await this.walletInstance.getRoutingPubKey()
     // get peer data from database. (my account)
-    this.peer = new UserPeer(
-      uuidv4(),
-      this.myKey,
-      "Dolaned",
-      '',
-      '',
-      '',
-      ''
-    );
+    try {
+      this.peer = new UserPeer(
+        uuidv4(),
+        this.myKey,
+        "Dolaned",
+        '',
+        '',
+        '',
+        ''
+      );
+    }catch (e) {
+      console.log(e)
+    }
 
     //package up into userPeer.js model
     return this.returnData()
@@ -33,7 +37,7 @@ class PeerInfoRequest extends AbstractRequest {
   returnData()
   {
     return new Packet(
-      this.incomingPacket.from,
+      this.incomingPacket._from,
       this.myKey,
       'peerInfoResponse',
       JSON.stringify(this.peer)

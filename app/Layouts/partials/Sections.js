@@ -28,11 +28,11 @@ class Sections extends Component {
           <NavLink to="/coin" activeClassName="active" data-tip={this.props.lang.default}>
             <EccWalletIcon />
         </NavLink>
-          {this.props.betaMode == true && (
+          {/*{this.props.betaMode == true && (*/}
             <NavLink to="/friends" activeClassName="active" data-tip={this.props.lang.social}>
               <PeopleIcon size={35} />
             </NavLink>
-          )}
+          {/*)}*/}
         </div>
         <div>
           <a data-tip={`${this.props.lang.notifications} ${numberOfNotifications > 0 ? `(${numberOfNotifications})` : ''}`} onClick={this.openNotifications} className={numberOfNotifications > 0 ? 'highlight' : ''}>

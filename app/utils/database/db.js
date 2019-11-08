@@ -34,13 +34,15 @@ const Transaction = require("./model/Transaction.model");
 const Address = require("./model/Address.model");
 const Contact = require("./model/Contact.model");
 const MyAccount = require("./model/MyAccount.model");
+const Peers = require("./model/Peers.model")
 //
 const models = {
   Address: Address(sequelize, Sequelize),
   Transaction: Transaction(sequelize, Sequelize),
   // AnsRecord: AnsRecord(sequelize, Sequelize),
   Contact: Contact(sequelize, Sequelize),
-  MyAccount: MyAccount(sequelize, Sequelize)
+  MyAccount: MyAccount(sequelize, Sequelize),
+  Peers: Peers(sequelize, Sequelize)
 };
 //
 // // Run `.associate` if it exists,

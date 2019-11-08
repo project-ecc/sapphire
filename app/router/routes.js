@@ -33,6 +33,10 @@ import SetupComplete from './../components/Setup/partials/Complete';
 //Social
 import MessagingHome from '../components/Social/MessagingHome'
 import MessagingNew from "../components/Social/MessagingNew";
+import Main from "../Layouts/Main";
+import MyAccountSidebar from "../Layouts/partials/MyAccountSidebar";
+import MyAccount from "../components/Social/MyAccount/MyAccount";
+import MyPeers from "../components/Social/MyAccount/MyPeers";
 
 export default [
   {
@@ -159,6 +163,22 @@ export default [
           {
             path: '/friends/:id',
             component: MessagingHome
+          }
+        ]
+      },
+      {
+        component: MainLayout,
+        sidebar: MyAccountSidebar,
+        path: '/myAccount',
+        routes: [
+          {
+            path: '/myAccount',
+            exact: true,
+            component: MyAccount
+          },
+          {
+            path: 'myAccount/peers',
+            component: MyPeers
           }
         ]
       }

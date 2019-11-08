@@ -1,5 +1,5 @@
 class AbstractRequest {
-  constructor() {
+  constructor(walletInstance, incomingPacket) {
     if (this.constructor === AbstractRequest) {
       throw new TypeError('Abstract class "AbstractResponse" cannot be instantiated directly.');
     }

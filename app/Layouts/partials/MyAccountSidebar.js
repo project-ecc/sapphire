@@ -12,30 +12,6 @@ class MessagingSidebar extends Component {
   constructor(props) {
     super(props);
 
-    this.isUserSelected = this.isUserSelected.bind(this)
-
-    this.state = {
-      users : [
-        {
-          name: "Dylan",
-          id: "1",
-          routingId: "AuFYObBTfSghNXvlNxzqUFeRWNqoL714i5BWWAgi0KqD"
-        }
-      ],
-    };
-  }
-
-  isUserSelected(match, location) {
-    if (!match) {
-      return false
-    }
-
-    const eventID = parseInt(match.params.id)
-    this.state.users.map((object, key) => {
-      if (object.id == eventID) {
-        return true
-      }
-    })
   }
 
   render() {
@@ -52,24 +28,20 @@ class MessagingSidebar extends Component {
                 <li>
                   <a className="subheading">{ this.props.lang.directMessages }</a>
                 </li>
-                { this.state.users.length > 0 ?
-                  this.state.users.map((object, key) => {
-                    return (
-                      <li key={key}>
-                        <NavLink   to={{
-                          pathname: "/friends/" + object.id}} isActive={this.isUserSelected} exact activeClassName="active">
-                          {object.name}
-                        </NavLink>
-                      </li>
-                    );
-                })
-                : (
-                    <li>
-                      <a className="subheading">{ this.props.lang.noFriendsAvailable }</a>
-                    </li>
-                )}
+                <li>
+                  <NavLink to="/myAccount/" className="bg-dark">
+                    <UserIcon size={35} />
+                    My Account
+                  </NavLink>
+                </li>
                 <li>
                   <a className="subheading">{ this.props.lang.groupMessaging }</a>
+                </li>
+                <li>
+                  <NavLink to="/myAccount/peers" className="bg-dark">
+                    <UserIcon size={35} />
+                    My Peers
+                  </NavLink>
                 </li>
               </ul>
             </div>
@@ -83,10 +55,10 @@ class MessagingSidebar extends Component {
                 </NavLink>
               </li>
               <li>
-              <NavLink to="/myAccount" className="bg-dark">
-                <UserIcon size={35} />
-                Me
-              </NavLink>
+                <NavLink to="/friends/newMessage" className="bg-dark">
+                  <UserIcon size={35} />
+                  Me
+                </NavLink>
               </li>
             </ul>
           </div>

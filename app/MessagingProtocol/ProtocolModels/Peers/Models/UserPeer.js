@@ -1,4 +1,13 @@
 class UserPeer {
+  constructor(peerId, networkKey, networkName, displayName,displayImage, publicPaymentAddress, privatePaymentAddress){
+    this._peerId = peerId;
+    this._networkKey = networkKey;
+    this._networkName = networkName;
+    this._displayName = displayName;
+    this._displayImage = displayImage;
+    this._publicPaymentAddress = publicPaymentAddress;
+    this._privatePaymentAddress = privatePaymentAddress;
+  }
   get peerId() {
     return this._peerId;
   }
@@ -54,14 +63,7 @@ class UserPeer {
   set privatePaymentAddress(value) {
     this._privatePaymentAddress = value;
   }
-  constructor(peerId, networkKey, networkName, displayName,displayImage, publicPaymentAddress, privatePaymentAddress){
-    this._peerId = peerId;
-    this._networkKey = networkKey;
-    this._networkName = networkName;
-    this._displayName = displayName;
-    this._displayImage = displayImage;
-    this._publicPaymentAddress = publicPaymentAddress;
-    this._privatePaymentAddress = privatePaymentAddress;
-  }
+
 }
+export default UserPeer;
 

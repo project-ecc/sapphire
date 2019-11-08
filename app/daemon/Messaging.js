@@ -7,6 +7,7 @@ const zmq = require('zeromq');
 const socket = zmq.socket('sub');
 import event from '../utils/eventhandler';
 import Packet from "../MessagingProtocol/Packet";
+import * as tools from "../utils/tools";
 
 class Messaging extends Component {
 
@@ -25,6 +26,14 @@ class Messaging extends Component {
     this.registerMessageProcessor();
     this.registerMessageReceiver();
     this.startCheckingForPeerInfo();
+    this.addToDataBaseListener();
+  }
+
+  addToDataBaseListener() {
+    this.rpcProvider.registerRpcHandler('addToDatabase', function() {
+
+    });
+
   }
 
   registerMessageReceiver(){
@@ -58,34 +67,50 @@ class Messaging extends Component {
 
   async pollMessageReceiver() {
     let lastPacket = await this.props.wallet.readLastPacket({protocolId: 1, protocolVersion: 1});
-    let encodedPacket = this.convert_object(lastPacket)
-    console.log(encodedPacket)
-    let decodedPacket = Object.assign(new Packet, JSON.parse(encodedPacket))
-    if(this.state.lastReceivedPacket == null || this.state.lastReceivedPacket.id !== decodedPacket.id){
-      this.setState({
-        lastReceivedPacket: decodedPacket
-      })
-      this.processIncomingPacket(decodedPacket)
+    console.log(lastPacket)
+    try {
+      let encodedPacket = this.convert_object(lastPacket)
+      console.log(encodedPacket)
+      let decodedPacket = Object.assign(new Packet, JSON.parse(encodedPacket))
+      if(this.state.lastReceivedPacket == null || this.state.lastReceivedPacket._id !== decodedPacket._id){
+        this.setState({
+          lastReceivedPacket: decodedPacket
+        })
+        this.processIncomingPacket(decodedPacket)
+      } else {
+        console.log('message already processed!')
+      }
+
+    } catch (e) {
+      console.log(e)
     }
   }
 
-  registerMessageProcessor() {
+  async registerMessageProcessor() {
     const worker = new MessagingWorker();
     this.rpcProvider = new RpcProvider(
       (message, transfer) => worker.postMessage(message, transfer)
     );
 
     worker.onmessage = e => this.rpcProvider.dispatch(e.data);
+
+    let creds = await tools.readRpcCredentials();
+
+    this.rpcProvider
+      .rpc('initWorkerWalletConnection', {username: creds.username, password: creds.password}
+      )
+      .then(async (response) => {
+        console.log(response)
+      });
   }
 
 
   processIncomingPacket (message) {
     this.rpcProvider
-      .rpc('processPacket',
-        message,
-        this.props.wallet
+      .rpc('processPacket', {packet: message}
       )
       .then(async (response) => {
+        console.log(response)
         if(response != null){
           await this.sendMessageResponse(response);
         }
@@ -104,12 +129,11 @@ class Messaging extends Component {
 
   async sendPacket(packet) {
     let encodedPacket = JSON.stringify(packet)
-    console.log(encodedPacket)
     let data = await this.props.wallet.sendPacket(
       {
-        key: packet.to,
-        protocolId: packet.protocolId,
-        protocolVersion: packet.protocolVersion,
+        key: packet._to,
+        protocolId: packet._protocolId,
+        protocolVersion: packet._protocolVersion,
         message: encodedPacket
       })
     console.log(data)
@@ -152,7 +176,7 @@ class Messaging extends Component {
   startCheckingForPeerInfo(){
     this.setState({
       peerIntervalTimer: setInterval(this.getPeerInfo.bind(this), 50000),
-      packetIntervalTimer: setInterval(this.pollMessageReceiver.bind(this), 50000)
+      packetIntervalTimer: setInterval(this.pollMessageReceiver.bind(this), 5000)
     });
   }
 

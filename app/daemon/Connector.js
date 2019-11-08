@@ -18,6 +18,7 @@ import Tools from '../utils/tools';
 import {downloadFile, moveFile} from '../utils/downloader';
 import {ipcRenderer} from "electron";
 import Toast from "../globals/Toast/Toast";
+import UpdateFailedModal from "../components/Settings/modals/UpdateFailedModal";
 
 const find = require('find-process');
 const request = require('request-promise-native');
@@ -567,7 +568,7 @@ class Connector extends Component {
         <ConnectorCoin />
         <ConnectorNews />
         <ConnectorMarket />
-        <ConnectorMessaging />
+        { this.props.daemonRunning && <ConnectorMessaging />}
       </div>
     );
   }
