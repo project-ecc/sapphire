@@ -50,7 +50,7 @@
   height: 55px;
   margin: 0 0;
   width: 100%;
-  box-shadow: 0 2px 4px -3px rgba(0, 0, 0, 0.74);
+  /*box-shadow: 0 2px 4px -3px rgba(0, 0, 0, 0.74);*/
   align-items:center;
 }
 
@@ -59,6 +59,7 @@
   font-size: 15px;
   @include themify($themes) {
     border-color:themed('bodyBackgroundColor');
+    color: themed('bodyParagraphColor');
   }
   margin: 0 0;
   width: 100%;
@@ -69,6 +70,12 @@
 .tableRowCustom:active{
 }
 
+.tableRowCustom:hover{
+  @include themify($themes) {
+    border-color:themed('cardItemSelectedBackgroundColor');
+    color: themed('sidebarSelectedItemColor');
+  }
+}
 .tableRowCustomTransactions{
   height: auto;
   align-items: center;
