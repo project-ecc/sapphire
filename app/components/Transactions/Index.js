@@ -344,7 +344,7 @@ class Index extends Component {
 
                         <div style={{ padding: '0 15px' }}>
                           <p className="transactionInfoTitle" style={{ margin: '5px 0px 0px 0px' }}><span className="desc2 small-header">{lang.transactionId}</span></p>
-                          <p style={{ margin: '0px 0px 5px 0px' }}><span onClick={(e) => this.onTransactionClick(t.transaction_id)} className="desc3 small-text selectableText">{t.transaction_id}</span></p>
+                          <p style={{ margin: '0px 0px 5px 0px' }}><span /*onClick={(e) => this.onTransactionClick(t.transaction_id)}*/ className="desc3 small-text selectableText">{t.transaction_id}</span></p>
                         </div>
                       </div>
                     </div>
