@@ -73,7 +73,6 @@ class Coin extends Component {
     this.listenToEvents();
 
     // TODO Fix handling promise returned from this function IMPORTANT!
-    db.sequelize.sync();
   }
 
   componentWillUnmount() {

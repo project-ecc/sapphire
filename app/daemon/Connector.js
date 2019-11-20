@@ -25,6 +25,7 @@ const request = require('request-promise-native');
 const fs = require('fs');
 const event = require('../utils/eventhandler');
 const settings = require('electron-settings');
+const db = require('../utils/database/db');
 //const zmq = require('zeromq');
 //const socket = zmq.socket('sub');
 
@@ -43,6 +44,11 @@ class Connector extends Component {
     };
 
     this.bindListeners();
+
+  }
+
+  async componentDidMount(){
+    await db.sequelize.sync();
   }
 
   componentWillUnmount() {

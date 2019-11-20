@@ -1,5 +1,6 @@
 import UserPeer from './../Models/UserPeer'
 import Packet from "../../../Packet";
+import DatabaseMessage from "../../../DatabaseMessage";
 const uuidv4 = require('uuid/v4')
 class PeerInfoRequest {
 
@@ -7,31 +8,39 @@ class PeerInfoRequest {
    *
    *
    */
-  constructor(walletInstance, incomingPacket) {
+  constructor(walletInstance, incomingPacket, rpcProvider) {
     // super(walletInstance, incomingPacket);
     this.walletInstance = walletInstance;
     this.incomingPacket = incomingPacket;
+    this.rpcProvider = rpcProvider;
   }
 
   async processData() {
     this.myKey = await this.walletInstance.getRoutingPubKey()
     // get peer data from database. (my account)
     try {
-      this.peer = new UserPeer(
-        uuidv4(),
-        this.myKey,
-        "Dolaned",
-        '',
-        '',
-        '',
-        ''
-      );
+      let message = new DatabaseMessage('get', 'Peer', null)
+      this.rpcProvider
+        .rpc('processDataBaseMessage', {packet: message}
+        )
+        .then(async (response) => {
+
+          this.peer = new UserPeer(
+            uuidv4(),
+            this.myKey,
+            "Dolaned",
+            '',
+            '',
+            '',
+            ''
+          );
+          //package up into userPeer.js model
+          return this.returnData()
+        });
+
     }catch (e) {
       console.log(e)
     }
-
-    //package up into userPeer.js model
-    return this.returnData()
   }
 
   returnData()

@@ -1,14 +1,9 @@
 module.exports = function (sequelize, DataTypes) {
-  return sequelize.define('Peers', {
+  let Peer =  sequelize.define('peers', {
     id: {
       allowNull: false,
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true
-    },
-    network_key: {
       type: DataTypes.STRING,
-      unique: true
+      primaryKey: true
     },
     network_name: {
       type: DataTypes.STRING
@@ -29,4 +24,20 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.INTEGER
     }
   });
+
+  // class association method
+  Peer.associate = function (models) {
+    Peer.belongsToMany(models.Conversation, {
+      through: models.ConversationUser,
+      foreignKey: 'peer_id',
+      as: 'conversations'
+    })
+    Peer.belongsToMany(models.Message, {
+      through: models.ConversationUser,
+      foreignKey: 'peer_id',
+      as: 'messages'
+    })
+  };
+
+  return Peer;
 };

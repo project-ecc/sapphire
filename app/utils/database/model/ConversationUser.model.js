@@ -1,15 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
   const ConversationUser = sequelize.define('conversation_users', {
-    user_id: {
-      allowNull: false,
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true
-    },
-    conversation_id: {
-      type: DataTypes.STRING,
-      unique: true
-    },
     network_key: {
       type: DataTypes.STRING
     },
@@ -30,8 +20,9 @@ module.exports = function (sequelize, DataTypes) {
 
   // class association method
   ConversationUser.associate = function (models) {
-    // ConversationUser.hasMany(models.Address);
-    // Contact.belongsTo(models.AnsRecord);
+    ConversationUser.belongsTo(models.Peer)
+    ConversationUser.hasMany(models.Message)
+    ConversationUser.hasOne(models.Conversation)
   };
 
   return ConversationUser;

@@ -35,8 +35,9 @@ module.exports = function (sequelize, DataTypes) {
 
   // class association method
   Conversation.associate = function (models) {
-    Conversation.hasMany(models.Contacts);
-    // Contact.belongsTo(models.AnsRecord);
+    Conversation.belongsTo(models.Peer)
+    Conversation.hasMany(models.ConversationUser)
+    Conversation.hasMany(models.Message)
   };
 
   return Conversation;

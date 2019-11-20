@@ -13,7 +13,6 @@ import {getSapphireDirectory} from "../platform.service";
 
 const Sequelize = require('sequelize'); // Sequelize is a constructor
 
-const app = require('electron').app;
 const sapphirePath = getSapphireDirectory();
 const sequelize = new Sequelize({
   // sqlite! now!
@@ -25,24 +24,33 @@ const sequelize = new Sequelize({
   // the storage engine for sqlite
   // - default ':memory:'
   storage: sapphirePath +'database.sqlite',
-  logging: false
+  logging: (...msg) => console.log(msg)
 });
 // pass your sequelize config here
-
+//core Models
 const Transaction = require("./model/Transaction.model");
-// const AnsRecord = require("./model/AnsRecord.model");
 const Address = require("./model/Address.model");
 const Contact = require("./model/Contact.model");
+
+//messaging models
 const MyAccount = require("./model/MyAccount.model");
-const Peers = require("./model/Peers.model")
+const Peer = require("./model/Peer.model")
+const Conversation = require('./model/Conversation.model')
+const ConversationUser = require('./model/ConversationUser.model')
+const Message = require('./model/Message.model')
 //
 const models = {
+  // core models
   Address: Address(sequelize, Sequelize),
   Transaction: Transaction(sequelize, Sequelize),
-  // AnsRecord: AnsRecord(sequelize, Sequelize),
   Contact: Contact(sequelize, Sequelize),
+
+  //messaging Models
   MyAccount: MyAccount(sequelize, Sequelize),
-  Peers: Peers(sequelize, Sequelize)
+  Peer: Peer(sequelize, Sequelize),
+  Conversation: Conversation(sequelize, Sequelize),
+  ConversationUser: ConversationUser(sequelize, Sequelize),
+  Message: Message(sequelize, Sequelize)
 };
 //
 // // Run `.associate` if it exists,

@@ -1,14 +1,9 @@
 module.exports = function (sequelize, DataTypes) {
-  return sequelize.define('MyAccount', {
+  let MyAccount =  sequelize.define('my_account', {
     id: {
       allowNull: false,
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true
-    },
-    network_key: {
       type: DataTypes.STRING,
-      unique: true
+      primaryKey: true
     },
     network_name: {
       type: DataTypes.STRING
@@ -26,4 +21,11 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.BLOB
     }
   });
+
+  // class association method
+  MyAccount.associate = function (models) {
+    MyAccount.belongsTo(models.Peer)
+  };
+
+  return MyAccount;
 };

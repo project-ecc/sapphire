@@ -8,6 +8,7 @@ const socket = zmq.socket('sub');
 import event from '../utils/eventhandler';
 import Packet from "../MessagingProtocol/Packet";
 import * as tools from "../utils/tools";
+import DatabaseMessage from "../MessagingProtocol/DatabaseMessage";
 
 class Messaging extends Component {
 
@@ -23,6 +24,7 @@ class Messaging extends Component {
     this.sendMessageRequest = this.sendMessageRequest.bind(this);
     this.processIncomingPacket = this.processIncomingPacket.bind(this);
     this.getPeerInfo = this.getPeerInfo.bind(this);
+    this.processDataBaseMessage = this.processDataBaseMessage.bind(this);
     this.registerMessageProcessor();
     this.registerMessageReceiver();
     this.startCheckingForPeerInfo();
@@ -67,10 +69,10 @@ class Messaging extends Component {
 
   async pollMessageReceiver() {
     let lastPacket = await this.props.wallet.readLastPacket({protocolId: 1, protocolVersion: 1});
-    console.log(lastPacket)
+    // console.log(lastPacket)
     try {
       let encodedPacket = this.convert_object(lastPacket)
-      console.log(encodedPacket)
+      // console.log(encodedPacket)
       let decodedPacket = Object.assign(new Packet, JSON.parse(encodedPacket))
       if(this.state.lastReceivedPacket == null || this.state.lastReceivedPacket._id !== decodedPacket._id){
         this.setState({
@@ -82,7 +84,7 @@ class Messaging extends Component {
       }
 
     } catch (e) {
-      console.log(e)
+      // console.log(e)
     }
   }
 
@@ -102,6 +104,8 @@ class Messaging extends Component {
       .then(async (response) => {
         console.log(response)
       });
+
+    this.rpcProvider.registerRpcHandler('processDataBaseMessage',  this.processDataBaseMessage);
   }
 
 
@@ -125,6 +129,52 @@ class Messaging extends Component {
 
   async sendMessageResponse(packet) {
     await this.sendPacket(packet)
+  }
+
+  /**
+   * process data base message from worker
+   * @param packet
+   * @returns {Promise<void>}
+   */
+  async processDataBaseMessage(packet) {
+    switch (packet.model){
+      case 'peer':
+        switch(packet.action) {
+          case 'create':
+            break;
+          case 'update':
+            break;
+          case 'delete':
+            break;
+          case 'get':
+            break;
+        }
+        break;
+      case 'message':
+        switch(packet.action) {
+          case 'create':
+            break;
+          case 'update':
+            break;
+          case 'delete':
+            break;
+          case 'get':
+            break;
+        }
+        break;
+      case 'conversation':
+        switch(packet.action) {
+          case 'create':
+            break;
+          case 'update':
+            break;
+          case 'delete':
+            break;
+          case 'get':
+            break;
+        }
+        break;
+    }
   }
 
   async sendPacket(packet) {
