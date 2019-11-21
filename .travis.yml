@@ -26,6 +26,7 @@ before_install:
 
 install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run package-linux; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run package-linux-32; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm run package-osx; fi
 
 script:

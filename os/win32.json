@@ -1,7 +1,10 @@
 {
-  "productName": "Sapphire",
-  "appId": "com.github.gl3nda85.sapphire",
+  "appId": "com.github.project-ecc.sapphire",
+  "artifactName": "${productName}-${os}${arch}-${version}.${ext}",
   "win": {
+    "publish": [
+      "github"
+    ],
     "target": [
       "nsis"
     ]

@@ -1,6 +1,6 @@
 {
-  "productName": "Sapphire",
   "appId": "com.github.project-ecc.sapphire",
+  "artifactName": "${productName}-${os}${arch}-${version}.${ext}",
   "files": [
     "./app/dist/",
     "./app/node_modules/",
@@ -13,9 +13,6 @@
     "target": [
       "deb",
       "AppImage"
-    ],
-    "publish" : [
-      "github"
     ]
   },
   "directories": {

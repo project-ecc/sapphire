@@ -1,6 +1,6 @@
 {
-  "productName": "Sapphire",
   "appId": "com.github.project-ecc.sapphire",
+  "artifactName": "${productName}-${os}${arch}-${version}.${ext}",
   "files": [
     "./app/dist/",
     "./app/node_modules/",
@@ -8,15 +8,6 @@
     "./app/main.prod.js",
     "./app/main.prod.js.map",
     "./package.json"
-  ],
-  "publish": [
-    {
-      "provider": "github",
-      "owner": "project-ecc",
-      "repo": "sapphire",
-      "vPrefixedTagName": "true",
-      "protocol": "https"
-    }
   ],
   "dmg": {
     "contents": [
