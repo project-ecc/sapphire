@@ -21,6 +21,10 @@ const publicPath = `http://localhost:${port}/dist`;
 const dll = path.resolve(process.cwd(), 'dll');
 const manifest = path.resolve(dll, 'vendor.json');
 
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
+
 /**
  * Warn if the DLL is not built
  */
@@ -157,9 +161,19 @@ export default merge.smart(baseConfig, {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         use: 'file-loader',
       },
+      //SVG Icons
+      {
+        test: /\.svg$/,
+        include: /resources(\/|\\)icons/, //(\/|\\) used to handle both linux and windows paths
+        exclude: /node_modules/,
+        use : {
+          loader: 'svg-react-loader'
+        }
+      },
       // SVG Font
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        exclude: /resources(\/|\\)icons/, //(\/|\\) used to handle both linux and windows paths
         use: {
           loader: 'url-loader',
           options: {
@@ -172,6 +186,16 @@ export default merge.smart(baseConfig, {
       {
         test: /\.(?:ico|gif|png|jpg|jpeg|webp)$/,
         use: 'url-loader',
+      },
+      {
+        test: /\.worker\.js$/,
+        use: {
+          loader: 'worker-loader',
+          options: {
+            fallback: true,
+            publicPath: publicPath
+          }
+        }
       }
     ]
   },
@@ -205,8 +229,11 @@ export default merge.smart(baseConfig, {
      * By default, use 'development' as NODE_ENV. This can be overriden with
      * 'staging', for example, by changing the ENV variables in the npm scripts
      */
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'development', // use 'development' unless process.env.NODE_ENV is defined
+      DEBUG: true,
+      UPDATE_SERVER_URL: 'https://api.github.com/repos/project-ecc/eccoin/releases',
+      HUMAN_READABLE_UPDATE_URL: 'https://github.com/project-ecc/eccoin/releases'
     }),
 
     new webpack.LoaderOptionsPlugin({

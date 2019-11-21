@@ -1,4 +1,4 @@
-@import "./themes.scss";
+@import "themes/themes.scss";
 
 .selectLanguageLanguageSelector{
   font-size: 22px;
@@ -7,8 +7,8 @@
 }
 
 .dropdownLanguageSelector {
-  @include themify($themes) { 
-    background-color: themed('bodyBackgroundColor');  
+  @include themify($themes) {
+    background-color: themed('bodyBackgroundColor');
     color: themed('bodyParagraphColor');
   }
   width: 300px;
@@ -21,18 +21,15 @@
   text-align: left
 }
 .dropdownLanguageSelector .selectLanguageSelector {
-    @include themify($themes) { 
-      border: themed('inputBorderBottom');  
-    }
     cursor: pointer;
     display: block;
     padding: 8px;
     background-color: transparent;
 }
 .dropdownLanguageSelector .selectLanguageSelector i {
-    @include themify($themes) { 
+    @include themify($themes) {
       color: themed('bodyParagraphColor');
-    } 
+    }
     font-size: 13px;
     cursor: pointer;
     transition: all .3s ease-in-out;
@@ -42,15 +39,15 @@
     //box-shadow: 0 0 4px rgb(204, 204, 204)
 }
 .dropdownLanguageSelector:active {
-    @include themify($themes) { 
-      background-color: themed('homePanelsBackgroundColor');
-    } 
+    @include themify($themes) {
+      background-color: themed('cardBackgroundColor');
+    }
 }
 .dropdownLanguageSelector.active:hover,
 .dropdownLanguageSelector.active {
-    @include themify($themes) { 
-      background-color: themed('homePanelsBackgroundColor');
-    } 
+    @include themify($themes) {
+      background-color: themed('cardBackgroundColor');
+    }
     //box-shadow: 0 0 4px rgb(204, 204, 204);
     border-radius: 5px 5px 0 0;
 }
@@ -58,11 +55,8 @@
     transform: rotate(180deg)
 }
 .dropdownLanguageSelector .dropdown-menuLanguageSelector {
-    @include themify($themes) { 
-      background-color: themed('bodyBackgroundColor');  
-      border-left: themed('inputBorderBottom');  
-      border-right: themed('inputBorderBottom');  
-      border-bottom: themed('inputBorderBottom');  
+    @include themify($themes) {
+      background-color: themed('bodyBackgroundColor');
     }
     position: absolute;
     width: 100%;
@@ -79,20 +73,20 @@
     padding: 10px;
     transition: all .2s ease-in-out;
     cursor: pointer
-} 
+}
 .dropdownLanguageSelector .dropdown-menuLanguageSelector {
     padding: 0;
     list-style: none
 }
 .dropdownLanguageSelector .dropdown-menuLanguageSelector li:hover {
-    @include themify($themes) { 
-      background-color: themed('homePanelsBackgroundColor');
-    } 
+    @include themify($themes) {
+      background-color: themed('cardBackgroundColor');
+    }
 }
 .dropdownLanguageSelector .dropdown-menuLanguageSelector li:active {
-    @include themify($themes) { 
-      background-color: themed('homePanelsBackgroundColor');
-    } 
+    @include themify($themes) {
+      background-color: themed('cardBackgroundColor');
+    }
 }
 
 i.fa.fa-chevron-down{
@@ -103,19 +97,19 @@ i.fa.fa-chevron-down{
 ::-webkit-scrollbar {
   width: 8px;
 }
- 
+
 ::-webkit-scrollbar-track {
-  @include themify($themes) { 
-    -webkit-box-shadow: themed('scrollbarTrackBoxShadow');
+  @include themify($themes) {
+    box-shadow: themed('scrollbarTrackBoxShadow');
     background-color: themed('scrollbarTrackBackgroundColor');
-  } 
+  }
   border-radius: 8px;
 }
- 
+
 ::-webkit-scrollbar-thumb {
-  @include themify($themes) { 
+  @include themify($themes) {
     background-color: themed('scrollbarThumbBackgroundColor');
-  } 
+  }
   border-radius: 10px;
 }
 

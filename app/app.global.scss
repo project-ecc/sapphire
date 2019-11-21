@@ -1,16 +1,16 @@
 @import "~font-awesome/css/font-awesome.css";
 @import "~bootstrap/dist/css/bootstrap.css";
-@import "~bootstrap-material-design/dist/css/bootstrap-material-design.css";
-@import "~bootstrap-material-design/dist/css/bootstrap-material-design.css";
-@import "~twemoji-awesome/dist/twemoji-awesome.min.css";
+
+@import "styles/themes/themes.scss";
 @import "./styles/Sidebar.scss";
+@import "./styles/Modal.scss";
 @import "./styles/Home.scss";
 @import "./styles/Transactions.scss";
 @import "./styles/Settings.scss";
-@import "./styles/Loading.scss";
+@import "styles/FullscreenModal";
 @import "./styles/initialSetup.scss";
 @import "./styles/LanguageSelector.scss";
-@import "./styles/ThemeSelector.css";
+@import "./styles/ThemeSelector.scss";
 @import "./styles/ImportWallet.scss";
 @import "./styles/ImportPrivateKey.scss";
 @import "./styles/EncryptWallet.scss";
@@ -21,10 +21,10 @@
 @import "./styles/TopBar.scss";
 @import "./styles/Table.scss";
 @import "./styles/ExportPrivateKeys.scss";
+@import "./globals/Toast/Toast.scss";
+@import "./styles/Radio.scss";
+@import "./styles/Animations.scss";
 @import "./styles/Messaging.scss";
-@import "./styles/FileStorage.scss";
-@import "./styles/themes.scss";
-@import "./styles/PopupBar.scss";
 
 @font-face {
   font-family: 'Muli';
@@ -50,13 +50,25 @@
   font-weight: 300;
 }
 
-html,
+body {
+  user-select: none;
+  cursor: default;
+  font-family: Muli, sans-serif;
+  font-weight: 600;
+}
 
-*:focus {
-  outline: none !important;
-  border-color: inherit;
-  -webkit-box-shadow: none !important;
-  box-shadow: none !important;
+a, .btn-link {
+  @include themify($themes) {
+	color: themed('hrefColor');
+  }
+}
+
+#root {
+  @include themify($themes) {
+	background-color: themed('bodyBackgroundColor');
+	color: themed('bodyParagraphColor');
+  }
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 p{
@@ -71,46 +83,17 @@ input::-webkit-inner-spin-button {
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 
-article{
-  position: absolute;
-  text-align: center;
-  width: 100%;
-  left: 0px;
+.flex-auto {
+  flex: 1 1 auto;
 }
 
-aside{
-  position: fixed;
-  z-index: 100;
-  text-align: center;
-}
-
-#main{
-  @include themify($themes) {
-    background: themed('bodyBackgroundColor');
-    background-color: themed('bodyBackgroundColor');
-    color: themed('bodyParagraphColor'); ;
-  }
-  width: 100%;
-  height: 100vh;
-  font-family: Muli, sans-serif;
-  font-size: 17px;
-  overflow: hidden;
-  font-weight: 600;
-
-  /* Disables text selection globally so it doesn't feel like a web page. Enable text for copying with selectableText style class */
-  user-select: none;
-  cursor: default;
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .ecc{
   @include themify($themes) {
     color: themed('eccTicker');
-  }
-}
-
-.textSelectable{
-  @include themify($themes) {
-    color: themed('tableHeaderDescription');
   }
 }
 
@@ -120,24 +103,9 @@ aside{
   }
 }
 
-#settings{
-  top: 40px;
-  width: 100%;
-}
-
-.EllipsisLoader{
-	display: inline-block;
+.EllipsisLoader {
+  display: inline-block;
   padding-left: 2px;
-}
-
-.changePassword{
-  height: 305px;
-}
-
-.genericPanel{
-  position: fixed;
-  top: 0px;
-  width: 100%;
 }
 
 .closingApplication{
@@ -165,29 +133,13 @@ aside{
   padding-top: 40px;
 }
 
-#exportPrivKey{
-  height: 300px;
-}
-
-
-.panel{
-  height: 100%;
-  width: 100%;
-  padding-left: 40px;
-  padding-right: 40px;
-  overflow-x: hidden;
-}
-
 .inputDiv{
   position: relative;
   margin: 0 auto;
   width: 100%;
 
   & p{
-	  @include themify($themes) {
-	    color: themed('inputPlaceHolderColor');
-	  }
-		width: 100%;
+	width: 100%;
     font-weight: bold;
     font-size: 15px;
     top: 5px;
@@ -197,13 +149,8 @@ aside{
   }
 
   & input{
-	  @include themify($themes) {
-	    color: themed('inputColor');
-	    border-bottom: themed('inputBorderBottom');
-	  }
-		font-size: 15px;
-    font-weight: 600;
-    background-color: transparent;
+	font-size: 1.1em;
+	background-color: transparent;
     border: none;
     text-align: center;
     position: relative;
@@ -232,25 +179,17 @@ aside{
 }
 
 .inputCustomHighlight{
-  @include themify($themes) {
-    border-bottom: themed('inputBorderBottomHighlight') !important;
-  }
 }
 
 .popupTitle{
   @include themify($themes) {
     color: themed('bodyParagraphColor');
-    font-weight: themed('popupTitleFontWeight');
   }
   font-size: 18px;
   padding-top: 20px;
 }
 
 .buttonUnlock{
-  @include themify($themes) {
-    background: themed('fullButtonBackground');
-    color: themed('fullButtonColor');
-  }
   position: absolute;
   height: 36px;
   width: 125px;
@@ -263,9 +202,6 @@ aside{
 }
 
 .buttonPrimary {
-  @include themify($themes) {
-    border: themed('buttonBorder');
-  }
   padding: 0px 30px;
   border-radius: 14px;
   font-size: 12px;
@@ -285,65 +221,6 @@ aside{
   }
 }
 
-.buttonPrimary:hover {
-  @include themify($themes) {
-    background-color: themed('buttonBorderedHoverColor');
-    color: themed('buttonBorderedFontColor');
-  }
-}
-
-#unlockPanel{
-  @include themify($themes) {
-    background-color: themed('popupBackgroundColor');
-    //box-shadow: themed('popupBoxShadow');
-  }
-  min-width: 535px;
-  z-index: 100;
-  position: fixed;
-  top:30%;
-  left: 50%;
-  margin-left: -267px;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-
-
-#wrongPassword{
-  @include themify($themes) {
-    color: themed('popupMessageText');
-  }
-  width: 100%;
-  visibility: hidden;
-  margin-bottom: 14px;
-  margin-top: 9px;
-  font-size: 16px;
-}
-
-.closeButtonPopup{
-  @include themify($themes) {
-    border: themed('popupCloseButtonBorder');
-  }
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  position: absolute;
-  right: 15px;
-  top: 15px;
-  cursor: pointer;
-}
-
-.closeButtonPopup:hover{
-  @include themify($themes) {
-    background-color: themed('popupCloseButtonHoverBackgroundColor');
-  }
-}
-
-.closeButtonPopup span{
-  top: -1px;
-  position: relative;
-}
-
 .normalWeight{
   font-weight: normal;
 }
@@ -353,21 +230,186 @@ aside{
   cursor: text;
 }
 
-.mancha {
-  @include themify($themes) {
-    background-color: themed('manchaBackgroundColor');
-  }
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  z-index: 11;
-  display: none;
-  opacity: 0;
+/* Dot */
+.dot {
+  margin: auto 10px;
+  display: inline-block;
+  border-radius: 100%;
 }
 
-@import "./styles/Send.scss";
-@import "./styles/UnlockWallet.scss";
-@import "./styles/Receive.scss";
-@import "./styles/CreateAddressPopup.scss";
+/* Gradients */
+.bg-gradient-blue {
+  background: linear-gradient(75deg, #0488E9, #0BA5EE);
+}
+
+.bg-gradient-light-blue {
+  background: linear-gradient(75deg, #08C9EA, #16CCC8);
+}
+
+.bg-gradient-purple {
+  background: linear-gradient(75deg, #8e069d, #5E0BED);
+}
+
+.bg-gradient-deep-purple {
+  background: linear-gradient(75deg, #570069, #5E00ED);
+}
+
+.bg-gradient-orange {
+  background: linear-gradient(75deg, #FD6F55, #FDA73A);
+}
+
+.bg-gradient-green {
+  background: linear-gradient(75deg, #9ECD5D, #6AB422);
+}
+
+.bg-gradient-red {
+  background: linear-gradient(75deg, #FF5055, #FF776D);
+}
+
+@keyframes blue-pulse
+{
+   0% {
+        box-shadow: 0 0 0 0px rgba(100, 100, 100, 0.5);
+   }
+   100% {
+        box-shadow: 0 0 0 15px rgba(100, 100, 100, 0);
+   }
+}
+
+@keyframes orange-pulse
+{
+   0% {
+        box-shadow: 0 0 0 0px rgba(150, 150, 20, 0.5);
+   }
+   100% {
+        box-shadow: 0 0 0 15px rgba(150, 180, 20, 0);
+   }
+}
+
+/* Standout cards */
+.standout {
+  &.bg-gradient-blue {
+	/*box-shadow: 0px 25px 40px -15px transparentize(#0488E9, 0.5);*/
+  /*box-shadow: 3px 3px 11px -5px transparentize(#0488E9, 0.1);*/
+  /*animation: blue-pulse 1s 2;*/
+  }
+
+  &.bg-gradient-light-blue {
+	/*box-shadow: 0px 25px 40px -15px transparentize(#08C9EA, 0.5);*/
+  }
+
+  &.bg-gradient-purple {
+	/*box-shadow: 0px 25px 40px -15px transparentize(#5E0BED, 0.5);*/
+  }
+
+  &.bg-gradient-deep-purple {
+	/*box-shadow: 0px 25px 40px -15px transparentize(#5E00ED, 0.5);*/
+  }
+
+  &.bg-gradient-orange {
+	/*box-shadow: 0px 25px 40px -15px transparentize(#FDA73A, 0.5);*/
+  /*box-shadow: 6px 6px 11px -5px transparentize(#FDA73A, 0.2);*/
+  animation: orange-pulse 1s 3;
+  }
+
+  &.bg-gradient-green {
+	/*box-shadow: 0px 25px 40px -15px transparentize(#6AB422, 0.5);*/
+  }
+
+  &.bg-gradient-red {
+	/*box-shadow: 0px 25px 40px -15px transparentize(#FF5055, 0.5);*/
+  }
+}
+
+.card-columns .standout {
+  margin-bottom: 1.25rem;
+}
+
+
+/* Style fixes */
+.btn.disabled, .btn:disabled {
+	opacity: 0.2;
+}
+
+.bg-dark {
+  @include themify($themes) {
+	background-color: themed('bodyBackgroundColor') !important;
+  }
+}
+
+
+/* Main page components */
+.header {
+  padding:0px 0px 20px 0px;
+  margin: 0 40px 30px 40px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  position: relative;
+  z-index: 1;
+
+  &.no-margin-bottom {
+	margin-bottom: 0px;
+  }
+
+  .title {
+	font-size: 30px;
+  }
+
+  svg {
+	position:relative;
+	top:-2px;
+	margin-right: 10px;
+  }
+
+  &:after {
+	content: '';
+	position: absolute;
+	height: 80px;
+	top:calc(100% + 1px);
+	right:0;
+	left:0;
+	pointer-events: none;
+	@include themify($themes) {
+	  background: themed('headerRadialBackground');
+	}
+  }
+}
+
+.body {
+  position: relative;
+  z-index: 2;
+  padding: 20px 40px 40px 40px;
+  flex: 1 1 auto;
+
+  &.no-padding {
+	padding: 0;
+  }
+
+  &.scrollable {
+	overflow: auto;
+  }
+}
+
+#mainPageWrapper {
+  position: relative;
+
+  & > div:first-child {
+	position:absolute;
+	top:0;
+	left:0;
+	bottom:0;
+	right:0;
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	overflow: auto;
+  }
+}
+
+.padding-titlebar {
+  padding-top: 40px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}

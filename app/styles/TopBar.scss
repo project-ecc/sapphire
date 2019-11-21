@@ -1,142 +1,126 @@
-@import "./themes.scss";
+@import "themes/themes.scss";
 
 #topBar{
-    @include themify($themes) { 
-        background-color: themed('topBarBackgroundColor');  
-    }
-    width: 100%;
-    height: 37px;
-    position: fixed;
-    top: 3px;
-    left: 3px;
-    right: 3px;
-    -webkit-app-region:drag;
-    z-index: 2000;
-    overflow-y: hidden;
-}
-
-#wrapperToBeAbleToResize{
-    @include themify($themes) { 
-        background-color: themed('topBarBackgroundColor');  
-    }
-    height: 40px;
-    width: 100%;
-    z-index: 101;
-    position: fixed;
-    overflow-y: hidden;
-}
-
-#appButtonsMac{
-    position: fixed;
-    z-index: 2;
-    height: 40px;
-    top: 5px;
-    left: 20px;
-    -webkit-app-region: no-drag;
-    transition: .3s left;
-}
-
-#appButtons img{
-  display: block;
-  margin: 0 auto;
-  position: relative;
-  top: 14px;
-}
-
-#appButtons{
+  width: 100%;
+  height: 35px;
   position: fixed;
-  right: 0px;
-  z-index: 2;
-  height: 40px;
   top: 0px;
-  -webkit-app-region: no-drag;
-  -webkit-user-select: none;
-}
+  left: 0px;
+  right: 0px;
+  -webkit-app-region: drag;
+  z-index: 2000;
+  overflow-y: hidden;
+  display: flex;
 
-#eccNewsIcon img{
-  width: 19px;
-  top: 13px;
-}
+  /* Styling for all buttons */
+  .buttons {
+	display: flex;
+	-webkit-app-region: no-drag;
+	-webkit-user-select: none;
 
-#topBarCustomTitle{
-  position: relative;
-  display: inline-block;
-  top: 3px;
-  color: #464b5a;
-  font-weight: 600;
-  font-size: 20px;
-  text-align: center;
-  visibility: hidden;
-  z-index: -1;
+	& > a {
+	  cursor: pointer;
+	  width: 42px;
+	  height: 100%;
+	  background-position: center;
+	  background-repeat: no-repeat;
+	  opacity: 1;
+	}
+  }
 
-}
+  /* MacOS styling */
+  &.darwin {
+	justify-content: flex-start;
 
-.topBarCustomTitleWin{
-  width: calc(100% - 242px);
-}
+	.buttons {
+	  flex-direction: row-reverse;
+	  margin-left: 10px;
 
-.topBarCustomTitleMac{
-  width: calc(100% - 212px);
-}
+	  & > a {
+		background-size: 12px;
+		width: 20px;
 
-.appButtonMac img{
-	width: 12px;
-}
+		&.close {
+		  background-image: url('~assets/images/mac-close-inactive.png');
+		}
 
-.appButtonMac{
-	display: inline-block;
-    width: 20px;
-    height: 100%;
-}
+		&.close:hover {
+		  background-image: url('~assets/images/mac-close-active.png');
+		}
 
-.functionIcon{
-  position: relative;
-  visibility: hidden;
-}
+		&.minimize {
+		  background-image: url('~assets/images/mac-minimize-inactive.png');
+		}
 
-.miniButton{
-  width: 10px;
-  position: fixed;
-  top: 5px;
-  left: -10px;
-  transition: left 0.3s;
-  cursor: pointer;
-  -webkit-app-region: no-drag;
-  -webkit-user-select: none;
-}
+		&.minimize:hover {
+		  background-image: url('~assets/images/mac-minimize-active.png');
+		}
 
-.appButton{
-  display: inline-block;
-  width: 42px;
-  height: 100%;
-  cursor: pointer;
-}
+		&.fullscreen {
+		  background-image: url('~assets/images/mac-fullscreen-inactive.png');
+		}
 
-.appButtons__notifications-total{
-    font-size: 12px;
-    font-size: 9px;
-    font-weight: 800;
-      @include themify($themes) { 
-        background-color: themed('topBarNotificationCounterBackgroundColor');  
-    }
-    padding: 0px 4px 0px 4px;
-    border-radius: 5px;
-}
+		&.fullscreen:hover {
+		  background-image: url('~assets/images/mac-fullscreen-active.png');
+		}
 
-.appButtons__notifications-counter-holder{
-  position: absolute;
-    left: 2px;
-    text-align: right;
-    top: 6px;
-    z-index: 1;
-}
+		&.maximize {
+		  display: none;
+		}
+	  }
+	}
+  }
 
-.appButtonHover{
-    @include themify($themes) { 
-        background-color: themed('topBarFunctionIconHover');  
-    }
-}
+  /* Windows styling */
+  &.win {
+	justify-content: flex-end;
 
-.appButtonClose:hover{
-  background-color: red;
+	.buttons {
+	  flex-direction: row;
+	  @include themify($themes) {
+		background-color: themed('bodyBackgroundColor');
+	  }
+
+	  & > a {
+		height: 35px;
+		@include themify($themes) {
+		  filter: themed('titlebarButtonFilter');
+		}
+
+		&.fullscreen {
+		  display: none;
+		}
+
+		&.close {
+		  background-image: url('~assets/images/close.png');
+		}
+
+		&.close:hover {
+		  background-color: #e20000;
+		  filter: invert(0%);
+		}
+
+		&.close:active {
+		  background-color: #910000;
+		  filter: invert(0%);
+		}
+
+		&.minimize {
+		  background-image: url('~assets/images/minimize.png');
+		}
+
+		&.maximize {
+		  background-image: url('~assets/images/maximize.png');
+		}
+
+		&.minimize:hover, &.maximize:hover {
+		  background-color:rgba(255,255,255,0.1);
+		}
+
+		&.minimize:active, &.maximize:active {
+		  background-color:rgba(255,255,255,0.2);
+		}
+	  }
+	}
+  }
 }

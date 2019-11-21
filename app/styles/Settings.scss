@@ -1,125 +1,11 @@
-@import "./themes.scss";
-
-#settings{
-	transition: padding-right 0.1s;
-}
+@import "themes/themes.scss";
 
 .updateApplicationMessage{
 	padding-top: 45px;
 	font-size: 16px;
 }
 
-#mainSettingsColorFix{
-	@include themify($themes) {
-		background-color: themed('settingsSidebarBackgroundColor');
-	}
-	width: 100%;
-	height: 100vh;
-}
-
-#sidebarSettings{
-	@include themify($themes) {
-		background-color: themed('settingsSidebarBackgroundColor');
-		box-shadow: themed('settingsSidebarBoxShadow');
-	}
-	width: 220px;
-	float: left;
-	height: 100%;
-	padding-left: 10px;
-}
-
-.subSettings{
-	@include themify($themes) {
-		background-color: themed('settingsRightPanelBackgroundColor');
-	}
-	width: 100%;
-	max-width: 580px;
-	height: 100%;
-	float: left;
-	position: relative;
-	left: 30px;
-	margin-top: 65px;
-}
-
-#settingsContainer{
-	@include themify($themes) {
-		background-color: themed('settingsRightPanelBackgroundColor');
-	}
-	width: 100%;
-	max-width: 800px;
-	height: 100%;
-	margin: 0 auto;
-	top: 40px;
-    position: relative;
-}
-
-#brighter{
-	@include themify($themes) {
-		background-color: themed('settingsSidebarBackgroundColor');
-	}
-	height: 100vh;
-	width: 50%;
-	position: fixed;
-	left: 0px;
-}
-
-#darker{
-	@include themify($themes) {
-		background-color: themed('settingsRightPanelBackgroundColor');
-	}
-	height: 100vh;
-	width: 50%;
-	position: fixed;
-	left: 50%;
-}
-
-
-#sidebarTitle{
-	@include themify($themes) {
-		color: themed('settingsTitleColor');
-	}
-	font-size: 14px;
-	font-weight: 800;
-	margin-top: 50px;
-}
-
-.settingsSidebarItem{
-	@include themify($themes) {
-		color: themed('settingsSubTitleColor');
-	}
-    margin-top: 10px;
-    cursor: pointer;
-   	padding-bottom: 5px;
-    padding-top: 5px;
-    margin-right: 30px;
-    position: relative;
-}
-
-#sidebarSettings p{
-	position: relative;
-	left: 10px;
-}
-
-.settingsSidebarItem:hover{
-	@include themify($themes) {
-		background-color: themed('settinsSubTitleActiveBackgroundColor');
-		color: themed('settingsSubTitleActiveColor');
-	}
-    border-radius: 7px;
-}
-
-.selectedSideBarItem{
-	@include themify($themes) {
-		background-color: themed('settinsSubTitleSelectedBackgroundColor') !important;
-		color: themed('settingsSubTitleActiveColor');
-	}
-    border-radius: 7px;
-}
-
 .settingsToggle{
-	@include themify($themes) {
-		border-bottom: themed('settingsItemBorderBottom');
-	}
 	padding-bottom: 20px;
 	padding-top: 20px;
 }
@@ -135,9 +21,6 @@
 }
 
 #applicationVersion{
-	@include themify($themes) {
-		color: themed('settingsTitleColor');
-	}
 	font-size: 14px;
 	font-weight: 700;
 	padding-top: 15px;
@@ -153,9 +36,6 @@
 }
 
 #updateUnavailable{
-	@include themify($themes) {
-		color: themed('settingsTitleColor');
-	}
 	font-size: 16px;
 	font-weight: 600;
 }
@@ -174,14 +54,6 @@
 	}
 	font-size: 18px;
 	line-height:25px;
-	margin-top: 10px;
-	text-align: justify;
-}
-
-.settingsButtonBackup{
-	padding: 6px 9px;
-	font-size: 15px;
-	bottom: auto;
 }
 
 .walletBackupOptions{
@@ -192,7 +64,7 @@
 
 #languageRectangle{
 	@include themify($themes) {
-		background-color: themed('settingsHelTranslateBackgroundColor');
+		background-color: themed('cardDarkBackgroundColor');
 	}
 	padding-left: 15px;
     padding-right: 15px;
@@ -200,9 +72,6 @@
 }
 
 #languageHelp{
-	@include themify($themes) {
-		color: themed('settingsHelpTranslateTitleColor');
-	}
 	font-size: 15px;
 	font-weight: 700;
 	padding-bottom: 10px;
@@ -231,17 +100,18 @@
 	width: 100%;
 	margin-top: 30px;
 	margin-left: 10px;
-}
 
-#socialIcons img{
-	margin-right: 15px;
-	cursor: pointer;
+  	& > .mdi-icon {
+	  margin-right: 15px;
+	  cursor: pointer;
+
+	  &:hover {
+		color: #fff;
+	  }
+	}
 }
 
 .settingsToggleSubText{
-	@include themify($themes) {
-		color: themed('settingsToggleDescriptionColor') !important;
-	}
 	font-size: 14px;
     padding-top: 13px;
     font-weight: 700;
@@ -288,15 +158,12 @@
 
 .console_body{
   position: relative;
-  padding: 25px;
-  min-height: 50vh;
 }
 
 .console_wrapper{
-  height: 48vh;
-  border: 2px solid #efefef;
-  padding-top: 15px;
-  overflow-y: scroll;
+  word-wrap:break-word;
+  font-family: Courier, sans-serif;
+  font-weight: 500;
 }
 
 .hours_list{
@@ -309,6 +176,38 @@
 
 .text_green{
   color: #a1be5a;
+}
+
+#consoleModal {
+  //top: 40px;
+  max-width: 100vw;
+  max-height: calc(100vh);
+  width: 100vw;
+  height: calc(100vh);
+  margin: 0;
+
+  & > .modal-content {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+
+	& > .modal-header {
+	  flex: 0 0 65px;
+
+	  & > .close {
+		margin-top: 10px;
+	  }
+	}
+
+	& > .modal-body {
+	  flex: 1 1 auto;
+	  overflow: auto;
+	}
+
+	& > .modal-footer {
+	  flex: 0 0 50px;
+	}
+  }
 }
 
 .console_buttons{

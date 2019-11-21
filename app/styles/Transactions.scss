@@ -1,4 +1,4 @@
-@import "./styles/themes.scss";
+@import "./themes/themes.scss";
 
 .transactionInfoTitle{
   @include themify($themes) {
@@ -20,45 +20,9 @@
   }
 }
 
-.icon-action:active{
-      @include themify($themes) {
-       color: themed('buttonBorderedFontColor');
-    }
-}
-
-#transactionAddresses{
-  @include themify($themes) {
-    background-color: themed('homePanelsBackgroundColor');
-    box-shadow: themed('mainElementBoxShadow');
-  }
-}
-
 .transactions {
   padding-top: 5px;
   position: relative;
-}
-
-.buttonTransaction{
-  @include themify($themes) {
-    border: themed('buttonBorder');
-  }
-  position: relative;
-  bottom: -36px;
-  display: inline-block;
-  padding: 6px 0px;
-  min-width: 110px;
-  border-radius: 30px;
-  text-align: center;
-  cursor: pointer;
-  margin: 0 auto;
-  font-weight: 600;
-}
-
-.buttonTransaction:hover{
-  @include themify($themes) {
-    background-color: themed('buttonBorderedHoverColor');
-    color: themed('buttonBorderedFontColor');
-  }
 }
 
 .columnPaddingFixAns{
@@ -68,7 +32,6 @@
 .dropdownFilterSelector {
   @include themify($themes) {
     color: themed('bodyParagraphColor');
-    background-color: themed('transactionsFilterBackgroundColor');
   }
   width: 300px;
   display: inline-block;
@@ -106,10 +69,6 @@
 }
 
 .dropdownFilterSelector .dropdown-menuFilterSelector {
-    @include themify($themes) {
-      background-color: themed('transactionsFilterBackgroundColor');
-      border: themed('transactionsFilterBorder');
-    }
     position: absolute;
     width: 100%;
     left: 0;
@@ -136,13 +95,13 @@
 
 .dropdownFilterSelector .dropdown-menuFilterSelector li:hover {
     @include themify($themes) {
-      background-color: themed('homePanelsBackgroundColor');
+      background-color: themed('cardBackgroundColor');
     }
 }
 
 .dropdownFilterSelector .dropdown-menuFilterSelector li:active {
     @include themify($themes) {
-      background-color: themed('homePanelsBackgroundColor');
+      background-color: themed('cardBackgroundColor');
     }
 }
 
@@ -195,7 +154,6 @@ i.fa.fa-chevron-down{
   /*margin-top:6px;*/
 
    @include themify($themes) {
-      background-color: themed('tableExtraBackgroundColor');
       color: themed('bodyParagraphColor');
     }
 
@@ -235,9 +193,9 @@ i.fa.fa-chevron-down{
 .container-1 input#search:hover, .container-1 input#search:focus, .container-1 input#search:active{
   outline:none;
  /* background: #ffffff;*/
-  
+
    @include themify($themes) {
       color: themed('dropdownFilterSelector');
     }
-    
+
 }

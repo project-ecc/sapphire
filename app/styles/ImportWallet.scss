@@ -1,26 +1,4 @@
-@import "./themes.scss";
-
-#importButton{
-    @include themify($themes) { 
-        border: themed('settingsItemBorderBottom');
-    }
-    width: max-content;
-    padding: 6px 55px;
-    font-size: 17px;
-    font-weight: 400;
-    text-align: center;
-    margin: 0 auto;
-    cursor: pointer;
-    border-radius: 25px;
-}
-
-.subTitle{
-    font-size: 22px;
-    padding-top: 40px;
-    padding-bottom: 40px;
-    width: 600px;
-    margin: 0 auto;
-}
+@import "themes/themes.scss";
 
 #importing{
 	visibility: hidden;

@@ -1,122 +1,203 @@
-@import "./themes.scss";
+@import "themes/themes.scss";
 
-.sidebar {
-  @include themify($themes) { 
-    background-color: themed('sidebarBackgroundColor'); 
-    box-shadow: themed('sidebarBoxShadow'); 
-  }
-  width: 224px;
-  position: fixed;
-  left: 0;
+#page {
+  display: flex;
   height: 100vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  font-weight: normal;
-  transition: left 0.3s;
-  z-index: 5;
-  margin-top: 40px;
-}
 
-.sidebarlist {
-  margin-top: 25px;
-  list-style: none;
-  padding-left: 0;
-  text-align: left;
-}
-
-.arrowMenu {
-  @include themify($themes) { 
-    border: themed('sidebarArrowBorder'); 
-    border-width: 3px 3px 0 0;
-  }
-  height: 9px; 
-  width: 9px;
-  transform: rotate(135deg);
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  transition: all 0.3s;
-}
-
-ul.sidebar-menu {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  list-style-type: none;
-  margin-top: 50px;
-  transition: margin-top 0.3s;
-}
-.sidebar-menu li a span {
-  margin-right: 20px;
-  position: relative;
-  width: auto;
-  left: auto;
-}
-.sidebar-menu li a  {
-  @include themify($themes) { 
-    color: themed('sidebarItemColor'); 
-  }
-  padding: 13px 25px;
-  display: block;
-  text-decoration: none;
-  cursor: pointer;
-}
-li.have-children ul {
-  padding: 0px;
-} 
-li.have-children ul li a {
-  @include themify($themes) { 
-    background-color: themed('sidebarSubOptionRectangleBackgroundColor'); 
-  }
-  padding-left: 74px;
-} 
-
-li.have-children, li {
-  position: relative;
-}
-
-li.active.have-children span::after {
-  -moz-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  -webkit-transform: rotate(90deg);
-  transform: rotate(90deg);
-}
-.sidebar-menu .have-children > ul {
-    display: none;
-}
-
-.arrow {
-  position: absolute;
-  top: 50%;
-  width: 2rem;
-  height: 2rem;
-  background: transparent;
-  border-top: .4rem solid black;
-  border-right: .4rem solid black;
-  transition: all 200ms ease;
-  
-  &.left {
-    left: 0;
-    transform: translate3d(0,-50%,0) rotate(-135deg);
+  & > div:nth-child(2) {
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: row;
+	height: 100vh;
   }
 
-  &.right {
-    right: 0;
-    transform: translate3d(0,-50%,0) rotate(45deg);
+  /* Sections */
+  .sections {
+	@include themify($themes) {
+	  background-color: themed('sectionsBackground');
+	}
+	flex: 0 0 60px;
+	height: 100vh;
+	overflow-y: auto;
+	overflow-x: visible;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding-top:40px;
+	transition: background-color 0.25s ease;
+
+	& > div:nth-child(1) {
+	  a {
+		margin-bottom: 20px;
+	  }
+	}
+
+	& > div:nth-child(2) {
+	  padding-bottom:10px;
+	  a {
+		margin-top: 20px;
+	  }
+	}
+
+	a {
+	  @include themify($themes) {
+		color: themed('sectionsHrefColor');
+	  }
+	  display:block;
+	  text-align:center;
+	  position:relative;
+	  padding: 5px 0px;
+	  cursor: pointer;
+
+	  &:before {
+		content: '';
+		position: absolute;
+		border-radius: 0px 3px 3px 0px;
+		left:0;
+		top:0;
+		bottom:0;
+		background-color:transparent;
+		width:0px;
+		transition: background-color 0.25s ease, width 0.5s ease;
+	  }
+
+	  &:hover {
+		@include themify($themes) {
+		  color: themed('sectionsHrefHoverColor');
+		}
+	  }
+
+	  &.highlight {
+		color: #cba051;
+	  }
+
+	  &.active {
+		@include themify($themes) {
+		  color: themed('sectionsActiveColor') !important;
+		}
+
+		&:before {
+		  width: 3px;
+		  @include themify($themes) {
+			background-color: themed('sectionsActiveColor');
+		  }
+		}
+	  }
+	}
   }
-  
-  &:hover {
-    border-top: .4rem solid orange;
-    border-right: .4rem solid orange;
-    box-shadow: .2rem -.2rem 0 black;
 
-    &.left {
-      left: -.2rem;
-    }
+  /* Sidebar */
+  .sidebar {
+	@include themify($themes) {
+	  background-color: themed('sidebarBackgroundColor');
+	}
+	box-shadow: 1px 1px 8px 0px rgba(0, 0, 0, 0.2);
+	height: 100vh;
+	overflow-y: auto;
+	overflow-x: hidden;
+	font-weight: normal;
+	transition: transform 0.3s, background-color 0.25s ease, color 0.25s ease;
+	transform: translateX(0px);
+	z-index: 5;
+	flex: 0 0 225px;
 
-    &.right {
-      right: -.2rem;
-    }
+	&.hide {
+	  transform: translateX(-100%);
+	  flex: 0;
+	}
+
+	/* Navigation items */
+	.menu {
+	  margin-top: 50px;
+
+	  /* Each group of nav items */
+	  & > ul {
+		margin: 0 0 40px 0;
+		padding: 0;
+		list-style: none;
+
+		&:last-child {
+		  margin-bottom: 0px;
+		}
+
+		/* (Sub)heading for group */
+		.subheading {
+		  opacity: 0.6;
+		  padding: 5px 25px;
+		  text-transform: uppercase;
+		  font-weight: 800;
+		  font-size:0.8em;
+		}
+
+		/* Link items */
+		a {
+		  @include themify($themes) {
+			color: themed('sidebarItemColor');
+		  }
+		  display: block;
+		  padding: 10px 50px 10px 25px;
+		  position: relative;
+		  transition: background-color 0.3s ease;
+		  text-decoration: none;
+		  cursor: pointer;
+
+		  svg, img {
+			position: absolute;
+			right:25px;
+			top:0;
+			bottom:0;
+			margin: auto;
+
+			&.left-align {
+			  position: relative;
+			  right:0;
+			  top:-1px;
+			  margin-right: 10px;
+			}
+		  }
+		}
+
+		a:not(.subheading):hover, a.active {
+		  @include themify($themes) {
+			background-color: themed('sidebarHoverBackgroundColor');
+			color: themed('sidebarSelectedItemColor') !important;
+		  }
+		}
+	  }
+	}
+
+	.social{
+	  width: 100%;
+	  margin-top: 30px;
+	  margin-left: 10px;
+
+	  & > .mdi-icon {
+		margin-right: 15px;
+		cursor: pointer;
+
+		&:hover {
+		  color: #fff;
+		}
+	  }
+	}
+  }
+
+  .right-sidebar {
+	@include themify($themes) {
+	  background-color: themed('rightSidebarBackgroundColor');
+	}
+	flex: 0 0 280px;
+	padding-top:40px;
+  }
+
+  .container-fluid {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+
+	&.with-right {
+	  padding-right: 0px;
+	}
   }
 }
 
@@ -128,21 +209,12 @@ li.active.have-children span::after {
 }
 
 .connections {
-  @include themify($themes) { 
-    color: themed('bodyParagraphColor'); 
+  @include themify($themes) {
+    color: themed('bodyParagraphColor');
   }
-  position: absolute; 
-  bottom: 50px; 
-  width: 100%;
-  z-index: 10;
+  padding: 50px 10px 20px 10px;
   text-align: center;
   font-size: 0.8em;
-}
-
-.sidebarItemSelected{
-  @include themify($themes) { 
-    color: themed('sidebarSelectedItemColor') !important; 
-  }
 }
 
 .connections p {
@@ -165,42 +237,35 @@ li.active.have-children span::after {
   left: 45px;
 }
 
-.progress {
-    @include themify($themes) { 
-      background-color: themed('sidebarProgressBarFirstBackgroundColor'); 
-    }
-    margin: 10px;
-    height: 6px;
-    border-radius: 5px;
-    overflow: visible;
-    width: 162px;
-    margin: 0 auto;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.bar {
-    @include themify($themes) { 
-      background-color: themed('sidebarProgressBarBackgroundColor'); 
-      box-shadow: themed('sidebarProgressBarBoxShadow');
-    }
-    height: 6px;
-    border-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-
-
-@media screen and (max-height: 730px) {
-    .userimage{
-      opacity: 0;
-    }
-
-    ul.sidebar-menu{
-      margin-top: -150px;
-    }
-}
-
 .fixLink{
   padding: 0 0 !important;
   text-decoration: none !important;
+}
+
+.loader {
+	@include themify($themes) {
+		background-color: themed('sidebarBackgroundColor');
+	    box-shadow: themed('cardBoxShadow');
+	}
+	margin: 15px;
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	z-index: 1000000;
+	padding: 5px;
+	border-radius: 10px;
+}
+.loader-content {
+	display: flex;
+	flex-wrap: nowrap;
+	align-items:center;
+	padding: 8px;
+}
+
+.loader-message {
+	/*padding: 10px;*/ 
+	margin:0 20px 0 10px;
+}
+.loader-message > p {
+	font-weight: lighter
 }

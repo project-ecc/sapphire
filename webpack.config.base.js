@@ -18,7 +18,7 @@ fs.readdirSync('node_modules')
 export default {
 
 
-  externals: [ nodeModules],
+  externals:[nodeModules],
 
   module: {
     rules: [{
@@ -37,7 +37,8 @@ export default {
     path: path.join(__dirname, 'app'),
     filename: 'bundle.js',
     // https://github.com/webpack/webpack/issues/1114
-    libraryTarget: 'commonjs2'
+    libraryTarget: 'commonjs2',
+    globalObject: 'this',
   },
 
   /**
@@ -49,6 +50,9 @@ export default {
       path.join(__dirname, 'app'),
       'node_modules',
     ],
+    alias: {
+      assets: path.join(__dirname, 'resources')
+    }
   },
 
   plugins: [

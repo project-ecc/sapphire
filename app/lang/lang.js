@@ -16,7 +16,6 @@ import lang_zh_cn from './zh_cn';
 import lang_sl from './sl';
 
 
-
 export function traduction() {
 	const settings = require('electron-settings');
 

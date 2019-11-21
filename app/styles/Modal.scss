@@ -1,0 +1,49 @@
+@import "themes/themes.scss";
+
+.modal-backdrop.show {
+  opacity: 0.8 !important;
+}
+
+.modal.fade .modal-dialog {
+  transform: translate(0, -25%) scale(0.9);
+}
+
+.modal.show .modal-dialog {
+  transform: translate(0, 0) scale(1);
+}
+
+.modal-dialog {
+  margin-top: 2.75rem;
+
+  & > .modal-content {
+	@include themify($themes) {
+	  background-color: themed('modalBackgroundColor');
+	  box-shadow: themed('modalBoxShadow');
+	  color: themed('bodyParagraphColor');
+	}
+	border-radius: 0px;
+	padding: 10px;
+	border: 1px solid rgba(255,255,255,0.1);
+
+	& > .modal-header {
+	  border-bottom: none;
+
+	  .modal-title {
+		font-weight: 800;
+		font-size: 1.5em;
+	  }
+
+	  .close {
+		@include themify($themes) {
+		  color: themed('bodyParagraphColor');
+		}
+		text-shadow: none;
+		font-size: 1.75rem;
+	  }
+	}
+
+	& > .modal-footer {
+	  border-top: none;
+	}
+  }
+}

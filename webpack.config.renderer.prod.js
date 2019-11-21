@@ -116,21 +116,41 @@ export default merge.smart(baseConfig, {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         use: 'file-loader',
       },
-      // SVG Font
-      {
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            mimetype: 'image/svg+xml',
-          }
-        }
-      },
+       //SVG Icons
+       {
+         test: /\.svg$/,
+         include: /resources(\/|\\)icons/, //(\/|\\) used to handle both linux and windows paths
+         exclude: /node_modules/,
+         use : {
+           loader: 'svg-react-loader'
+         }
+       },
+       // SVG Font
+       {
+         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+         exclude: /resources(\/|\\)icons/, //(\/|\\) used to handle both linux and windows paths
+         use: {
+           loader: 'url-loader',
+           options: {
+             limit: 10000,
+             mimetype: 'image/svg+xml',
+           }
+         }
+       },
       // Common Image Formats
       {
         test: /\.(?:ico|gif|png|jpg|jpeg|webp)$/,
         use: 'url-loader',
+      },
+      {
+        test: /\.worker\.js$/,
+        use: {
+          loader: 'worker-loader',
+          options: {
+            fallback: true,
+            inline:true
+          }
+        }
       }
     ]
   },
@@ -145,8 +165,12 @@ export default merge.smart(baseConfig, {
      * NODE_ENV should be production so that modules do not perform certain
      * development checks
      */
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production')
+
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'production', // use 'development' unless process.env.NODE_ENV is defined
+      DEBUG: false,
+      UPDATE_SERVER_URL: 'https://api.github.com/repos/project-ecc/eccoin/releases',
+      HUMAN_READABLE_UPDATE_URL: 'https://github.com/project-ecc/eccoin/releases'
     }),
 
     /**

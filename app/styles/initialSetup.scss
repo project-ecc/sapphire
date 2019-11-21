@@ -1,19 +1,14 @@
-@import "./themes.scss";
+@import "themes/themes.scss";
 
 #mainPanel{
-  position: fixed;
-  top: 15%;
   width: 100%;
   text-align: center;
-  z-index: 10000;
-}
-
-.content{
-  height: 330px;
+  margin: auto;
 }
 
 #welcome{
   font-size: 30px;
+  font-weight: 200;
 }
 
 #buttons{
@@ -22,10 +17,6 @@
 	justify-content: center;
 	align-items: center;
 	top: 50px;
-}
-
-.button{
-  cursor: pointer;
 }
 
 .arrowRight{
@@ -51,26 +42,4 @@
 
 #logo{
   margin-bottom: 20px;
-}
-
-polyline, circle{
-  transition: all 0.3s;
-}
-
-#buttons polyline, #buttons circle{
-    @include themify($themes) { 
-      stroke: themed('initialSetupButtonActiveStrokeColor');  
-    }
-}
-
-.intialSetupButtonInactive{
-   @include themify($themes) { 
-      stroke: themed('initialSetupButtonStrokeColor') !important;  
-    }
-}
-
-@media screen and (max-height: 628px) {
-    #mainPanel {
-        top: 10%;
-    }
 }

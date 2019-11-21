@@ -1,605 +1,84 @@
-@import "./themes.scss";
+@import "themes/themes.scss";
 
-#messagingContainer{
-	height: 100%;
-	width: 100%;
-	padding-left: 20px;
-	padding-right: 20px;
-	overflow: hidden;
-	position: relative;
+.messaging-body {
+  position: relative;
+  padding-bottom: 50px;
+  z-index: 100;
 }
 
-#messagingTable{
-	@include themify($themes) {
-		background-color: themed('homePanelsBackgroundColor');
-		box-shadow: themed('mainElementBoxShadow');
-	}
-	height: 95%;
-	position: relative;
-	top: 25px;
-	transition: all 0.3s;
-	overflow: hidden;
+.messaging-body .bottom {
+  position: absolute;
+  bottom: 0px;
+  height: 50px;
 }
 
-.tableHeaderAnimated{
-	transition: all 0.5s;
-	overflow-y: hidden;
+.from-me {
+  display: flex;
+  justify-content: flex-end;
 }
 
-#contacts{
-	@include themify($themes) {
-		background-color: themed('bodyBackgroundColor');
-	}
-	width: 350px;
-	height: calc(100% - 47px);
-	transition: all 0.3s;
-	margin-top: 1px;
-	position: absolute;
-	z-index: 3;
+.username {
+  font-weight: 200;
 }
 
-#contactsList{
-	overflow-y: auto;
-    overflow-x: hidden;
-    height: calc(100% - 60px);
+.emoji-picker {
+  z-index: 500;
 }
 
-.contactsListFullPageWidth{
-	width: 100% !important;
+.react-autosuggest__container {
+  position: relative;
 }
 
-#searchBarMessaging{
-	height: 60px;
-	width: 100%;
-	@include themify($themes) {
-		border-bottom: themed('newsItemBorderBottom');
-	}
+.react-autosuggest__input {
+  width: 100%;
+  height: 50px;
+  padding: 10px 20px;
+  font-family: Helvetica, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
 }
 
-#searchIcon{
-	width: 16px;
-    position: relative;
-    top: 15px;
-    left: 39px;
-    display: inline-block;
+.react-autosuggest__input--focused {
+  outline: none;
 }
 
-#searchInput{
-	background-color: transparent;
-    border: none;
-    /* border-radius: 10px; */
-    /* border-bottom: solid 2px #14161b; */
-    position: relative;
-    top: 16px;
-    left: 59px;
-    width: 268px;
-    /* box-shadow: 0 0 8px 1px rgb(39, 42, 51); */
-    font-size: 14px;
-    color: #464b5a;
-    font-weight: 600;
+.react-autosuggest__input--open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
-.chatPreview{
-	@include themify($themes) {
-		border-bottom: themed('newsItemBorderBottom');
-	}
-    height: 75px;
-    position: relative;
-    cursor: pointer;
-    &:hover{
-		@include themify($themes) {
-			background-color: themed('chatPreviewActiveBackgroundColor');
-		}
-    }
+.react-autosuggest__suggestions-container {
+  display: none;
 }
 
-.chatPreviewActive{
-	@include themify($themes) {
-		background-color: themed('chatPreviewActiveBackgroundColor') !important;
-	}
+.react-autosuggest__suggestions-container--open {
+  display: block;
+  position: absolute;
+  top: 51px;
+  width: 100%;
+  border: 1px solid #aaa;
+  background-color: #fff;
+  font-family: Helvetica, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  z-index: 2;
 }
 
-#messagingInputDiv p{
-	@include themify($themes) {
-		color: themed('inputPlaceHolderColor');
-	}
-    position: absolute;
-    font-size: 15px;
+.react-autosuggest__suggestions-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
 }
 
-.borderChatPreview{
-	width: 7px;
-	height: 7px;
-    position: absolute;
-    left: 10px;
-    top: 34px;
-    background-color: #272a33;
-    border-radius: 50%;
+.react-autosuggest__suggestion {
+  cursor: pointer;
+  padding: 10px 20px;
 }
 
-.borderChatPreviewNotRead{
-	background-color: #c39c59;
-}
-
-.chatAddress{
-	width: 100%;
-    position: relative;
-    padding-left: 40px;
-    top: 12px;
-    font-size: 16px;
-    font-weight: 500;
-}
-
-.chatDate{
-	right: 20px;
-    position: absolute;
-    font-size: 12px;
-    top: 2px;
-}
-
-.chatPreviewMessage{
-	@include themify($themes) {
-		color: themed('chatPreviewColor');
-	}
-    position: relative;
-    top: 19px;
-    left: 40px;
-    font-size: 13px;
-    font-weight: 600;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    width: calc(100% - 50px);
-}
-
-#messagingChat{
-	width: calc(100% - 350px);
-	height: calc(100% - 47px);
-	position: absolute;
-	transition: all 0.3s;
-	left: 350px;
-}
-
-#messagingInput{
-	width: 100%;
-	position: absolute;
-	bottom: 0px;
-	height: 70px;
-	transition: all 0.3s;
-	@include themify($themes) {
-		border-top: themed('newsItemBorderBottom');
-	}
-}
-
-#messagingInputOptions{
-	float: left;
-}
-
-#messagingInputOptions{
-	width: 150px;
-	//background-color: white;
-	height: 100%;
-}
-
-#messagingInput textarea{
-	@include themify($themes) {
-		color: themed('bodyParagraphColor');
-	}
-	width: calc(100% - 150px);
-    background-color: transparent;
-    border: none;
-    padding-left: 10px;
-    font-size: 14px;
-    float: left;
-    margin-top: 12px;
-    resize: none;
-}
-
-#messagingInput p{
-	top: 13px;
-	padding-left: 10px;
-}
-
-#messagingInputTools{
-	width: 100px;
-}
-
-#messagingInput svg{
-    position: absolute;
-    right: 5px;
-}
-
-#messagingInput circle, #messagingInput polyline{
-	stroke: #394b5a;
-}
-
-.sendButtonActive{
-	@include themify($themes) {
-		stroke: themed('eccTicker') !important;
-	}
-}
-
-#circleMessaging circle:hover + polyline{
-	stroke-width: 0.55 !important;
-}
-
-#circleMessaging{
-	top: 15px;
-}
-
-.addCursorPointer{
-	cursor: pointer;
-}
-
-#messagingSendButton{
-	position: relative;
-	right: 20px;
-}
-
-#messagingTopBar{
-	@include themify($themes) {
-		background-color: themed('bodyBackgroundColor');
-	}
-	height: 80px;
-	width: 100%;
-	height: 0px;
-	transition: all 0.3s;
-	position: absolute;
-	z-index: 4;
-	overflow: hidden;
-}
-
-#chatContactIcon{
-	width: 16px;
-    position: absolute;
-    top: 12px;
-    right: 30px;
-    cursor: pointer;
-}
-
-#chatListIcon{
-	width: 85px;
-    position: absolute;
-    top: -27px;
-    left: 18px;
-}
-
-#goBackMessageIcon{
-    width: 28px;
-    position: absolute;
-    top: 5px;
-    left: 36px;
-    cursor: pointer;
-    visibility: hidden;
-}
-
-#messagingTopBar p{
-	position: relative;
-    font-weight: 500;
-    text-align: center;
-    top: 7px;
-}
-
-.chatMessageParent{
-    display:flex;
-	justify-content: flex-start;
-}
-
-.chatMessageParentOwn{
-	justify-content: flex-end;
-}
-
-#messagingOptions{
-	height: 54px;
-	width: 100%;
-	padding: 0px;
-	padding-top: 10px;
-	visibility: hidden;
-	overflow: hidden;
-}
-
-#messagingOptionsSmall{
-	height: 54px;
-	width: 100%;
-	padding: 0px;
-	padding-top: 10px;
-	visibility: hidden;
-	overflow: hidden;
-}
-
-.messagingOption{
-	cursor: pointer;
-	visibility: hidden;
-}
-
-#optionsButton{
-	position: absolute;
-	top: 10px;
-	right: 10px;
-	cursor: pointer;
-	width: 20px;
-	transition: all 0.5s;
-}
-
-.hideElement{
-	opacity: 0;
-}
-
-#optionsButtonSmallView{
-	position: fixed;
-	width: 20px;
-	top: 47px;
-	right: 18px;
-	z-index: 10;
-	visibility: hidden;
-	cursor: pointer;
-}
-
-.circleOptionsButton{
-	height: 5px;
-    width: 5px;
-    background-color: #313541;
-    border-radius: 50%;
-    margin: 0 auto;
-    margin-top: 3px;
-	transition-property: background-position;
-  	transition-duration: 0.02s;
-  	transition-timing-function: ease;
-  	background-position: 0 -100%;
-  	background-size: 100% 200%;
-	@include themify($themes) {
-		background-image: themed('optionsHoverEffectBackgroundColor');
-	}
-}
-
-.circleOptionsButton {
-  transition-delay: 0ms;
-}
-.circleOptionsButton:nth-child(2) {
-  transition-delay: 40ms;
-}
-.circleOptionsButton:nth-child(3) {
-  transition-delay: 80ms;
-}
-
-#optionsButton:hover > .circleOptionsButton {
-  background-position: 0 0%;
-}
-
-#optionsButton:hover > .circleOptionsButton {
-  transition-delay: 80ms;
-}
-#optionsButton:hover > .circleOptionsButton:nth-child(2) {
-  transition-delay: 40ms;
-}
-#optionsButton:hover > .circleOptionsButton:nth-child(3) {
-  transition-delay:0ms;
-}
-
-.chatMessage{
-	padding-top: 5px;
-	padding-bottom: 5px;
-	padding-left: 10px;
-	padding-right: 10px;
-	font-size: 14px;
-	border-radius: 5px;
-	max-width: 85%;
-	box-shadow: 0px 1px 8px -7px #0e0f13;
-	//border: 1px solid #15171d;
-    font-weight: 500;
-	margin-top: 5px;
-	width: max-content;
-}
-
-.ownMessage{
-	@include themify($themes) {
-		background-color: themed('ownMessagingBackgroundColor');
-	}
-	border-top-right-radius: 0px;
-	margin-right: 15px;
-}
-
-.notOwnMessage{
-	@include themify($themes) {
-		background-color: themed('notOwnMessagingBackgroundColor');
-	}
-	border-top-left-radius: 0px;
-	margin-left: 15px;
-}
-
-.fixSpacingBubble{
-	margin-top: 10px;
-}
-
-.chatMessage span{
-	@include themify($themes) {
-		color: themed('messageTimeColor');
-	}
-	padding-left: 25px;
-    font-size: 11px;
-    font-weight: 600;
-    position: relative;
-    top: 4px;
-}
-
-#messagingChatContainer{
-	width: 100%;
-	height: calc(100% - 70px - 54px);
-    position: relative;
-    overflow-y: scroll;
-    padding-bottom: 10px;
-    overflow-x: hidden;
-}
-
-#warningMessaging{
-	@include themify($themes) {
-		color: themed('popupColor');
-	}
-	width: 100%;
-    right: 0px;
-    height: 100%;
-    position: absolute;
-    z-index: 1000;
-    //background-image: -webkit-radial-gradient(top, circle cover, rgba(31, 30, 39, 0.85) 0%, rgba(12, 12, 12, 0.85) 80%);
-    text-align: center;
-}
-
-#warningMessaging #popup{
-	//background: linear-gradient(to bottom, #191a20 0%,#18191f 22%,#201f23 37%,#2b2929 46%,#3b3631 55%,#726550 78%,#7e6f55 84%,#7f6f56 100%);
-	height: 495px;
-	width: 270px;
-	position: relative;
-	top: 10%;
-	margin: 0 auto;
-    border-radius: 35px;
-    //box-shadow: 0px 0px 6px 4px #121217;
-    overflow: hidden;
-}
-
-#warningMessaging img{
-	margin: 0 auto;
-	display: block;
-}
-
-#messageIconPopupConfirm{
-	position: relative;
-	top: 73px;
-	cursor: pointer;
-	width: 46px;
-}
-
-#warningMessagingTitle{
-	font-size: 26px;
-	font-weight: 300;
-}
-
-#warningMessagingSubtitle{
-
-	font-size: 19px;
-	margin-top: 20px;
-	font-weight: 500;
-}
-
-.messagingWarningDesc{
-	font-size: 13px;
-    width: 210px;
-    margin: 0 auto;
-    margin-top: 28px;
-}
-
-.kind{
-	margin-top: 10px;
-}
-
-#warningMessagingSubtitle span{
-	@include themify($themes) {
-		color: themed('popupSpanColor');
-	}
-}
-
-.disableWarningMessaging{
-	height: 0px !important;
-	overflow: hidden;
-}
-
-
-@media screen and (max-width: 1023px) {
-  #messagingContainer {
-	padding-left: 0px;
-	padding-right: 0px;
-  }
-
-  #messagingTable{
-	height: 100%;
-	top: 0px;
-	box-shadow: none;
-  }
-
-  #tableHeader{
-  	height: 0px;
-  }
-
-  #contacts{
-	height: 100%;
-	margin-top: 0px;
-  }
-
-  #messagingChat{
-  	height: 100%;
-  }
-}
-
-@media screen and (max-width: 670px) {
-	#contacts{
-		width: 280px;
-		top: 0px;
-	}
-
-	#messagingChat{
-		width: calc(100% - 280px);
-		left: 280px;
-		top: 0px;
-	}
-
-	#searchInput{
-		width: 232px;
-		left: 31px;
-	}
-
-	#searchIcon{
-		left: 20px;
-	}
-}
-
-@media screen and (max-width: 580px) {
-	#messagingChat{
-	    left: 100% ;
-		width: 100%;
-		height: calc(100% - 40px);
-		top: 40px;
-		@include themify($themes) {
-			background-color: themed('bodyBackgroundColor');
-		}
-	}
-	#contacts{
-		width: 100%;
-		height: calc(100% - 40px);
-		top: 40px;
-	}
-
-	#messagingChatContainer{
-		height: calc(100% - 70px);
-	}
-
-	#messagingTopBar{
-		height: 40px;
-		box-shadow: 0px 3px 11px -3px #121217;
-	}
-
-	.mainSubPanel{
-		overflow: hidden;
-	}
-
-	.firstChatMessage{
-		margin-top: 15px;
-	}
-
-	#optionsButton{
-		visibility: hidden;
-	}
-
-	#messagingOptions{
-		display: none;
-	}
-
-	#messagingOptionsSmall{
-		top: 10px;
-	    position: relative;
-	}
-
-	.circleOptionsButton{
-		@include themify($themes) {
-			background-color: themed('eccTicker') !important;
-		}
-	}
+.react-autosuggest__suggestion--highlighted {
+  background-color: #ddd;
 }

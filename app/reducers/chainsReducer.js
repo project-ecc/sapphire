@@ -1,18 +1,19 @@
 import {
+  BLOCK_INDEX_PAYMENT, BLOCKS_AND_HEADERS,
+  CHAIN_INFO, INITIAL_BLOCK_DOWNLOAD,
   PAYMENT_CHAIN_SYNC,
-  BLOCK_INDEX_PAYMENT_PERCENTAGE,
-  BLOCK_INDEX_PAYMENT,
-  STAKING,
-  WALLET_INFO,
-  CHAIN_INFO,
-  TRANSACTIONS_DATA,
   SET_DAEMON_VERSION,
-  SET_TEMPORARY_BALANCE,
-  WALLET_INFO_SEC, TRANSACTIONS_TYPE
+  SET_TEMPORARY_BALANCE, SIZE_ON_DISK,
+  STAKING,
+  TRANSACTIONS_DATA,
+  TRANSACTIONS_TYPE,
+  WALLET_INFO,
+  WALLET_INFO_SEC,
+  MINING_INFO
 } from '../actions/types';
 
 
-const INITIAL_STATE = {paymentChainSync: 0, loadingBlockIndexPayment: false, blockPayment: 0, headersPayment:0, connectionsPayment: 0, isStaking: false, stakingConfig: false, staking: 0, balance: 0, transactionsData: [], connections: 0, transactionsType: "all", messagingChain: false, fileStorageChain:false, unconfirmedBalance: 0, daemonVersion: '', newMint: 0, immatureBalance: 0 };
+const INITIAL_STATE = {paymentChainSync: 0, loadingBlockIndexPayment: false, blockPayment: 0, headersPayment:0, connectionsPayment: 0, isStaking: false, stakingConfig: false, staking: 0, balance: 0, transactionsData: [], connections: 0, transactionsType: "all", unconfirmedBalance: 0, daemonVersion: '', newMint: 0, immatureBalance: 0, initialDownload: false, sizeOnDisk: 0, unlockedUntil:0 };
 
 export default(state = INITIAL_STATE, action) => {
    if(action.type == BLOCK_INDEX_PAYMENT){
@@ -25,16 +26,28 @@ export default(state = INITIAL_STATE, action) => {
 		return {...state, paymentChainSync: x}
 	}
 	else if(action.type == STAKING){
-		return {...state, isStaking: action.payload, password: ""}
+		return {...state, isStaking: action.payload}
 	}
 	else if(action.type == CHAIN_INFO){
-		return {...state, stakingConfig: action.payload.staking, isStaking: (action.payload.staking === true && action.payload.unlocked_until > 0), connections: action.payload.connections, blockPayment: action.payload.blocks, headersPayment: action.payload.headers, connectionsPayment: action.payload.connections}
+		return {...state, staking: action.payload.staking, connections: action.payload.connections, blockPayment: action.payload.blocks, headersPayment: action.payload.headers, connectionsPayment: action.payload.connections, unlockedUntil: action.payload.unlocked_until}
 	}
+	else if(action.type == MINING_INFO){
+	  return {...state, isStaking: action.payload.generatepos}
+   }
+	else if(action.type == SIZE_ON_DISK) {
+	  return {...state, sizeOnDisk: action.payload}
+	}
+	else if(action.type == INITIAL_BLOCK_DOWNLOAD) {
+    return {...state, initialDownload: action.payload}
+  }
+  else if(action.type == BLOCKS_AND_HEADERS){
+    return {...state, blockPayment: action.payload.blocks, headersPayment: action.payload.headers}
+  }
 	else if(action.type == WALLET_INFO){
-		return {...state, balance: action.payload.balance, newMint: action.payload.newmint, staking: action.payload.stake}
+		return {...state, balance: action.payload.balance, newMint: action.payload.newmint, staking: action.payload.staking}
 	}
 	else if(action.type == WALLET_INFO_SEC){
-		return {...state, unconfirmedBalance: action.payload.unconfirmed_balance, immatureBalance: action.payload.immature_balance}
+		return {...state, unconfirmedBalance: action.payload.unconfirmedBalance, immatureBalance: action.payload.immatureBalance}
 	}
 	else if(action.type == TRANSACTIONS_DATA){
 		var data = action.payload.data;

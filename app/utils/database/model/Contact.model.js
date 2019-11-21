@@ -14,7 +14,7 @@ module.exports = function (sequelize, DataTypes) {
   // class association method
   Contact.associate = function (models) {
     Contact.belongsTo(models.Address);
-    Contact.belongsTo(models.AnsRecord);
+    // Contact.belongsTo(models.AnsRecord);
   };
 
   return Contact;

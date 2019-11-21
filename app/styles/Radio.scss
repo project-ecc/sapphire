@@ -1,0 +1,33 @@
+.radioGroup {
+  width: 100%;
+
+  & > div {
+	position: relative;
+	width: 100%;
+	margin-bottom: 10px;
+	padding: 7px 30px 7px 10px;
+	cursor: pointer;
+	border: 1px solid #ddd;
+
+	&:hover {
+	  border-color: #a4a4a4;
+	}
+
+	&:before {
+	  content: '';
+	  position: absolute;
+	  top: 0;
+	  bottom: 0;
+	  right: 10px;
+	  width: 12px;
+	  height: 12px;
+	  border-radius: 100%;
+	  border: 1px solid #0fb2fc;
+	  margin: auto;
+	}
+
+	&.selected:before {
+	  background-color: #0fb2fc;
+	}
+  }
+}

@@ -1,16 +1,25 @@
-@import "./themes.scss";
+@import "themes/themes.scss";
+/*
+#rows{
+  width: 100%;
+  padding: 0 0
+ 
+}
+*/
 
 #rows{
-  width: 100%; 
-  padding: 0 0
+  width: 98%;
+  padding: 0 15px;
+  border-radius: 10px;
+  margin: 3px 0;
+  @include themify($themes) {
+    background-color: themed('cardBackgroundColor');
+  }
 }
 
 .tableHeaderNormal{
   width: 100%;
   height:46px;
-  @include themify($themes) { 
-    box-shadow: themed('tableHeaderBoxShadow'); 
-  }
   position: relative;
   z-index: 4;
 }
@@ -24,13 +33,10 @@
   padding-left: 5%;
   font-size: 23px;
   font-weight: normal;
-  @include themify($themes) { 
-    color: themed('tableHeaderColorTitle'); 
-  }
 }
 
 .tableHeaderTitleSmall{
-  padding-top: 7px; 
+  padding-top: 7px;
   padding-left: 5%;
 }
 
@@ -44,35 +50,32 @@
   height: 55px;
   margin: 0 0;
   width: 100%;
-  box-shadow: 0 2px 4px -3px rgba(0, 0, 0, 0.74);
+  /*box-shadow: 0 2px 4px -3px rgba(0, 0, 0, 0.74);*/
   align-items:center;
 }
 
 .tableRowCustom{
   cursor: pointer;
   font-size: 15px;
-  @include themify($themes) { 
-    color: themed('tableRowColor'); 
-    border-color:themed('bodyBackgroundColor'); 
+  @include themify($themes) {
+    border-color:themed('bodyBackgroundColor');
+    color: themed('bodyParagraphColor');
   }
   margin: 0 0;
   width: 100%;
   min-height: 40px;
-  box-shadow: 0 2px 4px -3px rgba(0, 0, 0, 0.74);
-}
-
-.tableRowCustom:hover{
- @include themify($themes) { 
-    background-color: themed('tableHoverColor');
-  }
+ /* box-shadow: 0 2px 4px -3px rgba(0, 0, 0, 0.74);*/
 }
 
 .tableRowCustom:active{
- @include themify($themes) { 
-    background-color: themed('tableActiveColor');
-  }
 }
 
+.tableRowCustom:hover{
+  @include themify($themes) {
+    border-color:themed('cardItemSelectedBackgroundColor');
+    color: themed('sidebarSelectedItemColor');
+  }
+}
 .tableRowCustomTransactions{
   height: auto;
   align-items: center;
@@ -80,63 +83,56 @@
 }
 
 .tableRowHeader{
-  @include themify($themes) { 
-    color: themed('tableRowHeaderColor'); 
+  @include themify($themes) {
     text-transform: uppercase;
   }
 }
 
 .tableRowSubText{
-  @include themify($themes) { 
-    color: themed('tableRowHeaderColor'); 
+  @include themify($themes) {
   }
 }
 
 .headerDescription{
-  padding-top: 1px;
-  padding-left: 5%;
-  @include themify($themes) { 
-    color: themed('tableHeaderDescription'); 
-  }
   font-size: 14px;
   font-weight: 600;
 }
 
 .tableCustom{
-  height:60%;
-  position: relative;
-  top: 50px;
-  @include themify($themes) { 
-    box-shadow: themed('mainElementBoxShadow'); 
-    background-color: themed('tableBackgroundColor');
+  box-shadow: 0 2px 4px -3px rgba(0, 0, 0, 0.74);
+
+  @include themify($themes) {
+    background-color: themed('cardBackgroundColor');
+  }
+
+  .selected {
+	@include themify($themes) {
+	  background-color: themed('cardItemSelectedBackgroundColor');
+	}
   }
 }
 
 .tableRowEven{
 /*
-  @include themify($themes) { 
-    background-color: themed('tableRowEven'); 
+  @include themify($themes) {
+    background-color: themed('tableRowEven');
   }
   */
 }
 
 .extraInfoTransaction{
   margin:0;
-  @include themify($themes) { 
-    /*background-color: themed('bodyBackgroundColor'); */
-    background-color: themed('tableExtraBackgroundColor'); 
-  }
 }
 
 .extraInfoTransaction:hover{
-  @include themify($themes) { 
+  @include themify($themes) {
     /*background-color: themed('tableBackgroundColor');*/
   }
 }
 
 .tableRowSelected{
-  @include themify($themes) { 
-    background-color: themed('tableRowSelected'); 
+  @include themify($themes) {
+    background-color: themed('cardItemSelectedBackgroundColor');
   }
 }
 

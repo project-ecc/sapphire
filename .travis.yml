@@ -20,12 +20,13 @@ cache:
     - $HOME/.npm/_prebuilds
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker-compose build; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm install; fi
+  - npm install
+  - npm install -g electron-rebuild
+  - npm run rebuild-sqlite
 
 install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker-compose build; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run package-linux; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm run package-osx; fi
 
 script:
-  - docker-compose run compiler
+  #- docker-compose run compiler

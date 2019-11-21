@@ -1,6 +1,6 @@
 {
   "productName": "Sapphire",
-  "appId": "com.github.csmartinsfct.sapphire",
+  "appId": "com.github.project-ecc.sapphire",
   "files": [
     "./app/dist/",
     "./app/node_modules/",
@@ -9,19 +9,13 @@
     "./app/main.prod.js.map",
     "./package.json"
   ],
-  "publish": [
-    {
-      "provider": "github",
-      "owner": "csmartinsfct",
-      "repo": "Sapphire",
-      "vPrefixedTagName": "true",
-      "protocol": "https"
-    }
-  ],
   "linux": {
     "target": [
       "deb",
       "AppImage"
+    ],
+    "publish" : [
+      "github"
     ]
   },
   "directories": {
