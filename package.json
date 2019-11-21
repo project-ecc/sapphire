@@ -26,7 +26,7 @@
     "postinstall-linux": "npm rebuild --runtime=electron --target=1.8.8 --disturl=https://atom.io/download/atom-shell --build-from-source electron-builder install-app-deps --module_name=node_sqlite3 --module_path=../lib/binding/electron-v1.8-linux-x64",
     "postinstall-win": "npm rebuild --runtime=electron --target=1.8.8 --disturl=https://atom.io/download/atom-shell --build-from-source electron-builder install-app-deps --module_name=node_sqlite3 --module_path=../lib/binding/electron-v1.8-win32-x64",
     "postinstall-osx": "npm rebuild --runtime=electron --target=1.8.8 --disturl=https://atom.io/download/atom-shell --build-from-source electron-builder install-app-deps --module_name=node_sqlite3 --module_path=../lib/binding/electron-v1.8-darwin-x64",
-    "rebuild-sqlite": "./node_modules/.bin/electron-rebuild -f -w sqlite3",
+    "rebuild-sqlite": "electron-rebuild -f -w sqlite3",
     "dev": "cross-env START_HOT=1 npm run hot-updates-server",
     "package-aa-win-32": "npm run build && build --win -c ./os/win32.json -p always",
     "package-aa-win-64": "npm run build && build --win --x64 -c ./os/win64.json -p always",
@@ -42,7 +42,7 @@
   "browserslist": "electron 6",
   "build": {
     "productName": "Sapphire",
-    "appId": "com.github.gl3nda85.sapphire",
+    "appId": "com.github.project-ecc.sapphire",
     "publish": [
       {
         "provider": "github",
