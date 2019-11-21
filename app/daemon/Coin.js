@@ -17,7 +17,7 @@ import * as tools from '../utils/tools';
 import Toast from "../globals/Toast/Toast";
 
 const event = require('../utils/eventhandler');
-const db = require('../utils/database/db');
+
 
 class Coin extends Component {
   constructor(props) {
@@ -71,9 +71,6 @@ class Coin extends Component {
 
 
     this.listenToEvents();
-
-    // TODO Fix handling promise returned from this function IMPORTANT!
-    db.sequelize.sync();
   }
 
   componentWillUnmount() {
@@ -126,7 +123,6 @@ class Coin extends Component {
       }
 
       if (this.props.daemonRunning) {
-        await db.sequelize.sync();
         clearInterval(this.state.checkStartupStatusInterval);
         await this.startCycles();
       }

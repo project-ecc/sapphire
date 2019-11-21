@@ -6,6 +6,7 @@ import {renderRoutes} from 'react-router-config';
 import {ipcRenderer, remote} from 'electron';
 import TopBar from './Layouts/partials/TopBar';
 import routes from './router/routes';
+import event from './utils/eventhandler'
 
 import UpdateFailedModal from './components/Settings/modals/UpdateFailedModal';
 import DownloadingUpdateModal from './components/Settings/modals/DownloadingUpdateModal';

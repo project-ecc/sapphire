@@ -107,7 +107,7 @@ export function getSapphireDirectory() {
   }
   if (process.platform === 'linux') {
     // linux directory
-    return `${homedir}/${folderName}/`;
+    return `${homedir}/.config/${folderName}/`;
   } else if (process.platform === 'darwin') {
     // OSX
     return `${homedir}/Library/Application Support/${folderName}/`;

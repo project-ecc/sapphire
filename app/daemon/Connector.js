@@ -17,7 +17,7 @@ import Tools from '../utils/tools';
 import {downloadFile, moveFile} from '../utils/downloader';
 import {ipcRenderer} from "electron";
 import Toast from "../globals/Toast/Toast";
-
+const db = require('../utils/database/db');
 const find = require('find-process');
 const request = require('request-promise-native');
 const fs = require('fs');
@@ -41,6 +41,10 @@ class Connector extends Component {
     };
 
     this.bindListeners();
+  }
+
+  async componentWillMount(){
+    await db.sequelize.sync();
   }
 
   componentWillUnmount() {
