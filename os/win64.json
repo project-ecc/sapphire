@@ -1,6 +1,6 @@
 {
   "appId": "com.github.project-ecc.sapphire",
-  "artifactName": "${productName}-${os}${arch}-${version}.${ext}",
+  "artifactName": "${productName}-${os}x64-${version}.${ext}",
   "win": {
     "publish": [
       "github"
