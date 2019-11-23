@@ -26,7 +26,7 @@ class MessagingSidebar extends Component {
             <div className="menu">
               <ul>
                 <li>
-                  <a className="subheading">{ this.props.lang.directMessages }</a>
+                  <a className="subheading">{ this.props.lang.myinfo }</a>
                 </li>
                 <li>
                   <NavLink to="/myAccount/" className="bg-dark">
@@ -35,7 +35,7 @@ class MessagingSidebar extends Component {
                   </NavLink>
                 </li>
                 <li>
-                  <a className="subheading">{ this.props.lang.groupMessaging }</a>
+                  <a className="subheading">{ this.props.lang.peerinfo }</a>
                 </li>
                 <li>
                   <NavLink to="/myAccount/peers" className="bg-dark">
@@ -47,20 +47,20 @@ class MessagingSidebar extends Component {
             </div>
           </div>
           <div className="menu mt-0">
-            <ul>
-              <li>
-                <NavLink to="/friends/newMessage" className="bg-dark">
-                  <CreateIcon size={35} />
-                  New Messsage
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/friends/newMessage" className="bg-dark">
-                  <UserIcon size={35} />
-                  Me
-                </NavLink>
-              </li>
-            </ul>
+            {/*<ul>*/}
+              {/*<li>*/}
+                {/*<NavLink to="/friends/newMessage" className="bg-dark">*/}
+                  {/*<CreateIcon size={35} />*/}
+                  {/*New Messsage*/}
+                {/*</NavLink>*/}
+              {/*</li>*/}
+              {/*<li>*/}
+                {/*<NavLink to="/friends/newMessage" className="bg-dark">*/}
+                  {/*<UserIcon size={35} />*/}
+                  {/*Me*/}
+                {/*</NavLink>*/}
+              {/*</li>*/}
+            {/*</ul>*/}
           </div>
         </div>
       </div>

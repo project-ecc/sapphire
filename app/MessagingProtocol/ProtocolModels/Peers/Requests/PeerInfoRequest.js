@@ -24,7 +24,7 @@ class PeerInfoRequest {
         .rpc('processDataBaseMessage', {packet: message}
         )
         .then(async (response) => {
-
+          console.log(response)
           this.peer = new UserPeer(
             uuidv4(),
             this.myKey,

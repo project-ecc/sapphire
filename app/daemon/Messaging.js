@@ -7,6 +7,8 @@ const zmq = require('zeromq');
 const socket = zmq.socket('sub');
 import event from '../utils/eventhandler';
 import Packet from "../MessagingProtocol/Packet";
+import Peer from '../utils/database/model/Peer.model'
+import MyAccount from '../utils/database/model/MyAccount.model'
 import * as tools from "../utils/tools";
 import DatabaseMessage from "../MessagingProtocol/DatabaseMessage";
 
@@ -25,20 +27,16 @@ class Messaging extends Component {
     this.processIncomingPacket = this.processIncomingPacket.bind(this);
     this.getPeerInfo = this.getPeerInfo.bind(this);
     this.processDataBaseMessage = this.processDataBaseMessage.bind(this);
-    this.registerMessageProcessor();
-    this.registerMessageReceiver();
-    this.startCheckingForPeerInfo();
-    this.addToDataBaseListener();
-  }
-
-  addToDataBaseListener() {
-    this.rpcProvider.registerRpcHandler('addToDatabase', function() {
-
-    });
 
   }
 
-  registerMessageReceiver(){
+  async componentWillMount() {
+    await this.registerMessageProcessor();
+    await this.registerMessageReceiver();
+    await this.startCheckingForPeerInfo();
+  }
+
+  async registerMessageReceiver(){
     socket.connect('tcp://127.0.0.1:30000');
     socket.subscribe('aodvmessage');
 
@@ -137,6 +135,7 @@ class Messaging extends Component {
    * @returns {Promise<void>}
    */
   async processDataBaseMessage(packet) {
+    let myRoutingId = this.props.wallet.getRoutingPubKey()
     switch (packet.model){
       case 'peer':
         switch(packet.action) {
@@ -147,7 +146,7 @@ class Messaging extends Component {
           case 'delete':
             break;
           case 'get':
-            break;
+            return MyAccount.findById(myRoutingId);
         }
         break;
       case 'message':
