@@ -253,7 +253,7 @@ async function checkForMostRecentTransaction() {
 
 async function updateTransaction(id, ogTransaction) {
   Transaction.update({
-    updatedAt: null,
+    updated_at: null,
   }, {
     where: {
       id
@@ -351,7 +351,7 @@ async function getAllMyAddresses(){
         where: {
           is_mine: true
         },
-        order: [['createdAt', 'DESC']]
+        order: [['created_at', 'DESC']]
       }).then(addresses => {
         resolve(addresses)
       }).catch(err => {
