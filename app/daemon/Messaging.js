@@ -1,16 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../actions";
-// import MessagingWorker from "../Workers/Messaging.worker";
-import {RpcProvider} from "worker-rpc";
 const zmq = require('zeromq');
 const socket = zmq.socket('sub');
 import event from '../utils/eventhandler';
 import Packet from "../MessagingProtocol/Packet";
-import Peer from '../utils/database/model/Peer.model'
-import MyAccount from '../utils/database/model/MyAccount.model'
-import * as tools from "../utils/tools";
-import DatabaseMessage from "../MessagingProtocol/DatabaseMessage";
 import {parseIncomingPacket} from "../MessagingProtocol/ParseIncomingPacket";
 
 class Messaging extends Component {
@@ -22,17 +16,14 @@ class Messaging extends Component {
       packetIntervalTimer: null,
       lastReceivedPacket: null
     };
-    this.registerMessageProcessor = this.registerMessageProcessor.bind(this);
     this.sendMessageResponse = this.sendMessageResponse.bind(this);
     this.sendMessageRequest = this.sendMessageRequest.bind(this);
     this.processIncomingPacket = this.processIncomingPacket.bind(this);
     this.getPeerInfo = this.getPeerInfo.bind(this);
-    this.processDataBaseMessage = this.processDataBaseMessage.bind(this);
 
   }
 
   async componentWillMount() {
-    // await this.registerMessageProcessor();
     await this.registerMessageReceiver();
     await this.startCheckingForPeerInfo();
   }
@@ -89,27 +80,6 @@ class Messaging extends Component {
     }
   }
 
-  async registerMessageProcessor() {
-    // const worker = new MessagingWorker();
-    // this.rpcProvider = new RpcProvider(
-    //   (message, transfer) => worker.postMessage(message, transfer)
-    // );
-    //
-    // worker.onmessage = e => this.rpcProvider.dispatch(e.data);
-    //
-    // let creds = await tools.readRpcCredentials();
-    //
-    // this.rpcProvider
-    //   .rpc('initWorkerWalletConnection', {username: creds.username, password: creds.password}
-    //   )
-    //   .then(async (response) => {
-    //     console.log(response)
-    //   });
-    //
-    // this.rpcProvider.registerRpcHandler('processDataBaseMessage',  this.processDataBaseMessage);
-  }
-
-
   async processIncomingPacket (message) {
     console.log(message)
     let response = await parseIncomingPacket(message, this.props.wallet)
@@ -127,53 +97,6 @@ class Messaging extends Component {
 
   async sendMessageResponse(packet) {
     await this.sendPacket(packet)
-  }
-
-  /**
-   * process data base message from worker
-   * @param packet
-   * @returns {Promise<void>}
-   */
-  async processDataBaseMessage(packet) {
-    let myRoutingId = this.props.wallet.getRoutingPubKey()
-    switch (packet.model){
-      case 'peer':
-        switch(packet.action) {
-          case 'create':
-            break;
-          case 'update':
-            break;
-          case 'delete':
-            break;
-          case 'get':
-            return MyAccount.findById(myRoutingId);
-        }
-        break;
-      case 'message':
-        switch(packet.action) {
-          case 'create':
-            break;
-          case 'update':
-            break;
-          case 'delete':
-            break;
-          case 'get':
-            break;
-        }
-        break;
-      case 'conversation':
-        switch(packet.action) {
-          case 'create':
-            break;
-          case 'update':
-            break;
-          case 'delete':
-            break;
-          case 'get':
-            break;
-        }
-        break;
-    }
   }
 
   async sendPacket(packet) {

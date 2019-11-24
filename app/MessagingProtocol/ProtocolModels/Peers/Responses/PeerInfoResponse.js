@@ -12,6 +12,7 @@ class PeerInfoResponse {
   }
 
   async processData(){
+    this.myKey = await this.walletInstance.getRoutingPubKey()
     try {
       console.log(this.incomingPacket)
       if(JSON.parse(this.incomingPacket.content)){
@@ -52,7 +53,12 @@ class PeerInfoResponse {
   }
 
   returnData (){
-    return true
+    return new Packet(
+      this.incomingPacket._from,
+      this.myKey,
+      'peerInfoResponseProcessed',
+      null
+    )
   }
 }
 export default PeerInfoResponse;
