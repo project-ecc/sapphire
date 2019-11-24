@@ -140,8 +140,7 @@ class Messaging extends Component {
     }
   };
 
-  async sendMessageRequest(e, args) {
-    let packet = args.packet;
+  async sendMessageRequest(packet) {
     await this.sendPacket(packet);
   }
 

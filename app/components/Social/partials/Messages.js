@@ -12,11 +12,12 @@ class Messages extends React.Component {
   render() {
     // Loop through all the messages in the state and create a Packet component
     const messages = this.props.messages.map((message, i) => {
+      console.log(message)
       return (
         <Message
           key={i}
-          username={message.username}
-          message={message.message}
+          username={message.owner.display_name}
+          message={message.content}
           fromMe={message.fromMe} />
       );
     });

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-
+import { withRouter } from 'react-router-dom'
 import Body from './../Others/Body';
 import Header from './../Others/Header';
 import * as actions from '../../actions';
@@ -8,37 +8,22 @@ import Messages from "./partials/Messages";
 import ChatInput from "./partials/ChatInput";
 import Footer from "../Others/Footer";
 import SearchForFriend from "../Others/SearchForFriend";
-
+import moment from "moment";
+import Packet from "../../MessagingProtocol/Packet";
+import db from '../../utils/database/db'
+const Conversation = db.Conversation;
+const Message = db.Message
+const event = require('../../utils/eventhandler');
 
 class MessagingNew extends Component {
   constructor(props) {
     super(props);
     console.log(props)
     this.state = {
-      viewingContact:         {
-        name: "Dylan",
-        id: "1",
-        routingId: "jankjnwdokmawd"
-      },
-      users : [
-        {
-          name: "Dylan",
-          id: "1",
-          routingId: "jankjnwdokmawd"
-        },
-        {
-          name: "Nick",
-          id: "2",
-          routingId: "omaiknwuniwiund"
-        }
-      ],
-      messages: [
-        {
-
-        }
-      ]
+      peer: null
     };
     this.sendHandler = this.sendHandler.bind(this);
+    this.selectedPeer = this.selectedPeer.bind(this);
     this.openContact = this.openContact.bind(this);
   }
 
@@ -48,28 +33,55 @@ class MessagingNew extends Component {
     });
   }
 
-  sendHandler(message) {
-    const messageObject = {
-      username: "Dylan",
-      message
-    };
+  async sendHandler(messageData) {
+    let myKey = await this.props.wallet.getRoutingPubKey();
+    try {
+      console.log(this.state.peer)
+      let conversation = await Conversation.findOne(
+        {
+          where: {
+            owner_id: this.state.peer.id,
+            conversation_type: 'PRIVATE'
+            }
+        })
+      console.log(conversation)
+      if(conversation == null) {
+        conversation = await Conversation.create({
+          name: this.state.peer.display_name,
+          conversation_type: 'PRIVATE',
+          owner_id: this.state.peer.id
+        })
+      }
 
-    // Emit the message to the server
-    // this.socket.emit('client:message', messageObject);
+      const messageObject = {
+        content: messageData,
+        owner_id: this.state.peer.id,
+        date: moment.now(),
+      };
 
-    messageObject.fromMe = true;
-    this.addMessage(messageObject);
+      let message = await Message.create(messageObject)
+
+      conversation.addMessage(message)
+      let packet = new Packet(this.state.peer.id, myKey, 'newConversationRequest', JSON.stringify(conversation))
+
+      event.emit('sendPacket', packet)
+      setTimeout(() =>{
+        this.props.history.push('/friends/' + conversation.id)
+      }, 2000)
+
+
+    } catch (e) {
+      console.log(e)
+      console.log('cant send message')
+    }
+
   }
 
-  addMessage(message) {
-    // Append the message to the component state
-    const messages = this.state.messages;
-    messages.push(message);
-    this.setState({ messages });
-  }
 
   selectedPeer(peer){
-    console.log('here')
+    this.setState({
+      peer: peer
+    })
   }
 
 

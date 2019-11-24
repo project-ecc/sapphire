@@ -20,7 +20,7 @@ const Peer = db.Peer;
 // When suggestion is clicked, Autosuggest needs to populate the input
 // based on the clicked suggestion. Teach Autosuggest how to calculate the
 // input value for every given suggestion.
-const getSuggestionValue = suggestion => suggestion.display_name;
+const getSuggestionValue = suggestion => suggestion;
 
 // Use your imagination to render suggestions.
 const renderSuggestion = suggestion => (
@@ -70,14 +70,20 @@ class SearchForFriend extends Component {
   }
 
   onChange = (event, { newValue }) => {
+    console.log(newValue)
+    if(newValue instanceof Peer) {
+      this.props.selectedPeer(newValue)
+      newValue = newValue.display_name
+    }
     this.setState({
       value: newValue
     });
-    this.props.selectedPeer(newValue)
+
   };
 
   // Teach Autosuggest how to calculate suggestions for any given input value.
   getSuggestions = value => {
+    console.log(value)
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
 

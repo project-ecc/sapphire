@@ -32,7 +32,13 @@ class MessagingHome extends Component {
 
   async componentDidMount(){
     const eventID = this.props.match.params.id
-    let conversation = await Conversation.findByPk(eventID)
+    let conversation = await Conversation.findByPk(eventID, {
+      include:
+        {
+          model: Message,
+          include: ['owner']
+        }
+    })
     console.log(conversation)
     if(conversation != null) {
       this.setState({
@@ -122,7 +128,7 @@ class MessagingHome extends Component {
               </div>
               <div className="mt-4">
                 <p className="transactionInfoTitle"><span className="desc2 small-header">Friend since</span></p>
-                <p><span className="desc3 small-text selectableText">{moment(friend.timeStamp).format('dddd, MMMM Do YYYY')}</span></p>
+                <p><span className="desc3 small-text selectableText">{moment(conversation.created_at).format('dddd, MMMM Do YYYY')}</span></p>
               </div>
               <div className="d-flex justify-content-end mt-5">
                 <Button color="danger" size="sm">
