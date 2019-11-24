@@ -1,42 +1,45 @@
-import UserPeer from './../Models/UserPeer'
 import Packet from "../../../Packet";
-import DatabaseMessage from "../../../DatabaseMessage";
+import connect from "react-redux/es/connect/connect";
+import * as actions from "../../../../actions";
+import db from '../../../../utils/database/db'
+import UserPeer from "../Models/UserPeer";
+
 const uuidv4 = require('uuid/v4')
+const MyAccountDatabase = db.MyAccount;
 class PeerInfoRequest {
 
   /**
    *
    *
    */
-  constructor(walletInstance, incomingPacket, rpcProvider) {
+  constructor(walletInstance, incomingPacket) {
     // super(walletInstance, incomingPacket);
-    this.walletInstance = walletInstance;
     this.incomingPacket = incomingPacket;
-    this.rpcProvider = rpcProvider;
   }
 
   async processData() {
-    this.myKey = await this.walletInstance.getRoutingPubKey()
+    this.myKey = await this.props.wallet.getRoutingPubKey()
     // get peer data from database. (my account)
     try {
-      let message = new DatabaseMessage('get', 'Peer', null)
-      this.rpcProvider
-        .rpc('processDataBaseMessage', {packet: message}
-        )
-        .then(async (response) => {
-          console.log(response)
-          this.peer = new UserPeer(
-            uuidv4(),
-            this.myKey,
-            "Dolaned",
-            '',
-            '',
-            '',
-            ''
-          );
-          //package up into userPeer.js model
-          return this.returnData()
+
+      this.peer = await MyAccountDatabase
+        .findByPk(this.myKey)
+        .then((obj) => {
+          // update
+          if (obj)
+            return new UserPeer(
+              uuidv4(),
+              obj.id,
+              obj.display_name,
+              obj.display_image,
+              obj.public_payment_address,
+              obj.private_payment_address
+            );
+          // insert
+          return null
         });
+      //package up into userPeer.js model
+      return this.returnData()
 
     }catch (e) {
       console.log(e)
@@ -54,4 +57,15 @@ class PeerInfoRequest {
   }
 }
 
-export default PeerInfoRequest;
+const mapStateToProps = state => {
+  return {
+    lang: state.startup.lang,
+    wallet: state.application.wallet
+  };
+};
+
+
+
+export default connect(mapStateToProps, actions)(PeerInfoRequest);
+
+// export default connect() PeerInfoRequest;

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import * as actions from "../actions";
-import MessagingWorker from "../Workers/Messaging.worker";
+// import MessagingWorker from "../Workers/Messaging.worker";
 import {RpcProvider} from "worker-rpc";
 const zmq = require('zeromq');
 const socket = zmq.socket('sub');
@@ -11,6 +11,7 @@ import Peer from '../utils/database/model/Peer.model'
 import MyAccount from '../utils/database/model/MyAccount.model'
 import * as tools from "../utils/tools";
 import DatabaseMessage from "../MessagingProtocol/DatabaseMessage";
+import {parseIncomingPacket} from "../MessagingProtocol/ParseIncomingPacket";
 
 class Messaging extends Component {
 
@@ -31,7 +32,7 @@ class Messaging extends Component {
   }
 
   async componentWillMount() {
-    await this.registerMessageProcessor();
+    // await this.registerMessageProcessor();
     await this.registerMessageReceiver();
     await this.startCheckingForPeerInfo();
   }
@@ -54,7 +55,7 @@ class Messaging extends Component {
      });
 
       // process the last packet received
-      this.processIncomingPacket(packet)
+      await this.processIncomingPacket(packet)
     });
 
     //message from sapphire to packup and send
@@ -76,7 +77,7 @@ class Messaging extends Component {
         this.setState({
           lastReceivedPacket: decodedPacket
         })
-        this.processIncomingPacket(decodedPacket)
+        await this.processIncomingPacket(decodedPacket)
       } else {
         console.log('message already processed!')
       }
@@ -87,36 +88,31 @@ class Messaging extends Component {
   }
 
   async registerMessageProcessor() {
-    const worker = new MessagingWorker();
-    this.rpcProvider = new RpcProvider(
-      (message, transfer) => worker.postMessage(message, transfer)
-    );
-
-    worker.onmessage = e => this.rpcProvider.dispatch(e.data);
-
-    let creds = await tools.readRpcCredentials();
-
-    this.rpcProvider
-      .rpc('initWorkerWalletConnection', {username: creds.username, password: creds.password}
-      )
-      .then(async (response) => {
-        console.log(response)
-      });
-
-    this.rpcProvider.registerRpcHandler('processDataBaseMessage',  this.processDataBaseMessage);
+    // const worker = new MessagingWorker();
+    // this.rpcProvider = new RpcProvider(
+    //   (message, transfer) => worker.postMessage(message, transfer)
+    // );
+    //
+    // worker.onmessage = e => this.rpcProvider.dispatch(e.data);
+    //
+    // let creds = await tools.readRpcCredentials();
+    //
+    // this.rpcProvider
+    //   .rpc('initWorkerWalletConnection', {username: creds.username, password: creds.password}
+    //   )
+    //   .then(async (response) => {
+    //     console.log(response)
+    //   });
+    //
+    // this.rpcProvider.registerRpcHandler('processDataBaseMessage',  this.processDataBaseMessage);
   }
 
 
-  processIncomingPacket (message) {
-    this.rpcProvider
-      .rpc('processPacket', {packet: message}
-      )
-      .then(async (response) => {
-        console.log(response)
-        if(response != null){
-          await this.sendMessageResponse(response);
-        }
-      });
+  async processIncomingPacket (message) {
+    let response = await parseIncomingPacket(message, this.props.wallet)
+    if(response != null){
+      await this.sendMessageResponse(response);
+    }
   }
 
   /**

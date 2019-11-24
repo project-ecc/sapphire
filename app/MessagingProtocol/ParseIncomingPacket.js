@@ -8,14 +8,14 @@ import PeerInfoResponse from "./ProtocolModels/Peers/Responses/PeerInfoResponse"
  * @param rpcProvider
  * @returns {*}
  */
-export function parseIncomingPacket (packet, walletInstance, rpcProvider){
-  switch (packet._type) {
+export function parseIncomingPacket (packet, walletInstance){
+  switch (packet.type) {
     case "peerInfoRequest":
-      return new PeerInfoRequest(walletInstance, packet, rpcProvider).processData();
+      return new PeerInfoRequest(walletInstance, packet).processData();
     case "peerInfoRequestProcessed":
       break;
     case "peerInfoResponse":
-      return new PeerInfoResponse(walletInstance, packet, rpcProvider).processData();
+      return new PeerInfoResponse(walletInstance, packet).processData();
     case "peerInfoResponseProcessed":
       break;
     default:
