@@ -14,14 +14,26 @@ class PeerInfoResponse {
       console.log(this.incomingPacket)
       if(JSON.parse(this.incomingPacket.content)){
         let peerInfoPacket = JSON.parse(this.incomingPacket.content)
+        console.log(peerInfoPacket)
         let peer = await Peer
           .findByPk(peerInfoPacket.peerId)
           .then((obj) => {
             // update
             if(obj)
-              return obj.update(this.incomingPacket);
+              return obj.update({
+                display_image: peerInfoPacket.displayImage,
+                display_name: peerInfoPacket.displayName,
+                public_payment_address: peerInfoPacket.publicPaymentAddress,
+                private_payment_address: peerInfoPacket.privatePaymentAddress
+              });
             // insert
-            return Peer.create(this.incomingPacket);
+            return Peer.create({
+              id: peerInfoPacket.peerId,
+              display_image: peerInfoPacket.displayImage,
+              display_name: peerInfoPacket.displayName,
+              public_payment_address: peerInfoPacket.publicPaymentAddress,
+              private_payment_address: peerInfoPacket.privatePaymentAddress
+            });
           })
         return this.returnData()
       }
