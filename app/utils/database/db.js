@@ -24,7 +24,7 @@ const sequelize = new Sequelize({
   // the storage engine for sqlite
   // - default ':memory:'
   storage: sapphirePath +'database.sqlite',
-  logging: (...msg) => console.log(msg)
+  // logging: (...msg) => console.log(msg)
 });
 // pass your sequelize config here
 //core Models

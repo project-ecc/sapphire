@@ -77,8 +77,10 @@ class Messaging extends Component {
         this.setState({
           lastReceivedPacket: decodedPacket
         })
+        console.log(decodedPacket)
         await this.processIncomingPacket(decodedPacket)
       } else {
+        console.log(this.state.lastReceivedPacket)
         console.log('message already processed!')
       }
 
@@ -109,7 +111,9 @@ class Messaging extends Component {
 
 
   async processIncomingPacket (message) {
+    console.log(message)
     let response = await parseIncomingPacket(message, this.props.wallet)
+    console.log(response)
     if(response != null){
       await this.sendMessageResponse(response);
     }
@@ -182,7 +186,7 @@ class Messaging extends Component {
         message: encodedPacket
       })
     console.log(data)
-    if (data === null) {
+    if (data === true) {
       return true;
     } else {
       console.log(data)

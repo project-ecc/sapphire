@@ -9,17 +9,23 @@ import PeerInfoResponse from "./ProtocolModels/Peers/Responses/PeerInfoResponse"
  * @returns {*}
  */
 export function parseIncomingPacket (packet, walletInstance){
-  switch (packet.type) {
-    case "peerInfoRequest":
-      return new PeerInfoRequest(walletInstance, packet).processData();
-    case "peerInfoRequestProcessed":
-      break;
-    case "peerInfoResponse":
-      return new PeerInfoResponse(walletInstance, packet).processData();
-    case "peerInfoResponseProcessed":
-      break;
-    default:
-      console.log('somehow in here')
-      break;
+  console.log(packet.type)
+  try {
+    switch (packet.type) {
+      case "peerInfoRequest":
+        return new PeerInfoRequest(packet, walletInstance).processData();
+      case "peerInfoRequestProcessed":
+        break;
+      case "peerInfoResponse":
+        return new PeerInfoResponse(packet, walletInstance).processData();
+      case "peerInfoResponseProcessed":
+        break;
+      default:
+        console.log('somehow in here')
+        break;
+    }
+  } catch (e) {
+    console.log(e)
   }
+
 }

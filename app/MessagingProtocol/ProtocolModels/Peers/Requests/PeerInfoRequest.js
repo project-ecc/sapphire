@@ -12,13 +12,14 @@ class PeerInfoRequest {
    *
    *
    */
-  constructor(walletInstance, incomingPacket) {
-    // super(walletInstance, incomingPacket);
+  constructor(incomingPacket, walletInstance) {
     this.incomingPacket = incomingPacket;
+    this.walletInstance = walletInstance;
   }
 
   async processData() {
-    this.myKey = await this.props.wallet.getRoutingPubKey()
+    this.myKey = await this.walletInstance.getRoutingPubKey()
+    console.log(this.myKey)
     // get peer data from database. (my account)
     try {
 
@@ -28,7 +29,6 @@ class PeerInfoRequest {
           // update
           if (obj)
             return new UserPeer(
-              uuidv4(),
               obj.id,
               obj.display_name,
               obj.display_image,
@@ -48,6 +48,7 @@ class PeerInfoRequest {
 
   returnData()
   {
+    console.log(this.peer)
     return new Packet(
       this.incomingPacket._from,
       this.myKey,
@@ -57,15 +58,15 @@ class PeerInfoRequest {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    lang: state.startup.lang,
-    wallet: state.application.wallet
-  };
-};
+// const mapStateToProps = state => {
+//   return {
+//     lang: state.startup.lang,
+//     wallet: state.application.wallet
+//   };
+// };
 
 
 
-export default connect(mapStateToProps, actions)(PeerInfoRequest);
+// export default connect(mapStateToProps, actions)(PeerInfoRequest);
 
-// export default connect() PeerInfoRequest;
+export default PeerInfoRequest;
