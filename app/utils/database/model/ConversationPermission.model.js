@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Conversation = sequelize.define('conversation_permissions', {
+  const ConversationPermission = sequelize.define('conversation_permissions', {
     id: {
       allowNull: false,
       type: DataTypes.UUID,
@@ -31,10 +31,9 @@ module.exports = function (sequelize, DataTypes) {
   });
 
   // class association method
-  Conversation.associate = function (models) {
-    Conversation.hasMany(models.Address);
-    // Contact.belongsTo(models.AnsRecord);
+  ConversationPermission.associate = function (models) {
+
   };
 
-  return Conversation;
+  return ConversationPermission;
 };

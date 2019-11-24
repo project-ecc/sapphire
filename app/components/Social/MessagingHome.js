@@ -11,80 +11,68 @@ import * as actions from '../../actions';
 import Messages from './partials/Messages';
 import ChatInput from './partials/ChatInput';
 import Footer from "../Others/Footer";
-import SearchForFriend from "../Others/SearchForFriend";
+
+import db from '../../utils/database/db'
+const Conversation = db.Conversation;
+const Message = db.Message
+import Packet from "../../MessagingProtocol/Packet";
 
 const event = require('./../../utils/eventhandler');
 
 class MessagingHome extends Component {
   constructor(props) {
     super(props);
-    this.loadUser = this.loadUser.bind(this);
-    this.openContact = this.openContact.bind(this);
-    console.log(props)
     this.state = {
-      viewingContact:         {
-        name: "Dylan",
-        id: "1",
-        routingId: "AuFYObBTfSghNXvlNxzqUFeRWNqoL714i5BWWAgi0KqD"
-      },
-      users : [
-        {
-          name: "Dylan",
-          id: "1",
-          routingId: "AuFYObBTfSghNXvlNxzqUFeRWNqoL714i5BWWAgi0KqD"
-        },
-      ],
-      messages: [
-      ]
+      conversation: null,
+      messages: [],
+      sideBarOpen: false
     };
     this.sendHandler = this.sendHandler.bind(this);
-
-    // Connect to the server
-    // this.socket = io(config.api, { query: `username=${props.username}` }).connect();
-
-    // Listen for messages from the server
-    // this.socket.on('server:message', message => {
-    //   this.addMessage(message);
-    // });
-    this.loadUser()
-
   }
 
-
-  async loadUser(){
-    let user = null;
+  async componentDidMount(){
     const eventID = this.props.match.params.id
-    this.state.users.map((object, key) => {
-      if (object.id == eventID) {
-        this.openContact(object)
-      }
-    })
-  }
-  openContact(contact) {
-    this.setState({
-      viewingContact: contact
-    });
+    let conversation = await Conversation.findByPk(eventID)
+    console.log(conversation)
+    if(conversation != null) {
+      this.setState({
+        conversation: conversation,
+        messages: conversation.messages
+      })
+    } else {
+      // navigate to new messages view
+    }
   }
 
   async sendHandler(message) {
     let myKey = await this.props.wallet.getRoutingPubKey();
-    const messageObject = {
-      pubKey: myKey,
-      username: "Dylan",
-      timeStamp: moment.now(),
-      message
-    };
+    try {
+      const messageObject = {
+        content: message,
+        conversation_id: this.state.conversation.id,
+        owner_id: myKey,
+        date: moment.now(),
+      };
 
-    // Emit the message to the server
-    // this.socket.emit('client:message', messageObject);
+      let message = await Message.create(messageObject)
 
+      let packet = new Packet(key, myId, 'newMessageRequest', JSON.stringify(message))
 
-    console.log(messageObject)
-    let data = await this.props.wallet.sendPacket({key: this.state.viewingContact.routingId ,protocolId: 1,protocolVersion :1, message: JSON.stringify(messageObject)})
-    messageObject.fromMe = true;
-    console.log(data)
+      event.emit('sendPacket', packet)
 
-    this.addMessage(messageObject);
+      // Emit the message to the server
+      // this.socket.emit('client:message', messageObject);
+
+      this.addMessage(message);
+    } catch (e) {
+      console.log(e)
+      console.log('cant send message')
+    }
+
+  }
+
+  async editHandler() {
+
   }
 
   addMessage(message) {
@@ -95,18 +83,16 @@ class MessagingHome extends Component {
   }
 
   render() {
-
-    const friend = this.state.viewingContact;
-    // console.log(friend)
-
+    let conversation = this.state.conversation
+    let messages = this.state.messages
     return (
       <div className="d-flex flex-row">
         <div className="padding-titlebar flex-auto d-flex flex-column">
           <Header>
-            { friend != null ? friend.name : "New Message"}
+            { conversation != null ? conversation.name : null}
           </Header>
           <Body noPadding className="scrollable messaging-body">
-            <Messages messages={this.state.messages} />
+            <Messages messages={messages} />
 
           </Body>
           <Footer>
@@ -114,16 +100,16 @@ class MessagingHome extends Component {
           </Footer>
         </div>
 
-        <RightSidebar id="contactRightSidebar" className={friend === null ? 'hide' : ''}>
+        <RightSidebar id="contactRightSidebar" className={this.state.sideBarOpen === false ? 'hide' : ''}>
           <div className="d-flex">
-            <Button color="link" onClick={() => this.openContact(null)}>
+            <Button color="link" onClick={() => this.setState({sideBarOpen: false})}>
               Close
               <CloseCircleOutlineIcon className="ml-2" />
             </Button>
           </div>
-          { friend && (
+          { conversation && (
             <div className="p-3">
-              { friend.name }
+              { conversation.name }
               <div className="mt-4">
                 <p className="transactionInfoTitle"><span className="desc2 small-header">Routing Identifier</span></p>
                 <p><span className="desc3 small-text selectableText">AodysrxdVvEZ69SXe0cdQm7YAl8Yu4dHV2rcRO2J7R3y</span></p>

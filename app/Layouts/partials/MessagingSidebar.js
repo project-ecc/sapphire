@@ -7,32 +7,36 @@ import {CreateIcon, UserIcon} from 'mdi-react';
 import * as actions from '../../actions/index';
 
 const Tools = require('../../utils/tools');
+import db from '../../utils/database/db'
+const Conversation = db.Conversation;
 
 class MessagingSidebar extends Component {
   constructor(props) {
     super(props);
 
-    this.isUserSelected = this.isUserSelected.bind(this)
+    this.isConversationSelected = this.isConversationSelected.bind(this)
 
     this.state = {
-      users : [
-        {
-          name: "Dylan",
-          id: "1",
-          routingId: "AuFYObBTfSghNXvlNxzqUFeRWNqoL714i5BWWAgi0KqD"
-        }
-      ],
+      conversations: []
     };
   }
 
-  isUserSelected(match, location) {
+  async componentDidMount() {
+    let conversations  = await Conversation.findAll()
+    console.log(conversations)
+    this.setState({
+      conversations: conversations
+    })
+  }
+
+  isConversationSelected(match, location) {
     if (!match) {
       return false
     }
 
     const eventID = parseInt(match.params.id)
-    this.state.users.map((object, key) => {
-      if (object.id == eventID) {
+    this.state.conversations.map((object, key) => {
+      if (object.id === eventID) {
         return true
       }
     })
@@ -52,12 +56,12 @@ class MessagingSidebar extends Component {
                 <li>
                   <a className="subheading">{ this.props.lang.directMessages }</a>
                 </li>
-                { this.state.users.length > 0 ?
-                  this.state.users.map((object, key) => {
+                { this.state.conversations.length > 0 ?
+                  this.state.conversations.map((object, key) => {
                     return (
                       <li key={key}>
                         <NavLink   to={{
-                          pathname: "/friends/" + object.id}} isActive={this.isUserSelected} exact activeClassName="active">
+                          pathname: "/friends/" + object.id}} isActive={this.isConversationSelected} exact activeClassName="active">
                           {object.name}
                         </NavLink>
                       </li>

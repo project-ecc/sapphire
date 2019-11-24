@@ -27,16 +27,7 @@ module.exports = function (sequelize, DataTypes) {
 
   // class association method
   Peer.associate = function (models) {
-    Peer.belongsToMany(models.Conversation, {
-      through: models.ConversationUser,
-      foreignKey: 'peer_id',
-      as: 'conversations'
-    })
-    Peer.belongsToMany(models.Message, {
-      through: models.ConversationUser,
-      foreignKey: 'peer_id',
-      as: 'messages'
-    })
+    Peer.belongsToMany(models.Conversation, {through: models.ConversationUser})
   };
 
   return Peer;

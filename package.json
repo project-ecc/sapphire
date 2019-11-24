@@ -193,6 +193,8 @@
     "worker-loader": "^2.0.0"
   },
   "dependencies": {
+    "@material-ui/core": "^4.7.0",
+    "@material-ui/icons": "^4.5.1",
     "arch": "^2.1.1",
     "auto-launch": "^5.0.5",
     "babel-polyfill": "^6.26.0",

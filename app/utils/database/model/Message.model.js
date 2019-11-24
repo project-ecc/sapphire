@@ -12,6 +12,9 @@ module.exports = function (sequelize, DataTypes) {
     is_pinned : {
       type: DataTypes.BOOLEAN
     },
+    is_sent: {
+      type: DataTypes.BOOLEAN
+    },
     reply_message_id: {
       type: DataTypes.UUID
     },
@@ -26,11 +29,8 @@ module.exports = function (sequelize, DataTypes) {
   // class association method
   Message.associate = function (models) {
     Message.belongsTo(models.Conversation);
-    Message.belongsTo(models.Peer, {
-      through: models.ConversationUser,
-      foreignKey: 'message_id',
-      as: 'peer'
-    })
+    Message.belongsTo(models.ConversationUser);
+    Message.belongsTo(models.Peer, {as: 'owner'})
   };
 
   return Message;

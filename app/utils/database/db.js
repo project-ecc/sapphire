@@ -20,6 +20,9 @@ const sequelize = new Sequelize({
     max: 5
   },
   dialect: 'sqlite',
+  define: {
+    underscored: true
+  },
 
   // the storage engine for sqlite
   // - default ':memory:'

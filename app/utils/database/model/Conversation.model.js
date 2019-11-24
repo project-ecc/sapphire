@@ -19,9 +19,6 @@ module.exports = function (sequelize, DataTypes) {
     conversation_type: {
       type: DataTypes.ENUM(['PRIVATE', 'GROUP', 'SUPER_GROUP', 'CHANNEL', 'BROADCAST'])
     },
-    creator_id: {
-      type: DataTypes.STRING
-    },
     participants_count: {
       type: DataTypes.INTEGER
     },
@@ -35,8 +32,8 @@ module.exports = function (sequelize, DataTypes) {
 
   // class association method
   Conversation.associate = function (models) {
-    Conversation.belongsTo(models.Peer)
-    Conversation.hasMany(models.ConversationUser)
+    Conversation.belongsTo(models.Peer, {as: 'owner'})
+    Conversation.belongsToMany(models.Peer, {through: models.ConversationUser})
     Conversation.hasMany(models.Message)
   };
 

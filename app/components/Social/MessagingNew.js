@@ -68,6 +68,10 @@ class MessagingNew extends Component {
     this.setState({ messages });
   }
 
+  selectedPeer(peer){
+    console.log('here')
+  }
+
 
   render() {
 
@@ -77,7 +81,7 @@ class MessagingNew extends Component {
       <div className="d-flex flex-row">
         <div className="padding-titlebar flex-auto d-flex flex-column">
           <Header>
-            <SearchForFriend></SearchForFriend>
+            <SearchForFriend selectedPeer={this.selectedPeer}/>
           </Header>
           <Body noPadding className="scrollable messaging-body">
           <Messages messages={this.state.messages} />
@@ -87,32 +91,6 @@ class MessagingNew extends Component {
             <ChatInput onSend={this.sendHandler} />
           </Footer>
         </div>
-
-        {/*<RightSidebar id="contactRightSidebar" className={friend === null ? 'hide' : ''}>*/}
-          {/*<div className="d-flex">*/}
-            {/*<Button color="link" onClick={() => this.openContact(null)}>*/}
-              {/*Close*/}
-              {/*<CloseCircleOutlineIcon className="ml-2" />*/}
-            {/*</Button>*/}
-          {/*</div>*/}
-          {/*{ friend && (*/}
-            {/*<div className="p-3">*/}
-              {/*{ friend.name }*/}
-              {/*<div className="small-text transactionInfoTitle">*/}
-                {/*{friend.routingId !== null ? friend.routingId : 'Unknown Route'}*/}
-              {/*</div>*/}
-              {/*<div className="mt-4">*/}
-                {/*<p className="transactionInfoTitle"><span className="desc2 small-header">Friend since</span></p>*/}
-                {/*<p><span className="desc3 small-text selectableText">{moment(friend.timeStamp).format('dddd, MMMM Do YYYY')}</span></p>*/}
-              {/*</div>*/}
-              {/*<div className="d-flex justify-content-end mt-5">*/}
-                {/*<Button color="danger" size="sm" onClick={this.deleteAddress.bind(this, friend)}>*/}
-                  {/*Delete Contact*/}
-                {/*</Button>*/}
-              {/*</div>*/}
-            {/*</div>*/}
-          {/*)}*/}
-        {/*</RightSidebar>*/}
       </div>
     );
   }
