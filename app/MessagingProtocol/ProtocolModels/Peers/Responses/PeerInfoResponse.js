@@ -12,16 +12,20 @@ class PeerInfoResponse {
   async processData(){
     try {
       console.log(this.incomingPacket)
-      let peer = await Peer
-        .findByPk(this.incomingPacket.peerId)
-        .then((obj) => {
-          // update
-          if(obj)
-            return obj.update(this.incomingPacket);
-          // insert
-          return Peer.create(this.incomingPacket);
-        })
-      return this.returnData()
+      if(JSON.parse(this.incomingPacket.content)){
+        let peerInfoPacket = JSON.parse(this.incomingPacket.content)
+        let peer = await Peer
+          .findByPk(peerInfoPacket.peerId)
+          .then((obj) => {
+            // update
+            if(obj)
+              return obj.update(this.incomingPacket);
+            // insert
+            return Peer.create(this.incomingPacket);
+          })
+        return this.returnData()
+      }
+
     } catch (e) {
       console.log(e)
     }
