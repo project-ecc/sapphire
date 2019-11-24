@@ -1,6 +1,8 @@
 import connect from "react-redux/es/connect/connect";
 import * as actions from "../../../../actions";
 import db from '../../../../utils/database/db'
+import Packet from "../../../Packet";
+import UserPeer from "../Models/UserPeer";
 const Peer = db.Peer;
 class PeerInfoResponse {
 
@@ -13,8 +15,9 @@ class PeerInfoResponse {
     try {
       console.log(this.incomingPacket)
       if(JSON.parse(this.incomingPacket.content)){
-        let peerInfoPacket = JSON.parse(this.incomingPacket.content)
+        let peerInfoPacket = Object.assign(new UserPeer, JSON.parse(this.incomingPacket.content))
         console.log(peerInfoPacket)
+        console.log(peerInfoPacket.peerId)
         let peer = await Peer
           .findByPk(peerInfoPacket.peerId)
           .then((obj) => {
@@ -36,6 +39,8 @@ class PeerInfoResponse {
             });
           })
         return this.returnData()
+      } else {
+        console.log('cannot parse json peer packet')
       }
 
     } catch (e) {
