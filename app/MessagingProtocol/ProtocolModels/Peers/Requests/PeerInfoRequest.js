@@ -36,7 +36,9 @@ class PeerInfoRequest {
               obj.private_payment_address
             );
           // insert
-          return null
+          return new UserPeer(
+            this.myKey
+          );
         });
       //package up into userPeer.js model
       return this.returnData()
