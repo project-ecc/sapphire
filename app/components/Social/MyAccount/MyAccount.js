@@ -20,7 +20,7 @@ class MyAccount extends Component {
     this.saveAccount = this.saveAccount.bind(this)
     this.state = {
       display_image: null,
-      currentRoutingKey: null,
+      id: null,
       display_name: null,
       public_payment_address: null,
       private_payment_address: null
@@ -35,27 +35,27 @@ class MyAccount extends Component {
     if (myAccount != null) (
       this.setState({
         display_image: myAccount.display_image,
-        currentRoutingKey: myAccount.id,
+        id: myAccount.id,
         display_name: myAccount.display_name,
         public_payment_address: myAccount.public_payment_address,
         private_payment_address: myAccount.private_payment_address
       })
     )
     this.setState({
-      currentRoutingKey: currentRoutingKey
+      id: currentRoutingKey
     })
   }
 
   async saveAccount() {
     try {
       MyAccountDatabase
-        .findByPk(this.state.currentRoutingKey)
+        .findByPk(this.state.id)
         .then((obj) => {
           // update
           if(obj)
             return obj.update(this.state);
           // insert
-          return Model.create(this.state);
+          return MyAccountDatabase.create(this.state);
         })
 
       Toast({
@@ -124,7 +124,7 @@ class MyAccount extends Component {
                 <Input
                   readOnly
                   style={{ width: '400px' }}
-                  value={this.state.currentRoutingKey}
+                  value={this.state.id}
                   className="mb-4"
                 />
                 <p>Display Name</p>
