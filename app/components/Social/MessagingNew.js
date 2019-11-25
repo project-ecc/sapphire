@@ -13,6 +13,7 @@ import Packet from "../../MessagingProtocol/Packet";
 import db from '../../utils/database/db'
 const Conversation = db.Conversation;
 const Message = db.Message
+const Peer = db.Peer
 const event = require('../../utils/eventhandler');
 
 class MessagingNew extends Component {
@@ -34,35 +35,43 @@ class MessagingNew extends Component {
   }
 
   async sendHandler(messageData) {
-    let myKey = await this.props.wallet.getRoutingPubKey();
     try {
-      console.log(this.state.peer)
+
+      // find conversation
       let conversation = await Conversation.findOne(
         {
           where: {
-            owner_id: this.state.peer.id,
+            owner_id: this.props.activeAccount.id,
             conversation_type: 'PRIVATE'
             }
         })
       console.log(conversation)
       if(conversation == null) {
         conversation = await Conversation.create({
-          name: this.state.peer.display_name,
           conversation_type: 'PRIVATE',
-          owner_id: this.state.peer.id
+          owner_id: this.props.activeAccount.id
         })
       }
 
+      //find my peer from active account
+      const myPeer = await Peer.findByPk(this.props.activeAccount.id)
+      // add peers to conversation
+      conversation.addConversationPeers(myPeer, { through: { role: 'admin' }});
+      conversation.addConversationPeers(this.state.peer, { through: { role: 'admin' }});
+      console.log(conversation)
+      conversation.participants_count = 2
+      await conversation.save()
+      // create message object
       const messageObject = {
         content: messageData,
-        owner_id: this.state.peer.id,
+        owner_id: myPeer.id,
         date: moment.now(),
       };
 
       let message = await Message.create(messageObject)
 
       conversation.addMessage(message)
-      let packet = new Packet(this.state.peer.id, myKey, 'newConversationRequest', JSON.stringify(conversation))
+      let packet = new Packet(this.state.peer.id, myPeer.id, 'newConversationRequest', JSON.stringify(conversation))
 
       event.emit('sendPacket', packet)
       setTimeout(() =>{
@@ -87,8 +96,6 @@ class MessagingNew extends Component {
 
   render() {
 
-    const friend = this.state.viewingContact;
-
     return (
       <div className="d-flex flex-row">
         <div className="padding-titlebar flex-auto d-flex flex-column">
@@ -111,7 +118,8 @@ class MessagingNew extends Component {
 const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
-    wallet: state.application.wallet
+    wallet: state.application.wallet,
+    activeAccount: state.messaging.activeAccount
   };
 };
 

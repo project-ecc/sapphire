@@ -19,6 +19,9 @@ module.exports = function (sequelize, DataTypes) {
     },
     display_image: {
       type: DataTypes.BLOB
+    },
+    is_active: {
+      type: DataTypes.BOOLEAN
     }
   });
 

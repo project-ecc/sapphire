@@ -63,10 +63,10 @@ class ChatInput extends React.Component {
 
     return (
       <div>
-        { this.state.displayEmojiPicker ? <EmojiPicker className="emoji-picker" onEmojiClick={this.submitEmojiContent}/> : null }
         <div>
-          <Button onClick={this.showEmojiPicker} className="mt-5">
+          <Button onClick={this.showEmojiPicker} className="mt-5 position-relative">
             <StickerEmojiIcon className="ml-2" />
+            { this.state.displayEmojiPicker ? <EmojiPicker className="emoji-picker" onEmojiClick={this.submitEmojiContent}/> : null }
           </Button>
         </div>
         <div>

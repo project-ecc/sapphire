@@ -23,7 +23,8 @@ class MyAccount extends Component {
       id: null,
       display_name: null,
       public_payment_address: null,
-      private_payment_address: null
+      private_payment_address: null,
+      is_active: true
     }
 
   }

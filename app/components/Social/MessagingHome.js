@@ -28,6 +28,7 @@ class MessagingHome extends Component {
       sideBarOpen: false
     };
     this.sendHandler = this.sendHandler.bind(this);
+    this.getConversationName = this.getConversationName.bind(this);
   }
 
   async componentDidMount(){
@@ -50,26 +51,28 @@ class MessagingHome extends Component {
     }
   }
 
-  async sendHandler(message) {
-    let myKey = await this.props.wallet.getRoutingPubKey();
+  async sendHandler(messageData) {
+
     try {
+
       const messageObject = {
-        content: message,
-        conversation_id: this.state.conversation.id,
-        owner_id: myKey,
+        content: messageData,
+        owner_id: this.props.activeAccount.id,
         date: moment.now(),
       };
 
       let message = await Message.create(messageObject)
 
-      let packet = new Packet(key, myId, 'newMessageRequest', JSON.stringify(message))
+      this.state.conversation.addMessage(message)
+      this.setState({
+        messages: this.state.conversation.messages
+      })
+      const conversationPeers = this.state.conversation.conversationPeers
+      for (const key in conversationPeers) {
+        let packet = new Packet(conversationPeers[key].id, this.props.activeAccount.id, 'newMessageRequest', JSON.stringify(message))
+        event.emit('sendPacket', packet)
+      }
 
-      event.emit('sendPacket', packet)
-
-      // Emit the message to the server
-      // this.socket.emit('client:message', messageObject);
-
-      this.addMessage(message);
     } catch (e) {
       console.log(e)
       console.log('cant send message')
@@ -77,15 +80,16 @@ class MessagingHome extends Component {
 
   }
 
-  async editHandler() {
-
-  }
-
-  addMessage(message) {
-    // Append the message to the component state
-    const messages = this.state.messages;
-    messages.push(message);
-    this.setState({ messages });
+  getConversationName() {
+    const conversation = this.state.conversation
+    if(conversation.conversation_type === 'PRIVATE' && conversation.participants_count === 2) {
+      const conversationPeers = conversation.conversationPeers
+      for (const key in conversationPeers) {
+        if(conversationPeers[key].id !== this.props.activeAccount.id){
+          return conversationPeers[key].display_name
+        }
+      }
+    }
   }
 
   render() {
@@ -95,7 +99,17 @@ class MessagingHome extends Component {
       <div className="d-flex flex-row">
         <div className="padding-titlebar flex-auto d-flex flex-column">
           <Header>
-            { conversation != null ? conversation.name : null}
+            <div className='row col-12'>
+              <div className='col-12 col-md-10'>
+                { conversation != null ? this.getConversationName() : null}
+              </div>
+              <div className='col-12 col-md-2'>
+                <Button color="link" onClick={() => this.setState({sideBarOpen: true})}>
+                  Open Sidebar
+                </Button>
+              </div>
+            </div>
+
           </Header>
           <Body noPadding className="scrollable messaging-body">
             <Messages messages={messages} />
@@ -146,7 +160,8 @@ class MessagingHome extends Component {
 const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
-    wallet: state.application.wallet
+    wallet: state.application.wallet,
+    activeAccount: state.messaging.activeAccount
   };
 };
 

@@ -33,7 +33,7 @@ module.exports = function (sequelize, DataTypes) {
   // class association method
   Conversation.associate = function (models) {
     Conversation.belongsTo(models.Peer, {as: 'owner'})
-    Conversation.belongsToMany(models.Peer, {through: models.ConversationUser})
+    Conversation.belongsToMany(models.Peer, {through: models.ConversationUser, as: 'conversationPeers'})
     Conversation.hasMany(models.Message)
   };
 

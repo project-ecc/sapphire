@@ -14,7 +14,6 @@ class PeerInfoResponse {
   async processData(){
     this.myKey = await this.walletInstance.getRoutingPubKey()
     try {
-      console.log(this.incomingPacket)
       if(JSON.parse(this.incomingPacket.content)){
         let peerInfoPacket = Object.assign(new UserPeer, JSON.parse(this.incomingPacket.content))
         console.log(peerInfoPacket)

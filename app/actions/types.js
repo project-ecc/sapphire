@@ -74,3 +74,8 @@ export const MINING_INFO = 'mining_info';
 export const BLOCK_CHAIN_CONNECTED = 'block_chain_connected';
 export const BETA_MODE = 'beta_mode';
 export const INITIAL_SETUP = 'intial_setup';
+
+
+//Messaging
+
+export const SET_ACTIVE_MESSAGING_ACCOUNT = 'set_active_messaging_accoount'

@@ -6,6 +6,9 @@ const socket = zmq.socket('sub');
 import event from '../utils/eventhandler';
 import Packet from "../MessagingProtocol/Packet";
 import {parseIncomingPacket} from "../MessagingProtocol/ParseIncomingPacket";
+import db from '../utils/database/db'
+const MyAccount = db.MyAccount;
+const Peer = db.Peer;
 
 class Messaging extends Component {
 
@@ -20,12 +23,49 @@ class Messaging extends Component {
     this.sendMessageRequest = this.sendMessageRequest.bind(this);
     this.processIncomingPacket = this.processIncomingPacket.bind(this);
     this.getPeerInfo = this.getPeerInfo.bind(this);
+    this.setActiveMessagingAccount = this.setActiveMessagingAccount.bind(this);
 
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     await this.registerMessageReceiver();
     await this.startCheckingForPeerInfo();
+    await this.setActiveMessagingAccount()
+  }
+
+  async setActiveMessagingAccount() {
+    const myAccount = await MyAccount.findOne({
+      where: {
+        is_active: true
+      }
+    })
+
+    if (myAccount != null){
+      // set my active account
+      this.props.setActiveMessagingAccount(myAccount)
+
+      // add my peer to the peers table
+      await Peer
+        .findByPk(myAccount.id)
+        .then((obj) => {
+          // update
+          if(obj)
+            return obj.update({
+              display_image: myAccount.display_image,
+              display_name: myAccount.display_name,
+              public_payment_address: myAccount.public_payment_address,
+              private_payment_address: myAccount.private_payment_address
+            });
+          // insert
+          return Peer.create({
+            id: myAccount.id,
+            display_image: myAccount.display_image,
+            display_name: myAccount.display_name,
+            public_payment_address: myAccount.public_payment_address,
+            private_payment_address: myAccount.private_payment_address
+          });
+        })
+    }
   }
 
   async registerMessageReceiver(){

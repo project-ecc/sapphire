@@ -413,3 +413,9 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-direction: column;
 }
+
+.emoji-picker {
+  position: absolute !important;
+  bottom: 100%;
+  left: 0;
+}

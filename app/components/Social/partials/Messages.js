@@ -1,6 +1,8 @@
 import React from 'react';
 
 import Message from './Message';
+import connect from "react-redux/es/connect/connect";
+import * as actions from "../../../actions";
 
 class Messages extends React.Component {
   componentDidUpdate() {
@@ -18,7 +20,7 @@ class Messages extends React.Component {
           key={i}
           username={message.owner.display_name}
           message={message.content}
-          fromMe={message.fromMe} />
+          fromMe={message.owner.id === this.props.activeAccount.id} />
       );
     });
 
@@ -30,8 +32,16 @@ class Messages extends React.Component {
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    lang: state.startup.lang,
+    wallet: state.application.wallet,
+    activeAccount: state.messaging.activeAccount
+  };
+};
+
 Messages.defaultProps = {
   messages: []
 };
 
-export default Messages;
+export default connect(mapStateToProps, actions)(Messages);
