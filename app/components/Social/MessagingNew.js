@@ -14,6 +14,7 @@ import db from '../../utils/database/db'
 const Conversation = db.Conversation;
 const Message = db.Message
 const Peer = db.Peer
+const uuidv4 = require('uuid/v4')
 const event = require('../../utils/eventhandler');
 
 class MessagingNew extends Component {
@@ -51,6 +52,7 @@ class MessagingNew extends Component {
       if(conversation == null) {
         isNewConversation = true
         conversation = await Conversation.create({
+          id: uuidv4(),
           conversation_type: 'PRIVATE',
           owner_id: this.props.activeAccount.id
         })
@@ -64,6 +66,7 @@ class MessagingNew extends Component {
 
       // create message object
       const messageObject = {
+        id: uuidv4(),
         content: messageData,
         owner_id: myPeer.id,
         date: moment.now(),

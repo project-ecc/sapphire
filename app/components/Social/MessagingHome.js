@@ -15,6 +15,7 @@ import Footer from "../Others/Footer";
 import db from '../../utils/database/db'
 const Conversation = db.Conversation;
 const Message = db.Message
+const uuidv4 = require('uuid/v4')
 const Peer = db.Peer;
 import Packet from "../../MessagingProtocol/Packet";
 
@@ -61,6 +62,7 @@ class MessagingHome extends Component {
     try {
 
       const messageObject = {
+        id: uuidv4(),
         content: messageData,
         owner_id: this.props.activeAccount.id,
         date: moment.now(),
