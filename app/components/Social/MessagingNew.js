@@ -38,6 +38,7 @@ class MessagingNew extends Component {
     try {
       //find my peer from active account
       const myPeer = await Peer.findByPk(this.props.activeAccount.id)
+      let isNewConversation = false
       // find conversation
       let conversation = await Conversation.findOne(
         {
@@ -48,6 +49,7 @@ class MessagingNew extends Component {
         })
       console.log(conversation)
       if(conversation == null) {
+        isNewConversation = true
         conversation = await Conversation.create({
           conversation_type: 'PRIVATE',
           owner_id: this.props.activeAccount.id
@@ -70,9 +72,22 @@ class MessagingNew extends Component {
       let message = await Message.create(messageObject)
 
       conversation.addMessage(message)
-      let packet = new Packet(this.state.peer.id, myPeer.id, 'newConversationRequest', JSON.stringify(conversation))
+      await conversation.save();
 
-      event.emit('sendPacket', packet)
+      if(isNewConversation) {
+        conversation = await Conversation.findByPk(conversation.id, {
+          include: [{ all: true, nested: true }]
+        })
+        console.log(conversation)
+
+
+        let packet = new Packet(this.state.peer.id, myPeer.id, 'newConversationRequest', JSON.stringify(conversation))
+        event.emit('sendPacket', packet)
+      } else {
+        let packet = new Packet(this.state.peer.id, myPeer.id, 'newConversationMessageRequest', JSON.stringify(message))
+        event.emit('sendPacket', packet)
+      }
+
       setTimeout(() =>{
         this.props.history.push('/friends/' + conversation.id)
       }, 2000)
