@@ -12,7 +12,7 @@ class PeerInfoRequest {
    *
    *
    */
-  constructor(incomingPacket, walletInstance) {
+  constructor(incomingPacket, walletInstance, activeAccount) {
     this.incomingPacket = incomingPacket;
     this.walletInstance = walletInstance;
   }

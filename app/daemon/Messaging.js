@@ -122,7 +122,7 @@ class Messaging extends Component {
 
   async processIncomingPacket (message) {
     console.log(message)
-    let response = await parseIncomingPacket(message, this.props.wallet)
+    let response = await parseIncomingPacket(message, this.props.wallet, this.props.activeAccount)
     console.log(response)
     if(response != null){
       await this.sendMessageResponse(response);
@@ -214,6 +214,7 @@ const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
     wallet: state.application.wallet,
+    activeAccount: state.messaging.activeAccount
   };
 };
 

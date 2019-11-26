@@ -6,7 +6,7 @@ import UserPeer from "../Models/UserPeer";
 const Peer = db.Peer;
 class PeerInfoResponse {
 
-  constructor(incomingPacket, walletInstance) {
+  constructor(incomingPacket, walletInstance, activeAccount) {
     this.incomingPacket = incomingPacket;
     this.walletInstance = walletInstance;
   }

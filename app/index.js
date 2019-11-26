@@ -2,13 +2,14 @@ import React from 'react';
 import {render} from 'react-dom';
 import {AppContainer} from 'react-hot-loader';
 import {HashRouter as Router, Redirect, Route} from 'react-router-dom';
+import { provide } from 'js-redux';
 import {Provider} from 'react-redux';
 import Root from './App';
 import {configureStore} from './store/configureStore';
 import './app.global.scss';
 
 const store = configureStore({});
-
+provide(store)
 render(
   <AppContainer>
     <Provider store={store}>

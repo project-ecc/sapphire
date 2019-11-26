@@ -1,6 +1,6 @@
 import db from '../../../../utils/database/db'
 const Peer = db.Peer;
-class NewConversationResponse {
+class NewConversationMessageResponse {
 
   constructor(incomingPacket, walletInstance, activeAccount) {
     this.incomingPacket = incomingPacket;
@@ -23,7 +23,7 @@ class NewConversationResponse {
 
   }
 }
-export default NewConversationResponse;
+export default NewConversationMessageResponse;
 
 
 

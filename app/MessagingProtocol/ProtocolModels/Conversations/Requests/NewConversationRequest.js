@@ -8,7 +8,7 @@ class NewConversationRequest {
    *
    *
    */
-  constructor(incomingPacket, walletInstance) {
+  constructor(incomingPacket, walletInstance, activeAccount) {
     this.incomingPacket = incomingPacket;
     this.walletInstance = walletInstance;
   }
@@ -18,26 +18,8 @@ class NewConversationRequest {
     try {
       if(JSON.parse(this.incomingPacket.content)){
         this.conversation = Object.assign(new Conversation, JSON.parse(this.incomingPacket.content))
-        // let peer = await Peer
-        //   .findByPk(peerInfoPacket.peerId)
-        //   .then((obj) => {
-        //     // update
-        //     if(obj)
-        //       return obj.update({
-        //         display_image: peerInfoPacket.displayImage,
-        //         display_name: peerInfoPacket.displayName,
-        //         public_payment_address: peerInfoPacket.publicPaymentAddress,
-        //         private_payment_address: peerInfoPacket.privatePaymentAddress
-        //       });
-        //     // insert
-        //     return Peer.create({
-        //       id: peerInfoPacket.peerId,
-        //       display_image: peerInfoPacket.displayImage,
-        //       display_name: peerInfoPacket.displayName,
-        //       public_payment_address: peerInfoPacket.publicPaymentAddress,
-        //       private_payment_address: peerInfoPacket.privatePaymentAddress
-        //     });
-        //   })
+        console.log(this.conversation)
+
         return this.returnData()
       } else {
         console.log('cannot parse json peer packet')
