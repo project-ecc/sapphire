@@ -36,7 +36,8 @@ class MessagingNew extends Component {
 
   async sendHandler(messageData) {
     try {
-
+      //find my peer from active account
+      const myPeer = await Peer.findByPk(this.props.activeAccount.id)
       // find conversation
       let conversation = await Conversation.findOne(
         {
@@ -51,16 +52,14 @@ class MessagingNew extends Component {
           conversation_type: 'PRIVATE',
           owner_id: this.props.activeAccount.id
         })
+        // add peers to conversation
+        conversation.addConversationPeers(myPeer, { through: { role: 'admin' }});
+        conversation.addConversationPeers(this.state.peer, { through: { role: 'admin' }});
+        conversation.participants_count = 2
+        await conversation.save()
       }
 
-      //find my peer from active account
-      const myPeer = await Peer.findByPk(this.props.activeAccount.id)
-      // add peers to conversation
-      conversation.addConversationPeers(myPeer, { through: { role: 'admin' }});
-      conversation.addConversationPeers(this.state.peer, { through: { role: 'admin' }});
-      console.log(conversation)
-      conversation.participants_count = 2
-      await conversation.save()
+
       // create message object
       const messageObject = {
         content: messageData,

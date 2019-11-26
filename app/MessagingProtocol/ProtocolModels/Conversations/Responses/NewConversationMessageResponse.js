@@ -1,5 +1,6 @@
 import db from '../../../../utils/database/db'
-const Peer = db.Peer;
+const Conversation = db.Conversation;
+const Message = db.Message;
 class NewConversationMessageResponse {
 
   constructor(incomingPacket, walletInstance, activeAccount) {
@@ -8,19 +9,25 @@ class NewConversationMessageResponse {
   }
 
   async processData(){
-    this.myKey = await this.walletInstance.getRoutingPubKey()
     try {
+      if(JSON.parse(this.incomingPacket.content)){
+        this.message = Object.assign(new Message, JSON.parse(this.incomingPacket.content))
 
-    } catch (e) {
+        let message = await Message.findByPk(this.message.id)
+
+        if(message == null) {
+          return null;
+        }
+        this.message.is_sent = true;
+        await this.message.save()
+
+      } else {
+        console.log('cannot parse json peer packet')
+      }
+
+    }catch (e) {
       console.log(e)
     }
-
-    //process new peer info and put into data base.
-
-  }
-
-  returnData (){
-
   }
 }
 export default NewConversationMessageResponse;
