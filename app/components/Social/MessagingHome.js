@@ -70,7 +70,7 @@ class MessagingHome extends Component {
       })
       const conversationPeers = this.state.conversation.conversationPeers
       for (const key in conversationPeers) {
-        let packet = new Packet(conversationPeers[key].id, this.props.activeAccount.id, 'newMessageRequest', JSON.stringify(message))
+        let packet = new Packet(conversationPeers[key].id, this.props.activeAccount.id, 'newConversationMessageRequest', JSON.stringify(message))
         event.emit('sendPacket', packet)
       }
 
