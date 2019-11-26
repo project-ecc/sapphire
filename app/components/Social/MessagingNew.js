@@ -70,12 +70,15 @@ class MessagingNew extends Component {
         content: messageData,
         owner_id: myPeer.id,
         date: moment.now(),
+        conversation_id: conversation.id
       };
 
       let message = await Message.create(messageObject)
 
       conversation.addMessage(message)
       await conversation.save();
+      message = await Message.findByPk(message.id)
+      console.log(message)
 
       if(isNewConversation) {
         conversation = await Conversation.findByPk(conversation.id, {

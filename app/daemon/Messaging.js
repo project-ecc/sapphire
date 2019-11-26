@@ -140,6 +140,7 @@ class Messaging extends Component {
   }
 
   async sendPacket(packet) {
+    console.log(packet)
     let encodedPacket = JSON.stringify(packet)
     let data = await this.props.wallet.sendPacket(
       {

@@ -66,10 +66,10 @@ class MessagingHome extends Component {
         content: messageData,
         owner_id: this.props.activeAccount.id,
         date: moment.now(),
+        conversation_id: this.state.conversation.id
       };
 
       let message = await Message.create(messageObject)
-      let conversation =
       this.state.conversation.addMessage(message)
       await this.state.conversation.save()
       this.setState({
