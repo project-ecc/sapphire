@@ -31,9 +31,18 @@ class MessagingHome extends Component {
     };
     this.sendHandler = this.sendHandler.bind(this);
     this.getConversationName = this.getConversationName.bind(this);
+    this.reloadConversation = this.reloadConversation.bind(this);
   }
 
+
   async componentDidMount(){
+    event.on('reloadConversation',() => {
+      this.reloadConversation()
+    });
+    this.reloadConversation()
+  }
+
+  async reloadConversation(){
     const eventID = this.props.match.params.id
     let conversation = await Conversation.findByPk(eventID, {
       include:
@@ -41,10 +50,10 @@ class MessagingHome extends Component {
           model: Message,
           include: ['owner']
         },
-        {
-          model: Peer,
+          {
+            model: Peer,
             as: 'conversationPeers'
-        }]
+          }]
     })
     console.log(conversation)
     if(conversation != null) {
@@ -83,6 +92,7 @@ class MessagingHome extends Component {
           event.emit('sendPacket', packet)
         }
       }
+      await this.reloadConversation()
     } catch (e) {
       console.log(e)
       console.log('cant send message')

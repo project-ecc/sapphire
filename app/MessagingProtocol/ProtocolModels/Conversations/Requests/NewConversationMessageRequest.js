@@ -1,5 +1,7 @@
 import Packet from "../../../Packet";
 import db from '../../../../utils/database/db'
+const event = require('../../../../utils/eventhandler');
+import moment from "moment";
 const Conversation = db.Conversation;
 const Message = db.Message;
 class NewConversationMessageRequest {
@@ -28,9 +30,18 @@ class NewConversationMessageRequest {
         if(conversation == null) {
           return null;
         }
-        this.message.is_sent = true;
-        conversation.addMessage(this.message)
+
+        let message = await Message.create({
+          id: this.message.id,
+          content: this.message.content,
+          owner_id: this.message.owner_id,
+          date: this.message.date,
+          conversation_id: this.message.conversation_id,
+          is_sent:true
+        })
+        conversation.addMessage(message)
         await conversation.save()
+        event.emit('reloadConversation')
         return this.returnData()
       } else {
         console.log('cannot parse json peer packet')
