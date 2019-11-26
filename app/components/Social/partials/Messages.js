@@ -20,7 +20,7 @@ class Messages extends React.Component {
           key={i}
           username={message.owner.display_name}
           message={message.content}
-          fromMe={message.owner.id === this.props.activeAccount.id} />
+          fromMe={message.owner.id === (this.props.activeAccount != null ? this.props.activeAccount.id : false)} />
       );
     });
 

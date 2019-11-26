@@ -64,7 +64,7 @@ class MessagingHome extends Component {
       let message = await Message.create(messageObject)
 
       this.state.conversation.addMessage(message)
-      await this.state.converation.save()
+      await this.state.conversation.save()
       this.setState({
         messages: this.state.conversation.messages
       })
