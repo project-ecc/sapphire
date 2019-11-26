@@ -8,7 +8,7 @@ import {configureStore} from './store/configureStore';
 import './app.global.scss';
 
 const store = configureStore({});
-provide(store)
+
 render(
   <AppContainer>
     <Provider store={store}>
