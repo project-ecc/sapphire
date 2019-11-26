@@ -15,6 +15,7 @@ import Footer from "../Others/Footer";
 import db from '../../utils/database/db'
 const Conversation = db.Conversation;
 const Message = db.Message
+const Peer = db.Peer;
 import Packet from "../../MessagingProtocol/Packet";
 
 const event = require('./../../utils/eventhandler');
@@ -35,10 +36,14 @@ class MessagingHome extends Component {
     const eventID = this.props.match.params.id
     let conversation = await Conversation.findByPk(eventID, {
       include:
-        {
+        [{
           model: Message,
           include: ['owner']
-        }
+        },
+        {
+          model: Peer,
+            as: 'conversationPeers'
+        }]
     })
     console.log(conversation)
     if(conversation != null) {
@@ -62,18 +67,20 @@ class MessagingHome extends Component {
       };
 
       let message = await Message.create(messageObject)
-
+      let conversation =
       this.state.conversation.addMessage(message)
       await this.state.conversation.save()
       this.setState({
         messages: this.state.conversation.messages
       })
       const conversationPeers = this.state.conversation.conversationPeers
+      console.log(conversationPeers)
       for (const key in conversationPeers) {
-        let packet = new Packet(conversationPeers[key].id, this.props.activeAccount.id, 'newConversationMessageRequest', JSON.stringify(message))
-        event.emit('sendPacket', packet)
+        if(conversationPeers[key].id !== this.props.activeAccount.id){
+          let packet = new Packet(conversationPeers[key].id, this.props.activeAccount.id, 'newConversationMessageRequest', JSON.stringify(message))
+          event.emit('sendPacket', packet)
+        }
       }
-
     } catch (e) {
       console.log(e)
       console.log('cant send message')
