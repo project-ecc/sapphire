@@ -14,6 +14,9 @@ module.exports = function (sequelize, DataTypes) {
     is_sent: {
       type: DataTypes.BOOLEAN
     },
+    is_read: {
+      type: DataTypes.BOOLEAN
+    },
     reply_message_id: {
       type: DataTypes.UUID
     },
@@ -30,6 +33,7 @@ module.exports = function (sequelize, DataTypes) {
     Message.belongsTo(models.Conversation);
     Message.belongsTo(models.ConversationUser);
     Message.belongsTo(models.Peer, {as: 'owner'})
+    Message.hasMany(models.Media)
   };
 
   return Message;

@@ -3,6 +3,7 @@ import React from 'react';
 import Message from './Message';
 import connect from "react-redux/es/connect/connect";
 import * as actions from "../../../actions";
+import List from "@material-ui/core/List/List";
 
 class Messages extends React.Component {
   componentDidUpdate() {
@@ -16,18 +17,18 @@ class Messages extends React.Component {
     const messages = this.props.messages.map((message, i) => {
       console.log(message)
       return (
+
         <Message
           key={i}
-          username={message.owner.display_name}
-          message={message.content}
+          message={message}
           fromMe={message.owner.id === (this.props.activeAccount != null ? this.props.activeAccount.id : false)} />
       );
     });
 
     return (
-      <div className='messages' id='messageList'>
+      <List className='messages' id='messageList'>
         { messages }
-      </div>
+      </List>
     );
   }
 }

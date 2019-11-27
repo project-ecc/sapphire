@@ -3,20 +3,28 @@ module.exports = function (sequelize, DataTypes) {
     id: {
       allowNull: false,
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
     name: {
       type: DataTypes.STRING,
-      unique: true
     },
-    conversation_id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4
+    description: {
+      type: DataTypes.STRING
     },
-    created_by_id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4
+    file_type: {
+      type: DataTypes.STRING
+    },
+    file_size: {
+      type: DataTypes.INTEGER
+    },
+    thumbnail: {
+      type: DataTypes.BLOB
+    },
+    extension: {
+      type: DataTypes.STRING
+    },
+    content: {
+      type: DataTypes.BLOB
     },
     date: {
       type: DataTypes.INTEGER
@@ -25,8 +33,9 @@ module.exports = function (sequelize, DataTypes) {
 
   // class association method
   Media.associate = function (models) {
-    Media.hasMany(models.Address);
+    Media.belongsTo(models.Peer, {as: 'owner'})
     Media.belongsTo(models.Conversation)
+    Media.belongsTo(models.Message)
   };
 
   return Media;

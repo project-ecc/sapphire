@@ -8,6 +8,13 @@ import * as actions from '../../actions/index';
 
 const Tools = require('../../utils/tools');
 import db from '../../utils/database/db'
+import ListItem from "@material-ui/core/ListItem/ListItem";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar/ListItemAvatar";
+import Avatar from "@material-ui/core/Avatar/Avatar";
+import ListItemText from "@material-ui/core/ListItemText/ListItemText";
+import Typography from "@material-ui/core/Typography/Typography";
+import Divider from "@material-ui/core/Divider/Divider";
+import List from "@material-ui/core/List/List";
 const Conversation = db.Conversation;
 const Peer = db.Peer;
 const ConversationUser = db.ConversationUser;
@@ -17,7 +24,7 @@ class MessagingSidebar extends Component {
     super(props);
 
     this.isConversationSelected = this.isConversationSelected.bind(this)
-    this.getConversationName = this.getConversationName.bind(this)
+    this.getConversation = this.getConversation.bind(this)
 
     this.state = {
       conversations: []
@@ -57,7 +64,9 @@ class MessagingSidebar extends Component {
     })
   }
 
-  getConversationName(conversation) {
+  getConversation(conversation, key, selected) {
+    let displayName = null
+    let displayImage = null
     if(this.props.activeAccount == null){
       return null
     }
@@ -65,10 +74,25 @@ class MessagingSidebar extends Component {
       const conversationPeers = conversation.conversationPeers
       for (const key in conversationPeers) {
         if(conversationPeers[key].id !== this.props.activeAccount.id){
-          return conversationPeers[key].display_name
+          displayName = conversationPeers[key].display_name
+          displayImage = conversationPeers[key].display_image
         }
       }
     }
+
+    return (
+      <div>
+        <ListItem selected={selected}>
+          <ListItemAvatar>
+            <Avatar alt="Peer display image" src={displayImage != null ? displayImage : "https://statrader.com/wp-content/uploads/2018/06/ecc-logo.jpg"} />
+          </ListItemAvatar>
+          <ListItemText
+            primary={displayName}
+          />
+        </ListItem>
+        <Divider variant="inset" component="li" />
+      </div>
+    )
   }
 
   render() {
@@ -82,30 +106,28 @@ class MessagingSidebar extends Component {
               <img id="sidebarLogo" src={usericon} />
             </div>
             <div className="menu">
-              <ul>
-                <li>
+              <List>
+                <ListItem>
                   <a className="subheading">{ this.props.lang.directMessages }</a>
-                </li>
+                </ListItem>
                 { conversations.length > 0 ?
                   conversations.map((object, key) => {
                     return (
-                      <li key={key}>
-                        <NavLink   to={{
-                          pathname: "/friends/" + object.id}} isActive={this.isConversationSelected} exact activeClassName="active">
-                          {this.getConversationName(object)}
-                        </NavLink>
-                      </li>
+                      <NavLink   to={{
+                        pathname: "/friends/" + object.id}} exact activeClassName="active">
+                        {this.getConversation(object, key, this.isConversationSelected())}
+                      </NavLink>
                     );
                 })
                 : (
-                    <li>
+                    <ListItem>
                       <a className="subheading">{ this.props.lang.noFriendsAvailable }</a>
-                    </li>
+                    </ListItem>
                 )}
                 <li>
                   <a className="subheading">{ this.props.lang.groupMessaging }</a>
                 </li>
-              </ul>
+              </List>
             </div>
           </div>
           <div className="menu mt-0">

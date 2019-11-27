@@ -41,6 +41,7 @@ const Peer = require("./model/Peer.model")
 const Conversation = require('./model/Conversation.model')
 const ConversationUser = require('./model/ConversationUser.model')
 const Message = require('./model/Message.model')
+const Media = require('./model/Media.model')
 //
 const models = {
   // core models
@@ -53,7 +54,8 @@ const models = {
   Peer: Peer(sequelize, Sequelize),
   Conversation: Conversation(sequelize, Sequelize),
   ConversationUser: ConversationUser(sequelize, Sequelize),
-  Message: Message(sequelize, Sequelize)
+  Message: Message(sequelize, Sequelize),
+  Media: Media(sequelize, Sequelize)
 };
 //
 // // Run `.associate` if it exists,

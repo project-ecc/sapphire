@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Button} from 'reactstrap';
-import {CloseCircleOutlineIcon, PlusIcon} from 'mdi-react';
+import {CloseCircleOutlineIcon, MenuIcon, PlusIcon} from 'mdi-react';
 import moment from 'moment';
 
 import Body from './../Others/Body';
@@ -44,26 +44,31 @@ class MessagingHome extends Component {
 
   async reloadConversation(){
     const eventID = this.props.match.params.id
-    let conversation = await Conversation.findByPk(eventID, {
-      include:
-        [{
-          model: Message,
-          include: ['owner']
-        },
-          {
-            model: Peer,
-            as: 'conversationPeers'
-          }]
-    })
-    console.log(conversation)
-    if(conversation != null) {
-      this.setState({
-        conversation: conversation,
-        messages: conversation.messages
+    if(eventID != null) {
+      let conversation = await Conversation.findByPk(eventID, {
+        include:
+          [{
+            model: Message,
+            include: ['owner']
+          },
+            {
+              model: Peer,
+              as: 'conversationPeers'
+            }]
       })
+      console.log(conversation)
+      if(conversation != null) {
+        this.setState({
+          conversation: conversation,
+          messages: conversation.messages
+        })
+      } else {
+        // navigate to new messages view
+      }
     } else {
-      // navigate to new messages view
+      // load the latest conversation
     }
+
   }
 
   async sendHandler(messageData) {
@@ -120,14 +125,16 @@ class MessagingHome extends Component {
         <div className="padding-titlebar flex-auto d-flex flex-column">
           <Header>
             <div className='row col-12'>
-              <div className='col-12 col-md-10'>
+              <div className='col-12 col-md-11'>
                 { conversation != null ? this.getConversationName() : null}
               </div>
-              <div className='col-12 col-md-2'>
-                <Button color="link" onClick={() => this.setState({sideBarOpen: true})}>
-                  Open Sidebar
-                </Button>
-              </div>
+              { conversation && (
+                <div className='col-12 col-md-1'>
+                  <Button color="link" onClick={() => this.setState({sideBarOpen: true})}>
+                    <MenuIcon size={20}></MenuIcon>
+                  </Button>
+                </div>
+              )}
             </div>
 
           </Header>
