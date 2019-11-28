@@ -16,26 +16,26 @@ class PeerInfoResponse {
     try {
       if(JSON.parse(this.incomingPacket.content)){
         let peerInfoPacket = Object.assign(new UserPeer, JSON.parse(this.incomingPacket.content))
-        console.log(peerInfoPacket)
-        console.log(peerInfoPacket.peerId)
         let peer = await Peer
-          .findByPk(peerInfoPacket.peerId)
+          .findByPk(peerInfoPacket.id)
           .then((obj) => {
             // update
             if(obj)
               return obj.update({
-                display_image: peerInfoPacket.displayImage,
-                display_name: peerInfoPacket.displayName,
-                public_payment_address: peerInfoPacket.publicPaymentAddress,
-                private_payment_address: peerInfoPacket.privatePaymentAddress
+                display_image: peerInfoPacket.display_image,
+                display_name: peerInfoPacket.display_name,
+                public_payment_address: peerInfoPacket.public_payment_address,
+                private_payment_address: peerInfoPacket.private_payment_address,
+                last_seen: moment().unix()
               });
             // insert
             return Peer.create({
-              id: peerInfoPacket.peerId,
-              display_image: peerInfoPacket.displayImage,
-              display_name: peerInfoPacket.displayName,
-              public_payment_address: peerInfoPacket.publicPaymentAddress,
-              private_payment_address: peerInfoPacket.privatePaymentAddress
+              id: peerInfoPacket.id,
+              display_image: peerInfoPacket.display_image,
+              display_name: peerInfoPacket.display_name,
+              public_payment_address: peerInfoPacket.public_payment_address,
+              private_payment_address: peerInfoPacket.private_payment_address,
+              last_seen: moment().unix()
             });
           })
         return this.returnData()

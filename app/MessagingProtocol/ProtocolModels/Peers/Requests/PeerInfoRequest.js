@@ -28,20 +28,14 @@ class PeerInfoRequest {
         .then((obj) => {
           // update
           if (obj)
-            return new UserPeer(
-              obj.id,
-              obj.display_name,
-              obj.display_image,
-              obj.public_payment_address,
-              obj.private_payment_address
-            );
+            return obj
           // insert
-          return new UserPeer(
-            this.myKey
-          );
+          return null
         });
       //package up into userPeer.js model
-      return this.returnData()
+      if(this.peer != null){
+        return this.returnData()
+      }
 
     }catch (e) {
       console.log(e)
@@ -59,16 +53,4 @@ class PeerInfoRequest {
     )
   }
 }
-
-// const mapStateToProps = state => {
-//   return {
-//     lang: state.startup.lang,
-//     wallet: state.application.wallet
-//   };
-// };
-
-
-
-// export default connect(mapStateToProps, actions)(PeerInfoRequest);
-
 export default PeerInfoRequest;
