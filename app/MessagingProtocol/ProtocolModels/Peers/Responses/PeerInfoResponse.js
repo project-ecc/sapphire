@@ -3,6 +3,7 @@ import * as actions from "../../../../actions";
 import db from '../../../../utils/database/db'
 import Packet from "../../../Packet";
 import UserPeer from "../Models/UserPeer";
+const moment = require('moment');
 const Peer = db.Peer;
 class PeerInfoResponse {
 
