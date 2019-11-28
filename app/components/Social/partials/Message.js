@@ -27,7 +27,6 @@ class Message extends React.Component {
 
     // Was the message sent by the current user. If so, add a css class
     const fromMe = this.props.fromMe ? 'from-me' : '';
-    console.log(this.props.message.owner.display_image)
     return (
       <div>
         <ListItem className={`username ${fromMe}`}>
@@ -35,7 +34,23 @@ class Message extends React.Component {
             <Avatar alt="Peer display image" src={this.props.message.owner.display_image != null ? this.props.message.owner.display_image : "https://statrader.com/wp-content/uploads/2018/06/ecc-logo.jpg"} />
           </ListItemAvatar>
           <ListItemText
-            primary={this.props.message.owner.display_name+ '-' + moment(this.props.message.date).format('dddd, MMMM Do YYYY') }
+            primary={
+            <React.Fragment>
+              <Typography
+                component="span"
+                variant="body2"
+                style={{display: 'inline', color: 'white', fontSize: '18px'}}
+              >
+                {this.props.message.owner.display_name + ' '}
+              </Typography>
+              <Typography
+                component="span"
+                variant="body2"
+                style={{display: 'inline', color: 'grey', fontSize: '12px'}}
+              >
+                {moment(this.props.message.date).fromNow()}
+              </Typography>
+            </React.Fragment>}
             secondary={
               <React.Fragment>
                 <Typography

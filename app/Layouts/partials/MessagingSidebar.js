@@ -105,7 +105,7 @@ class MessagingSidebar extends Component {
             <div className="userimage">
               <img id="sidebarLogo" src={usericon} />
             </div>
-            <div className="menu">
+
               <List>
                 <ListItem>
                   <a className="subheading">{ this.props.lang.directMessages }</a>
@@ -124,11 +124,10 @@ class MessagingSidebar extends Component {
                       <a className="subheading">{ this.props.lang.noFriendsAvailable }</a>
                     </ListItem>
                 )}
-                <li>
+                <ListItem>
                   <a className="subheading">{ this.props.lang.groupMessaging }</a>
-                </li>
+                </ListItem>
               </List>
-            </div>
           </div>
           <div className="menu mt-0">
             <ul>
