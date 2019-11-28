@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Button} from 'reactstrap';
-import {CloseCircleOutlineIcon, MenuIcon, PlusIcon} from 'mdi-react';
+import {CloseCircleOutlineIcon, MenuIcon, PhoneIcon, PlusIcon, VideoIcon} from 'mdi-react';
 import moment from 'moment';
 
 import Body from './../Others/Body';
@@ -18,6 +18,7 @@ const Message = db.Message
 const uuidv4 = require('uuid/v4')
 const Peer = db.Peer;
 import Packet from "../../MessagingProtocol/Packet";
+import VideoChat from "./partials/MediaView";
 
 const event = require('./../../utils/eventhandler');
 
@@ -27,7 +28,8 @@ class MessagingHome extends Component {
     this.state = {
       conversation: null,
       messages: [],
-      sideBarOpen: false
+      sideBarOpen: false,
+      callWindowOpen: false
     };
     this.sendHandler = this.sendHandler.bind(this);
     this.getConversationName = this.getConversationName.bind(this);
@@ -36,10 +38,10 @@ class MessagingHome extends Component {
 
 
   async componentDidMount(){
-    event.on('reloadConversation',() => {
-      this.reloadConversation()
+    event.on('reloadConversation',async () => {
+      await this.reloadConversation()
     });
-    this.reloadConversation()
+    await this.reloadConversation()
   }
 
   async reloadConversation(){
@@ -106,6 +108,7 @@ class MessagingHome extends Component {
   }
 
   getConversationName() {
+    if(this.props.activeAccount == null) return
     const conversation = this.state.conversation
     if(conversation.conversation_type === 'PRIVATE' && conversation.participants_count === 2) {
       const conversationPeers = conversation.conversationPeers
@@ -120,17 +123,24 @@ class MessagingHome extends Component {
   render() {
     let conversation = this.state.conversation
     let messages = this.state.messages
+    let callWindowOpen = this.state.callWindowOpen
     return (
       <div className="d-flex flex-row">
         <div className="padding-titlebar flex-auto d-flex flex-column">
           <Header>
             <div className='row col-12'>
-              <div className='col-12 col-md-11'>
+              <div className='col-12 col-md-10'>
                 { conversation != null ? this.getConversationName() : null}
               </div>
               { conversation && (
-                <div className='col-12 col-md-1'>
-                  <Button color="link" onClick={() => this.setState({sideBarOpen: true})}>
+                <div className='col-12 col-md-2'>
+                  <Button color="link" onClick={() => this.setState({callWindowOpen: false})}>
+                    <PhoneIcon size={20}></PhoneIcon>
+                  </Button>
+                  <Button color="link" onClick={() => this.setState({callWindowOpen: true})}>
+                    <VideoIcon size={20}></VideoIcon>
+                  </Button>
+                  <Button color="link" onClick={() => this.setState({sideBarOpen: !this.state.sideBarOpen})}>
                     <MenuIcon size={20}></MenuIcon>
                   </Button>
                 </div>
@@ -139,8 +149,15 @@ class MessagingHome extends Component {
 
           </Header>
           <Body noPadding className="scrollable messaging-body">
-            <Messages messages={messages} />
+          { callWindowOpen && (
+            <div style={{minHeight: '500px', width: '100%'}} className="row col-12">
+              <VideoChat/>
+            </div>
+          )}
 
+          <div className="row col-12">
+            <Messages messages={messages} />
+          </div>
           </Body>
           <Footer>
             <ChatInput onSend={this.sendHandler} />

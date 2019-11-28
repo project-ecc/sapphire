@@ -419,3 +419,21 @@ input::-webkit-inner-spin-button {
   bottom: 100%;
   left: 0;
 }
+
+.video-container {
+  position:relative;
+}
+.userVideo {
+  height: 200px;
+  width: 200px;
+  float: left;
+  border:5px solid orange;
+  position: absolute;
+}
+
+.peerVideo {
+  height: 200px;
+  width: 200px;
+  border:5px solid blue;
+  position: absolute;
+}
