@@ -188,7 +188,7 @@ class Messaging extends Component {
   startCheckingForPeerInfo(){
     this.setState({
       peerIntervalTimer: setInterval(this.getPeerInfo.bind(this), 50000),
-      packetIntervalTimer: setInterval(this.pollMessageReceiver.bind(this), 5000)
+      packetIntervalTimer: setInterval(this.pollMessageReceiver.bind(this), 3000)
     });
   }
 
