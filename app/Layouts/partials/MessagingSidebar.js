@@ -113,7 +113,7 @@ class MessagingSidebar extends Component {
                 { conversations.length > 0 ?
                   conversations.map((object, key) => {
                     return (
-                      <NavLink   to={{
+                      <NavLink  key={key} to={{
                         pathname: "/friends/" + object.id}} exact activeClassName="active">
                         {this.getConversation(object, key, this.isConversationSelected())}
                       </NavLink>

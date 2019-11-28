@@ -27,7 +27,7 @@ class Message extends React.Component {
 
     // Was the message sent by the current user. If so, add a css class
     const fromMe = this.props.fromMe ? 'from-me' : '';
-
+    console.log(this.props.message.owner.display_image)
     return (
       <div>
         <ListItem className={`username ${fromMe}`}>
