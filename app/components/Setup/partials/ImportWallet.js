@@ -30,7 +30,7 @@ class ImportWallet extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     ipcRenderer.on('importedWallet', this.sendActionImportedWallet);
     ipcRenderer.on('importStarted', this.sendActionImportStarted);
     ipcRenderer.on('importCancelled', this.sendActionImportCancelled);

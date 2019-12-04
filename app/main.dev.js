@@ -29,15 +29,6 @@ const log = require('electron-log');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 
-
-import {
-  addAddress,
-  addTransaction,
-  getAllMyAddresses,
-  getAllRewardTransactions,
-  getLatestTransaction, getUnconfirmedTransactions,
-  updateTransactionsConfirmations
-} from './Managers/SQLManager';
 const autoECCLauncher = new AutoLaunch({
   name: 'Sapphire'
 });

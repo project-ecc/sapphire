@@ -39,12 +39,12 @@ class Connector extends Component {
       daemonCheckerTimer: null,
       daemonUpdateTimer: null,
     };
-
     this.bindListeners();
   }
 
-  async componentWillMount(){
+  async componentDidMount(){
     await db.sequelize.sync();
+    this.bindListeners();
   }
 
   componentWillUnmount() {
@@ -56,6 +56,20 @@ class Connector extends Component {
     event.removeListener('updateDaemon');
     event.removeListener('initial_setup');
     event.removeListener('checkForDaemonUpdates');
+    //
+    //
+    // event.removeListener('downloading-file')
+    // event.removeListener('downloaded-file')
+    // event.removeListener('verifying-file')
+    // event.removeListener('unzipping-file')
+    // event.removeListener('file-download-complete')
+    // event.removeListener('file-download-complete')
+    // event.removeListener('download-error')
+    //
+    // ipcRenderer.removeListener('stop');
+    // ipcRenderer.removeListener('unzipping-file');
+    // ipcRenderer.removeListener('unzipping-file');
+    // ipcRenderer.removeListener('unzipping-file');
   }
 
   bindListeners() {
@@ -140,18 +154,6 @@ class Connector extends Component {
     //socket.on('message', function(topic, message) {
      // console.log('received a message related to:', topic.toString(), 'containing message:', message.toString('hex'));
    // });
-
-    // Register to monitoring events
-    //socket.on('connect', function(fd, ep) {console.log('connect, endpoint:', ep);});
-    //socket.on('connect_delay', function(fd, ep) {console.log('connect_delay, endpoint:', ep);});
-    //socket.on('connect_retry', function(fd, ep) {console.log('connect_retry, endpoint:', ep);});
-   // socket.on('listen', function(fd, ep) {console.log('listen, endpoint:', ep);});
-   // socket.on('bind_error', function(fd, ep) {console.log('bind_error, endpoint:', ep);});
-   /// socket.on('accept', function(fd, ep) {console.log('accept, endpoint:', ep);});
-    //socket.on('accept_error', function(fd, ep) {console.log('accept_error, endpoint:', ep);});
-    //socket.on('close', function(fd, ep) {console.log('close, endpoint:', ep);});
-    //socket.on('close_error', function(fd, ep) {console.log('close_error, endpoint:', ep);});
-    //socket.on('disconnect', function(fd, ep) {console.log('disconnect, endpoint:', ep);});
 
   }
 
@@ -240,13 +242,18 @@ class Connector extends Component {
 
     if (version < this.props.requiredDaemonVersion && canGetVersion === true && (serverVersion > version)) {
       await this.downloadDaemon().then((data) => {
-        console.log('downloaded')
+
+
+        //daemon is now downloaded
         this.setState({
           downloadingDaemon: false
         });
         this.props.setUpdatingApplication(false);
-        this.startDaemonChecker();
+
+        //start daemon and connect to it
+        event.emit('start');
         event.emit('startConnectorChildren');
+        this.startDaemonChecker();
       }).catch((err) => {
         console.log(err)
         console.log('download daemon failed')
@@ -274,10 +281,8 @@ class Connector extends Component {
     });
   }
 
-
   checkIfDaemonIsRunning() {
     if (this.state.installedVersion !== -1 && !this.state.downloadingDaemon) {
-      const self = this;
       console.log('Checking if daemon is running...');
       find('name', 'eccoind').then(async (list) => {
         if (list && list.length > 0) {
@@ -295,9 +300,12 @@ class Connector extends Component {
           this.props.setDaemonRunning(false);
           return false;
         }
-      });
-    } else {
-      console.log('in here')
+      }).catch('error', (e) =>{
+        console.error(e);
+        console.log('daemon not running');
+        this.props.setDaemonRunning(false);
+        return false;
+      })
     }
   }
 
@@ -416,6 +424,8 @@ class Connector extends Component {
         event.emit('noUpdateAvailable');
         console.log('in here for some reason')
       }
+    } else {
+      console.log('lost in here')
     }
   }
 
@@ -495,7 +505,6 @@ class Connector extends Component {
     this.props.wallet.walletstart(args).then((result) => {
       if (result) {
         Toast({
-          title: this.props.lang.success,
           message: this.props.lang.daemonStarted
         });
         event.emit('daemonStarted');

@@ -82,8 +82,8 @@ class ImportPrivateKeysPartial extends Component {
        }
       // loading wallet
        else if (result[0].code === '-28') {
-         setTimeout(() => {
-           this.importPrivateKey();
+         setTimeout(async () => {
+           await this.importPrivateKey();
          }, 500);
        } else {
          console.log('failed to import address');

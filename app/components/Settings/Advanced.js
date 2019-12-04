@@ -45,6 +45,10 @@ class Advanced extends Component {
     this.deleteBlockChain = this.deleteBlockChain.bind(this);
     this.onClickBackupLocation = this.onClickBackupLocation.bind(this);
 
+
+  }
+
+  async componentDidMount() {
     event.on('daemonStopped', async (args) => {
 
       if(args.clearBlockchain) {
@@ -56,6 +60,7 @@ class Advanced extends Component {
       }
       console.log(args)
     });
+
   }
 
   async deleteAndReIndex() {
@@ -102,6 +107,12 @@ class Advanced extends Component {
   reloadSettings(settingPath, value) {
     settings.set(`settings.${settingPath}`, value);
     ipcRenderer.send('reloadSettings');
+  }
+
+  rebootDaemonWithReIndex() {
+    console.log('in here');
+    event.emit('start', true);
+    event.emit('runMainCycle');
   }
 
   unlocktoggle(){
@@ -334,6 +345,21 @@ class Advanced extends Component {
                 <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => [event.emit('stop', { restart: false, closeApplication: false })]}>Stop</Button>)}
               { !this.props.daemonRunning && (
                 <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => {event.emit('start')}}>Start</Button>)}
+            </div>
+
+
+          </div>
+
+          <div className="row settingsToggle">
+            <div className="col-sm-6 text-left removePadding">
+              <p>Start with rescan</p>
+              <p className="walletBackupOptions" style={{ fontSize: '14px', fontWeight: '700' }}>Start the daemon and rescan on startup</p>
+            </div>
+            <div className="col-sm-6 text-right removePadding">
+              { this.props.daemonRunning && (
+                <Button style={{marginLeft: '25px'}} size="sm" disabled outline color="warning">Stop Daemon first</Button>)}
+              { !this.props.daemonRunning && (
+                <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => {event.emit('start', true)}}>Start with rescan</Button>)}
             </div>
           </div>
 

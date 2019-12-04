@@ -6,6 +6,7 @@ import {connect} from "react-redux";
 import * as actions from "../actions";
 
 import $ from 'jquery';
+import Toast from "../globals/Toast/Toast";
 
 const event = require('../utils/eventhandler');
 const https = require('https');
@@ -28,8 +29,10 @@ class News extends Component {
       goalInterval: 120000,
       goalTimer: null
     };
+  }
 
-    this.listenToEvents();
+  componentDidMount() {
+    this.listenToEvents()
   }
 
   componentWillUnmount() {
@@ -117,6 +120,13 @@ class News extends Component {
         }
       });
       res.pipe(parser);
+    }).on('error', function(e) {
+      console.error(e);
+      Toast({
+        title: this.props.lang.error,
+        message: 'Unable to get ECC news at this time',
+        color: 'red'
+      });
     });
   }
 
@@ -127,12 +137,7 @@ class News extends Component {
   }
 
   queueOrSendNotification(callback, body) {
-    // TODO
-    if (this.props.loading || this.props.loader) {
-      // this.queuedNotifications.push({ callback, body });
-    } else {
-      // Tools.sendOSNotification(body, callback);
-    }
+    tools.sendOSNotification(body, callback);
   }
 
 

@@ -26,9 +26,9 @@ class App extends Component {
     const unhandled = require('./utils/initUnhandled');
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // this.props.getSetup();
-    this.startUp();
+    await this.startUp();
 
     ipcRenderer.on('closing_daemon', () => {
       this.props.setClosingApplication();
@@ -42,7 +42,7 @@ class App extends Component {
   /**
    * Load the app settings
    */
-  startUp() {
+  async startUp() {
     this.props.setLoading({
       isLoading: true,
       loadingMessage: 'Starting Sapphire!'
@@ -81,7 +81,7 @@ class App extends Component {
     this.props.setNewsNotifications(newsNotifications);
     this.props.setStakingNotifications(stakingNotifications);
 
-    this.createWallet()
+    await this.createWallet()
   }
 
   /**
@@ -167,7 +167,9 @@ const mapStateToProps = state => {
     closingApplication: state.application.closingApplication,
     theme: state.application.theme,
     updateFailed: state.application.updateFailed,
-    downloadMessage: state.application.downloadMessage
+    downloadMessage: state.application.downloadMessage,
+    daemonError: state.application.daemonError,
+    daemonErrorPopup: state.application.daemonErrorPopup
   };
 };
 

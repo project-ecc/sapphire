@@ -36,7 +36,6 @@ class Index extends Component {
     ];
 
     ipcRenderer.on('refresh-complete', (event, arg) => {
-      console.log('in here');
       this.setState({
         isLoading: false
       });
@@ -45,6 +44,10 @@ class Index extends Component {
 
   componentDidMount() {
     this.props.setNewsChecked(new Date().getTime());
+  }
+
+  componentWillUnmount(){
+    ipcRenderer.removeListener('refresh-complete')
   }
 
   toggle() {

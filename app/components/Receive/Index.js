@@ -29,6 +29,11 @@ class Index extends Component {
       address: null
     };
 
+
+  }
+
+  async componentDidMount() {
+
     event.on('reloadAddresses', async() => {
       await this.loadAddresses()
     });
@@ -40,9 +45,7 @@ class Index extends Component {
       });
       this.newAddressModal.getWrappedInstance().toggle()
     });
-  }
 
-  async componentDidMount() {
 
     await this.loadAddresses();
 
