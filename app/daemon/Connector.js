@@ -252,7 +252,7 @@ class Connector extends Component {
   startDaemonChecker() {
     this.setState({
       daemonCheckerTimer: setInterval(this.checkIfDaemonIsRunning.bind(this), 50000),
-      daemonUpdateTimer: setInterval(this.getLatestVersion.bind(this), 6000000)
+      daemonUpdateTimer: setInterval(this.getLatestVersion(true).bind(this), 6000000)
     });
   }
 

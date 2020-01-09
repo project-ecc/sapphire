@@ -68,7 +68,7 @@ class News extends Component {
     https.get('https://medium.com/feed/@project_ecc', res => {
       console.log('NEWS RESPONSE', res);
       if (res.statusCode !== 200) {
-        console.error(new Error(`status code ${res.statusCode}`));
+        console.log(`status code ${res.statusCode}`);
         return;
       }
       const today = new Date();
