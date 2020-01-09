@@ -46,10 +46,6 @@ class Index extends Component {
     this.props.setNewsChecked(new Date().getTime());
   }
 
-  componentWillUnmount(){
-    ipcRenderer.removeListener('refresh-complete')
-  }
-
   toggle() {
     this.setState(prevState => ({
       currencyDropdownOpen: !prevState.currencyDropdownOpen

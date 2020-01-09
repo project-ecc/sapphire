@@ -325,9 +325,10 @@ function setupEventHandlers() {
     app.quit();
   });
 
-  ipcMain.on('start', (args) => {
-    sendMessage('start', args);
-  });
+  // ipcMain.on('start', (args) => {
+  //   console.log('in here causing issues')
+  //   sendMessage('start', args);
+  // });
 
   ipcMain.on('hideTray', (e, hideTray) => {
     if (!hideTray) { setupTrayIcon(); } else { tray.destroy(); }
@@ -452,6 +453,7 @@ function openFile() {
        console.log('error copying wallet: ', err);
      }		else {
        sendMessage('importedWallet');
+       console.log('started from wallet import')
        event.emit('start');
      }
    	});

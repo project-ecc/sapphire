@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+const util = require('util');
 import {connect} from 'react-redux';
 const { app } = require('electron');
 
@@ -29,7 +30,7 @@ const settings = require('electron-settings');
 class Connector extends Component {
   constructor(props) {
     super(props);
-
+    console.log('connector invoked')
     this.state = {
       interval: 5000,
       downloadingDaemon: false,
@@ -44,39 +45,18 @@ class Connector extends Component {
 
   async componentDidMount(){
     await db.sequelize.sync();
-    this.bindListeners();
   }
 
   componentWillUnmount() {
     clearInterval(this.state.daemonCheckerTimer);
     clearInterval(this.state.daemonUpdateTimer);
-
-    event.removeListener('start');
-    event.removeListener('stop');
-    event.removeListener('updateDaemon');
-    event.removeListener('initial_setup');
-    event.removeListener('checkForDaemonUpdates');
-    //
-    //
-    // event.removeListener('downloading-file')
-    // event.removeListener('downloaded-file')
-    // event.removeListener('verifying-file')
-    // event.removeListener('unzipping-file')
-    // event.removeListener('file-download-complete')
-    // event.removeListener('file-download-complete')
-    // event.removeListener('download-error')
-    //
-    // ipcRenderer.removeListener('stop');
-    // ipcRenderer.removeListener('unzipping-file');
-    // ipcRenderer.removeListener('unzipping-file');
-    // ipcRenderer.removeListener('unzipping-file');
   }
 
   bindListeners() {
 
     // Start Daemon
     event.on('start', async (args) => {
-      console.log('starting daemon')
+      event.emit('noUpdateAvailable');
       await this.startDaemon(args);
     });
 
@@ -232,13 +212,8 @@ class Connector extends Component {
       canGetVersion = false
     });
 
-
-    console.log("server version: ", this.props.serverDaemonVersion);
     const serverVersion = parseInt(this.props.serverDaemonVersion.replace(/\D/g, ''));
-    console.log("server version: ", serverVersion);
     const version = this.props.installedDaemonVersion === -1 ? this.props.installedDaemonVersion : parseInt(this.props.installedDaemonVersion.replace(/\D/g, ''));
-    console.log('LOCAL VERSION INT: ', version);
-
 
     if (version < this.props.requiredDaemonVersion && canGetVersion === true && (serverVersion > version)) {
       await this.downloadDaemon().then((data) => {
@@ -251,6 +226,7 @@ class Connector extends Component {
         this.props.setUpdatingApplication(false);
 
         //start daemon and connect to it
+        console.log('starting in download function')
         event.emit('start');
         event.emit('startConnectorChildren');
         this.startDaemonChecker();
@@ -267,6 +243,7 @@ class Connector extends Component {
       });
       this.props.setUpdateFailedMessage("Sapphire is unable to start with this daemon version please download the daemon and update manually!");
     } else {
+     console.log('starting normally')
      event.emit('start');
      event.emit('startConnectorChildren');
      this.startDaemonChecker();
@@ -274,7 +251,6 @@ class Connector extends Component {
   }
 
   startDaemonChecker() {
-    this.checkIfDaemonIsRunning();
     this.setState({
       daemonCheckerTimer: setInterval(this.checkIfDaemonIsRunning.bind(this), 50000),
       daemonUpdateTimer: setInterval(this.getLatestVersion.bind(this), 6000000)
@@ -502,6 +478,7 @@ class Connector extends Component {
    */
   startDaemon(args) {
     console.log('starting daemon...');
+    if(this.checkIfDaemonIsRunning() === true) return
     this.props.wallet.walletstart(args).then((result) => {
       if (result) {
         Toast({

@@ -120,7 +120,8 @@ class News extends Component {
         }
       });
       res.pipe(parser);
-    }).on('error', function(e) {
+    })
+      .on('error', (e) => {
       console.error(e);
       Toast({
         title: this.props.lang.error,

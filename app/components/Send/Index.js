@@ -93,9 +93,6 @@ class Index extends Component {
     this.props.wallet.command(batch).then((data) => {
       if (data && data[0] && typeof data[0] === 'string') {
         if (wasStaking) {
-          this.unlockWallet(true, 31556926, () => {
-          });
-        } else {
           this.props.setStaking(false);
         }
         this.resetForm();

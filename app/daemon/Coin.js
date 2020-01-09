@@ -156,7 +156,7 @@ class Coin extends Component {
     // if there is a loading error we must force all loading to stop
     ipcRenderer.on('loading-error', (e, arg) => {
       console.log(`loading failure: ${arg.message}`);
-      this.props.setDaemonRunning(false);
+      // this.props.setDaemonRunning(false);
       this.props.setDaemonError(arg.message);
       this.props.setDaemonErrorPopup(true);
       this.props.setLoading({
@@ -173,9 +173,8 @@ class Coin extends Component {
       const captureErrorStrings = [
         'Corrupted block database detected',
         'Aborted block database rebuild. Exiting.',
-        'initError: Cannot obtain a lock on data directory ',
-        'InitError',
-        'ERROR:'
+        'InitError: Cannot obtain a lock on data directory ',
+        'InitError'
       ];
 
       const captureLoadingStrings = [
@@ -190,7 +189,18 @@ class Coin extends Component {
       ]
 
       if (captureErrorStrings.some((v) => { return castedArg.indexOf(v) > -1; })) {
-        ipcRenderer.send('loading-error', { message: castedArg});
+        if(castedArg.indexOf('InitError: Cannot obtain a lock on data directory') > -1) {
+          this.props.wallet.getBlockChainInfo().then(async (data) => {
+            // do nothing its connected to the daemon
+          })
+          .catch((err) => {
+            ipcRenderer.send('loading-error', { message: castedArg});
+            this.processError(err)
+          });
+        } else {
+          ipcRenderer.send('loading-error', { message: castedArg});
+        }
+
       }
 
       if (captureLoadingStrings.some((v) => { return castedArg.indexOf(v) > -1; })) {

@@ -40,6 +40,7 @@ class General extends Component {
 
     //when daemon is updated
     event.on('updatedDaemon', () =>{
+      console.log('started from updating daemon')
       event.emit('start');
     });
 
