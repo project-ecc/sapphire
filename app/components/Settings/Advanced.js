@@ -52,7 +52,13 @@ class Advanced extends Component {
     event.on('daemonStopped', async (args) => {
 
       if(args.clearBlockchain) {
-        await this.deleteBlockChain()
+        setTimeout( async () => {
+          Toast({
+            title: "Clearing blockchain data in 10 seconds...",
+            color: 'green'
+          });
+          await this.deleteBlockChain()
+        }, 10000)
       }
 
       if(args.clearDaemon) {
