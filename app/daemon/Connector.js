@@ -56,7 +56,6 @@ class Connector extends Component {
 
     // Start Daemon
     event.on('start', async (args) => {
-      event.emit('noUpdateAvailable');
       await this.startDaemon(args);
     });
 
@@ -352,7 +351,7 @@ class Connector extends Component {
   }
 
 
-  async getLatestVersion() {
+  async getLatestVersion(fromInterval = false) {
     return new Promise(async (resolve, reject) => {
       console.log('checking for latest daemon version');
       const self = this;
@@ -379,7 +378,13 @@ class Connector extends Component {
         }
       }).catch(error => {
         console.log(error.message);
-        reject({ message: error.message });
+        if(fromInterval === false) {
+          reject({ message: error.message });
+        }
+        else {
+          resolve(false)
+        }
+
       });
     });
 
