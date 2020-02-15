@@ -88,14 +88,22 @@ class MessagingHome extends Component {
       let message = await Message.create(messageObject)
       this.state.conversation.addMessage(message)
       await this.state.conversation.save()
+
       this.setState({
         messages: this.state.conversation.messages
       })
+
+
+      // create message signature
+      let sig = await this.props.wallet.tagSignMessage(message)
+
+
+
+      // Loop through each conversation peer and send them the message.
       const conversationPeers = this.state.conversation.conversationPeers
-      console.log(conversationPeers)
       for (const key in conversationPeers) {
         if(conversationPeers[key].id !== this.props.activeAccount.id){
-          let packet = new Packet(conversationPeers[key].id, this.props.activeAccount.id, 'newConversationMessageRequest', JSON.stringify(message))
+          let packet = new Packet(conversationPeers[key].id, this.props.activeAccount.id, 'newConversationMessageRequest', JSON.stringify(message), sig)
           event.emit('sendPacket', packet)
         }
       }

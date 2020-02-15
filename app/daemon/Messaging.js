@@ -80,10 +80,7 @@ class Messaging extends Component {
      let zmqNotification = message.toString('hex');
 
      //grab the data from the last packet received
-     let packet = await this.props.wallet.readLastPacket({
-       protocolId: zmqNotification.protocolId,
-       protocolVersion: zmqNotification.protocolVersion
-     });
+     let packet = await this.props.wallet.getBuffer(zmqNotification.protocolId);
 
       // process the last packet received
       await this.processIncomingPacket(packet)
@@ -98,7 +95,7 @@ class Messaging extends Component {
   }
 
   async pollMessageReceiver() {
-    let lastPacket = await this.props.wallet.readLastPacket({protocolId: 1, protocolVersion: 1});
+    let lastPacket = await this.props.wallet.getBuffer(1);
     // console.log(lastPacket)
     try {
       let encodedPacket = this.convert_object(lastPacket)
@@ -109,7 +106,24 @@ class Messaging extends Component {
           lastReceivedPacket: decodedPacket
         })
         console.log(decodedPacket)
-        await this.processIncomingPacket(decodedPacket)
+
+        // verify signature here.
+        // create message signature
+        let params = {
+         key: decodedPacket._from,
+         sig: decodedPacket._sig,
+         message: decodedPacket._message
+        }
+        let res = await this.props.wallet.tagVerifyMessage(params)
+
+        if(res == true) {
+          await this.processIncomingPacket(decodedPacket)
+        } else {
+          console.log('message signature isnt valid')
+          // just ignore the message, maybe notify end user?
+        }
+
+
       } else {
         console.log(this.state.lastReceivedPacket)
         console.log('message already processed!')
@@ -195,13 +209,13 @@ class Messaging extends Component {
   async getPeerInfo(){
     //grab all peers from routing table
     let aodvResponse = await this.props.wallet.getAodvTable();
+    // grab my routing tag
     let myId = await this.props.wallet.getRoutingPubKey();
+
     let peers = aodvResponse.mapkeyid;
-    console.log(peers)
     for (const [key, value] of Object.entries(peers)) {
-      console.log(key, value);
       //create packet to send for data request and send packet
-      let packet = new Packet(key, myId, 'peerInfoRequest', null)
+      let packet = new Packet(key, myId, 'peerInfoRequest', null, null)
       await this.sendPacket(packet);
     }
   }

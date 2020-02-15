@@ -355,14 +355,6 @@ export default class Wallet {
     }
   }
 
-  async readLastPacket(params){
-    try {
-      return await client.readlastpacket(params.protocolId, params.protocolVersion);
-    } catch (err) {
-      return err;
-    }
-  }
-
   async getRoutingPubKey(){
     try {
       return await client.getroutingpubkey();
@@ -376,6 +368,30 @@ export default class Wallet {
       return await client.getaodvtable();
     } catch (err) {
       return err;
+    }
+  }
+
+  async getBuffer(protocolId) {
+    try {
+      return await client.getbuffer(protocolId)
+    } catch (e) {
+      return e;
+    }
+  }
+
+  async tagSignMessage (message) {
+    try {
+      return await client.tagsignmessage(message)
+    } catch (e) {
+      return e;
+    }
+  }
+
+  async tagVerifyMessage (params) {
+    try {
+      return await client.tagverifymessage(params.key, params.sig, params.message)
+    } catch (e) {
+      return e;
     }
   }
 

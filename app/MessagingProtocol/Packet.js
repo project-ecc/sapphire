@@ -1,7 +1,8 @@
 // Initializing a class definition
 const uuidv4 = require('uuid/v4')
 class Packet {
-  constructor(to, from, type, content) {
+  constructor(to, from, type, content, sig) {
+    this._sig = sig;
     this._id = uuidv4();
     this._protocolId = 1;
     this._protocolVersion = 1;
@@ -12,6 +13,14 @@ class Packet {
   }
   get to() {
     return this._to;
+  }
+
+  get sig() {
+    return this._sig;
+  }
+
+  set sig(value) {
+    this._sig = value;
   }
 
   set to(value) {
