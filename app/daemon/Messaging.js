@@ -34,9 +34,11 @@ class Messaging extends Component {
   }
 
   async setActiveMessagingAccount() {
+    let currentActiveTag = await this.props.wallet.getRoutingPubKey()
     const myAccount = await MyAccount.findOne({
       where: {
-        is_active: true
+        is_active: true,
+        id: currentActiveTag
       }
     })
 
