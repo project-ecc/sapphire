@@ -95,10 +95,21 @@ class Messaging extends Component {
   }
 
   async pollMessageReceiver() {
-    let lastPacket = await this.props.wallet.getBuffer(1);
-    // console.log(lastPacket)
+    console.log('in message parser')
+    let packetBuffer = await this.props.wallet.getBuffer(1)
+    // let packetBuffer = await this.props.wallet.getBuffer(1);
+    console.log(packetBuffer)
+    for (const key of Object.keys(packetBuffer)) {
+      console.log(packetBuffer[key])
+      await this.parseSinglePacket(packetBuffer[key])
+    }
+
+  }
+
+  async parseSinglePacket (p) {
     try {
-      let encodedPacket = this.convert_object(lastPacket)
+      let encodedPacket = this.convert_object(p)
+      console.log(encodedPacket)
       // console.log(encodedPacket)
       let decodedPacket = Object.assign(new Packet, JSON.parse(encodedPacket))
       if(this.state.lastReceivedPacket == null || this.state.lastReceivedPacket._id !== decodedPacket._id){
@@ -109,18 +120,22 @@ class Messaging extends Component {
 
         // verify signature here.
         // create message signature
-        let params = {
-         key: decodedPacket._from,
-         sig: decodedPacket._sig,
-         message: decodedPacket._message
-        }
-        let res = await this.props.wallet.tagVerifyMessage(params)
-
-        if(res == true) {
+        if (decodedPacket._type === 'peerInfoRequest' || decodedPacket._type === 'peerInfoResponse') {
           await this.processIncomingPacket(decodedPacket)
+
         } else {
-          console.log('message signature isnt valid')
-          // just ignore the message, maybe notify end user?
+          let params = {
+            key: decodedPacket._from,
+            sig: decodedPacket._sig,
+            message: decodedPacket._message
+          }
+          let res = await this.props.wallet.tagVerifyMessage(params)
+          if(res) {
+            await this.processIncomingPacket(decodedPacket)
+          } else {
+            console.log('message signature isnt valid')
+            // just ignore the message, maybe notify end user?
+          }
         }
 
 
@@ -130,7 +145,7 @@ class Messaging extends Component {
       }
 
     } catch (e) {
-      // console.log(e)
+      console.log(e)
     }
   }
 
@@ -201,7 +216,7 @@ class Messaging extends Component {
 
   startCheckingForPeerInfo(){
     this.setState({
-      peerIntervalTimer: setInterval(this.getPeerInfo.bind(this), 50000),
+      peerIntervalTimer: setInterval(this.getPeerInfo.bind(this), 5000),
       packetIntervalTimer: setInterval(this.pollMessageReceiver.bind(this), 3000)
     });
   }
