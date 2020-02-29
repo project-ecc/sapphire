@@ -120,7 +120,7 @@ class Messaging extends Component {
 
         // verify signature here.
         // create message signature
-        if (decodedPacket._type === 'peerInfoRequest' || decodedPacket._type === 'peerInfoResponse') {
+        if (decodedPacket._type === 'peerInfoRequest' || decodedPacket._type === 'peerInfoResponse' || decodedPacket._type === 'peerInfoRequestProcessed' || decodedPacket._type === 'peerInfoResponseProcessed') {
           await this.processIncomingPacket(decodedPacket)
 
         } else {
