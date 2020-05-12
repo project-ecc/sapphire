@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 const util = require('util');
 import {connect} from 'react-redux';
 const { app } = require('electron');
+const semver = require('semver')
+import compareVersions from 'compare-versions';
 
 import {
   extractChecksum,
@@ -211,10 +213,10 @@ class Connector extends Component {
       canGetVersion = false
     });
 
-    const serverVersion = parseInt(this.props.serverDaemonVersion.replace(/\D/g, ''));
-    const version = this.props.installedDaemonVersion === -1 ? this.props.installedDaemonVersion : parseInt(this.props.installedDaemonVersion.replace(/\D/g, ''));
+    const serverVersion = this.props.serverDaemonVersion;
+    const version = this.props.installedDaemonVersion === -1 ? this.props.installedDaemonVersion : this.props.installedDaemonVersion;
 
-    if (version < this.props.requiredDaemonVersion && canGetVersion === true && (serverVersion > version)) {
+    if (compareVersions.compare(version, this.props.requiredDaemonVersion, '<') && canGetVersion === true && (compareVersions.compare(serverVersion, version, '>'))) {
       await this.downloadDaemon().then((data) => {
 
 
@@ -235,7 +237,7 @@ class Connector extends Component {
         event.emit('download-error', { message: err.message });
 
       });
-    } else if(version < this.props.requiredDaemonVersion) {
+    } else if(compareVersions.compare(version, this.props.requiredDaemonVersion, '<')) {
       this.props.settellUserUpdateFailed({
         updateFailed: true,
         downloadMessage: ''
@@ -252,7 +254,7 @@ class Connector extends Component {
   startDaemonChecker() {
     this.setState({
       daemonCheckerTimer: setInterval(this.checkIfDaemonIsRunning.bind(this), 50000),
-      daemonUpdateTimer: setInterval(this.getLatestVersion(true).bind(this), 6000000)
+      daemonUpdateTimer: setInterval(this.getLatestVersion(true), 6000000)
     });
   }
 
@@ -394,19 +396,28 @@ class Connector extends Component {
   checkForUpdates() {
     // check that version value has been set and
     // the user has not yet been told about an update
-    if (this.props.installedDaemonVersion !== -1 && !this.state.toldUserAboutUpdate) {
-      if (Tools.compareVersion(this.props.installedDaemonVersion, this.props.serverDaemonVersion) === -1 && this.props.serverDaemonVersion.replace(/\D/g, '') > this.props.requiredDaemonVersion) {
+    if (this.props.installedDaemonVersion !== -1) {
+      console.log('server daemon version ', this.props.serverDaemonVersion)
+      console.log('installed Daemon version', this.props.installedDaemonVersion)
+      console.log('required Daemon Version ', this.props.requiredDaemonVersion)
+      console.log('required Daemon Version ', compareVersions.compare(this.props.serverDaemonVersion, this.props.installedDaemonVersion, '>'))
+      console.log('required Daemon Version ', compareVersions.compare(this.props.serverDaemonVersion, this.props.requiredDaemonVersion, '>'))
+      if (compareVersions.compare(this.props.serverDaemonVersion, this.props.installedDaemonVersion, '>') && compareVersions.compare(this.props.serverDaemonVersion, this.props.requiredDaemonVersion, '>')) {
         this.setState({
           toldUserAboutUpdate: true
         });
         this.props.setUpdateAvailable({daemonUpdate: true});
-        console.log('in here')
+        Toast({
+          color: 'green',
+          message: 'Update Available'
+        });
       } else {
         event.emit('noUpdateAvailable');
         console.log('in here for some reason')
       }
     } else {
       console.log('lost in here')
+      console.log('daemon not installed?')
     }
   }
 
