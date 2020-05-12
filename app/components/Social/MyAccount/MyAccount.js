@@ -49,7 +49,7 @@ class MyAccount extends Component {
 
   async saveAccount() {
     try {
-      MyAccountDatabase
+      let myAccount = MyAccountDatabase
         .findByPk(this.state.id)
         .then((obj) => {
           // update
@@ -58,6 +58,7 @@ class MyAccount extends Component {
           // insert
           return MyAccountDatabase.create(this.state);
         })
+      this.props.setActiveMessagingAccount(myAccount)
 
       Toast({
         title: this.props.lang.success,

@@ -29,6 +29,7 @@ const sequelize = new Sequelize({
   storage: sapphirePath +'database.sqlite',
   logging: true
 });
+sequelize.query("PRAGMA journal_mode=WAL;")
 // pass your sequelize config here
 //core Models
 const Transaction = require("./model/Transaction.model");

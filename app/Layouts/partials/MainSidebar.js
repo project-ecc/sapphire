@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {NavLink} from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
-import {ContactsIcon, CurrencyUsdIcon, DownloadIcon, FormatListBulletedIcon, GiftIcon, SendIcon} from 'mdi-react';
+import {ContactsIcon, CurrencyUsdIcon, DownloadIcon, FormatListBulletedIcon, GiftIcon, SendIcon, CoinIcon} from 'mdi-react';
 import {Button, Col, Progress, Row} from 'reactstrap';
 import Dot from './../../components/Others/Dot';
 import UnlockModal from './../../components/Others/UnlockModal';
@@ -104,6 +104,12 @@ class MainSidebar extends Component {
                   <NavLink to="/coin/contacts">
                     <ContactsIcon size={20} />
                     { this.props.lang.contacts }
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/coin/contacts">
+                    <CoinIcon size={20} />
+                    { this.props.lang.faucet }
                   </NavLink>
                 </li>
               </ul>

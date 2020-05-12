@@ -317,5 +317,6 @@
     "daemonStarted" : "Daemon Started",
     "daemonStopped": "Daemon Stopped",
     "myinfo": "My Info",
-    "peerinfo": "My Peer Info"
+    "peerinfo": "My Peer Info",
+    "faucet": "Faucet"
 }
