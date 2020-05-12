@@ -34,39 +34,41 @@ class Messaging extends Component {
   }
 
   async setActiveMessagingAccount() {
-    let currentActiveTag = await this.props.wallet.getRoutingPubKey()
-    const myAccount = await MyAccount.findOne({
-      where: {
-        is_active: true,
-        id: currentActiveTag
-      }
-    })
+    if (this.props.daemonRunning) {
+      let currentActiveTag = await this.props.wallet.getRoutingPubKey()
+      const myAccount = await MyAccount.findOne({
+        where: {
+          is_active: true,
+          id: currentActiveTag
+        }
+      })
 
-    if (myAccount != null){
-      // set my active account
-      this.props.setActiveMessagingAccount(myAccount)
+      if (myAccount != null){
+        // set my active account
+        this.props.setActiveMessagingAccount(myAccount)
 
-      // add my peer to the peers table
-      await Peer
-        .findByPk(myAccount.id)
-        .then((obj) => {
-          // update
-          if(obj)
-            return obj.update({
+        // add my peer to the peers table
+        await Peer
+          .findByPk(myAccount.id)
+          .then((obj) => {
+            // update
+            if(obj)
+              return obj.update({
+                display_image: myAccount.display_image,
+                display_name: myAccount.display_name,
+                public_payment_address: myAccount.public_payment_address,
+                private_payment_address: myAccount.private_payment_address
+              });
+            // insert
+            return Peer.create({
+              id: myAccount.id,
               display_image: myAccount.display_image,
               display_name: myAccount.display_name,
               public_payment_address: myAccount.public_payment_address,
               private_payment_address: myAccount.private_payment_address
             });
-          // insert
-          return Peer.create({
-            id: myAccount.id,
-            display_image: myAccount.display_image,
-            display_name: myAccount.display_name,
-            public_payment_address: myAccount.public_payment_address,
-            private_payment_address: myAccount.private_payment_address
-          });
-        })
+          })
+      }
     }
   }
 
@@ -246,7 +248,8 @@ const mapStateToProps = state => {
   return {
     lang: state.startup.lang,
     wallet: state.application.wallet,
-    activeAccount: state.messaging.activeAccount
+    activeAccount: state.messaging.activeAccount,
+    daemonRunning: state.application.daemonRunning,
   };
 };
 

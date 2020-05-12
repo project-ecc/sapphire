@@ -22,7 +22,6 @@ import {downloadFile, moveFile} from '../utils/downloader';
 import {ipcRenderer} from "electron";
 import Toast from "../globals/Toast/Toast";
 import UpdateFailedModal from "../components/Settings/modals/UpdateFailedModal";
-const db = require('../utils/database/db');
 const find = require('find-process');
 const request = require('request-promise-native');
 const fs = require('fs');
@@ -53,9 +52,7 @@ class Connector extends Component {
     await db.sequelize.sync();
   }
 
-  async componentDidMount(){
-    await db.sequelize.sync();
-  }
+
 
   componentWillUnmount() {
     clearInterval(this.state.daemonCheckerTimer);
