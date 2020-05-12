@@ -5,6 +5,7 @@ import chainsReducer from './chainsReducer';
 import applicationReducer from './applicationReducer';
 import earningsExpensesReducer from './earningsExpensesReducer';
 import notificationsReducer from './notificationsReducer';
+import MessagingReducer from './MessagingReducer';
 
 const rootReducer = combineReducers({
 	startup: startupReducer,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
 	chains: chainsReducer,
 	application: applicationReducer,
 	earningsExpenses: earningsExpensesReducer,
-	notifications: notificationsReducer
+	notifications: notificationsReducer,
+  messaging: MessagingReducer
 });
 
 export default rootReducer;

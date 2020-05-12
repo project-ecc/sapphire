@@ -413,3 +413,27 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-direction: column;
 }
+
+.emoji-picker {
+  position: absolute !important;
+  bottom: 100%;
+  left: 0;
+}
+
+.video-container {
+  position:relative;
+}
+.userVideo {
+  height: 200px;
+  width: 200px;
+  float: left;
+  border:5px solid orange;
+  position: absolute;
+}
+
+.peerVideo {
+  height: 200px;
+  width: 200px;
+  border:5px solid blue;
+  position: absolute;
+}

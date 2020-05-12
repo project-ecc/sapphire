@@ -81,7 +81,7 @@ class Index extends Component {
               </div>
               <div className="mt-4">
                 <p className="transactionInfoTitle"><span className="desc2 small-header">Friend since</span></p>
-                <p><span className="desc3 small-text selectableText">{moment(friend.createdAt).format('dddd, MMMM Do YYYY')}</span></p>
+                <p><span className="desc3 small-text selectableText">{moment(friend.created_at).format('dddd, MMMM Do YYYY')}</span></p>
               </div>
               <div className="d-flex justify-content-end mt-5">
                 <Button color="danger" size="sm" onClick={this.deleteAddress.bind(this, friend)}>

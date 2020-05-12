@@ -60,7 +60,7 @@ import {
   BLOCKS_AND_HEADERS,
   SIZE_ON_DISK,
   UPDATE_FAILED_MESSAGE, SERVER_DAEMON_VERSION, LOCAL_DAEMON_VERSION, MINING_INFO, BLOCK_CHAIN_CONNECTED, BETA_MODE,
-  INITIAL_SETUP
+  INITIAL_SETUP, SET_ACTIVE_MESSAGING_ACCOUNT
 } from './types';
 
 export const setWalletCredentials = (args) => {
@@ -548,3 +548,10 @@ export const setInitialSetup = (value) => {
     payload: value
   };
 };
+
+export const setActiveMessagingAccount = (value) => {
+  return {
+    type: SET_ACTIVE_MESSAGING_ACCOUNT,
+    payload: value
+  }
+}

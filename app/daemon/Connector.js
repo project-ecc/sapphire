@@ -16,16 +16,19 @@ import * as actions from '../actions/index';
 import ConnectorNews from './News';
 import ConnectorCoin from './Coin';
 import ConnectorMarket from './Market';
+import ConnectorMessaging from './Messaging';
 import Tools from '../utils/tools';
 import {downloadFile, moveFile} from '../utils/downloader';
 import {ipcRenderer} from "electron";
 import Toast from "../globals/Toast/Toast";
+import UpdateFailedModal from "../components/Settings/modals/UpdateFailedModal";
 const db = require('../utils/database/db');
 const find = require('find-process');
 const request = require('request-promise-native');
 const fs = require('fs');
 const event = require('../utils/eventhandler');
 const settings = require('electron-settings');
+const db = require('../utils/database/db');
 //const zmq = require('zeromq');
 //const socket = zmq.socket('sub');
 
@@ -43,6 +46,11 @@ class Connector extends Component {
       daemonUpdateTimer: null,
     };
     this.bindListeners();
+
+  }
+
+  async componentDidMount(){
+    await db.sequelize.sync();
   }
 
   async componentDidMount(){
@@ -572,6 +580,7 @@ class Connector extends Component {
         <ConnectorCoin />
         <ConnectorNews />
         <ConnectorMarket />
+        { this.props.daemonRunning && <ConnectorMessaging />}
       </div>
     );
   }

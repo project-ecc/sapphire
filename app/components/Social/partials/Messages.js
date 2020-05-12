@@ -1,6 +1,9 @@
 import React from 'react';
 
 import Message from './Message';
+import connect from "react-redux/es/connect/connect";
+import * as actions from "../../../actions";
+import List from "@material-ui/core/List/List";
 
 class Messages extends React.Component {
   componentDidUpdate() {
@@ -10,27 +13,35 @@ class Messages extends React.Component {
   }
 
   render() {
-    // Loop through all the messages in the state and create a Message component
+    // Loop through all the messages in the state and create a Packet component
     const messages = this.props.messages.map((message, i) => {
       return (
+
         <Message
           key={i}
-          username={message.username}
-          message={message.message}
-          fromMe={message.fromMe} />
+          message={message}
+          fromMe={message.owner.id === (this.props.activeAccount != null ? this.props.activeAccount.id : false)} />
       );
     });
 
     return (
-      <div className='messages' id='messageList'>
+      <List className='messages' id='messageList'>
         { messages }
-      </div>
+      </List>
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    lang: state.startup.lang,
+    wallet: state.application.wallet,
+    activeAccount: state.messaging.activeAccount
+  };
+};
 
 Messages.defaultProps = {
   messages: []
 };
 
-export default Messages;
+export default connect(mapStateToProps, actions)(Messages);

@@ -315,5 +315,7 @@
     "groupMessaging": "Groups",
     "noFriendsAvailable": "No friends available",
     "daemonStarted" : "Daemon Started",
-    "daemonStopped": "Daemon Stopped"
+    "daemonStopped": "Daemon Stopped",
+    "myinfo": "My Info",
+    "peerinfo": "My Peer Info"
 }
