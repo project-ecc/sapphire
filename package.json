@@ -26,7 +26,7 @@
     "postinstall-linux": "npm rebuild --runtime=electron --target=1.8.8 --disturl=https://atom.io/download/atom-shell --build-from-source electron-builder install-app-deps --module_name=node_sqlite3 --module_path=../lib/binding/electron-v1.8-linux-x64",
     "postinstall-win": "npm rebuild --runtime=electron --target=1.8.8 --disturl=https://atom.io/download/atom-shell --build-from-source electron-builder install-app-deps --module_name=node_sqlite3 --module_path=../lib/binding/electron-v1.8-win32-x64",
     "postinstall-osx": "npm rebuild --runtime=electron --target=1.8.8 --disturl=https://atom.io/download/atom-shell --build-from-source electron-builder install-app-deps --module_name=node_sqlite3 --module_path=../lib/binding/electron-v1.8-darwin-x64",
-    "rebuild-sqlite": "./node_modules/.bin/electron-rebuild -f -w sqlite3",
+    "rebuild-sqlite": "electron-rebuild -f -w sqlite3",
     "dev": "cross-env START_HOT=1 npm run hot-updates-server",
     "package-aa-win-32": "npm run build && build --win -c ./os/win32.json -p always",
     "package-aa-win-64": "npm run build && build --win --x64 -c ./os/win64.json -p always",
@@ -42,7 +42,7 @@
   "browserslist": "electron 6",
   "build": {
     "productName": "Sapphire",
-    "appId": "com.github.gl3nda85.sapphire",
+    "appId": "com.github.project-ecc.sapphire",
     "publish": [
       {
         "provider": "github",
@@ -204,6 +204,7 @@
     "checksum": "^0.1.1",
     "child_process": "^1.0.2",
     "classnames": "^2.2.6",
+    "compare-versions": "^3.6.0",
     "devtron": "^1.4.0",
     "dmg": "^0.1.0",
     "eccoin-js": "github:project-ecc/eccoin-js",
@@ -213,7 +214,9 @@
     "electron-log": "^3.0.8",
     "electron-remote": "^1.3.0",
     "electron-settings": "^3.2.0",
+    "electron-unhandled": "^3.0.0",
     "electron-updater": "^4.1.2",
+    "electron-util": "^0.12.2",
     "emoji-js": "^3.4.1",
     "emoji-picker-react": "^2.1.1",
     "events": "^1.1.1",
@@ -262,6 +265,7 @@
     "request-progress": "^3.0.0",
     "request-promise-native": "^1.0.7",
     "rss-to-json": "^1.0.5",
+    "semver": "^7.3.2",
     "sequelize": "^4.44.3",
     "simple-peer": "^9.6.0",
     "source-map-support": "^0.4.15",

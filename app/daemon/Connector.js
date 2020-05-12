@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
+const util = require('util');
 import {connect} from 'react-redux';
 const { app } = require('electron');
+const semver = require('semver')
+import compareVersions from 'compare-versions';
 
 import {
   extractChecksum,
@@ -19,7 +22,7 @@ import {downloadFile, moveFile} from '../utils/downloader';
 import {ipcRenderer} from "electron";
 import Toast from "../globals/Toast/Toast";
 import UpdateFailedModal from "../components/Settings/modals/UpdateFailedModal";
-
+const db = require('../utils/database/db');
 const find = require('find-process');
 const request = require('request-promise-native');
 const fs = require('fs');
@@ -32,7 +35,7 @@ const db = require('../utils/database/db');
 class Connector extends Component {
   constructor(props) {
     super(props);
-
+    console.log('connector invoked')
     this.state = {
       interval: 5000,
       downloadingDaemon: false,
@@ -42,9 +45,12 @@ class Connector extends Component {
       daemonCheckerTimer: null,
       daemonUpdateTimer: null,
     };
-
     this.bindListeners();
 
+  }
+
+  async componentDidMount(){
+    await db.sequelize.sync();
   }
 
   async componentDidMount(){
@@ -54,19 +60,12 @@ class Connector extends Component {
   componentWillUnmount() {
     clearInterval(this.state.daemonCheckerTimer);
     clearInterval(this.state.daemonUpdateTimer);
-
-    event.removeListener('start');
-    event.removeListener('stop');
-    event.removeListener('updateDaemon');
-    event.removeListener('initial_setup');
-    event.removeListener('checkForDaemonUpdates');
   }
 
   bindListeners() {
 
     // Start Daemon
     event.on('start', async (args) => {
-      console.log('starting daemon')
       await this.startDaemon(args);
     });
 
@@ -145,18 +144,6 @@ class Connector extends Component {
      // console.log('received a message related to:', topic.toString(), 'containing message:', message.toString('hex'));
    // });
 
-    // Register to monitoring events
-    //socket.on('connect', function(fd, ep) {console.log('connect, endpoint:', ep);});
-    //socket.on('connect_delay', function(fd, ep) {console.log('connect_delay, endpoint:', ep);});
-    //socket.on('connect_retry', function(fd, ep) {console.log('connect_retry, endpoint:', ep);});
-   // socket.on('listen', function(fd, ep) {console.log('listen, endpoint:', ep);});
-   // socket.on('bind_error', function(fd, ep) {console.log('bind_error, endpoint:', ep);});
-   /// socket.on('accept', function(fd, ep) {console.log('accept, endpoint:', ep);});
-    //socket.on('accept_error', function(fd, ep) {console.log('accept_error, endpoint:', ep);});
-    //socket.on('close', function(fd, ep) {console.log('close, endpoint:', ep);});
-    //socket.on('close_error', function(fd, ep) {console.log('close_error, endpoint:', ep);});
-    //socket.on('disconnect', function(fd, ep) {console.log('disconnect, endpoint:', ep);});
-
   }
 
   listenForDownloadEvents() {
@@ -234,36 +221,38 @@ class Connector extends Component {
       canGetVersion = false
     });
 
+    const serverVersion = this.props.serverDaemonVersion;
+    const version = this.props.installedDaemonVersion === -1 ? this.props.installedDaemonVersion : this.props.installedDaemonVersion;
 
-    console.log("server version: ", this.props.serverDaemonVersion);
-    const serverVersion = parseInt(this.props.serverDaemonVersion.replace(/\D/g, ''));
-    console.log("server version: ", serverVersion);
-    const version = this.props.installedDaemonVersion === -1 ? this.props.installedDaemonVersion : parseInt(this.props.installedDaemonVersion.replace(/\D/g, ''));
-    console.log('LOCAL VERSION INT: ', version);
-
-
-    if (version < this.props.requiredDaemonVersion && canGetVersion === true && (serverVersion > version)) {
+    if (compareVersions.compare(version, this.props.requiredDaemonVersion, '<') && canGetVersion === true && (compareVersions.compare(serverVersion, version, '>'))) {
       await this.downloadDaemon().then((data) => {
-        console.log('downloaded')
+
+
+        //daemon is now downloaded
         this.setState({
           downloadingDaemon: false
         });
         this.props.setUpdatingApplication(false);
-        this.startDaemonChecker();
+
+        //start daemon and connect to it
+        console.log('starting in download function')
+        event.emit('start');
         event.emit('startConnectorChildren');
+        this.startDaemonChecker();
       }).catch((err) => {
         console.log(err)
         console.log('download daemon failed')
         event.emit('download-error', { message: err.message });
 
       });
-    } else if(version < this.props.requiredDaemonVersion) {
+    } else if(compareVersions.compare(version, this.props.requiredDaemonVersion, '<')) {
       this.props.settellUserUpdateFailed({
         updateFailed: true,
         downloadMessage: ''
       });
       this.props.setUpdateFailedMessage("Sapphire is unable to start with this daemon version please download the daemon and update manually!");
     } else {
+     console.log('starting normally')
      event.emit('start');
      event.emit('startConnectorChildren');
      this.startDaemonChecker();
@@ -271,17 +260,14 @@ class Connector extends Component {
   }
 
   startDaemonChecker() {
-    this.checkIfDaemonIsRunning();
     this.setState({
       daemonCheckerTimer: setInterval(this.checkIfDaemonIsRunning.bind(this), 50000),
-      daemonUpdateTimer: setInterval(this.getLatestVersion.bind(this), 6000000)
+      daemonUpdateTimer: setInterval(this.getLatestVersion(true), 6000000)
     });
   }
 
-
   checkIfDaemonIsRunning() {
     if (this.state.installedVersion !== -1 && !this.state.downloadingDaemon) {
-      const self = this;
       console.log('Checking if daemon is running...');
       find('name', 'eccoind').then(async (list) => {
         if (list && list.length > 0) {
@@ -299,9 +285,12 @@ class Connector extends Component {
           this.props.setDaemonRunning(false);
           return false;
         }
-      });
-    } else {
-      console.log('in here')
+      }).catch('error', (e) =>{
+        console.error(e);
+        console.log('daemon not running');
+        this.props.setDaemonRunning(false);
+        return false;
+      })
     }
   }
 
@@ -372,7 +361,7 @@ class Connector extends Component {
   }
 
 
-  async getLatestVersion() {
+  async getLatestVersion(fromInterval = false) {
     return new Promise(async (resolve, reject) => {
       console.log('checking for latest daemon version');
       const self = this;
@@ -399,7 +388,13 @@ class Connector extends Component {
         }
       }).catch(error => {
         console.log(error.message);
-        reject({ message: error.message });
+        if(fromInterval === false) {
+          reject({ message: error.message });
+        }
+        else {
+          resolve(false)
+        }
+
       });
     });
 
@@ -409,17 +404,28 @@ class Connector extends Component {
   checkForUpdates() {
     // check that version value has been set and
     // the user has not yet been told about an update
-    if (this.props.installedDaemonVersion !== -1 && !this.state.toldUserAboutUpdate) {
-      if (Tools.compareVersion(this.props.installedDaemonVersion, this.props.serverDaemonVersion) === -1 && this.props.serverDaemonVersion.replace(/\D/g, '') > this.props.requiredDaemonVersion) {
+    if (this.props.installedDaemonVersion !== -1) {
+      console.log('server daemon version ', this.props.serverDaemonVersion)
+      console.log('installed Daemon version', this.props.installedDaemonVersion)
+      console.log('required Daemon Version ', this.props.requiredDaemonVersion)
+      console.log('required Daemon Version ', compareVersions.compare(this.props.serverDaemonVersion, this.props.installedDaemonVersion, '>'))
+      console.log('required Daemon Version ', compareVersions.compare(this.props.serverDaemonVersion, this.props.requiredDaemonVersion, '>'))
+      if (compareVersions.compare(this.props.serverDaemonVersion, this.props.installedDaemonVersion, '>') && compareVersions.compare(this.props.serverDaemonVersion, this.props.requiredDaemonVersion, '>')) {
         this.setState({
           toldUserAboutUpdate: true
         });
         this.props.setUpdateAvailable({daemonUpdate: true});
-        console.log('in here')
+        Toast({
+          color: 'green',
+          message: 'Update Available'
+        });
       } else {
         event.emit('noUpdateAvailable');
         console.log('in here for some reason')
       }
+    } else {
+      console.log('lost in here')
+      console.log('daemon not installed?')
     }
   }
 
@@ -496,10 +502,10 @@ class Connector extends Component {
    */
   startDaemon(args) {
     console.log('starting daemon...');
+    if(this.checkIfDaemonIsRunning() === true) return
     this.props.wallet.walletstart(args).then((result) => {
       if (result) {
         Toast({
-          title: this.props.lang.success,
           message: this.props.lang.daemonStarted
         });
         event.emit('daemonStarted');

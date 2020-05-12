@@ -34,8 +34,13 @@ class General extends Component {
     this.checkForUpdates = this.checkForUpdates.bind(this);
 
 
+  }
+
+  async componentDidMount() {
+
     //when daemon is updated
     event.on('updatedDaemon', () =>{
+      console.log('started from updating daemon')
       event.emit('start');
     });
 
@@ -52,7 +57,6 @@ class General extends Component {
   }
 
   checkForUpdates(){
-    console.log('in here')
     event.emit('checkForDaemonUpdates');
   }
 

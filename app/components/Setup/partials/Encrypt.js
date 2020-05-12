@@ -36,6 +36,7 @@ class Encrypt extends Component {
 
   checkIfWalletRunning(){
     if(this.props.daemonRunning === false){
+      console.log('start in encrypt')
       event.emit('start');
     }
   }

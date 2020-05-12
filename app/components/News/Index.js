@@ -36,7 +36,6 @@ class Index extends Component {
     ];
 
     ipcRenderer.on('refresh-complete', (event, arg) => {
-      console.log('in here');
       this.setState({
         isLoading: false
       });

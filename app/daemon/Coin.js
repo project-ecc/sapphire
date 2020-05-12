@@ -17,7 +17,7 @@ import * as tools from '../utils/tools';
 import Toast from "../globals/Toast/Toast";
 
 const event = require('../utils/eventhandler');
-const db = require('../utils/database/db');
+
 
 class Coin extends Component {
   constructor(props) {
@@ -32,6 +32,8 @@ class Coin extends Component {
     this.orderTransactions = this.orderTransactions.bind(this);
     this.stateCheckerInitialStartupCycle = this.stateCheckerInitialStartupCycle.bind(this);
     this.newTransactionChecker = this.newTransactionChecker.bind(this);
+    this.startCycles = this.startCycles.bind(this);
+    this.stopCycles = this.stopCycles.bind(this);
 
 
     // Misc functions
@@ -68,19 +70,15 @@ class Coin extends Component {
       transactionsPage: 0,
       isIndexingTransactions: false
     };
-
-
     this.listenToEvents();
-
-    // TODO Fix handling promise returned from this function IMPORTANT!
   }
 
-  componentWillUnmount() {
-    clearInterval(this.state.walletRunningInterval);
-    clearInterval(this.state.blockProcessorInterval);
-    clearInterval(this.state.coinMarketCapInterval);
-    clearInterval(this.state.checkStartupStatusInterval);
-    clearInterval(this.state.addressProcessorInterval);
+  componentDidMount(){
+
+  }
+
+  async componentWillUnmount() {
+
 
     event.removeListener('startConnectorChildren');
     ipcRenderer.removeListener('loading-error');
@@ -91,6 +89,7 @@ class Coin extends Component {
     ipcRenderer.removeListener('unzipping-file');
     ipcRenderer.removeListener('file-download-complete');
     ipcRenderer.removeListener('download-error');
+    await this.stopCycles();
   }
 
   async stateCheckerInitialStartupCycle() {
@@ -125,7 +124,6 @@ class Coin extends Component {
       }
 
       if (this.props.daemonRunning) {
-        await db.sequelize.sync();
         clearInterval(this.state.checkStartupStatusInterval);
         await this.startCycles();
       }
@@ -158,8 +156,12 @@ class Coin extends Component {
     // if there is a loading error we must force all loading to stop
     ipcRenderer.on('loading-error', (e, arg) => {
       console.log(`loading failure: ${arg.message}`);
+      // this.props.setDaemonRunning(false);
       this.props.setDaemonError(arg.message);
       this.props.setDaemonErrorPopup(true);
+      this.props.setLoading({
+        isLoading: false
+      });
 
       //remove the interval and display the error
       clearInterval(this.state.checkStartupStatusInterval);
@@ -171,24 +173,51 @@ class Coin extends Component {
       const captureErrorStrings = [
         'Corrupted block database detected',
         'Aborted block database rebuild. Exiting.',
-        'initError: Cannot obtain a lock on data directory ',
-        'ERROR: VerifyDB():',
+        'InitError: Cannot obtain a lock on data directory ',
+        'InitError'
       ];
 
       const captureLoadingStrings = [
         'Block Import: already had block',
         'init message',
         'Still rescanning',
+        'Reindexing block file'
       ];
 
+      const shutDownStrings = [
+        'Shutdown: done'
+      ]
+
       if (captureErrorStrings.some((v) => { return castedArg.indexOf(v) > -1; })) {
-        ipcRenderer.send('loading-error', { message: castedArg});
+        if(castedArg.indexOf('InitError: Cannot obtain a lock on data directory') > -1) {
+          this.props.wallet.getBlockChainInfo().then(async (data) => {
+            // do nothing its connected to the daemon
+          })
+          .catch((err) => {
+            ipcRenderer.send('loading-error', { message: castedArg});
+            this.processError(err)
+          });
+        } else {
+          ipcRenderer.send('loading-error', { message: castedArg});
+        }
+
       }
 
       if (captureLoadingStrings.some((v) => { return castedArg.indexOf(v) > -1; })) {
         this.props.setLoading({
           isLoading: true,
           loadingMessage: castedArg
+        });
+      }
+
+      if (shutDownStrings.some((v) => { return castedArg.indexOf(v) > -1; })) {
+        this.props.setLoading({
+          isLoading: false
+        });
+
+        Toast({
+          color: 'green',
+          message: 'Daemon Stopped'
         });
       }
     });
@@ -200,6 +229,16 @@ class Coin extends Component {
       walletRunningInterval: setInterval(async () => { await this.walletCycle(); }, this.state.blockInterval),
       newTransactionInterval: setInterval(async() => { await this.newTransactionChecker(); }, 30000)
     });
+  }
+
+  async stopCycles () {
+    clearInterval(this.state.walletRunningInterval);
+    clearInterval(this.state.blockProcessorInterval);
+    clearInterval(this.state.coinMarketCapInterval);
+    clearInterval(this.state.checkStartupStatusInterval);
+    clearInterval(this.state.addressProcessorInterval);
+    clearInterval(this.state.newTransactionInterval);
+
   }
   async loadTransactionsForProcessing() {
     this.setState({
@@ -219,10 +258,8 @@ class Coin extends Component {
 
 
     let transactions = null;
-    console.log('transactions', transactions);
     while (transactions == null && attempts <= maxAttempts) {
       transactions = await this.props.wallet.getTransactions(this.state.transactionsToRequest, this.state.transactionsToRequest * this.state.transactionsPage);
-      console.log(transactions);
     }
 
     transactions = this.orderTransactions(transactions);
@@ -290,7 +327,6 @@ class Coin extends Component {
   }
 
   async insertIntoDb(entries) {
-    console.log('TRANSACTIONS STARTED INDEXING')
     const lastCheckedEarnings = this.props.notifications.lastCheckedEarnings;
     let earningsCountNotif = 0;
     let earningsTotalNotif = 0;

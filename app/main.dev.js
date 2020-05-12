@@ -29,15 +29,6 @@ const log = require('electron-log');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 
-
-import {
-  addAddress,
-  addTransaction,
-  getAllMyAddresses,
-  getAllRewardTransactions,
-  getLatestTransaction, getUnconfirmedTransactions,
-  updateTransactionsConfirmations
-} from './Managers/SQLManager';
 const autoECCLauncher = new AutoLaunch({
   name: 'Sapphire'
 });
@@ -334,9 +325,10 @@ function setupEventHandlers() {
     app.quit();
   });
 
-  ipcMain.on('start', (args) => {
-    sendMessage('start', args);
-  });
+  // ipcMain.on('start', (args) => {
+  //   console.log('in here causing issues')
+  //   sendMessage('start', args);
+  // });
 
   ipcMain.on('hideTray', (e, hideTray) => {
     if (!hideTray) { setupTrayIcon(); } else { tray.destroy(); }
@@ -461,6 +453,7 @@ function openFile() {
        console.log('error copying wallet: ', err);
      }		else {
        sendMessage('importedWallet');
+       console.log('started from wallet import')
        event.emit('start');
      }
    	});

@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../actions/index';
 import {getDebugUri} from '../../utils/platform.service';
 import {Button, Col, Modal, ModalBody, ModalHeader, Row} from 'reactstrap';
+import UpdateFailedModal from "../Settings/modals/UpdateFailedModal";
 
 const event = require('../../utils/eventhandler');
 const fs = require('fs-extra');
@@ -53,24 +54,35 @@ class DaemonErrorModal extends Component {
 
   renderReIndexWindow() {
     let needsReindexing = false
+    let otherError = false
     const captureStrings = [
       'Corrupted block database detected',
       'Aborted block database rebuild. Exiting.',
-      'ERROR: VerifyDB():'
+      'ERROR:'
     ];
+
+    const otherErrorStrings = [
+      'InitError:'
+    ]
 
     if (captureStrings.some((v) => { return this.props.daemonError.indexOf(v) > -1; })) {
       needsReindexing = true
     }
-    if(needsReindexing && this.props.daemonErrorPopup){
+
+    if (otherErrorStrings.some((v) => { return this.props.daemonError.indexOf(v) > -1; })) {
+      otherError = true
+    }
+    if(needsReindexing || otherError && this.props.daemonErrorPopup){
       return (
         <div>
           <Row style={{textAlign: 'center'}}>
             <Col>
               <h3>Oops!</h3>
-              <p className="backupSuccessful">It looks like Sapphire is unable to load ECC's blockchain:</p>
+              <p className="backupSuccessful">Sapphire has encountered an error</p>
+              { needsReindexing && <p className="backupSuccessful">It looks like Sapphire is unable to load ECC's blockchain:</p> }
               <p className="backupSuccessful">{this.props.daemonError}</p>
-              <Button size="sm" outline color="warning" onClick={this.rebootDaemonWithReIndex} className="buttonPrimary caps">Fix Now</Button>
+              <Button size="sm" outline color="warning" onClick={this.handleCancel} className="buttonPrimary caps">Dismiss</Button>
+              { needsReindexing && <Button size="sm" outline color="warning" onClick={this.rebootDaemonWithReIndex} className="buttonPrimary caps">Fix Now</Button> }
             </Col>
           </Row>
         </div>

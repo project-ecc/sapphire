@@ -21,7 +21,8 @@ cache:
 
 before_install:
   - npm install
-  - npm run postinstall 
+  - npm install -g electron-rebuild
+  - npm run rebuild-sqlite
 
 install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run package-linux; fi

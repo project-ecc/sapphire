@@ -43,7 +43,7 @@ class AddressBook extends Component {
       <div className="tableCustom" >
         { this.props.children }
         <Table responsive hover borderless>
-          <tbody style={{color: 'white'}}>
+          <tbody>
             { this.props.friends.length > 0 ?
               this.props.friends.map((friend, index) => {
                 const selected = this.props.selected === friend.id;

@@ -6,6 +6,7 @@ import {renderRoutes} from 'react-router-config';
 import {ipcRenderer, remote} from 'electron';
 import TopBar from './Layouts/partials/TopBar';
 import routes from './router/routes';
+import event from './utils/eventhandler'
 
 import UpdateFailedModal from './components/Settings/modals/UpdateFailedModal';
 import DownloadingUpdateModal from './components/Settings/modals/DownloadingUpdateModal';
@@ -14,19 +15,20 @@ import DaemonConnector from './daemon/Connector';
 import * as tools from './utils/tools';
 import DaemonErrorModal from "./components/Others/DaemonErrorModal";
 
-const event = require('./utils/eventhandler');
 const settings = require('electron').remote.require('electron-settings');
 
 
 class App extends Component {
+
   constructor(props) {
     super(props);
     this.startUp = this.startUp.bind(this);
+    const unhandled = require('./utils/initUnhandled');
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // this.props.getSetup();
-    this.startUp();
+    await this.startUp();
 
     ipcRenderer.on('closing_daemon', () => {
       this.props.setClosingApplication();
@@ -40,7 +42,7 @@ class App extends Component {
   /**
    * Load the app settings
    */
-  startUp() {
+  async startUp() {
     this.props.setLoading({
       isLoading: true,
       loadingMessage: 'Starting Sapphire!'
@@ -79,7 +81,7 @@ class App extends Component {
     this.props.setNewsNotifications(newsNotifications);
     this.props.setStakingNotifications(stakingNotifications);
 
-    this.createWallet()
+    await this.createWallet()
   }
 
   /**
@@ -165,7 +167,9 @@ const mapStateToProps = state => {
     closingApplication: state.application.closingApplication,
     theme: state.application.theme,
     updateFailed: state.application.updateFailed,
-    downloadMessage: state.application.downloadMessage
+    downloadMessage: state.application.downloadMessage,
+    daemonError: state.application.daemonError,
+    daemonErrorPopup: state.application.daemonErrorPopup
   };
 };
 

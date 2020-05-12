@@ -93,9 +93,6 @@ class Index extends Component {
     this.props.wallet.command(batch).then((data) => {
       if (data && data[0] && typeof data[0] === 'string') {
         if (wasStaking) {
-          this.unlockWallet(true, 31556926, () => {
-          });
-        } else {
           this.props.setStaking(false);
         }
         this.resetForm();
@@ -185,7 +182,7 @@ class Index extends Component {
                   onChange={e => this.onTextFieldChange('amount', e)}
                 />
                 <div className="mt-3 d-flex justify-content-end">
-                  <Button onClick={this.confirmSend} color="primary" disabled={this.props.staking}>
+                  <Button onClick={this.confirmSend} color="primary" disabled={this.props.staking && this.props.isUnlocked}>
                     { this.props.lang.send }
                     <ArrowRightIcon className="ml-2" />
                   </Button>

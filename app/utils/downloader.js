@@ -181,6 +181,7 @@ export function moveFile(oldLocation, newLocation){
       console.log(e)
     }
     try {
+      fs.chmodSync(oldLocation, 755);
       fs.renameSync(oldLocation, newLocation);
       console.log('Successfully renamed - AKA moved!')
       resolve(true);
