@@ -21,8 +21,6 @@ class Main extends Component {
     const currentKey = location.pathname || '/';
     const timeout = { enter: 150, exit: 250 };
 
-    const unhandled = require('../utils/initUnhandled');
-
     return (
       <div className="d-flex w-100">
         { this.sidebar() }

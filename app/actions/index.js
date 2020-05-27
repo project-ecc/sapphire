@@ -59,8 +59,18 @@ import {
   INITIAL_BLOCK_DOWNLOAD,
   BLOCKS_AND_HEADERS,
   SIZE_ON_DISK,
-  UPDATE_FAILED_MESSAGE, SERVER_DAEMON_VERSION, LOCAL_DAEMON_VERSION, MINING_INFO, BLOCK_CHAIN_CONNECTED, BETA_MODE,
-  INITIAL_SETUP, SET_ACTIVE_MESSAGING_ACCOUNT
+  UPDATE_FAILED_MESSAGE,
+  SERVER_DAEMON_VERSION,
+  LOCAL_DAEMON_VERSION,
+  MINING_INFO,
+  BLOCK_CHAIN_CONNECTED,
+  BETA_MODE,
+  INITIAL_SETUP,
+  SET_ACTIVE_MESSAGING_ACCOUNT,
+  DOWNLOADING_DAEMON,
+  UPDATING_DAEMON,
+  SHOULD_RESTART_DAEMON,
+  TELL_USER_OF_UPDATE
 } from './types';
 
 export const setWalletCredentials = (args) => {
@@ -555,3 +565,30 @@ export const setActiveMessagingAccount = (value) => {
     payload: value
   }
 }
+
+export const setDownloadingDaemon = (value) => {
+  return {
+    type: DOWNLOADING_DAEMON,
+    payload: value
+  }
+}
+export const setUpdatingDaemon = (value) => {
+  return {
+    type: UPDATING_DAEMON,
+    payload: value
+  }
+}
+export const setShouldRestartDaemon = (value) => {
+  return {
+    type: SHOULD_RESTART_DAEMON,
+    payload: value
+  }
+}
+
+export const setTellUserOfUpdate = (value) => {
+  return {
+    type: TELL_USER_OF_UPDATE,
+    payload: value
+  }
+}
+

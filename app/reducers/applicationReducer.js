@@ -35,7 +35,7 @@ import {
   UPDATE_APPLICATION, UPDATE_FAILED_MESSAGE,
   USER_ADDRESSES,
   WAS_STAKING,
-  BETA_MODE
+  BETA_MODE, DOWNLOADING_DAEMON, UPDATING_DAEMON, SHOULD_RESTART_DAEMON
 } from '../actions/types';
 
 import Wallet from '../utils/wallet';
@@ -47,7 +47,8 @@ const moment = require('moment');
 const REQUIRED_DAEMON_VERSION = '0.2.5.18';
 
 
-const INITIAL_STATE = {wallet: null, requiredDaemonVersion: REQUIRED_DAEMON_VERSION, daemonRunning: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, friends: [], userAddresses: [], creatingAddress: false, newContactAddress:"", settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, locationToExport: "", backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, pendingTransactions: [], wasStaking: false, daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], coinMarketCapStats: {}, coinMarketLastUpdated: 0, updateApplication:false, closingApplication: false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false, downloadMessage: undefined, downloadPercentage: undefined, downloadRemainingTime: undefined, updateFailed:false, popupLoading: false, contactToAdd: undefined, showZeroBalance: true, filteringTransactions: false, debugLog: new Queue(), selectedCurrency: "usd", donationGoals: {}, donationGoalsLastUpdated: 0, daemonErrorPopup: false, daemonError: '' , updateFailedMessage: '', serverDaemonVersion: -1, installedDaemonVersion: -1 , blockChainConnected: false, betaMode: false};
+const INITIAL_STATE = {wallet: null, requiredDaemonVersion: REQUIRED_DAEMON_VERSION, daemonRunning: false, transactionsPage: 0, transactionsLastPage: false, transactionsRequesting: false, friends: [], userAddresses: [], creatingAddress: false, newContactAddress:"", settings: false, hideTrayIcon: false, minimizeOnClose: false, minimizeToTray: false, startAtLogin: false, locationToExport: "", backingUpWallet: false, indexingTransactions: false, stakingRewards: [], totalStakingRewards: 0, lastWeekStakingRewards: 0, lastMonthStakingRewards: 0, pendingTransactions: [], wasStaking: false, daemonCredentials: undefined, checkingDaemonStatusPrivateKey: false, eccPosts: [], coinMarketCapStats: {}, coinMarketLastUpdated: 0, updateApplication:false, closingApplication: false, theme: "theme-defaultEcc", backupTheme: "theme-defaultEcc", changedTheme: false, downloadMessage: undefined, downloadPercentage: undefined, downloadRemainingTime: undefined, updateFailed:false, popupLoading: false, contactToAdd: undefined, showZeroBalance: true, filteringTransactions: false, debugLog: new Queue(), selectedCurrency: "usd", donationGoals: {}, donationGoalsLastUpdated: 0, daemonErrorPopup: false, daemonError: '' , updateFailedMessage: '', serverDaemonVersion: -1, installedDaemonVersion: -1 , blockChainConnected: false, betaMode: false,
+downloadingDaemon: false, updatingDaemon: false, shouldRestartDaemon: false};
 
 
 export default(state = INITIAL_STATE, action) => {
@@ -255,6 +256,15 @@ export default(state = INITIAL_STATE, action) => {
   }
   else if (action.type == BLOCK_CHAIN_CONNECTED){
     return {...state, blockChainConnected: action.payload}
+  }
+  else if (action.type == DOWNLOADING_DAEMON){
+    return {...state, downloadingDaemon: action.payload}
+  }
+  else if (action.type == UPDATING_DAEMON){
+    return {...state, updatingDaemon: action.payload}
+  }
+  else if (action.type == SHOULD_RESTART_DAEMON){
+    return {...state, shouldRestartDaemon: action.payload}
   }
 	return state;
 }

@@ -375,7 +375,7 @@ export default class Wallet {
     try {
       return await client.getbuffer(protocolId)
     } catch (e) {
-      return e;
+      return []
     }
   }
 

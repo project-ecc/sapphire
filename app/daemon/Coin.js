@@ -109,7 +109,7 @@ class Coin extends Component {
 
       // mutate redux data with data from the system.
       this.props.updatePaymentChainSync(data.blocks === 0 || data.headers === 0 ? 0 : syncedPercentage);
-      this.props.setDaemonVersion(tools.formatVersion(data.version));
+      this.props.setLocalDaemonVersion(tools.formatVersion(data.version));
       this.props.chainInfo(data);
       this.props.walletInfo(data);
 
@@ -487,7 +487,7 @@ class Coin extends Component {
 
       // mutate redux data with data from the system.
       this.props.updatePaymentChainSync(data.blocks === 0 || data.headers === 0 ? 0 : syncedPercentage);
-      this.props.setDaemonVersion(tools.formatVersion(data.version));
+      this.props.setLocalDaemonVersion(tools.formatVersion(data.version));
       this.props.chainInfo(data);
       console.log(data)
       this.props.walletInfo(data);

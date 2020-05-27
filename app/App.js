@@ -23,7 +23,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.startUp = this.startUp.bind(this);
-    const unhandled = require('./utils/initUnhandled');
   }
 
   async componentDidMount() {

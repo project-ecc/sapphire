@@ -178,11 +178,11 @@ class General extends Component {
           <div className="row settingsToggle">
             <div className="col-sm-6 text-left removePadding">
               <p>{ this.props.lang.applicationVersion }</p>
-              <p id="applicationVersion">v{guiVersion}g & v{this.props.daemonVersion}d</p>
+              <p id="applicationVersion">v{guiVersion}g & v{this.props.localDaemonVersion}d</p>
             </div>
             <div className="col-sm-6 text-right removePadding">
               {this.props.updateAvailable && (
-                <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.handleUpdateApplication()}>Update Now</Button>
+                <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.handleUpdateApplication()}>{this.props.localDaemonVersion === -1 ? 'Install Now': 'Update Now'}</Button>
               )}
               <Button style={{marginLeft: '25px'}} size="sm" outline color="warning" onClick={() => this.checkForUpdates()}>Check for updates</Button>
             </div>
@@ -218,10 +218,9 @@ const mapStateToProps = state => {
     hideTrayIcon: state.application.hideTrayIcon,
     minimizeToTray: state.application.minimizeToTray,
     minimizeOnClose: state.application.minimizeOnClose,
-    daemonVersion: state.chains.daemonVersion,
+    localDaemonVersion: state.application.installedDaemonVersion,
     updateAvailable: state.startup.daemonUpdate,
-    debugLog: state.application.debugLog,
-
+    debugLog: state.application.debugLog
   };
 };
 

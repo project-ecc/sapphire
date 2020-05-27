@@ -149,7 +149,7 @@ class Messaging extends Component {
       }
 
     } catch (e) {
-      console.log(e)
+      // console.log(e)
     }
   }
 
@@ -226,12 +226,14 @@ class Messaging extends Component {
   }
 
   async getPeerInfo(){
+    console.log(this.props.daemonRunning === true)
     //grab all peers from routing table
     let aodvResponse = await this.props.wallet.getAodvTable();
     // grab my routing tag
     let myId = await this.props.wallet.getRoutingPubKey();
 
     let peers = aodvResponse.mapkeyid;
+    console.log(peers)
     for (const [key, value] of Object.entries(peers)) {
       //create packet to send for data request and send packet
       let packet = new Packet(key, myId, 'peerInfoRequest', null, null)
