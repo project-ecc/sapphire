@@ -103,11 +103,12 @@ class Messaging extends Component {
     let packetBuffer = await this.props.wallet.getBuffer(1)
     // let packetBuffer = await this.props.wallet.getBuffer(1);
     console.log(packetBuffer)
-    for (const key of Object.keys(packetBuffer)) {
-      console.log(packetBuffer[key])
-      await this.parseSinglePacket(packetBuffer[key])
+    if(Object.keys(packetBuffer).length > 0) {
+      for (const key of Object.keys(packetBuffer)) {
+        console.log(packetBuffer[key])
+        await this.parseSinglePacket(packetBuffer[key])
+      }
     }
-
   }
 
   async parseSinglePacket (p) {
