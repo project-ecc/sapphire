@@ -132,7 +132,7 @@ class Connector extends Component {
     console.log('Subscriber connected to port 30000');
 
     socket.on('message', function(topic, message) {
-     console.log('received a message related to:', topic.toString(), 'containing message:', message.toString('hex'));
+     // console.log('received a message related to:', topic.toString(), 'containing message:', message.toString('hex'));
    });
 
   }

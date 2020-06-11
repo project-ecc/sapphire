@@ -22,6 +22,9 @@ module.exports = function (sequelize, DataTypes) {
     },
     last_seen: {
       type: DataTypes.INTEGER
+    },
+    messaging_enabled: {
+      type: DataTypes.BOOLEAN
     }
   });
 

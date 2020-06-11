@@ -28,6 +28,9 @@ class Messaging extends Component {
   }
 
   async componentDidMount() {
+    if(this.props.betaMode) {
+
+    }
     await this.registerMessageReceiver();
     await this.startCheckingForPeerInfo();
     await this.setActiveMessagingAccount()
@@ -221,7 +224,7 @@ class Messaging extends Component {
 
   startCheckingForPeerInfo(){
     this.setState({
-      peerIntervalTimer: setInterval(this.getPeerInfo.bind(this), 5000),
+      peerIntervalTimer: setInterval(this.getPeerInfo.bind(this), 600000),
       packetIntervalTimer: setInterval(this.pollMessageReceiver.bind(this), 3000)
     });
   }
